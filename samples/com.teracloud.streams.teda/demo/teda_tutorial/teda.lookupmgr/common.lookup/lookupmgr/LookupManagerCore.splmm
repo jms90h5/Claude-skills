@@ -1,0 +1,1491 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $customizingXmlFile="$ENV{LOOKUP_CUSTOM_XML}";
+
+	### Common config - begin
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::LookupManager());
+
+	# Prepare directory settings
+	# Convert relative path to absolut path as needed
+	my $enableDbInputFile = $configurator->isOn(Configurator::LM_FILE());
+	my $disableDbQuery = $configurator->isOff(Configurator::LM_DB());
+	my $dbConnection = $configurator->getString(Configurator::LM_DB_CONNECTIONNAME());
+	my $cfgDbVendor = $configurator->getEnum(Configurator::LM_DB_VENDOR());
+	my $applConfigName = $configurator->getString(Configurator::LM_APPLICATIONCONFIGURATION());
+	print "// Appl. configuration: $applConfigName\n" if ($applConfigName);
+	### Common config - end
+	
+	### Repository segments - begin
+	my $initCmdName="Init";
+	my $initCmdNameLc=lc($initCmdName);
+	my $updateCmdName="Update";
+	my $updateCmdNameLc=lc($updateCmdName);
+	my $deleteCmdName="Delete";
+	my $deleteCmdNameLc=lc($deleteCmdName);
+
+	### Repository segments - begin
+	my @sumRepositoryList;
+	if (-e ".mkrun") { # checks if makefile was called
+		@sumRepositoryList = CodeGenFrw::getSegmentStreamList($customizingXmlFile);
+	}	
+	@sumRepositoryList = sort (@sumRepositoryList);
+	### Repository segments - end
+	
+	### application list - begin
+	my @appls;
+	if (-e ".mkrun") { # checks if makefile was called
+		CodeGenFrw::getAllApplications ($customizingXmlFile, \@appls);
+	}
+	my $applControlRespFile = "@appls";
+	$applControlRespFile =~ s/ /,/g;
+	print "// APPL RESP FILES: $applControlRespFile\n";
+	### application list - end
+	my $dbTablesStr = "";
+	unless ($disableDbQuery) {
+		#####  Get DB table names by access-specification ###########
+		my @dbTables;
+		if (-e ".mkrun") { # checks if makefile was called
+			if (-e "$projDir/connections.xml") {
+				CodeGenFrw::getDbTablesNameByAccessSpec(\@sumRepositoryList, \@dbTables, "$projDir/connections.xml", "",1) unless ($disableDbQuery);
+			}
+		}
+		$dbTablesStr = "@dbTables";
+		$dbTablesStr =~ s/\s/,/g;
+		print "// DB tables: $dbTablesStr\n";
+	}
+	print "// DB query disabled\n" if ($disableDbQuery);
+	my $multiHost = $configurator->isOn(Configurator::GLOBAL_MULTIHOST());
+
+%>
+namespace common.lookup.lookupmgr;
+<%unless ($disableDbQuery) {
+%>use com.teracloud.streams.db::*;
+use com.teracloud.streams.teda.internal::DBStatusChecker;<%}%>
+use common.lookup.lookuptypes::*;
+use com.teracloud.streams.teda.internal.shm::*;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+use com.teracloud.streams.teda.internal.logfilewriter::LogFileWriter;
+use com.teracloud.streams.teda.internal::DirScan;
+use com.teracloud.streams.teda.parser.text::CSVParse;
+use com.teracloud.streams.teda.utility::ExceptionCatcher;
+
+/**
+ * This **LookupManagerCore** composite implements the main functions of 'Lookup Manager' job.
+ * 
+@param inputDir Name of command file input directory relative to 'data'.
+@param statisticsDir Name of directory collecting statistics. It is relative to 'data' folder. 
+@param statisticsArchiveDir It is the archive folder of statistics. 
+<%if ($enableDbInputFile) {
+%>@param csvFilesDir The directory that stores the look-up data in CSV format. It is relative to 'data' folder.
+@param ignoreEmptyCSVLines The parameter defines how to handle empty lines.
+@param ignoreHeaderCSVLines The parameter defines how to handle header lines.
+@param csvEolMarker The parameter defines the end-of-line marker.
+@param csvSeparator The parameter defines the separator between attributes.<%}%> 
+@param applControlDir The directory there the application control-files are places. This is the common folder for applications and for the 'Application Control Master'
+@param applControlRespFiles This is the list of unique application names controlled by 'Application Control Master'
+@param applControlRespFilesChecklist the compiled in list of the controlled ITE applications
+@param applControlFile This is the name of master application control file
+@param shutdownControlFile This file contains control strings to initiate a re-start or shutdown
+@param period The period (in seconds) for status control check of control-files.
+@param initDelay The initial delay (in seconds) for start of first control-file check
+@param dirScanPattern The 'regex' pattern for selection of command files
+<%unless ($disableDbQuery) {
+%>@param dbName The name of database. 
+@param dbUser The name of DB user. 
+@param dbPass Password of DB user
+@param applConfigName The name of application configuration repository.<%
+}%>
+<%if ($multiHost) {
+%>@param numOfHosts This parameter defines the number of hosts (using UDP feature) that receive the data to be stored in lookup repository of each host.
+ * *Default*: 1
+ * *Submission name*: **hostsNum**<%}%>
+ * 
+ */
+public composite LookupManagerCore {
+	param 
+		expression<int32> $numOfHosts: <%if ($multiHost) {%>(int32)getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::GLOBAL_MULTIHOST_NUMBEROFHOSTS())%>)<%}else{%>1<%}%>;
+		expression<rstring> $inputDir;
+		expression<rstring> $statisticsDir;
+		expression<rstring> $statisticsArchiveDir;
+		expression<rstring> $dirScanPattern;
+		expression<rstring> $applControlDir;
+		expression<rstring> $applControlFile;
+		expression<rstring> $applControlRespFiles;
+		expression<rstring> $applControlRespFilesChecklist;
+		expression<rstring> $shutdownControlFile;
+		<%if ($enableDbInputFile) {
+		%>expression<rstring> $csvFilesDir;
+		expression<boolean> $ignoreEmptyCSVLines;
+		expression<boolean> $ignoreHeaderCSVLines;
+		expression<rstring> $csvEolMarker;
+		expression<rstring> $csvSeparator;<%
+		}%>
+		expression<float64> $period;
+		expression<float64> $initDelay;
+		<%unless ($disableDbQuery) {%>
+		// DB settings
+		expression<rstring> $dbName;
+		expression<rstring> $dbUser;
+		expression<rstring> $dbPass;
+		expression<rstring> $applConfigName;<%
+		}%>
+		
+	type 
+	/**
+ * The tuple *CsvParserInput* provides information about the processed command and payload (line) from FileSource operator.
+ */
+		CsvParserErrorStream = tuple<
+			rstring reason,
+			uint64 lineNo,
+			rstring errId
+		>;
+	
+
+	graph
+	
+		<%unless ($disableDbQuery) {
+		%>/* DB parameter validator
+		 * Check parameter on process start and shutdown PE if parameter are invalid. 
+		 * It replace the submission time validation since the application configuration feature.
+		 */
+		() as DbParamValidator = Custom() {
+			logic onProcess : {
+				if (("" == $applConfigName) && (("" == $dbName) || ("" == $dbUser) || ("" == $dbPass))) {
+					/* invalid DB settings. If application configuration repository isn't set then the 
+					DB parameters are mandatory */
+					appTrc(Trace.error, "Invalid DB Parameter setting. The parameter <%=Configurator::LM_DB_NAME()%>, <%=Configurator::LM_DB_USER()%> and <%=Configurator::LM_DB_PASSWORD()%> are mandatory if <%=Configurator::LM_APPLICATIONCONFIGURATION()%> is not set. Check the CFGDUMP trace log.", "LookupManagerCore");
+					shutdownPE();
+				}
+			}
+			config
+				placement : partitionColocation("COMMAND_READER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}<%}
+		%>
+		// DirectoryScanner
+		// supervise the directory and generate for each file a tuple
+		stream<LookupMgrTypes.FileName> CommandFiles = DirScan() {
+			param
+				initialRunState : true;
+				directory : $inputDir;
+				createDirsOnStartup : true;
+				pattern : $dirScanPattern;
+				initDelay : 5.0;
+			output
+				CommandFiles : filename = FilePath();
+			config
+				placement : partitionColocation("COMMAND_READER"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+		// ------------------------------------------
+		// Keep the order of the stream distribution
+		// ------------------------------------------
+		(stream<CommandFiles> ToFileSource;
+		 stream<CommandFiles> ToCommandForwarder) as FilenameForwarder = Custom (CommandFiles) {
+		 	logic
+		 		onTuple CommandFiles : {
+		 			submit(CommandFiles,ToCommandForwarder);	
+		 			submit(CommandFiles,ToFileSource);	
+		 		}
+			config
+				placement : partitionColocation("COMMAND_READER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		 }
+		// ----------------------------------
+		// This ExceptionCatcher operator catches the FileSource exceptions like 'File not found' 
+		// ----------------------------------
+		(
+		stream<ToFileSource> ControlledToFileSource;
+		stream<ToFileSource, LookupMgrTypes.LookupMgrFileExceptionInfo> CommandFileToReject
+		) as CommandFileExceptionCatcher = ExceptionCatcher(ToFileSource) {
+			output CommandFileToReject: 
+				exceptionType = getExceptionType(), 
+				exceptionText = getExceptionText();
+			config
+				placement : partitionColocation("COMMAND_READER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+
+		// ----------------------------------
+		// Command line reader 
+		// ----------------------------------
+		stream<LookupMgrTypes.LookupMgrLineContent> LineContent = FileSource(ControlledToFileSource)
+		{
+			param
+				format: line;
+			output LineContent:
+				filename = FileName();
+			config
+				placement : partitionColocation("COMMAND_READER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+		// ----------------------------------
+		// CSV parser - read line content 
+		// ----------------------------------
+		(stream<LookupMgrTypes.LookupMgrCommandLine> CommandFileReader; stream<LineContent,CsvParserErrorStream> ErroneousContent) as CommandParser = CSVParse(LineContent)
+		{
+			param
+				mappingDocument: "etc/cmdFileMapping.xml";
+				payloadAttribute: payload;
+				separator: ";";
+
+			output 
+				ErroneousContent:
+					reason = Message(),
+					errId = MessageId(),
+					lineNo = TupleNumber();
+				
+			config
+				placement : partitionColocation("COMMAND_READER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+		
+		/**
+		 * This CommandForwarder collects and handles the received data and errors. It forwards the data tuples, Only in case of errors during the parser
+		 * processing it sends the incorrect lines collected as single error report.
+		 * In case of empty command file, the error reports will be generated and the received punctuation is skipped.
+		 * The result collector moves the command file on error report to failed folder.  
+		 */
+		(stream <CommandFileReader> ForwardedCommand;
+		stream <LookupMgrTypes.LookupMgrErrorList> CommandReaderErrorReports
+		) as CommandForwarder = Custom (ToCommandForwarder;CommandFileReader;ErroneousContent;CommandFileToReject) {
+			logic
+				state : {
+					mutable list<rstring> incorrectLines; // list of incorrect lines reported by CSV parser reading the command file
+					mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {}; // single fault report
+					mutable LookupMgrTypes.LookupMgrErrorList otuple = {}; // output error tuple schema
+					mutable rstring commandFilename = ""; // the name of the command file
+					mutable rstring commandFilenameFromScan = ""; // the name of the scanned command file. It will be used for empty file because no data tuple received in this case 
+				}
+				onTuple ToCommandForwarder : {
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Scanned filename: " + filename, "LookupManagerCore");
+						commandFilenameFromScan = filename;
+					}
+					
+				}
+				onTuple CommandFileToReject : {
+					// report error to trace
+					appTrc(Trace.error, "Exception detected reading command file: " + (rstring)CommandFileToReject, "LookupManagerCore");
+			 		etuple.command 	= ""; 
+			 		etuple.segment 	= "";
+			 		etuple.errorId 	= LookupMgrTypes.LM001;
+					mutable list<rstring> errMsgParams = [exceptionType,exceptionText];
+			 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM001, errMsgParams);				 		
+			 		// append the error information to error report list
+			 		otuple.filename = filename;
+					appendM(otuple.listOfErrors,etuple);
+					// send error report if any 
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Send exception report." + (rstring)otuple, "LookupManagerCore");
+					}
+					submit(otuple, CommandReaderErrorReports);
+					// clean-up
+					clearM(incorrectLines);
+					clearM(otuple.listOfErrors);
+					otuple.filename = "";
+			 		etuple.command 	= ""; 
+			 		etuple.segment 	= "";
+			 		etuple.errorId 	= LookupMgrTypes.LM000;
+			 		etuple.errorMessage 	= "";
+			 		// send punctuation on ForwardedCommand
+			 		submit (Sys.WindowMarker, ForwardedCommand);
+				}
+				onTuple ErroneousContent : {
+					// report error to trace
+					appTrc(Trace.error, "Fault detected reading command file '" + filename + "'-[" + payload + "]", "LookupManagerCore");
+					commandFilename = filename;
+			 		// collect error lines
+			 		mutable rstring lineErrorInfo = errId + ": '" + reason + "' at line " + (rstring) lineNo;
+					appendM(incorrectLines,lineErrorInfo);
+				}
+				onTuple CommandFileReader : {
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "CommandFileReader forwarded." + (rstring)CommandFileReader, "LookupManagerCore");
+					}
+					commandFilename = filename; // set current processed filename
+					submit(CommandFileReader,ForwardedCommand);
+				}
+				onPunct CommandFileReader : {
+					if ("" == commandFilename) {
+						// empty file detected
+						// The filename is unknown because the FileSource does not send the data tuple with filename, only the punctuation
+				 		etuple.command 	= ""; 
+				 		etuple.segment 	= "";
+				 		etuple.errorId 	= LookupMgrTypes.LM005;
+						mutable list<rstring> errMsgParams = [commandFilenameFromScan]; // use here the scanned filename
+				 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM005, errMsgParams);				 		
+				 		// append the error information to error report list
+				 		otuple.filename = commandFilenameFromScan;
+						appendM(otuple.listOfErrors,etuple);
+						// send error report if any 
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "Send 'empty file' error report." + (rstring)otuple, "LookupManagerCore");
+						}
+						submit(otuple, CommandReaderErrorReports);
+						// clean-up
+						clearM(incorrectLines);
+						clearM(otuple.listOfErrors);
+						otuple.filename = "";
+				 		etuple.command 	= ""; 
+				 		etuple.segment 	= "";
+				 		etuple.errorId 	= LookupMgrTypes.LM000;
+				 		etuple.errorMessage 	= "";
+					}
+					if (0 != spl.collection::size(incorrectLines)) {
+						// send CSV parser error
+						// fill in the error lines
+						mutable list<rstring> errMsgParams = [commandFilename,(rstring)incorrectLines];
+				 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM002, errMsgParams);
+				 		//"Fault detected reading command file '" + commandFilename + "' in following lines: " + (rstring)incorrectLines;
+				 		// append the error information to error report list
+				 		otuple.filename = commandFilename;
+						// fill in data for CSV parser error
+				 		etuple.command 	= ""; 
+				 		etuple.segment 	= "";
+				 		etuple.errorId 	= LookupMgrTypes.LM002;
+				 		/* keep stopped file processing because it could be initial command (continueOnError = false). 
+				 		 * In that case, the segments would not be created and ITE could not use lookup data
+				 		 */
+				 		etuple.continueOnError = true;  
+						appendM(otuple.listOfErrors,etuple);
+						// send error report if any 
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "Send parser error report." + (rstring)otuple, "LookupManagerCore");
+						}
+						submit(otuple, CommandReaderErrorReports);
+						// clean-up
+						clearM(incorrectLines);
+						clearM(otuple.listOfErrors);
+				 		otuple.filename = "";
+				 		etuple.command 	= ""; 
+				 		etuple.segment 	= "";
+				 		etuple.errorId 	= LookupMgrTypes.LM000;
+				 		etuple.errorMessage 	= "";
+					}
+					// reset current filename 
+					commandFilename="";
+					if (currentPunct() == Sys.WindowMarker) {
+						submit (Sys.WindowMarker, ForwardedCommand);
+					}
+				}
+			config
+				placement : partitionColocation("COMMAND_READER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+		
+		// This operator counts commands in the file and sets the start time of command process
+		(stream <ForwardedCommand> ReadCommand;
+		 stream <LookupMgrTypes.LookupMgrCommandFileInfo> FileEndTrigger;
+		 stream <LookupMgrTypes.LookupMgrErrorList> CommandReaderErrors
+		) as CommandChecker = Custom (ForwardedCommand;CommandReaderErrorReports) {
+			logic 
+				state : {
+					mutable rstring curFilename = "";
+					mutable int32 sentCommands = 0;
+					mutable LookupMgrTypes.LookupMgrErrorList etuple = {}; // output error tuple schema
+				}
+				onTuple ForwardedCommand : {
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Command received." + (rstring)ForwardedCommand, "LookupManagerCore");
+					}
+					curFilename = filename;
+					// check if command type supported
+					if ((0 != spl.collection::size(regexMatch (command, "<%=$updateCmdNameLc%>"))) || (0 != spl.collection::size(regexMatch (command, "<%=$deleteCmdNameLc%>"))) || (0 != spl.collection::size(regexMatch (command, "<%=$initCmdNameLc%>")))) {
+						mutable boolean repositoryOK = false;
+						// check repository name if supported
+						<%foreach my $repositoryShortName (@sumRepositoryList){
+						%>if ("<%=$repositoryShortName%>" == repositoryName) {
+							repositoryOK = true;
+						}
+						<%}%>// the empty is supported too.
+						if ("" == repositoryName) {
+							repositoryOK = true;
+						} 
+						if (repositoryOK) {
+							// command and repository are OK - forward the command
+							sentCommands++;
+							mutable ReadCommand otuple = {};
+							otuple.filename = curFilename;
+							otuple.command = command;
+							otuple.repositoryName = repositoryName;
+							otuple.commandStartedAt = ctime(getTimestamp());
+							submit(otuple,ReadCommand);
+						}
+						else {
+							appTrc(Trace.error, "The repository '" + repositoryName + "' for '" + command + "' is not defined in processing.", "LookupManagerCore");
+							mutable LookupMgrTypes.LookupMgrErrorInfo errorReport={};
+	 						errorReport.command = command;
+	 						errorReport.segment = "";
+	 						errorReport.errorId = LookupMgrTypes.LM004;
+							mutable list<rstring> errMsgParams = [repositoryName,command,curFilename];
+					 		errorReport.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM004, errMsgParams);
+					 		// check if continue
+							if (0 != spl.collection::size(regexMatch (command, "<%=$initCmdNameLc%>"))) {
+						 		/* keep stopped file processing because the initial command cannot be identified (continueOnError = false). 
+						 		 * In that case, the segments would not be created and ITE could not use lookup data
+						 		 */
+								errorReport.continueOnError = false;
+							}
+							else {
+								errorReport.continueOnError = true;
+							}
+							appendM(etuple.listOfErrors,errorReport);
+						}
+					}
+					else {
+						appTrc(Trace.error, "Incorrect command '" + command + "' detected in '" + curFilename + 
+						"'. The supported commands must include '<%=$initCmdNameLc%>', '<%=$updateCmdNameLc%>' or '<%=$deleteCmdNameLc%>' in the command name.", "LookupManagerCore");
+						mutable LookupMgrTypes.LookupMgrErrorInfo errorReport={};
+ 						errorReport.command = command;
+ 						errorReport.segment = "";
+ 						errorReport.errorId = LookupMgrTypes.LM003;
+						mutable list<rstring> errMsgParams = [command,curFilename];
+				 		errorReport.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM003, errMsgParams);
+
+				 		/* keep stopped file processing because the initial command cannot be identified (continueOnError = false). 
+				 		 * In that case, the segments would not be created and ITE could not use lookup data
+				 		 */
+ 						errorReport.continueOnError = false;
+						appendM(etuple.listOfErrors,errorReport);
+					}
+				}
+				onTuple CommandReaderErrorReports : {
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Command file errors received." + (rstring)CommandReaderErrorReports, "LookupManagerCore");
+					}
+					if ("" == curFilename) {
+						// command data tuple not received - set the current file name from error report
+						curFilename = filename;
+					}
+					appendErrorReport(CommandReaderErrorReports.listOfErrors, etuple.listOfErrors);
+				}
+				onPunct ForwardedCommand : {
+					// send trigger info
+					mutable FileEndTrigger otuple = {};
+					if (0 != spl.collection::size(etuple.listOfErrors)) {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "Forward error report." + (rstring)etuple, "LookupManagerCore");
+						}
+ 						etuple.filename = curFilename;
+						submit(etuple,CommandReaderErrors);
+						otuple.readerError = true;
+						// clean-up
+						etuple.filename = "";
+						clearM(etuple.listOfErrors);
+					}
+					else {
+						otuple.readerError = false;
+					}
+					
+					otuple.filename=curFilename;
+					otuple.sentCommands=sentCommands*$numOfHosts;
+					submit(otuple,FileEndTrigger);
+					
+					// reset
+					curFilename = "";
+					sentCommands = 0;
+				}
+			config
+				placement : partitionColocation("COMMAND_READER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		} 
+
+		// Application Controller 
+		(stream<ReadCommand> ControlledCommand; stream<LookupMgrTypes.LookupMgrStatisticsSchema> ApplCtrlMasterStats) as ApplCtrlMaster
+		= LookupApplCtrlMaster(ReadCommand; CommandAck)
+		{
+			param
+				applControlRespFiles 	: $applControlRespFiles;
+				applControlRespFilesChecklist: $applControlRespFilesChecklist;
+				applControlDir 			: $applControlDir;
+				applControlFile 		: $applControlFile;
+				shutdownControlFile		: $shutdownControlFile;
+				period					: $period;
+				initDelay  				: $initDelay;
+
+			config
+				placement :	partitionColocation("APPL_CONTROL_MASTER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+<%unless ($disableDbQuery) {
+%>
+		// check DB / file command; if DB then check status
+		<%if ($enableDbInputFile) {%>(
+			stream<ControlledCommand> CheckedCommand;
+			stream<ControlledCommand> DbCheckReq
+		) as ByPassChecker = Custom(ControlledCommand) {
+			logic
+				onTuple ControlledCommand: {
+					if ((0 != spl.collection::size(regexMatch (command, "<%=$deleteCmdNameLc%>"))) || (0 != spl.collection::size(regexMatch (command, "file")))) {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "ByPassChecker: bypass cmd: " + command, "LookupManagerCore");
+						}
+						submit (ControlledCommand,CheckedCommand);
+					}
+					else {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "ByPassChecker: by DB check cmd: " + command, "LookupManagerCore");
+						}
+						submit (ControlledCommand,DbCheckReq);
+					}
+				}
+			config
+				placement :	partitionColocation("DB_BYPASS"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}<%}%>
+
+		// DB Status checker data generation
+		(stream <boolean combine, boolean reloadConnections> DbStatusCheck;
+		 stream <rstring errorType, rstring errorDesc> DbCheckerError) as DBStatusCheckerOutput = DBStatusChecker() {
+			param
+				DBName		: $dbName;
+				DBUser		: $dbUser;
+				DBPassword	: $dbPass;
+				applConfigName: $applConfigName;
+				ParamNameDBName: "<%=Configurator::LM_DB_NAME()%>";
+				ParamNameDBUser: "<%=Configurator::LM_DB_USER()%>";
+				ParamNameDBPassword: "<%=Configurator::LM_DB_PASSWORD()%>";
+				DBVendor 	: <%=$cfgDbVendor%>;
+				DBTables 	: [<%=$dbTablesStr%>];
+				shutdownOnTableCheckFail : true;
+				shutdownOnLoginFail : true;
+				sleepTime 	: 5.0;
+				connectionRetryCount : 1;
+				initDelay 	: 2.0;
+
+			output DbStatusCheck : 	combine = CombinedResult(),
+									reloadConnections = IsReloaded();
+			config
+				placement :	partitionColocation("DB_CHECKER"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+		// Verification of DB status
+		(stream<int64 dbState> DbStatusCheckChange;
+		 stream<LookupMgrTypes.LookupMgrDbConnection> DbCredentials;
+		 stream <LookupMgrTypes.LookupMgrErrorList> CheckerErrorReport) as OutDbCheck = Custom(DbStatusCheck;DbCheckerError) {
+			logic
+				state :{
+					mutable boolean oldValue = false;
+				}
+				onTuple DbStatusCheck: {
+					if (oldValue != combine) {
+						oldValue = combine;
+						if (combine) {
+							if ("" != $applConfigName && reloadConnections) {
+								// get DB connection data
+								mutable LookupMgrTypes.LookupMgrDbConnection ctuple = {};
+								ctuple.dbConnactionMap["connection.database"] = getApplicationConfigurationProperty($applConfigName, "<%=Configurator::LM_DB_NAME()%>", "");
+								ctuple.dbConnactionMap["connection.user"] = getApplicationConfigurationProperty($applConfigName, "<%=Configurator::LM_DB_USER()%>", "");
+								ctuple.dbConnactionMap["connection.password"] = getApplicationConfigurationProperty($applConfigName, "<%=Configurator::LM_DB_PASSWORD()%>", "");
+								submit (ctuple,DbCredentials); // Refresh DB connections
+							}
+							submit ({dbState=1l},DbStatusCheckChange); // DB STATUS OK
+						}
+						else {
+							submit ({dbState=0l},DbStatusCheckChange); // DB STATUS NOT OK
+						}
+					}
+				}
+				onTuple DbCheckerError: {
+					appTrc(Trace.error, "DB Checker reported error (" + errorType + "): " + errorDesc, "LookupManagerCore");
+					// prepare error report 
+					mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {};
+					// check behavior for 
+					etuple.continueOnError = false;
+			 		etuple.command 	= ""; 
+			 		etuple.segment 	= "";
+			 		etuple.errorId 	= LookupMgrTypes.LM011;
+					mutable list<rstring> errMsgParams = [errorType, errorDesc];
+			 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM011, errMsgParams);
+					
+					// set data and send report
+					mutable LookupMgrTypes.LookupMgrErrorList errTuple = {}; // output error tuple schema
+			 		errTuple.filename="";
+					appendM(errTuple.listOfErrors,etuple);
+					submit(errTuple,CheckerErrorReport);
+					// clean-up
+					clearM(errTuple.listOfErrors);
+				}
+			config
+				placement :	partitionColocation("DB_CHECKER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+		// update metrics to signal DB Status (0=DISCONNECTED/TABLES MISSING 1=CONNECTED)
+		() as DBStatusMetricsSink = MetricsSink(DbStatusCheckChange) {
+			param
+				metrics		: dbState;
+				names		: "DB Status Check";
+				descriptions: "DB Status Check result (0=DISCONNECTED/TABLES MISSING 1=CONNECTED)";
+			config
+				placement :	partitionColocation("DB_CHECKER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+		// switch on after db health check was successful - switch one time
+		stream<ControlledCommand> DbCheckedCommand = 
+			Switch(<%if ($enableDbInputFile) {%>DbCheckReq<%}else{%>ControlledCommand<%}%>; DbStatusCheck as Ctrl) {
+			param
+				initialStatus: false;
+				status: Ctrl.combine;
+			config
+				placement :	partitionColocation("DB_CHECKER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+<%}%>
+		// ODBC Processor 
+		(<%	foreach my $repositoryShortName (@sumRepositoryList){
+		%>stream <LookupMgrTypes.Schema<%=$repositoryShortName%>> ProcessedSourceData<%=$repositoryShortName%>;
+		<%}%>stream <LookupMgrTypes.LookupMgrCommandData> SplitterInfo;
+		stream <LookupMgrTypes.LookupMgrErrorList> SplitterErrorReport
+		) as SourceDataSplitStream
+		 = LookupManagerSplitter(<%if ($disableDbQuery) {%>ControlledCommand<%}else {if($enableDbInputFile) {%>CheckedCommand,<%}%>DbCheckedCommand;DbCredentials<%}%>)
+		{
+			param
+				<%unless ($disableDbQuery) {
+				%>dbConnection : "<%=$dbConnection%>";
+				dbName : $dbName;
+				dbUser : $dbUser;
+				dbPass : $dbPass;<%
+				}%>
+				<%if ($enableDbInputFile) {
+				%>csvFilesDir : $csvFilesDir;
+				ignoreEmptyCSVLines : $ignoreEmptyCSVLines;
+				ignoreHeaderCSVLines : $ignoreHeaderCSVLines;
+				csvEolMarker : $csvEolMarker;
+				csvSeparator : $csvSeparator;<%
+				}%>
+			config
+				placement : 
+							partitionColocation("DATA_PROCESSOR")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+		// UDP: 
+		@parallel(width=$numOfHosts, broadcast=[<%foreach my $repositoryShortName (@sumRepositoryList){%>ProcessedSourceData<%=$repositoryShortName%>,<%}%>SplitterInfo])
+		(stream<LookupMgrTypes.LookupMgrCommandResult> ProcessedCommand;
+		stream <LookupMgrTypes.LookupMgrErrorList> ErrorInfoByHost)
+		as HostCacheProcessor = LookupManagerCache
+		(<%foreach my $repositoryShortName (@sumRepositoryList){%>
+		ProcessedSourceData<%=$repositoryShortName%>;<%}%>
+		SplitterInfo
+		)
+		{
+			param
+				hostId : getChannel();
+				numOfHosts: $numOfHosts;
+				controlDirectory : $applControlDir;
+				jobNameFile : "<%=CodeGenFrw::getConstant('LM_JOBNAME_FILE')%>";
+			config
+				placement : 
+							<%if ($multiHost) {%>partitionColocation("COMMAND_PROCESSOR_" + (rstring)getChannel()),
+							host(LookupManagerHostPool)<%} else {%>partitionColocation("COMMAND_PROCESSOR")<%}%>;
+		}<%#}%>
+		// Result collector 
+		(
+		stream<LookupMgrTypes.LookupMgrControlAck> CommandAck;
+		stream<LookupMgrTypes.LookupMgrStatisticsSchema> LookupMgrStatistics;
+		stream <LookupMgrTypes.LookupMgrErrorList> LookupMgrErrorStatistics
+		)  as ResultCollector = LookupManagerCollector(
+			FileEndTrigger;
+			ProcessedCommand;
+			ErrorInfoByHost,CommandReaderErrors,SplitterErrorReport<%unless ($disableDbQuery) {%>,CheckerErrorReport<%}%>)
+		{
+			param
+				inputDirectory : $inputDir;
+			config
+				placement : partitionColocation("COMMAND_CONTROLLER")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+		// StatisticsWriter
+		() as StatWriter  = LogFileWriter(LookupMgrStatistics, ApplCtrlMasterStats) {
+			param
+				logFileName : "LookupManagerStatistics.txt";
+				logDir : $statisticsDir;
+				logArchiveDir : $statisticsArchiveDir; // move to archive dir on new day
+				logFileSink: com.teracloud.streams.teda.internal.logfilewriter::TxtFileSink; // write txt format
+			config
+				placement : partitionColocation("STATISTICS")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+
+		// ErrorWriter
+		() as ErrorStatWriter  = LogFileWriter(LookupMgrErrorStatistics) {
+			param
+				logFileName : "LookupManagerErrorStatistics.txt";
+				logDir : $statisticsDir;
+				logArchiveDir : $statisticsArchiveDir; // move to archive dir on new day
+				logFileSink: com.teracloud.streams.teda.internal.logfilewriter::TxtFileSink; // write txt format
+			config
+				placement : partitionColocation("STATISTICS")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}
+		
+		// Dummy operator to enforce partitionExlocation only
+		() as StatWriterPeExlocator = Custom() {
+			logic onProcess : {} // do nothing here
+			config
+				placement: partitionColocation("STATISTICS"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>")<%if ($multiHost) {%>,
+							host(LookupManagerPool)<%}%>;
+		}		
+
+}
+
+/**
+ * This **LookupManagerCollector** composite collects and controls the responses delivered by hosts of 'Lookup Manager' job.
+ * The information about the processed data on hosts is collected in this composite. Receiving data of all hosts it decides to move the command file
+ * and to create statistics on file end trigger event.
+@input FileEndTrigger Trigger informing about processing of last command defined in input command file. 
+@input ProcessedCommand This port receives result information from processing hosts. 
+@input ErrorInfoByHost This port receives the error information. 
+@output CommandAck Port providing acknowledge to **Application Control Master** triggering end of command process. 
+@output LookupMgrStatistics The command statistics are provided by this port. 
+@param inputDirectory Name of command file input directory relative to 'data'.
+ * 
+ */
+public composite LookupManagerCollector (
+	input 	FileEndTrigger,
+			ProcessedCommand,
+			ErrorInformation;
+	output 	CommandAck,
+			LookupMgrStatistics,
+			LookupMgrErrors) {
+	param 
+		expression<rstring> $inputDirectory;
+
+	graph
+		// Result collector 
+		(
+		stream<LookupMgrTypes.LookupMgrControlAck> CommandAck;
+		stream<LookupMgrTypes.LookupMgrStatisticsSchema> LookupMgrStatistics;
+		stream<ErrorInformation> LookupMgrErrors
+		)  as ResultCollector = Custom(
+			FileEndTrigger;
+			ProcessedCommand;
+			ErrorInformation)
+		{
+			logic state : {
+					rstring archDir=$inputDirectory+"/archive";
+					boolean dirOk = createDir(archDir);
+					rstring failDir=$inputDirectory+"/failed";
+					boolean failDirOk = createDir(failDir);
+					mutable int32 nhosts = 0;
+					mutable rstring sendFileAck = "";
+					mutable map<rstring,int32> filesToMove={};
+					mutable map<rstring,int32> commandCount={};
+					mutable map<rstring,map<int32,rstring>> hostlists={};
+					mutable LookupMgrTypes.LookupMgrStatisticsSchema statData;
+					// error states
+					mutable map<rstring,boolean> fileMoveOnError = {};
+					mutable map<rstring,boolean> finalFlagOnError = {};
+				}
+				onTuple ErrorInformation:{
+
+					// check which procedure must be selected - continue on error or keep the 'stopped' state
+					mutable int32 idx = 0;
+					mutable boolean noneApplCtl = false;
+					if ("" != filename) {
+						fileMoveOnError[filename]=false;
+					}
+					mutable LookupMgrTypes.LookupMgrErrorInfo eTuple = {};
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Result collector - Error received."+(rstring)ErrorInformation, "LookupManagerCollector");
+					}
+					// begin PRINT static resources
+					if (isTraceable(Trace.debug) && ("" != filename)) {
+						mutable list<rstring> mapKeys = [];
+						
+						// filesToMove
+						if (has(filesToMove,filename)) {
+							concatM(mapKeys,keys(filesToMove));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: filesToMove - " + (rstring)filesToMove[mapKeys[idx]] + " commands reported for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// commandCount
+						if (has(commandCount,filename)) {
+							concatM(mapKeys,keys(commandCount));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: commandCount - " + (rstring)commandCount[mapKeys[idx]] + " commands processed for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// hostlists
+						if (has(hostlists,filename)) {
+							concatM(mapKeys,keys(hostlists));
+							while (idx < spl.collection::size(mapKeys)) {
+								mutable int32 idxCmdKey = 0;
+								mutable list<int32> hostKeys = [];
+								while (idxCmdKey < spl.collection::size(hostKeys)) {
+									appTrc(Trace.debug, "ErrorInformation: hostlists - file as key: " + mapKeys[idx] + ", host index:" + (rstring)hostKeys[idxCmdKey] + ", value:" + hostlists[mapKeys[idx]][hostKeys[idxCmdKey]], "LookupManagerCollector");
+									idxCmdKey++;
+								}
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// finalFlagOnError
+						if (has(finalFlagOnError,filename)) {
+							concatM(mapKeys,keys(finalFlagOnError));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: finalFlagOnError - " + (rstring)finalFlagOnError[mapKeys[idx]] + " value for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+					}
+					// end PRINT static resources
+
+					// check the error list for ACK final flag
+					while (idx < spl.collection::size(ErrorInformation.listOfErrors)) {
+						// single error report
+						eTuple = ErrorInformation.listOfErrors[idx];
+						// Trace message for each fault that cannot be continued and set final flag to false - do not continue
+						if (false == eTuple.continueOnError) {
+							// log the critical error message
+							mutable rstring errMessage= " (" + (rstring)eTuple.errorId + ") processing command '" + eTuple.command + "'";
+							if (eTuple.segment != "") {
+								errMessage+=" on segment '" + eTuple.segment + "'";
+							}
+							errMessage+=" reported as:[" + eTuple.errorMessage + "] cannot ensure the data integrity.";
+							appTrc(Trace.error, errMessage, "LookupManagerCore");
+							// keep 'stopped' file processing
+							if ("" != filename) {
+								finalFlagOnError[filename]=false;
+							}
+						}
+						// increment error index
+						idx++;
+					}
+					/**
+					 * Check what about the ProcessedCommand, if passed ApplCtrl then data will be processed
+					 */
+					if ((eTuple.errorId == LookupMgrTypes.LM001) ||
+					(eTuple.errorId == LookupMgrTypes.LM002) ||
+					(eTuple.errorId == LookupMgrTypes.LM003) ||
+					(eTuple.errorId == LookupMgrTypes.LM004) ||
+					(eTuple.errorId == LookupMgrTypes.LM005) ||
+					(eTuple.errorId == LookupMgrTypes.LM011)) {
+						/** process faults without processed data - the command send ACK tuple and the statistics tuple, the file must be moved to 'failed' (remove filename in 'filesToMove'):
+						 * LM001,LM002,LM003,LM004,LM005,LM011 (DBchecker - empty file)
+						 */
+						 noneApplCtl = true;
+						// don't send acknowledge because of detected error type
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "Don't send ACK-message because fault has not passed the application control - " + (rstring)eTuple.errorId, "LookupManagerCollector");
+						}
+					}
+					/*
+					 * Continue checks only if 'filename' defined. The periodic check like DbStatusChecker does not define any file dependency
+					 * In this case send the statistics only.
+					 */
+					if ("" != filename) {
+						/**
+						 * Check what about the FileEndTrigger
+						 */
+						if (has(filesToMove,filename)) {
+							// file trigger received
+							if (filesToMove[filename] == 0) {
+								// command file without commands - mark to move the file to failed folder
+								// in this case, ApplCtrl not passed - don't send ACK tuple
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "Mark file: " + filename + "to move it now.", "LookupManagerCollector");
+								}
+								fileMoveOnError[filename]=true;
+							}
+							else { // there are some commands to be processed
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "Mark file: " + filename + "to move it later.", "LookupManagerCollector");
+								}
+							}
+						}
+						else {
+							// None FileEndTrigger received
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "Missing end of command file to finalize. ", "LookupManagerCollector");
+							}
+							// Check higher Ids (passed ApplCtl) if any processed command caused error that requires stop
+							if (!noneApplCtl && has(finalFlagOnError,filename)) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "Because of critical error: " + (rstring)eTuple.errorId + " - 'stop'", "LookupManagerCollector");
+								}
+								// sendAckOnError[filename]=false; // candidate to remove
+							}
+						}
+	
+						// check if move command file
+						if (fileMoveOnError[filename]) {
+							// send statistics tuple
+							statData.filename=ErrorInformation.filename;
+							statData.command=eTuple.command;
+							statData.commandStartedAt="";
+							statData.commandProcessedAt=ctime(getTimestamp());
+							if (isTraceable(Trace.info)) {
+								appTrc(Trace.info, "Send statistics on error report" + (rstring)statData, "LookupManagerCollector");
+							}
+							submit(statData,LookupMgrStatistics);
+							// clean-up
+							statData.filename="";
+							statData.command="";
+							statData.commandStartedAt="";
+							statData.commandProcessedAt="";
+							clearM(statData.hostStatistics);
+	
+							// move command file
+							mutable int32 err=0;
+							rstring oldname = filename;
+							rstring newname = regexReplace (oldname, '.*/', failDir+"/", false);
+							com.teracloud.streams.teda.file::rename(oldname, newname, err);
+							if(err!=0) {
+								appTrc(Trace.error, "Could not rename file '" + oldname+"' to '"+newname+"': " + (rstring)err);
+							}
+							// remove file from filesToMove
+							if (has(filesToMove,filename)) { 
+								removeM(filesToMove,filename);
+							}
+							// commandCount shouldn't exist for this file, but try to remove if any
+							if (has(commandCount,filename)) {
+								removeM(commandCount,filename);
+							}
+							removeM(fileMoveOnError,filename);
+							noneApplCtl=false;
+							if (has(finalFlagOnError,filename)) {
+								removeM(finalFlagOnError,filename);
+							}
+						}
+					} // end 'if ("" != filename)'
+					
+					// Send ERROR STATISTICS 
+					submit(ErrorInformation,LookupMgrErrors);
+				}
+				onTuple FileEndTrigger: 
+				{
+					mutable boolean sendMove = false;
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "File-end trigger at result collector: "+(rstring)FileEndTrigger, "LookupManagerCollector");
+					}
+					// begin PRINT static resources
+					if (isTraceable(Trace.debug)) {
+						mutable int32 idx = 0;
+						mutable list<rstring> mapKeys = [];
+						// filesToMove
+						if (has(filesToMove,filename)) {
+							concatM(mapKeys,keys(filesToMove));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: filesToMove - " + (rstring)filesToMove[mapKeys[idx]] + " commands reported for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// commandCount
+						if (has(commandCount,filename)) {
+							concatM(mapKeys,keys(commandCount));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: commandCount - " + (rstring)commandCount[mapKeys[idx]] + " commands processed for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// hostlists
+						if (has(hostlists,filename)) {
+							concatM(mapKeys,keys(hostlists));
+							while (idx < spl.collection::size(mapKeys)) {
+								mutable int32 idxCmdKey = 0;
+								mutable list<int32> hostKeys = [];
+								while (idxCmdKey < spl.collection::size(hostKeys)) {
+									appTrc(Trace.debug, "ErrorInformation: hostlists - file as key: " + mapKeys[idx] + ", host index:" + (rstring)hostKeys[idxCmdKey] + ", value:" + hostlists[mapKeys[idx]][hostKeys[idxCmdKey]], "LookupManagerCollector");
+									idxCmdKey++;
+								}
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// fileMoveOnError
+						if (has(fileMoveOnError,filename)) {
+							concatM(mapKeys,keys(fileMoveOnError));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "FileEndTrigger: fileMoveOnError - " + (rstring)fileMoveOnError[mapKeys[idx]] + " value for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// finalFlagOnError
+						if (has(finalFlagOnError,filename)) {
+							concatM(mapKeys,keys(finalFlagOnError));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: finalFlagOnError - " + (rstring)finalFlagOnError[mapKeys[idx]] + " value for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+					}
+					// end PRINT static resources
+					
+					// check if file 
+					if (0 == sentCommands) {
+						// check reader error (without command processing) 
+						if (readerError) {
+							// send move only if reader error already reported
+							if (has(fileMoveOnError,filename)) {
+								// the reader error already reported then move finally the command file
+								if (isTraceable(Trace.info)) {
+									appTrc(Trace.info, "Command Reader detected and already error reported - continue", "LookupManagerCollector");
+								}
+								sendMove = true;
+							}
+							else {
+								// error report not received - set filesToMove value = 0
+								if (isTraceable(Trace.info)) {
+									appTrc(Trace.info, "Command Reader detected but the error has not been reported - move file on error report.", "LookupManagerCollector");
+								}
+								filesToMove[filename] = sentCommands;
+							}
+						} else {
+							// there is not a reader error then move finally the command file  
+							sendMove = true;
+						}
+					}
+					else {
+						if (has(filesToMove,filename)) { // is it a known file?
+							if (has(commandCount,filename)) { // are some commands processed?
+								if (filesToMove[filename] == commandCount[filename]) { // if all file processed then move file
+									sendMove = true;
+								}
+							} // else do nothing: none command processed for this file
+						}
+						else {
+							// set number of required commands times number of processing hosts
+							if (has(commandCount,filename)) {
+								if (commandCount[filename] == sentCommands) {
+									// all commands processed then send move
+									sendMove = true;
+								}
+							}
+							filesToMove[filename] = sentCommands;
+						}
+					}
+
+					if (sendMove) {
+						sendMove = false;
+						// do not move the file if moved on error
+						if ("" != filename) {
+							// move file
+							mutable int32 err=0;
+							rstring oldname = filename;
+							mutable rstring newname = regexReplace (oldname, '.*/', archDir+"/", false);
+							if (has(fileMoveOnError,filename)) {
+								if (isTraceable(Trace.info)) {
+									appTrc(Trace.info, "Move to failed folder due to error", "LookupManagerCollector");
+								}
+								newname = regexReplace (oldname, '.*/', failDir+"/", false);
+							}
+							com.teracloud.streams.teda.file::rename(oldname, newname, err);
+							if(err!=0) {
+								appTrc(Trace.error, "Could not rename file '" + oldname+"' to '"+newname+"': " + (rstring)err, "LookupManagerCollector");
+							}
+
+							//cleanup
+							if (has(commandCount,filename)) {
+								removeM(commandCount,filename);
+							}
+							if (has(filesToMove,filename)) {
+								removeM(filesToMove,filename);
+							}
+							if (has(fileMoveOnError,filename)) {
+								removeM(fileMoveOnError,filename);
+							}
+							if (has(finalFlagOnError,filename)) {
+								removeM(finalFlagOnError,filename);
+							}
+						}
+						else {
+							appTrc(Trace.error, "Empty file name - cannot be moved.", "LookupManagerCollector");
+						}
+					}
+				} 
+				onTuple ProcessedCommand: 
+				{
+					mutable int32 idxHost = 0;
+					nhosts = nHosts;
+					if (isTraceable(Trace.info)) {
+						appTrc(Trace.info, "Processed host (" + (rstring)hostId + ") "+(rstring)ProcessedCommand, "LookupManagerCollector");
+					}
+					// begin PRINT static resources
+					if (isTraceable(Trace.debug)) {
+						mutable int32 idx = 0;
+						mutable list<rstring> mapKeys = [];
+						// filesToMove
+						if (has(filesToMove,filename)) {
+							concatM(mapKeys,keys(filesToMove));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: filesToMove - " + (rstring)filesToMove[mapKeys[idx]] + " commands reported for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// commandCount
+						if (has(commandCount,filename)) {
+							concatM(mapKeys,keys(commandCount));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: commandCount - " + (rstring)commandCount[mapKeys[idx]] + " commands processed for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// hostlists
+						if (has(hostlists,filename)) {
+							concatM(mapKeys,keys(hostlists));
+							while (idx < spl.collection::size(mapKeys)) {
+								mutable int32 idxCmdKey = 0;
+								mutable list<int32> hostKeys = [];
+								while (idxCmdKey < spl.collection::size(hostKeys)) {
+									appTrc(Trace.debug, "ErrorInformation: hostlists - file as key: " + mapKeys[idx] + ", host index:" + (rstring)hostKeys[idxCmdKey] + ", value:" + hostlists[mapKeys[idx]][hostKeys[idxCmdKey]], "LookupManagerCollector");
+									idxCmdKey++;
+								}
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// fileMoveOnError
+						if (has(fileMoveOnError,filename)) {
+							concatM(mapKeys,keys(fileMoveOnError));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "FileEndTrigger: fileMoveOnError - " + (rstring)fileMoveOnError[mapKeys[idx]] + " value for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+						// finalFlagOnError
+						if (has(finalFlagOnError,filename)) {
+							concatM(mapKeys,keys(finalFlagOnError));
+							while (idx < spl.collection::size(mapKeys)) {
+								appTrc(Trace.debug, "ErrorInformation: finalFlagOnError - " + (rstring)finalFlagOnError[mapKeys[idx]] + " value for file:" + mapKeys[idx], "LookupManagerCollector");
+								idx++;
+							}
+							idx=0;
+							clearM(mapKeys);
+						}
+					}
+					// end PRINT static resources
+					rstring commandKey=filename+command+repositoryname;
+					if (! has(hostlists,commandKey)) {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "Host "+ (rstring)idxHost +" not responded - first request", "LookupManagerCollector");
+						}
+						// init hostlists
+						mutable map<int32,rstring> hostlist={}; 
+						idxHost = 0;
+						while(idxHost < nhosts) {
+							hostlist[idxHost] = "";
+							idxHost++;
+						}
+						hostlists[commandKey] = hostlist;
+					}
+					// set host as responded
+					hostlists[commandKey][hostId] = hostname;
+					if (has(commandCount,filename)) {
+						commandCount[filename]++;
+					}
+					else {
+						commandCount[filename]=1;
+					}
+					sendFileAck = commandKey;
+					idxHost = 0;
+					// check hosts
+					while(idxHost < nhosts) {
+						if (hostlists[commandKey][idxHost] == "") {
+							sendFileAck = "";
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "Host "+ (rstring)idxHost +" not responded!", "LookupManagerCollector");
+							}
+						}
+						else {
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "The host " + (rstring)hostlists[commandKey][idxHost] + "("+ (rstring)idxHost +") for file " + filename + " checked!", "LookupManagerCollector");
+							}
+						}
+						idxHost++;
+					}
+					// Collect statistics from input
+					statData.command=command;
+					statData.filename=filename;
+					statData.commandStartedAt=commandStartedAt;
+					mutable map<rstring, LookupMgrTypes.LookupMgrSegmentStatistic> stats = statistics;
+					// create host statistic string
+					mutable rstring hostInfo = hostname + " segments:{";
+					for (rstring segment in stats) {
+						mutable LookupMgrTypes.LookupMgrSegmentStatistic segmentData = stats[segment];
+						mutable uint64 freePercent= 100ul;
+						if (0ul != segmentData.lookupReserved) {
+							freePercent= (100ul*segmentData.lookupFree)/segmentData.lookupReserved;
+						}
+						else {
+							if (isTraceable(Trace.info)) {
+								appTrc(Trace.info, "Unknown reservation size of " + segment + " - cannot calculate free in %", "LookupManagerCollector");
+							}
+						}
+						hostInfo = hostInfo + "[sgmnt:" + segment + "- repository:" + segmentData.repositoryname + "- reserved:" + (rstring)segmentData.lookupReserved + "- free:" + (rstring)segmentData.lookupFree + "-free %:" + (rstring)freePercent + "- processed:"+ (rstring)segmentData.processedEntries + "]";
+					}
+					
+					// create host statistics entry
+					hostInfo = hostInfo + "}";
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Append host statistics:" + hostInfo, "LookupManagerCollector");
+					}
+					appendM(statData.hostStatistics,hostInfo);  
+					// send statistics & acknowledge in case every hosts completed information
+					if ("" != sendFileAck) {
+						// define output tuple
+						mutable CommandAck outTuple = {};
+						outTuple.command=statData.command;
+						
+						// check if error received with 'stop' processing
+						if (has(finalFlagOnError,filename)) {
+							if (isTraceable(Trace.info)) {
+								appTrc(Trace.info, "STOP because of error in the command file.", "LookupManagerCollector");
+							}
+							outTuple.finalFlag = false;
+						}
+						else {
+							outTuple.finalFlag = true;
+						}
+						// send ACK tuple
+						if (isTraceable(Trace.info)) {
+							appTrc(Trace.info, "Sending ACK to Application Controller (command:"+(rstring)outTuple.command + ", flag:"+(rstring)outTuple.finalFlag + ")", "LookupManagerCollector");
+						}
+						submit(outTuple, CommandAck);
+						// send to statistic collector operator
+						statData.commandProcessedAt = ctime(getTimestamp());
+						if (isTraceable(Trace.info)) {
+							appTrc(Trace.info, "Submitting statistics "+ (rstring)statData, "LookupManagerCollector");
+						}
+						submit(statData,LookupMgrStatistics);
+						// clean-up
+						statData.filename="";
+						statData.command="";
+						statData.commandStartedAt="";
+						statData.commandProcessedAt="";
+						clearM(statData.hostStatistics);
+						removeM(hostlists,sendFileAck);
+						if (has(filesToMove,filename)) {
+							if (filesToMove[filename] == commandCount[filename]) {
+								// move file
+								mutable int32 err=0;
+								rstring oldname = filename;
+								mutable rstring newname = regexReplace (oldname, '.*/', archDir+"/", false);
+								if (has(fileMoveOnError,filename)) {
+									if (isTraceable(Trace.info)) {
+										appTrc(Trace.info, "Move to failed folder due to error", "LookupManagerCollector");
+									}
+									newname = regexReplace (oldname, '.*/', failDir+"/", false);
+								}
+								com.teracloud.streams.teda.file::rename(oldname, newname, err);
+								if(err!=0) {
+									appTrc(Trace.error, "Could not rename file '" + oldname+"' to '"+newname+"': " + (rstring)err);
+								}
+		
+								//cleanup
+								removeM(commandCount,filename);
+								removeM(filesToMove,filename);
+								// cleanup data provided by the error report
+								if (has(fileMoveOnError,filename)) {
+									removeM(fileMoveOnError,filename);
+								}
+								// there could be the negative final flag for the file
+								if (has(finalFlagOnError,filename)) {
+									removeM(finalFlagOnError,filename);
+								}
+							}
+							else {
+								if (isTraceable(Trace.info)) {
+									appTrc(Trace.info, "Only part of commands processed from file: " + filename, "LookupManagerCollector");
+								}
+							}
+						}
+						else {
+							appTrc(Trace.error, "WARNING: Probably file (" + filename + ") moved by end of file.", "LookupManagerCollector");
+						}
+					}
+				}
+				config placement :	partitionColocation("COMMAND_CONTROLLER"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>");
+		}
+}
+
+
+/** The SPL function 'getSendMetrics' prepares the metrics content and returns the metrics tuple
+@param repositoryname - name of repository to be processed
+@param lookupSgmntSize - reserved capacity for the segment
+@param lookupSgmntFree - free segment capacity
+@param processedEntryCount - number of processed entries in the request
+@return [common.lookup.LookupMgrTypes|LookupMgrTypes.LookupMgrSegmentStatistic] - is the filled tuple schema
+* 
+*/
+public LookupMgrTypes.LookupMgrSegmentStatistic getSendMetrics(rstring repositoryname, uint64 lookupSgmntSize, uint64 lookupSgmntFree, uint64 processedEntryCount) {
+	mutable LookupMgrTypes.LookupMgrSegmentStatistic metricTuple = {};
+	metricTuple.repositoryname=repositoryname;
+	metricTuple.lookupReserved=lookupSgmntSize;
+	metricTuple.lookupFree=lookupSgmntFree;
+	metricTuple.processedEntries=processedEntryCount;
+	if (isTraceable(Trace.debug)) {
+		appTrc(Trace.debug, "Submitting metric: " + (rstring)metricTuple, "LookupManagerCustom");
+	}
+	return metricTuple;
+}
+
+/** The SPL function 'getSendOut' prepares the content of 'RepositoryReady' tuple.
+@param repositoryname - name of repository to be processed
+@param segmentname - segment name
+@param metricTuple - metrics tuple
+@return [common.lookup.LookupMgrTypes|LookupMgrTypes.SchemaRepositoryReady] Tuple - is the filled tuple schema
+* 
+*/
+public LookupMgrTypes.SchemaRepositoryReady getSendOut(rstring repositoryname, rstring segmentname, LookupMgrTypes.LookupMgrSegmentStatistic metricTuple) {
+	if (isTraceable(Trace.debug)) {
+		appTrc(Trace.debug, repositoryname + " ready - sending", "LookupManagerCustom");
+	} 
+	mutable LookupMgrTypes.SchemaRepositoryReady outTuple = {};
+	outTuple.statistics[segmentname] = metricTuple;
+	outTuple.repositoryname = repositoryname;
+	if (isTraceable(Trace.debug)) {
+		appTrc(Trace.debug, "Submitting: " + (rstring)outTuple, "LookupManagerCustom");
+	}
+	return outTuple;
+}
+
+/** The SPL function 'appendErrorReport' appends error report to the error report list.
+@param newErrorReports - the source error-list including new 'LookupMgrTypes.LookupMgrErrorInfo' elements  
+@param errorReportList - the error-list where the new 'LookupMgrTypes.LookupMgrErrorInfo' elements are appended
+* 
+*/
+public void appendErrorReport(list<LookupMgrTypes.LookupMgrErrorInfo> newErrorReports, mutable list<LookupMgrTypes.LookupMgrErrorInfo> errorReportList) {
+	mutable int32 idx = 0;
+	while (idx < spl.collection::size(newErrorReports)) {
+		appendM(errorReportList,newErrorReports[idx]);
+		idx++;
+	}
+}
+
+/** The function provides the error message by the error ID and list of variable parameter 
+@param errorId - the error ID defined by LookupMgrTypes.ErrorID
+@param parameterValues - sequence of variable parameters to be placed into the message in the order
+@return rstring - the error message 
+ */
+ public rstring getErrorMsg (LookupMgrTypes.ErrorID errorId, mutable list<rstring> parameterValues) {
+ 	if (LookupMgrTypes.LM000 == errorId) {
+ 		return "None error.";
+ 	} else if (LookupMgrTypes.LM001 == errorId) {
+ 		checkNumOfValues(parameterValues,2);
+ 		return "Exception '" + parameterValues[0] + "' detected reading command file : " + parameterValues[1] + ".";
+ 	} else if (LookupMgrTypes.LM002 == errorId) {
+ 		checkNumOfValues(parameterValues,2);
+ 		return "Fault detected parsing command file '" + parameterValues[0] + "' in following lines: " + parameterValues[1] + ".";
+ 	} else if (LookupMgrTypes.LM003 == errorId) {
+ 		checkNumOfValues(parameterValues,2);
+ 		return "Incorrect command '" + parameterValues[0] + "' detected in '" + parameterValues[1] + "'.";
+ 	} else if (LookupMgrTypes.LM004 == errorId) {
+ 		checkNumOfValues(parameterValues,3);
+ 		return "Incorrect repository '" + parameterValues[0] + "' for command '" + parameterValues[1] + "' detected in '" + parameterValues[2] + "'";
+ 	} else if (LookupMgrTypes.LM005 == errorId) {
+ 		checkNumOfValues(parameterValues,1);
+ 		return "Error detected reading command file - the file '" + parameterValues[0] + "' is empty.";
+ 	} else if (LookupMgrTypes.LM006 == errorId) {
+ 		checkNumOfValues(parameterValues,2);
+ 		return "Exception '" + parameterValues[0] + "' detected reading CSV file: '" + parameterValues[1] + "'";
+ 	} else if (LookupMgrTypes.LM007 == errorId) {
+ 		checkNumOfValues(parameterValues,4);
+ 		return "Incorrect lines in '" + parameterValues[0] + "' detected reading data for command '" + parameterValues[1] + "' - " + parameterValues[2] + " lines are incorrect: " + parameterValues[3];
+ 	} else if (LookupMgrTypes.LM008 == errorId) {
+ 		checkNumOfValues(parameterValues,5);
+ 		return "SQL error on segment " + parameterValues[0] + " for command " + parameterValues[1] + " reported: '" + parameterValues[2] + "', code: " + parameterValues[3] + ", state " + parameterValues[4] + ".";
+ 	} else if (LookupMgrTypes.LM009 == errorId) {
+ 		checkNumOfValues(parameterValues,3);
+ 		return "Exception '" + parameterValues[0] + "' detected writing data in repository '" + parameterValues[1] + "': " + parameterValues[2];
+ 	} else if (LookupMgrTypes.LM010 == errorId) {
+ 		checkNumOfValues(parameterValues,4);
+ 		return "Error detected writing data on command '" + parameterValues[0] + "' in repository '" + parameterValues[1] + "' on host '" + parameterValues[2] + "': " + parameterValues[3] + ".";
+ 	} else if (LookupMgrTypes.LM011 == errorId) {
+ 		checkNumOfValues(parameterValues,2);
+ 		return "Error " + parameterValues[0] + "detected in DB status checker: '" + parameterValues[1] + "'.";
+ 	} else {
+ 		return "Undefined error ID: '" + (rstring)errorId + "'";
+ 	}
+ 	
+}
+ 
+/** This function checks if the required number of parameter values is defined in the list. If not so, then it fills the list with empty strings. 
+@param parameterValues - sequence of variable parameters to be placed into the message in the order
+@param errorId - the required number of parameter values  
+ */
+public void checkNumOfValues (mutable list<rstring> parameterValues, int32 nParamValuesReq) {
+	// number of provided parameter values
+	int32 nParamValues = spl.collection::size(parameterValues);
+	if (nParamValuesReq > nParamValues) {
+		// fill empty entries
+		mutable int32 currentParamIdx = nParamValues;
+		while (currentParamIdx < nParamValuesReq) {
+			appendM(parameterValues,"");
+			currentParamIdx++;
+		}
+	}
+}

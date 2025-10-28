@@ -1,0 +1,39 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2010, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+#include "MySampleLib.h"
+
+using namespace std;
+using namespace SPL;
+
+MY_OPERATOR::MY_OPERATOR()
+  : MY_BASE_OPERATOR() 
+{
+}
+
+MY_OPERATOR::~MY_OPERATOR() 
+{
+}
+
+void MY_OPERATOR::allPortsReady() 
+{
+    string str = MySample::MySampleClass::hello();
+    cerr << str << endl;
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

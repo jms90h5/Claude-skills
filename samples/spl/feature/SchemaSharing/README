@@ -1,0 +1,7 @@
+Overview: SchemaSharing illustrates how to share schemas between two
+applications that connect to each other via Import/Export operators.
+
+1. To build the sample application:
+   make
+
+Note: This sample is designed to be run on a Streams instance.

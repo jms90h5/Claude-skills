@@ -1,0 +1,15 @@
+Overview: OperatorAndLibrary illustrates how to create primitive operators with
+library dependencies.
+
+The SampleOp primitive operator relies on an external library called MySampleLib
+to print out a 'hello world' message.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+Notes:
+  - The 'impl' directory contains the code for the external C++ library.
+    

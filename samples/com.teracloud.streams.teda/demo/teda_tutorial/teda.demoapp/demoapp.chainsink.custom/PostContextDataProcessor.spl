@@ -1,0 +1,171 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2016     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainsink.custom;
+
+
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+use demoapp.functions::*;
+use demoapp.utility::*;
+use com.teracloud.streams.teda.utility::BloomFilterTypes;
+/**
+ * Implements a processing that handles the tuples after they leave the group
+ * processing but before they enter the storage stage. You might want to, for
+ * example, reject duplicate tuples.
+ *
+ * The composite operator gets the data stream and the statistics stream as
+ * input stream that it must handle properly. That means, for example, it can
+ * modify and forward the valid tuples to the first output port or it can
+ * reject tuples and send them to the third output port. If the post-processing
+ * tap is enabled (`ite.businessLogic.group.tap=on`) the composite operator
+ * must also provide these tuples on the fourth output port. Finally, it
+ * modifies and forwards incoming statistics tuples to the second output port.
+ *
+ * Turn the **ite.businessLogic.transformation.postprocessing.custom** parameter
+ * on to activate this composite operator.
+ * 
+ * Adapt the code blocks that are marked with "custom code begin" and "custom
+ * code end".
+ * 
+ * Window punctuation received on InRec port must be forwarded to OutRec, OutRej and OutTap output ports.
+ *
+ * @input  InRec
+ * Tuples received from the group processing PE.
+ *
+ * @input  InStat
+ * Statistic tuple received at end of file.
+ * You can update your custom statistic attributes before forwarding this tuple.
+ *
+ * @output OutRec
+ * Tuples for the storage stage.
+ * 
+ * @output OutStat
+ * The tuple received InStat port must be forwarded on this port.
+ * 
+ * @output OutRej
+ * Tuples sent on this port are written to the rejected files.
+ * 
+ * @output OutTap
+ * Tap stream to the <namespace>.tap.custom::PostContextDataProcessorTap composite.
+ * This stream is connected only if the **ite.businessLogic.group.tap** parameter is on.
+ * 
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ * 
+ * @param reprocessDir
+ * The absolute path of the reprocess directory. Use this parameter
+ * to create files in the reprocess directory.
+ */
+public composite PostContextDataProcessor (
+	input
+		stream<TypesCommon.TransformerOutType> InRec,
+		stream<TypesCommon.FileStatistics> InStat;
+	
+	output
+		stream<TypesCommon.ChainSinkStreamType> OutRec,
+		stream<TypesCommon.FileStatistics> OutStat,
+		stream<TypesCommon.RejectedDataStreamType> OutRej,
+		stream<TypesCommon.BundledPostContextOutputStreamType> OutTap // connected only if ite.businessLogic.group.tap=on
+) {
+
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $reprocessDir;
+
+	graph
+
+		/* ***********************************************************************************
+		 * Schema change, prepare for table row, format conversion
+		 * 
+		 * Use the enriched record to build the table row, which is for DB load.
+		 * Map attributes from enriched record to the table schema containing attributes
+		 * in same sequence as the columns are in DB. 
+		 *
+		 *************************************************************************************/
+		(
+			stream<TypesCustom.Table1StreamType> changedRec as OutStream;
+			stream<InStat> OutStat;
+			stream<TypesCommon.RejectedDataStreamType> OutRej;
+			stream<TypesCommon.BundledPostContextOutputStreamType> OutTap as TapStream // use only if ite.businessLogic.group.tap=on
+		) as DedupedRecord = Custom(InRec; InStat) {
+			logic 
+				state: {
+					mutable int64 detectedRecordDuplicates = 0l;
+				}
+				onTuple InRec: {
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+					if (BloomFilterTypes.unique == bloomFilterResult) { // attribute is only available if ite.businessLogic.group.deduplication=on
+						mutable OutStream otuple = {};
+						// Fill the table schema (TypesCustom.Table1StreamType) with attributes from input stream InRec 
+						assignFrom(otuple, InRec); 
+						otuple.fileID = ""; // not taken from input stream, set it to empty string as column value
+						otuple.cDRIDKey = ""; // not taken from input stream, set it to empty string as column value
+						otuple.tablename =(cdrRecordType == 1ub ? "VOICE_CDR" : "SMS_CDR");
+						// submit to TableRowGenerator to transform the tuple to the table row attribute
+						submit(otuple, OutStream);
+					} else {
+						// send rejected tuple
+						mutable OutRej rejDuplicate = {};
+						rejDuplicate.filename = InRec.filename;
+						rejDuplicate.readerLinenumber = InRec.readerLinenumber;
+						rejDuplicate.rejectreason = (uint32)TypesCustom.rrRecordDuplicate;
+						//assignFrom(rejDuplicate.readerOutput, InRec); // if ite.storage.rejectWriter.custom=on
+						submit(rejDuplicate, OutRej);
+					}
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+				}
+				onTuple InStat: {
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+					// update statistics with detected duplicates
+					InStat.recordDuplicates += detectedRecordDuplicates; // attribute is only available if ite.businessLogic.group.deduplication=on
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+					// forward statistic tuple
+					submit(InStat,OutStat);
+					// reset member
+					detectedRecordDuplicates = 0l;
+				}
+				onPunct InRec: {
+					if (currentPunct() == Sys.WindowMarker) {
+						// send punctuation
+						submit(Sys.WindowMarker, OutStream);
+						submit(Sys.WindowMarker, OutRej);
+						submit(Sys.WindowMarker, TapStream);
+					}
+				}
+		}
+
+		/* ************************************************************************************
+		 * Build the table row tuple
+		 * 
+		 * Just table row (the whole record is one rstring) and tablename are of interest.
+		 * We configured ITE for table file sinks with the parameter ite.storage.type=tableFile.
+		 * TableRowGenerator takes all attributes until attribute tablename and build
+		 * a tablerow (rstring) as expected in CSV file for DB loading
+		 **************************************************************************************/
+		stream<TypesCommon.ChainSinkStreamType> OutRec = TableRowGenerator(changedRec) {}
+}
+

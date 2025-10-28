@@ -1,0 +1,984 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_CONTROL_DEBUG());
+
+	# Prepare directory settings
+	# Convert relative path to absolut path as needed
+	# -------------------------------------------------------------------------
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $contextCtlFileEnabled = 0;
+	my $CONTEXT_STARTUP_CTRL_FILE;
+	# -----------------------------------------------
+	if (0 == $contextDisabled) {
+		$CONTEXT_STARTUP_CTRL_FILE=$configurator->getString(Configurator::ITE_BUSINESSLOGIC_GROUP_STARTUPCONTROLFILE());
+		$contextCtlFileEnabled= ($CONTEXT_STARTUP_CTRL_FILE ? 1 : 0);
+	}
+	# -----------------------------------------------
+	my $applControlRespFile="demoapp";
+	my $shutdownControlFile="demoapp".".cmd";
+
+%>
+namespace demoapp.control;
+
+use demoapp.streams::*;
+use com.teracloud.streams.teda.internal.fileutils::writeCommandFile;
+use com.teracloud.streams.teda.internal.fileutils::readCommandFile;
+use com.teracloud.streams.teda.internal.fileutils::readCommandFileNoWarn;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+use com.teracloud.streams.teda.file::rename;
+use com.teracloud.streams.teda.internal::Beacon2;
+use com.teracloud.streams.teda.internal.control::StartupControl;
+use com.teracloud.streams.teda.utility::ScheduledBeacon;
+use spl.file::remove;
+
+/**
+ * ControllerCore
+ * This composite controls the Chains and ContextCore.
+ * To control the shared memory access this composite communicates as slave with Application Control Master.
+ *
+ * @input  InApplCtrlResp Response from each chain to start/stop command
+ * @input  InFileIngestCleanupAck Acknowledgment of file ingestion clean up<%if (0 == $contextDisabled) {%>
+ * @input  InFileStatusControlStream Control tuple with failed file indicator
+ * @input  InContextReady Command responses from ContextCore<%}%>
+ *
+ * @output ApplControl Sends to each chain start/stop command
+ * @output FileIngestCleanup stream that triggers the file ingestion initialization and clean up
+ * @output FileIngestControl Sends start signal to fileIngestion<%if (0 == $contextDisabled) {%>
+ * @output ContextControl Sends shutdown / refresh signal to ContextCore<%}%>
+ *
+ * @param applControlDir
+ * Directory parameter for application control
+ * 
+ * @param peName
+ * label used for partitionColocation placement
+ * 
+ * @param peExLocationLabel
+ * label used for partitionExlocation placement 
+ *
+ */
+public composite ControllerCore ( 
+	input 
+		InApplCtrlResp, // receives from each chain response to start/stop command
+		InFileIngestCleanupAck 
+		<%if (0 == $contextDisabled) {%>
+		,InFileStatusControlStream // receives failed file indicator
+		,InContextReady // receives ready signal from TableDedup (training phase completed)
+		<%}%>;
+	output
+		ApplControl, // sends to each chain start/stop command
+		FileIngestCleanup,
+		FileIngestControl // sends start signal to fileIngestion
+		<%if (0 == $contextDisabled) {%>
+		,ContextControl // sends shutdown / refresh signal to ContextCore
+		<%}%>
+)
+{
+	param
+		expression<rstring> $applControlDir;
+		expression<rstring> $peName;
+		expression<rstring> $peExLocationLabel;		
+		expression<int32>   $numChains;
+		expression<int32>   $numLevel1Ids;
+		expression<rstring> $applControlFile:         "<%=CodeGenFrw::getConstant('APPL_CTRL_FILE')%>";
+		expression<rstring> $applControlRespFile:     "<%=$applControlRespFile%>";
+		expression<float64> $period :                 2.0;
+		expression<float64> $initDelay:               10.0;
+		expression<boolean> $disableApplControl;
+		expression<rstring> $shutdownControlFile:     "<%=$shutdownControlFile%>";
+		expression<rstring> $contextStartupControlFile: "<%=$CONTEXT_STARTUP_CTRL_FILE%>";
+		expression<rstring> $cleanupScheduleMDay	: getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_CLEANUP_SCHEDULE_DAYOFMONTH())%>);
+		expression<rstring> $cleanupScheduleWDay	: getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_CLEANUP_SCHEDULE_DAYOFWEEK(), mapping => 'auto')%>);
+		expression<rstring> $cleanupScheduleHour	: getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_CLEANUP_SCHEDULE_HOUR())%>);
+		expression<rstring> $cleanupScheduleMinute	: getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_CLEANUP_SCHEDULE_MINUTE())%>);
+
+	type
+
+		/**
+		 * The definition of the internal states of ApplControl type `State`
+		 * enum
+		 * * `invalid` - not a valid state used for receiving
+		 * * `initial` - the initial state - everything is stopped (transient state)
+		 * * `stop` - stop requested - tuple with event=true sent out (transient state)
+		 * * `stopped` - stop acknowledged from input stream (stable state)
+		 * * `start` - start requested - tuple with event=false sent out (transient state)
+		 * * `run` - stop acknowledged from input stream (stable state)
+		 * * `shutdown` the job was gracefully shut down
+		 * * `terminated` - during shutdown and final state
+		 */
+		static State = enum {
+			invalid,
+			initial,
+			stop,
+			stopped,
+			start,
+			run,
+			shutdown,
+			terminated
+		};
+		
+		/**
+		 * The definition of the auxiliary state to control the Context re-load
+		 * and shutdown enum. The Context re-load and may be activated in state `stopped`
+		 * and `run`. In all other states `cleanupRequest` and `shutdownRequest` is ignored.
+		 * * `idle`				- no Context activity
+		 * * `initialization`	- the Context/Ingestion will be initialized
+		 * * `chainStopReq`		- if main state is run this aux state stops chain processing
+		 * * `contextClearReq`	- request clean of context or request clean of ingestion, used in case of cleanup
+		 * * `contextCommandReq`	- request read or write command (read in case of cleanup, write in case of shutdown)
+		 * * `chainStartReq`	- if main state is run this aux state starts chain processing
+		 */
+		static ContextState = enum {
+			idle,
+			initialization,
+			chainStopReq,
+			contextClearReq,
+			chainStartReq
+			<%if (0 == $contextDisabled) {%>
+			,contextCommandReq
+			<%}%>
+		};
+
+	graph
+
+	<% if($tapEnabled) {%>
+	@spl_category(name="debug")
+	() as ControllerInputAppCtrlRespSink = FileSink (InApplCtrlResp) {
+		logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+		param	file	: "./debug/CONTROLLER_APPL_CTRL_RESP_IN.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+	}
+		<% if (0 == $contextDisabled) {%>
+	@spl_category(name="debug")
+	() as ControllerInputContextReadySink = FileSink (InContextReady) {
+		logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+		param	file	: "./debug/CONTROLLER_CONTEXT_READY_IN.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+	}
+		<% } %>
+	<% } %>
+
+	/*
+	 * Dumps out all parameters of this composite.
+	 */
+	@spl_category(name="common")
+	() as CfgDumpControl = Custom() {
+		logic onProcess : {
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlDir: " + $applControlDir);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlFile: " + $applControlFile);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlRespFile: " + $applControlRespFile);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "period: " + (rstring)$period);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "initDelay: " + (rstring)$initDelay);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "disableApplControl: " + (rstring)$disableApplControl);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "shutdownControlFile: " + $shutdownControlFile);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "contextStartupControlFile: "+$contextStartupControlFile);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "numChains: "+(rstring)$numChains);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "cleanupScheduleMDay: " + $cleanupScheduleMDay);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "cleanupScheduleWDay: " + $cleanupScheduleWDay);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "cleanupScheduleHour: " + $cleanupScheduleHour);
+				printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "cleanupScheduleMinute: " + $cleanupScheduleMinute);
+			}
+	}
+
+	// Internal generator to drive the state logic of the controller
+	@spl_category(name="common")
+	stream<boolean step> ApplControlPace0 = Beacon2 () {
+		param
+			period : $period;
+			initDelay  : $initDelay;
+		output
+			ApplControlPace0 : step = true;
+	}
+
+	// Startup control passes  the pacemaker tuples after startup check
+	// no tuples are passed if startup check fails
+	@spl_category(name="common")
+	stream<boolean step> ApplControlPace = StartupControl(ApplControlPace0) {
+		param
+			applControlDir : $applControlDir;
+			applUniqueName : $applControlRespFile;
+	}
+
+	// Provide a signal when the cleanup should run
+	@spl_category(name="common")
+	stream <TypesCommon.CleanupTriggerType> CleanupTrigger as O = ScheduledBeacon() {
+		param
+			initDelay		: 30.0;
+			month			: "*";
+			mday			: $cleanupScheduleMDay;
+			wday			: $cleanupScheduleWDay;
+			hour			: $cleanupScheduleHour;
+			minute			: $cleanupScheduleMinute;
+			tensec			: "0";
+		output O: count = (int32)IterationCount();
+	}
+
+	/**
+	 * Application Control Operator.
+	 * Monitors the application control file
+	 * Monitors the readiness of context
+	 * Emits start and stop tuples to the chain controller
+	 * Monitors the acknowledgments from chain control
+	 * The monitoring of the application control file is disabled and
+	 * the application runs autonomously if the parameter $disableApplControl value is true
+	 * @output ApplControl stream to start or stop the chain processing. Attribute start = true flags a start<%if (0 == $contextDisabled) {%>
+	 * @output ContextControl stream that controls the context checkpoint actions read/write/clear<%}%>
+	 * @output IngestCtrl stream that controls the file ingestion start
+	 * @output FileIngestCleanup stream that triggers the file ingestion cleanup and initialization
+	 * @input InApplCtrlResp a tuple flags that the requested action has been finished
+	 * @input InFileIngestCleanupAck Acknowledges the file ingestion cleanup request
+	 * @input InContextReady a tuple flags that the appropriate context is ready (the training has finished)
+	 * @input CleanupTrigger the trigger signal to start the context clean up
+	 * @input ApplControlPace the pace maker for ApplControl
+	 */
+	// ApplCtrl (start/stop) should be sent to each chain
+	@spl_category(name="common")
+	(stream<TypesCommon.ApplicationCtrl> ApplControl;
+	<%if (0 == $contextDisabled) {%>
+	stream<TypesCommon.ContextCtrl> ContextControl;
+	<%}%>
+	stream<TypesCommon.FileIngestControlType> FileIngestControl;
+	stream<TypesCommon.CleanupTriggerType> FileIngestCleanup
+	)= Custom(InApplCtrlResp; InFileIngestCleanupAck; <%if (0 == $contextDisabled) {%>InFileStatusControlStream; InContextReady;<%}%> CleanupTrigger; ApplControlPace) {
+		
+		logic
+			state : {
+				int32 numChains = $numChains;
+				int32 numLevel1Ids = $numLevel1Ids;
+				/* -- the operator state -- */
+				rstring applControlDir = $applControlDir;
+				boolean dirOk = createDir(applControlDir); //create the application control directory
+				rstring applControlRespFile = $applControlRespFile;
+				rstring applControlFile = $applControlFile;
+				rstring shutdownControlFile = $shutdownControlFile;
+				mutable boolean responseWritten = true;	//the result of the write operation of the response file
+				<%if (0 == $contextDisabled) {%>
+				mutable int32 numContextAck = 0;				//variable to monitor the command responses of context
+				mutable boolean allContextAck = false;		//the sum of the boom ack
+				mutable boolean initContextRequest = true;	//initialization request of context
+				//the combined result of a context write operation. The first failed operation will be written here. Otherwise success is written here.
+				mutable rstring writeResult = "";
+				mutable boolean failedFilesEncountered = false;		//is set once a failed file indication is received from statistics
+																	//if set the generation of a context dump is suppressed in shutdown handling
+				<%}%>
+				mutable State myState = invalid; 			//the state variable of this job - invalid at start up
+				mutable ContextState contextState = initialization;	//the state variable of context control - auxiliary state
+				mutable boolean onceStarted = false;		//the application was in run state
+				mutable boolean onceInitial = false;		//the state initial was recognized from master
+				mutable boolean cleanupRequest = false;		//request to clean up received
+				mutable boolean shutdownRequest = false;
+				mutable boolean shutdownComplete = false;
+				mutable boolean ingestCleanupAck = false;	//the ack was received from InFileIngestCleanupAck
+				mutable int32 numAckReceived = 0;			//variable to monitor the received acknowledges
+				mutable boolean allAck = true;				//the sum of the monitored acknowledges
+				mutable int32 m_stateNotChanged = 0;		//the number of times that no state change was encountered - used in transient states
+				
+				/* -- more variables used from state logic (definition in state avoids ctor/dtor) -- */
+				mutable State nst = invalid;				//the target state
+				mutable State changeState = invalid;		//the state invalid flags here : no state change
+				//result information of state logic. If (enabled == true) send a ApplCtrl tuple with event
+				mutable tuple <boolean enabled, boolean event> sendTuple = { enabled=false, event=false };
+				mutable rstring c = "";						//the state string
+				boolean isApplControlDisabled = $disableApplControl;
+				rstring asp = "ApplControlSlave";
+				mutable boolean res = createControllerMetrics();
+				mutable boolean masterTeminated = false;	//set once a master termination was detected
+				mutable boolean masterShutdown = false;		//set once the master was shut down
+				mutable boolean isJobRestarted = false;		//auto job restart support
+			}
+			
+			onTuple CleanupTrigger : {
+				if (onceStarted) {
+					if ( ! cleanupRequest ) {
+						appTrc (Trace.info, "Cleanup request", asp);
+						cleanupRequest = true;
+					} else {
+						appTrc (Trace.error, "Cleanup request but cleanup still active", asp);
+					}
+				}
+			} // /CleanupTrigger
+
+			onTuple InFileIngestCleanupAck : {
+				appTrc (Trace.info, "InFileIngestCleanupAck "+(rstring)InFileIngestCleanupAck, asp);
+				ingestCleanupAck = true;
+			} // /InFileIngestCleanupAck
+
+			onTuple	InApplCtrlResp: {
+				appTrc (Trace.info, "InApplCtrlResp tuple received "+(rstring)InApplCtrlResp, asp);
+				numAckReceived++;
+				if (numChains == numAckReceived) {
+					allAck = true;
+				}
+				if (numChains < numAckReceived) {
+					appTrc (Trace.error, "numAckReceived > numChains ! InApplCtrlResp tuple received "+(rstring)InApplCtrlResp+" numAckReceived="+(rstring)numAckReceived+" numChains="+(rstring)numChains, asp);
+				}
+			} // /InApplCtrlResp
+			
+			<%if (0 == $contextDisabled) {%>
+			onTuple	InFileStatusControlStream: {
+				appTrc (Trace.info, "InFileStatusControlStream tuple received "+(rstring)InFileStatusControlStream, asp);
+				failedFilesEncountered = true;
+				setCustomMetricValue("disabledContextSave", 1l);
+			} // InFileStatusControlStream
+			
+			onTuple	InContextReady: {
+				appTrc (Trace.info, "InContextReady tuple received "+(rstring)InContextReady, asp);
+				numContextAck++;
+				if (numLevel1Ids == numContextAck) {
+					allContextAck = true;
+				}
+				if (numLevel1Ids < numContextAck) {
+					appTrc (Trace.error, "numContextAck > numLevel1Ids ! InContextReady tuple received "+(rstring)InContextReady+" numContextAck="+(rstring)numContextAck+" numLevel1Ids="+(rstring)numLevel1Ids, asp);
+				}
+				if (command == "write") { // shutdown command response;
+					// check success flag
+					if (success) {
+						// rename checkpointfile (remove ".tmp" extension)
+						mutable int32 err = 0;
+						rstring sourceFile= argument;
+						rstring destFile = rtrim(argument,".tmp");
+						rename(sourceFile, destFile, err);
+						if(err!=0) {
+							appTrc(Trace.error, "Could not rename file '" + sourceFile+"' to '"+destFile+"': " + (rstring)err, asp);
+						}
+					} else { // any error occurred on checkpointing
+						// remove the checkpoint file (argument attribute) if present
+						mutable int32 ferror = -1;
+						uint64 fileRH = spl.file::fopen(argument, "r", ferror);
+						if (0==ferror) {
+							// checkpoint file present
+							spl.file::fclose(fileRH, ferror);
+							// remove checkpoint file because it should not be found after job restart
+							spl.file::remove(argument, ferror);
+							if (0 != ferror) {
+								appTrc (Trace.error, "Error on file remove of file: "+ argument + ", " + strerror(ferror), asp);
+							}
+						}
+						if ("" == writeResult) {
+							writeResult = dedupLevel1Id + " failed";
+						} else {
+							writeResult += ", " + dedupLevel1Id + " failed";
+						}
+					}
+				}
+			} // InContextReady
+			<%}%>
+			
+			onTuple ApplControlPace: {
+				appTrc (Trace.trace, "ApplControlPace tuple received.", asp);
+				//----------------------------------------
+				//first time invocation
+				if (myState == invalid) {
+					myState = initial;
+					appTrc (Trace.info, "Start applControlDir=" + applControlDir + " applControlFile=" + applControlFile + " applControlRespFile" + applControlRespFile, asp);
+					setCustomMetricValue("applicationState", (int64)myState);
+					createCustomMetric("numberStopRequests", "The number of run -> stop requests", Sys.Counter, 0l);
+					<%if (0 == $contextDisabled) {%>
+					createCustomMetric("contextState", "The auxiliary state to control the Context re-load", Sys.Gauge, (int64)contextState);
+					createCustomMetric("disabledContextSave", "If this metric has a value of 1 a failed file was encountered. Thus no context dump is generated in case of shutdown until refresh", Sys.Gauge, 0l);
+					<%}%>
+					createCustomMetric("refreshCycles", "The number of Refresh cycles", Sys.Counter, 1l);
+					//remove shutdown control file
+					mutable int32 err = 0;
+					spl.file::remove(applControlDir+"/"+shutdownControlFile, err);
+					// -----------------------------------------------------------
+					// check and remove job restart file
+					rstring oldStatusFile = "."+$applControlRespFile + "_restart";
+					if (readCommandFileNoWarn(applControlDir, oldStatusFile, c)) {
+						appTrc (Trace.error, "Job is restarted [" + c + "]", asp);	
+						if (c == "run") {
+							isJobRestarted = true;
+						}
+					}
+					spl.file::remove(applControlDir+"/"+oldStatusFile, err);					
+					// -----------------------------------------------------------
+					//send file ingestion initialization trigger
+					ingestCleanupAck = false;
+					submit({count = 1}, FileIngestCleanup);
+				}
+				//----------------------------------------
+				//try to re-write if write failed
+				if (! responseWritten) {
+					c = (rstring)myState;
+					appTrc (Trace.error, "Re-write response: "+c, asp);
+					responseWritten = writeCommandFile(applControlDir, applControlRespFile, c);
+				}
+				//---------------------------------------
+				<%if (0 == $contextDisabled) {%>
+				// initialize ContextCores -> read context from saved context
+				if (initContextRequest) {
+					<%if (1==$contextCtlFileEnabled) {%>
+					c = "";
+					mutable boolean contextCtrlFileReady = false;
+					if (readCommandFile(applControlDir, $contextStartupControlFile, c)) {
+						if (c == "done") {
+							contextCtrlFileReady = true;
+						}
+					}
+					<%}%>
+					<%if (1==$contextCtlFileEnabled) {%>
+					if (contextCtrlFileReady) {
+					<%}%>
+						initContextRequest = false;
+						// trigger ContextCore to start context initialization
+						allContextAck = false; numContextAck = 0;
+						mutable ContextControl cmdTuple = {};
+						cmdTuple.command="read";
+						submit(cmdTuple, ContextControl);
+					<%if (1==$contextCtlFileEnabled) {%>
+					}
+					<%}%>
+				}
+				//check context readiness
+				if (initialization == contextState) {
+					if (allContextAck && ingestCleanupAck) {
+						appTrc (Trace.info, "All context are ready ingest ready. Set contextState to idle.", asp);
+						contextState = idle;
+						setCustomMetricValue("contextState", (int64)contextState);
+					}
+				}
+				<%} else {%>
+				//check context readiness
+				if (initialization == contextState) {
+					if (ingestCleanupAck) {
+						appTrc (Trace.info, "Ingest ready. Set contextState to idle.", asp);
+						contextState = idle;
+						// no contextState metric update here because metric has not been created
+					}
+				}
+				<%} # endif context enabled%>
+				//------------------------------------------------
+				// check if shutdown command is requested
+				c = "";
+				if ((! shutdownRequest) && readCommandFileNoWarn(applControlDir, shutdownControlFile, c)) {
+					if (c == "shutdown") {
+						appTrc (Trace.info, "Shutdown requested", asp);
+						shutdownRequest = true;
+					}
+				}
+				// --------------------------------------------------------
+				//read command from control file and convert to new state nst
+				nst = invalid;
+				changeState = invalid;	//the state invalid flags here : no state change
+				sendTuple.enabled = false; sendTuple.event = false;
+				if ((false == isApplControlDisabled) && (false == isJobRestarted)) { //monitoring of applControlFile enabled
+					c = "";
+					if (readCommandFileNoWarn(applControlDir, applControlFile, c)) {
+						if (c == "initial") {
+							nst = initial;
+							masterTeminated = false; masterShutdown = false;
+						} else if ( c == "stop") {
+							nst = stop;
+							masterTeminated = false; masterShutdown = false;
+						} else if ( c == "stopped") {
+							nst = stopped;
+							masterTeminated = false; masterShutdown = false;
+						} else if ( c == "start") {
+							nst = start;
+							masterTeminated = false; masterShutdown = false;
+						} else if ( c == "run") {
+							nst = run;
+							masterTeminated = false; masterShutdown = false;
+						} else if ( c == "terminated") { //master state terminated is handled globally it does not trigger the slave
+							if ( ! masterTeminated) {
+								appTrc(Trace.error, "Master terminated detected", asp);
+								masterTeminated = true;
+							}
+						} else if ( c == "shutdown") { //master state shtdown is handeled globally it does not trigger the slave
+							if ( ! masterShutdown) {
+								appTrc(Trace.error, "Master shutdown detected", asp);
+								masterShutdown = true;
+							}
+						} else {
+							appTrc (Trace.error, "Wrong command received from appl Control file. c="+c, asp);
+						}
+					} else { //could not open control file
+						if (initial == myState) { //no error log in state initial
+							appTrc (Trace.warn, "No appl command File="+applControlFile, asp);
+						} else {
+							appTrc (Trace.error, "No appl command File="+applControlFile, asp);
+						}
+					}
+				} else {	//monitoring of applControlFile disabled
+					if (myState == initial) {
+						if (onceInitial) {
+							nst = stop;
+						} else {
+							nst = initial;
+						}
+					} else if (myState == stop) {
+						nst = stop;
+					} else if (myState == stopped) {
+						nst = start;
+					} else if (myState == start) {
+						nst = start;
+					} else if (myState == run) {
+						nst = run;
+						isJobRestarted = false; // reset the auto-job-restart indicator
+					}
+				}
+				//--------------------------------------------------
+				//State logic - switch over myState and contextState
+				//--------------------------------------------------
+				//shutdownComplete disables all other states globally
+				if (shutdownComplete && (myState != shutdown)) {
+					appTrc (Trace.info, "shutdownComplete", asp);
+					//shutdownComplete = false;
+					changeState = shutdown;
+					<%if (0 == $contextDisabled) {%>
+					if ("" == writeResult) {
+						writeResult = "successful";
+					}
+					writeCommandFile(applControlDir, shutdownControlFile, "shutdown ("+ writeResult + ")");
+					<%} else {%>
+					writeCommandFile(applControlDir, shutdownControlFile, "shutdown (successful)");
+					<%}%>
+
+				//------------------------------------------------
+				//main state logic over myState is active when no context action is running except initialization
+				} else if ((initialization == contextState) || (idle == contextState)) { 
+
+					if (initial == myState) {
+						appTrc (Trace.trace, "State=initial.", asp);
+						if ( ! allAck) appTrc(Trace.error, "State=initial and not allAck", asp); //test the state condition
+						if (idle == contextState) {
+							if (shutdownRequest) { //no context activity ongoing, initialization is over
+								<%if (0 == $contextDisabled) {%>
+								//enter contextCommandReq, trigger Context to write checkpoint file
+								appTrc (Trace.info, "Shutdown Request, trigger context write", asp);
+								allContextAck = false; numContextAck = 0;
+								writeResult = "";
+								mutable ContextControl cmdTuple = {};
+								cmdTuple.command="write";
+								submit(cmdTuple, ContextControl);
+								contextState = contextCommandReq;
+								setCustomMetricValue("contextState", (int64)contextState);
+								<%} else {%>
+								//trigger shutdown
+								appTrc (Trace.info, "Shutdown Request, shutdown complete", asp);
+								shutdownComplete = true;
+								<%}%>
+							}
+						}
+						if ( ! shutdownRequest) {
+							if (invalid == nst) {
+								appTrc (Trace.debug, "We keep state=initial.", asp);
+							} else if (initial == nst) {
+								appTrc (Trace.debug, "We keep state=initial.", asp);
+								responseWritten = writeCommandFile(applControlDir, applControlRespFile, (rstring)initial); //write the initial state to response file
+								onceInitial = true;
+							} else if (onceInitial) { //leave initial state only when it was received from master
+								if (stop == nst) {
+									appTrc (Trace.debug, "Enter state=stop from initial.", asp);
+									changeState = stop;
+								} else { //switch to next state in case of error
+									appTrc (Trace.error, "Transition error! old state="+(rstring)myState+" new state="+(rstring)nst, asp);
+									changeState = stop;
+								}
+							} else {
+								appTrc (Trace.warn, "Do not leave initial state since we never have seen initial state from master", asp);
+							}
+						}
+					} else if (stop == myState) {
+						appTrc (Trace.trace, "State=stop.",  asp);
+						if (allAck) {
+							appTrc (Trace.debug, "State=stop. All Ack received. Enter state stopped.", asp);
+							changeState = stopped;
+						} else {
+							m_stateNotChanged++;
+							if (m_stateNotChanged < 10) {
+								appTrc (Trace.trace, "No All Ack received. We keep state=stop.", asp);
+							} else {
+								appTrc (Trace.error, "No All Ack received. We keep state=stop. State not changed for more than: 10 periods.", asp);
+							}
+						}
+					} else if (stopped == myState) {
+						appTrc (Trace.trace, "State=stopped.", asp);
+						if ( ! allAck) appTrc(Trace.error, "State=stopped and not allAck", asp); //test the state condition
+						if (idle == contextState) {
+							if (shutdownRequest) { //no context activity ongoing, initialization is over
+								<%if (0 == $contextDisabled) {%>
+								if (failedFilesEncountered) {
+									//do not trigger a context write
+									appTrc (Trace.info, "Shutdown Request but failedFilesEncountered, do not trigger context write, shutdown complete", asp);
+									shutdownComplete = true;
+								} else {
+									//enter contextCommandReq, trigger Context to write checkpoint file
+									appTrc (Trace.info, "Shutdown Request, trigger context write", asp);
+									allContextAck = false; numContextAck = 0;
+									writeResult = "";
+									mutable ContextControl cmdTuple = {};
+									cmdTuple.command="write";
+									submit(cmdTuple, ContextControl);
+									contextState = contextCommandReq;
+									setCustomMetricValue("contextState", (int64)contextState);
+								}
+								<%} else {%>
+								//trigger shutdown
+								appTrc (Trace.info, "Shutdown Request, shutdown complete", asp);
+								shutdownComplete = true;
+								<%}%>
+							} else if (cleanupRequest) { //no context activity ongoing, initialization is over
+								<%if (0 == $contextDisabled) {%>
+								//enter contextClearReq, trigger Context cleanup
+								appTrc (Trace.info, "Cleanup Request, trigger context clear", asp);
+								allContextAck = false; numContextAck = 0;
+								mutable ContextControl cmdTuple = {};
+								cmdTuple.command="clear";
+								if (failedFilesEncountered) {
+								// send clean-up to partitioned Dedup because of failed file
+									cmdTuple.failureOccurred = true;
+								}
+								submit(cmdTuple, ContextControl);
+								<%} # end of 0 == $contextDisabled%>
+								//trigger ingest cleanup
+								appTrc(Trace.info, "Request ingestion clean up", asp);
+								int32 metricCount = (int32)incrementMetric("refreshCycles");
+								ingestCleanupAck = false;
+								submit({count = metricCount}, FileIngestCleanup);
+								//Aux state change
+								contextState = contextClearReq;
+								<%if (0 == $contextDisabled) {%>
+								setCustomMetricValue("contextState", (int64)contextState);
+								<%}%>
+							} else {
+								if ((stopped == nst) || (invalid == nst)) {
+									appTrc (Trace.trace, "We keep state=stopped.", asp);
+								} else if (start == nst) {
+									appTrc (Trace.debug, "Enter state=start from stopped. contextState=idle", asp);
+									sendTuple.enabled=true; sendTuple.event=true;
+									changeState = start;
+									// trigger FileIngest to start
+									submit({start=true}, FileIngestControl);
+								} else if (initial == nst) {
+									appTrc (Trace.debug, "Enter state=initial from stopped. contextState=idle", asp);
+									changeState = initial;
+								} else if (stop == nst) {
+									appTrc (Trace.trace, "Ignored nst==stop", asp);
+								} else {
+									appTrc (Trace.error, "Transition error! old state="+(rstring)myState+" new state="+(rstring)nst, asp);
+									sendTuple.enabled=true; sendTuple.event=true;
+									changeState = start;
+								}
+							}
+						} else {
+							appTrc (Trace.debug, "We keep state=stopped. contextState is not idle", asp);
+						}
+					} else if (start == myState) {
+						appTrc (Trace.trace, "State=start.",  asp);
+						if (allAck) {
+							appTrc (Trace.debug, "State=start. All Ack received. Enter state run.", asp);
+							changeState = run;
+						} else {
+							m_stateNotChanged++;
+							if (m_stateNotChanged < 100) {
+								appTrc (Trace.trace, "No All Ack received. We keep state=start.", asp);
+							} else {
+								appTrc (Trace.error, "No All Ack received. We keep state=start.. State not changed for more than: 100 periods.", asp);
+							}
+						}
+					} else if (run == myState) {
+						appTrc (Trace.trace, "State=run.", asp);
+						//here is no condition to check - the chains may be start/stop due to context handling
+						if (idle == contextState) {
+							if (shutdownRequest || cleanupRequest) {
+								//enter chainStopReq, trigger chain stop
+								appTrc (Trace.info, "Shutdown or cleanup Request, trigger chain stop", asp);
+								sendTuple.enabled = true; sendTuple.event = false;
+								contextState = chainStopReq;
+								<%if (0 == $contextDisabled) {%>
+								setCustomMetricValue("contextState", (int64)contextState);
+								<%}%>
+							} else {
+								if ((run == nst) || (invalid == nst)) {
+									appTrc (Trace.trace, "We keep state=run.", asp);
+								} else if (stop == nst) {
+									appTrc (Trace.debug, "Enter state=stop from run. contextState=idle", asp);
+									sendTuple.enabled=true; sendTuple.event=false;
+									changeState = stop;
+								} else if (initial == nst) { //this is now a valid transition with restart command
+									appTrc (Trace.info, "We enter state initial from state run. contextState=idle", asp);
+									sendTuple.enabled=true; sendTuple.event=false;
+									changeState = stop;
+								} else if (start == nst) {
+									appTrc (Trace.trace, "Ignored nst==start.", asp);
+								} else {
+									appTrc (Trace.error, "Transition error! old state="+(rstring)myState+" new state="+(rstring)nst, asp);
+									sendTuple.enabled=true; sendTuple.event=false;
+									changeState = stop;
+								}
+							}
+						} else {
+							appTrc (Trace.debug, "We keep state=run. contextState is not idle", asp);
+						}
+					} else if (terminated == myState) {
+						appTrc (Trace.trace, "State=terminated.", asp);
+					} else if (shutdown == myState) {
+						appTrc (Trace.trace, "State=shutdown.", asp);
+					} else {
+						appTrc (Trace.error, "Wrong myState="+(rstring)myState+" Abort execution", asp);
+						shutdownPE();
+					}
+				//---------------------------------
+				//handle the context states otherwise
+				} else {
+					if ((stopped == myState) || (run == myState) || (initial == myState)) {
+						appTrc (Trace.trace, "Check Context action states myState=" + (rstring)myState + " contextState=" + (rstring)contextState, asp);
+						if (chainStopReq == contextState) {
+							if (allAck) {
+								if (shutdownRequest) {
+									<%if (0 == $contextDisabled) {%>
+									if (failedFilesEncountered) {
+										//do not trigger a context write
+										appTrc (Trace.info, "Context action end chainStopReq but failedFilesEncountered, do not trigger context write, shutdown complete. myState=" + (rstring)myState, asp);
+										shutdownComplete = true;
+										contextState = idle;
+									} else {
+										appTrc (Trace.info, "Context action end chainStopReq. Enter context write state. myState=" + (rstring)myState, asp);
+										allContextAck = false; numContextAck = 0;
+										writeResult = "";
+										mutable ContextControl cmdTuple = {};
+										cmdTuple.command="write";
+										submit(cmdTuple, ContextControl);
+										contextState = contextCommandReq;
+										setCustomMetricValue("contextState", (int64)contextState);
+									}
+									<%} else {%>
+									appTrc (Trace.info, "Context action end chainStopReq. Shutdown. myState=" + (rstring)myState, asp);
+									shutdownComplete = true;
+									contextState = idle;
+									<%}%>
+								} else { //cleanupRequest
+									appTrc (Trace.info, "Context action end chainStopReq. Enter context clear state. myState=" + (rstring)myState, asp);
+									<%if (0 == $contextDisabled) {%>
+									//trigger context clean up
+									allContextAck = false; numContextAck = 0;
+									mutable ContextControl cmdTuple = {};
+									cmdTuple.command="clear";
+									if (failedFilesEncountered) { // send clean-up to partitioned Dedup because of failed file
+										cmdTuple.failureOccurred = true;
+									}
+									submit(cmdTuple, ContextControl);
+									<%} # end of 0 == $contextDisabled%>
+									//trigger ingest cleanup
+									int32 metricCount = (int32)incrementMetric("refreshCycles");
+									ingestCleanupAck = false;
+									submit({count = metricCount}, FileIngestCleanup);
+									//Aux state change
+									contextState = contextClearReq;
+									<%if (0 == $contextDisabled) {%>
+									setCustomMetricValue("contextState", (int64)contextState);
+									<%}%>
+								}
+							}
+						} else if (contextClearReq == contextState) {
+							<%if (0 == $contextDisabled) {%>
+							if (allContextAck) {
+								appTrc (Trace.info, "Context action end contextClearReq. Enter context read state. myState=" + (rstring)myState, asp);
+								allContextAck = false; numContextAck = 0;
+								mutable ContextControl cmdTuple = {};
+								cmdTuple.command="read";
+								submit(cmdTuple, ContextControl);
+								contextState = contextCommandReq;
+								setCustomMetricValue("contextState", (int64)contextState);
+							}
+							<%} else {%>
+							if (ingestCleanupAck) {
+								if (run == myState) {
+									appTrc (Trace.info, "Context action end contextClearReq. Enter context chainStartReq state. myState=" + (rstring)myState, asp);
+									sendTuple.enabled = true; sendTuple.event = true;
+									contextState = chainStartReq;
+								} else { //idle or stopped
+									appTrc (Trace.info, "Context action end contextClearReq. Enter context idle state. myState=" + (rstring)myState, asp);
+									contextState = idle;
+								}
+								cleanupRequest = false;
+							}
+							<%}%>
+						<%if (0 == $contextDisabled) {%>
+						} else if (contextCommandReq == contextState) {
+							if (allContextAck) {
+								if (shutdownRequest) {
+									appTrc (Trace.info, "Context action end contextCommandReq. Shutdown. myState=" + (rstring)myState, asp);
+									shutdownComplete = true;
+									contextState = idle;
+									setCustomMetricValue("contextState", (int64)contextState);
+								} else { //cleanup
+									if (ingestCleanupAck) {
+										appTrc (Trace.info, "Context action end contextCommandReq. Cleanup. myState=" + (rstring)myState, asp);
+										if (run == myState) {
+											//enter chainStopReq, trigger chain start
+											sendTuple.enabled = true; sendTuple.event = true;
+											contextState = chainStartReq;
+											setCustomMetricValue("contextState", (int64)contextState);
+										} else {
+											appTrc (Trace.info, "Context action end contextCommandReq. Enter idle context state myState=" + (rstring)myState, asp);
+											contextState = idle;
+											cleanupRequest = false;
+											setCustomMetricValue("contextState", (int64)contextState);
+											failedFilesEncountered = false;
+											setCustomMetricValue("disabledContextSave", 0l);
+										}
+									}
+								}
+							}
+						<%}%>
+						} else if (chainStartReq == contextState) {
+							if (allAck) {
+								appTrc (Trace.info, "Context action end chainStartReq. Enter idle context state myState=" + (rstring)myState, asp);
+								contextState = idle;
+								cleanupRequest = false;
+								<%if (0 == $contextDisabled) {%>
+								setCustomMetricValue("contextState", (int64)contextState);
+								failedFilesEncountered = false;
+								setCustomMetricValue("disabledContextSave", 0l);
+								<%}%>
+							}
+						} else {
+							appTrc (Trace.error, "Wrong contextState=" + (rstring)contextState + "In combination with myState=" + (rstring)myState, asp);
+							shutdownPE();
+						}
+					} else {
+						appTrc (Trace.error, "Wrong state combination myState=" + (rstring)myState + " contextState=" + (rstring)contextState, asp);
+						shutdownPE();
+					}
+				}// end if (shutdownComplete) ... else if (context idle) ... else ...
+				
+				//----------------------------
+				//change state
+				if (changeState != invalid) {
+					if ((myState == run) && (changeState == stop)) {
+						incrementMetric("numberStopRequests");
+					}
+					myState = changeState;
+					setCustomMetricValue("applicationState", (int64)myState); //set metrics
+					if (myState == run) {
+						onceStarted = true;
+					}
+					m_stateNotChanged = 0;
+					rstring c = (rstring)myState;
+					appTrc (Trace.info, "Write response: "+c, asp); 
+					responseWritten = writeCommandFile(applControlDir, applControlRespFile, c);
+				}
+				//send chain event
+				if (sendTuple.enabled) {
+					appTrc (Trace.info, "Sent tuple ApplControl event="+(rstring)sendTuple.event+"groupId=XX chainId=XX", asp);
+					numAckReceived = 0;
+					allAck = false;
+					submit({start = sendTuple.event, chainPunct=false, groupId="XX", chainId="XX"}, ApplControl);
+				}
+			} // /ApplControlPace
+			onPunct InApplCtrlResp: {
+				appTrc (Trace.info, "InApplCtrlResp punct received: "+(rstring)currentPunct(), asp);
+			}
+			<%if (0 == $contextDisabled) {%>
+			onPunct InContextReady: {
+				appTrc (Trace.info, "InContextReady punct received: "+(rstring)currentPunct(), asp);
+			}
+			<%}%>
+			onPunct ApplControlPace: {
+				appTrc (Trace.info, "ApplControlPace punct received: "+(rstring)currentPunct()+ "write state terminated", asp);
+				if (myState != invalid) { //write the terminated state only when this job was active
+					myState = terminated;
+					responseWritten = writeCommandFile(applControlDir, applControlRespFile, "terminated");
+				}
+			}
+		config placement: partitionExlocation($peExLocationLabel), partitionColocation($peName);			
+	}
+
+	<% if($tapEnabled) {%>
+	@spl_category(name="debug")
+	() as ControllerAppCtrlSink = FileSink (ApplControl) {
+		logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+		param	file	: "./debug/CONTROLLER_APPL_CTRL_OUT.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+	}
+	@spl_category(name="debug")
+	() as ControllerFileIngestCleanupSink = FileSink (FileIngestCleanup) {
+		logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+		param	file	: "./debug/CONTROLLER_FILE_INGEST_CLEANUP_OUT.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+	}
+	@spl_category(name="debug")
+	() as ControllerFileIngestControlSink = FileSink (FileIngestControl) {
+		logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+		param	file	: "./debug/CONTROLLER_FILE_INGEST_CTRL_OUT.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+	}
+		<% if (0 == $contextDisabled) {%>
+	@spl_category(name="debug")
+	() as ControllerContextControlSink = FileSink (ContextControl) {
+		logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+		param	file	: "./debug/CONTROLLER_CONTEXT_CTRL_OUT.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+	}
+		<% } %>
+	<% } %>
+
+}
+
+//Create the custom metric "applicationState": Function to be called in state
+stateful boolean createControllerMetrics() {
+	createCustomMetric("applicationState", "The global application control state", Sys.Gauge, 0l /* in gui: state 0 is startup-check */);
+	return true;
+}
+
+//Increment a custom metric counter with name: metricName
+stateful int64 incrementMetric(rstring metricName) {
+	mutable int64 x = 0l;
+	getCustomMetricValue(metricName, x);
+	x++;
+	setCustomMetricValue(metricName, x);
+	return x; 
+}

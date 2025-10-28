@@ -1,0 +1,153 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2012, 2020     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace application ;
+
+use com.teracloud.streams.geospatial.ext::point;
+use com.teracloud.streams.geospatial.ext::polygon;
+use com.teracloud.streams.geospatial.st::contains;
+use com.teracloud.streams.geospatial.st::distance;
+
+// Type declarations
+type Point = rstring;
+type Polygon = rstring;
+
+composite MarketingSample {
+
+    graph
+
+        (stream<float64 lat,float64 lon> InputDataStream) as DataReader = FileSource() {
+            param
+                file :      "input_demo.csv";
+                format :    csv;
+        }
+
+        (stream<rstring test> MarketingMessages) as Locator = Custom(InputDataStream as I)  {
+            logic
+                state : {
+                    mutable Point   current_POINT       =   point ( 0.0, 0.0);
+                    
+                    mutable Polygon indiraNagar         =   polygon("77.637119293213, 12.982729533801,
+                                                                    77.645874023438, 12.986074978063,
+                                                                    77.651710510254, 12.972358370434, 
+                                                                    77.647333145142, 12.960564828571,
+                                                                    77.633857727051, 12.962404992469");
+
+                    mutable Point   TOIT_Cafe_P         =   point ( 77.640595436096, 12.980304058549 );
+                    mutable Polygon TOIT_Cafe           =   polygon("77.639780044556, 12.983565899089,
+                                                                    77.641453742981, 12.980764064295,
+                                                                    77.640810012817, 12.979342225602,
+                                                                    77.639608383179, 12.979885870768,
+                                                                    77.639651298523, 12.981098613393");
+
+                    mutable Point   McDonalads_P        =   point ( 77.638406753540, 12.978129474408 );
+                    mutable Polygon McDonalads          =   polygon("77.640831470490, 12.978798579246,
+                                                                    77.641453742981, 12.978443117525,
+                                                                    77.640960216522, 12.977878559629,
+                                                                    77.638406753540, 12.977815830894,
+                                                                    77.638278007507, 12.978631303205");
+
+                    mutable Point   woodland_P          =   point ( 77.640681266785, 12.977293090827 );
+                    mutable Polygon woodland            =   polygon("77.640874385834, 12.977711282969,
+                                                                    77.641839981079, 12.976603072254,
+                                                                    77.641153335571, 12.974470275470,
+                                                                    77.640273571014, 12.974449365607, 
+                                                                    77.640123367310, 12.977042175204");
+
+                    mutable Point   pizza_calfornia_P   =   point ( 77.640810012817, 12.973445690118 );
+                    mutable Polygon pizza_calfornia     =   polygon("77.637119293213, 12.982729533801,
+                                                                    77.645874023438, 12.986074978063,
+                                                                    77.651710510254, 12.972358370434,
+                                                                    77.647333145142, 12.960564828571,
+                                                                    77.633857727051, 12.962404992469");
+
+                    mutable Point   sony_P              =   point ( 77.640981674194, 12.970392818943 );
+                    mutable Polygon sony                =   polygon("77.641067504883, 12.973550239837,
+                                                                    77.642333507538, 12.971961079364,
+                                                                    77.641732692719, 12.969389127085,
+                                                                    77.640402317047, 12.969535499066,
+                                                                    77.640252113342, 12.972191090061");
+
+                    mutable Point   copperChimney_P     =   point ( 77.641582489014, 12.966712595667 );
+                    mutable Polygon copperChimney       =   polygon("77.641346454620, 12.968427251921,
+                                                                    77.642333507538, 12.967339910301,
+                                                                    77.642290592194, 12.964433339185,
+                                                                    77.640831470490, 12.964370607060,
+                                                                    77.640531063080, 12.967235357972");
+
+                    mutable boolean check;
+                    mutable boolean visit = false;
+                }
+
+                onTuple I: {
+
+                    current_POINT    = point(I.lon, I.lat);
+                    check            = contains(indiraNagar, current_POINT);
+
+                    printString("Your Current Coordinates Latitude ::");
+                    printString((rstring)I.lat);
+                    printString(" Longitude ::");
+                    printString((rstring)I.lon);
+
+                    if(check && !visit) {
+                        printStringLn("You have entered into a Shopping Lane");
+                        visit=true;
+                        submit({test="Your current coordinates are Latitude "+(rstring)I.lat+" Longitude "+(rstring)I.lon+". You have entered into a shopping area."}, MarketingMessages);
+                    }
+
+                    if(check) {
+
+                        if(contains(TOIT_Cafe, current_POINT)) {
+                            float64 disC = distance(TOIT_Cafe_P,current_POINT);
+                            submit({test = "Your current coordinates are Latitude "+(rstring)I.lat+" Longitude "+(rstring)I.lon+". Offer: A cafe "+(rstring)disC+" meters away is offering a discount of 25% on coffee."}, MarketingMessages);
+                        }
+                        if(contains(McDonalads, current_POINT)) {
+                            float64 disC = distance(McDonalads_P,current_POINT);
+                            submit({test = "Your current coordinates are Latitude "+(rstring)I.lat+" Longitude "+(rstring)I.lon+". Offer: McDonald's "+(rstring)disC+" meters away is offering a free complimentary drink with purchase of a cheeseburger."}, MarketingMessages);
+                        }
+                        if(contains(woodland, current_POINT)) {
+                            float64 disC = distance(woodland_P, current_POINT);
+                            submit({test = "Your current coordinates are Latitude "+(rstring)I.lat+" Longitude "+(rstring)I.lon+". New items: Woodland showroom "+(rstring)disC+" meters away has a new collection of leather couches."}, MarketingMessages);
+                        }
+                        if(contains(sony, current_POINT)) {
+                            float64 disC = distance(sony_P,current_POINT);
+                            submit({test = "Your current coordinates are Latitude "+(rstring)I.lat+" Longitude "+(rstring)I.lon+". Offer: Sony Center "+(rstring)disC+" meters away is offering 20% off total bill with purchases of $500 or more."}, MarketingMessages);
+                        }
+                        if(contains(copperChimney, current_POINT)) {
+                            float64 disC = distance(copperChimney_P,current_POINT);
+                            submit({test="Your current coordinates are Latitude "+(rstring)I.lat+" Longitude "+(rstring)I.lon+". New experience: A new Indian Resturant has opened "+(rstring)disC+" meters away."}, MarketingMessages);
+                        }
+                    }
+                }
+        }
+        
+        
+        () as MsgWriter = FileSink(MarketingMessages) {
+             param
+                 file :     "results/demo_out.txt";
+                 format :   line;
+                 flush :    1u;
+        }
+}

@@ -1,0 +1,108 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.CSVParse.Basic;
+use com.teracloud.streams.teda.parser.text::CSVParse;
+
+/**
+ * This sample demonstrates the basic usage of the CSVParse operator. It uses a FileSource operator to read the CSV input file data/input.csv
+ * The CSV lines are send to the CSVParse operator, that parses each line and assigns the CSV fileds to an output tuple that contains 3 uint8
+ * attributes to hold the three RGB values of the color record. The input file contains the following 5 lines:
+ * 
+ * COLOR,Red,255,0,0
+ * COLOR,Green,0,255,0
+ * COLOR,Blue,0,0,1024
+ * SHAPE,Rectangle,0,0,100,100
+ * COLOR,Yellow,255,255
+ *
+ * only the first 2 lines will be submitted as valid records, because the other lines have errors:
+ * - line 3 is sent to the error port because it contains a value of 1024 which cannot be converted to an uint8 attribute
+ * - line 4 does not contain a color record, the first field does not match the filter specified in the mapping document
+ *   this line will be dropped, because no mapping can be applied
+ * - line 5 is send to the error port because it does not contain enough CSV fields to pass the itemCount test specified in the mapping.
+ *  
+ * For more information on this sample, see the SPLDOC of the CSVParse operator.
+ * 
+ */
+composite Main
+{
+	type
+	
+		/**
+		 * The type of the output tuple. It contains the 3 RGB values from the color record
+		 */
+		ColorTuple = tuple
+		<
+			uint8 R,
+			uint8 G,
+			uint8 B
+		>;
+
+	graph
+
+		/**
+		 * Read the input csv file. Each line is submitted as an rstring
+		 */
+		stream<rstring csvline> Content as O = FileSource()
+		{
+			param
+				file: "input.csv";
+				format: line;
+		}
+	
+		/**
+		 * Parse the lines from the FileSource. Valid records are mapped to the output tuple of type ColorTuple.
+		 * Invalid records are forwarded to the error port. The mapping document is etc/mapping.xml. The input attribute
+		 * that contains the CSV lines is set to the rstring attribute emitted by the FileSource. Empty lines are ignored by default
+		 * so they will be dropped and not result in any tuple on output port 0 or 1.
+		 */
+		(stream<ColorTuple> ParsedContent as O; stream<I> ErroneousContent as E) as Parser = CSVParse(Content as I)
+		{
+			param
+				mappingDocument: "etc/mapping.xml";
+				payloadAttribute: csvline;
+		}
+
+		/**
+		 * Valid records are stored in the file data/outputTuples.txt in tuple format.
+		 */
+		() as OutSink = FileSink(ParsedContent as I)
+		{
+	            param
+	                file : "outputTuples.txt";
+	                format : txt;
+	    }	
+
+		/**
+		 * Invalid records are stored in the file data/errorTuples.txt in tuple format.
+		 */
+		() as ErrSink = FileSink(ErroneousContent as I)
+		{
+	            param
+	                file : "errorTuples.txt";
+	                format : txt;	                
+		}	
+
+}

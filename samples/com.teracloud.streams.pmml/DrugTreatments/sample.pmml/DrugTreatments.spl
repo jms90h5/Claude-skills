@@ -1,0 +1,123 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2018, 2019     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample.pmml;
+
+use com.teracloud.streams.pmml::PMMLScoring;
+
+/**
+ * The Drug Treatments sample uses a trained model which predicts
+ * the most suitable drug to improve a patient's well being by
+ * evaluating a set of personal data and medical measurements.
+ * 
+ * The sample is part of the SPSS product, and can also be accessed in Watson 
+ * Studio SPSS flow modeler.
+ * 
+ * The PMML model is read from a file via the 'modelPath'
+ * parameter. Mapping between stream attributes and model fields
+ * is specified by operator parameters.
+ * 
+ * The output from the scoring operator is written to the file /tmp/drugTreatmentsScoringResults.txt
+ *  
+ */
+public composite DrugTreatments {
+	
+	type
+
+        // The raw data as read from the input CSV file
+		RawPatientData = 
+			int32 age,
+			rstring sex,
+			rstring bloodPressure,
+			rstring cholesterol,
+			float64 bloodSodiumConcentration,
+			float64 bloodPotassionConcentration;
+			
+		// The predictors (model input fields).
+		// Note that the NA_to_K field is derive from the input data 
+		Predictors = 
+			int32 age,
+			rstring sex,
+			rstring bloodPressure,
+			rstring cholesterol,
+			float64 NA_to_K;
+			
+		// The results from the scoring operation
+        ScoringResult =
+            // the status of the scoring, if there was an error, this field will be 'false'
+            boolean success,
+            // a description of the error (if any). Empty string if there wa no problem
+            rstring errorReason,
+            // the predicted value. In this case, tha name of the drug to apply
+            rstring predictedValue,
+            // the confidence of the predicted value
+            float64 confidence,
+            // a map holding all the other possible outcomes and their probabilities.
+            map<rstring,float64> probability;
+
+	graph
+		
+		// Read the raw patient data from the given file
+        stream<RawPatientData> Data = FileSource() {
+            param
+                file: getApplicationDir() + "/data/input/DRUG1n.csv";
+				format: csv;
+				hasHeaderLine: true;
+				ignoreExtraCSVValues: true;
+		}
+		
+		// Pre-process data and calculate the Sodium to Potassium
+		// quotient that has been used to train the model in SPSS
+		stream<Predictors> InputRecords = Functor(Data) {
+			output InputRecords: NA_to_K = bloodSodiumConcentration/bloodPotassionConcentration;
+		}
+
+        // The scoring operator loads the trained model from the given file
+        // and maps the stream attributes to the model fields as specified in parameters
+        // 'modelInputAttributeMapping' and 'modelOutputAttributeMapping'
+        // Refer to the content of the model file for the names of the model fields. 
+		stream<Predictors,ScoringResult>  DrugTreatmentsScoring = PMMLScoring(InputRecords) {
+			param
+                // the file name of the PMML model
+				modelPath: getApplicationDir() + "/etc/drugNN_pmml_v2.xml";
+                successAttributeName: "success";
+                errorReasonAttributeName: "errorReason";
+                // the input mapping. Each model predictor is assigned a Streams attribute to take the value from
+                modelInputAttributeMapping: "Age=age,BP=bloodPressure,Cholesterol=cholesterol,Na_to_K=NA_to_K,Sex=sex";
+                // the output mapping. Each streams attribute is assigned an output field of the model
+                modelOutputAttributeMapping: "predictedValue=Drug.PredictedValue,confidence=Drug.Confidence,probability=Drug.Probability";
+			config
+				placement: partitionIsolation;
+		}
+		
+		// Write the output data to a file
+		() as drugsScoringSink = FileSink(DrugTreatmentsScoring)   {
+            param
+                file : "drugTreatmentsScoringResults.txt";
+                format: txt;
+                flush: 1u;
+        }
+
+}

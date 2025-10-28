@@ -1,0 +1,53 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2012, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+
+<%SPL::CodeGen::implementationPrologue($model);%>
+<%
+# Add a use for the Perl module that contains the 
+# subroutine that loads and formats the string.
+require MyResource;
+
+# Emit the message using a SPL helper method
+SPL::CodeGen::println(MyResource::MESSAGE_1());
+%>
+
+// Add an include for the header that contains the macro which 
+// loads and formats the message
+#include "MyResource.h"
+#include <SPL/Runtime/Common/RuntimeDebug.h>
+
+// Constructor
+MY_OPERATOR::MY_OPERATOR() : _i(0)
+{
+    // Initialization code goes here
+}
+
+// Tuple processing for non-mutating ports
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port)
+{
+    const IPort0Type & t = static_cast<const IPort0Type &>(tuple);
+    // Get the loaded and formatted message and initialize the output tuple
+    SPL::rstring r = MESSAGE_2(t.get_i());
+
+    // Optionally add a message to the runtime log
+    SPLAPPLOG(L_INFO, r, "test");
+
+    OPort0Type otuple(r);
+    submit(otuple, 0); // submit to output port 0
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

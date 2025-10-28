@@ -1,0 +1,137 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainprocessor.reader.custom;
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+use demoapp.functions::*;
+
+/**
+ * Implements the validation of the tuples that sends valid and invalid tuples
+ * to different output ports. In case of invalid tuples, provides additional
+ * information that can be used to troubleshoot the problem, as sketched in
+ * the customizable code area.
+ *
+ * Adapt the code blocks that are marked with "custom code begin" and "custom
+ * code end".
+ * 
+ * @input  InRec
+ * Tuples received from the file reader.
+ * Record validation checks are performed and invalid tuples are rejected.
+ *
+ * @input  InStat
+ * Statistic tuple received at end of file.
+ * You can update your custom statistic attributes before forwarding this tuple.
+ * For example, count the number of rejected tuples.
+ * The template code sets the attribute rejectedInvalids in the statistic tuple.
+ *
+ * @output OutRec
+ * Tuples for the demoapp.chainprocessor.transformer.custom::DataProcessor.
+ * 
+ * @output OutStat
+ * The tuple received InStat port must be forwarded on this port
+ * 
+ * @output OutRej
+ * Tuples sent on this port are written to the rejected files
+ *
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ */
+public composite RecordValidator (
+	input 
+		stream<TypesCommon.ReaderOutStreamType> RecordIn,
+		stream<TypesCommon.FileStatistics> StatIn;
+	output
+		stream<TypesCommon.ReaderOutStreamType> OutRecord,
+		stream<TypesCommon.FileStatistics> OutStat,
+		stream<TypesCommon.RejectedDataStreamType> OutRej
+) {
+	
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRecord;
+		stream<TypesCommon.FileStatistics> OutStat;
+		stream<TypesCommon.RejectedDataStreamType> OutRej
+		) as Validator = Custom(RecordIn; StatIn) {
+			logic
+			state : {
+				mutable int64 numRejectedInvalids = 0l;
+			}
+			onTuple RecordIn: {
+				if (readerInvalidLineInd) {
+					mutable OutRej rejInvalid = {};
+					rejInvalid.filename=RecordIn.filename;
+					rejInvalid.readerLinenumber=RecordIn.readerLinenumber;
+					rejInvalid.rejectreason = (uint32)TypesCustom.rrInvalidLine;
+					rejInvalid.rejectinfo = RecordIn.readerInvalidMessage;
+					//rejInvalid.invalidPayload = RecordIn.readerInvalidPayload; // if ite.storage.rejectWriter.custom=on
+					//assignFrom(rejDuplicate.readerOutput, InRec); // if ite.storage.rejectWriter.custom=on
+					submit(rejInvalid,OutRej);
+					numRejectedInvalids++;
+				}
+				// ------------------------------------------------
+				// custom code begin
+				// ------------------------------------------------
+				// add custom validation code here
+				//else if (<your attribute check>) {
+				//	mutable OutRej rejInvalid = {};
+				//	rejInvalid.filename = RecordIn.filename;
+				//	rejInvalid.readerLinenumber = RecordIn.readerLinenumber;
+				//	rejInvalid.rejectreason = (uint32)TypesCustom.rrInvalidAttribute;
+				//	rejInvalid.rejectinfo = "optional info";
+				//	assignFrom(rejInvalid.readerOutput, RecordIn); // if ite.storage.rejectWriter.custom=on
+				//	submit(rejInvalid,OutRej);
+				//}
+				// ------------------------------------------------
+				// custom code end
+				// ------------------------------------------------
+				else {
+					submit(RecordIn,OutRecord);
+				}
+			}
+			onTuple StatIn: { // update attribute rejectedInvalids on statistics tuple
+				StatIn.rejectedInvalids = numRejectedInvalids;
+				submit(StatIn,OutStat);
+				numRejectedInvalids = 0l;
+			}
+			onPunct RecordIn: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(Sys.WindowMarker, OutRecord);
+					submit(Sys.WindowMarker, OutRej);
+				}
+			}
+		}
+
+}

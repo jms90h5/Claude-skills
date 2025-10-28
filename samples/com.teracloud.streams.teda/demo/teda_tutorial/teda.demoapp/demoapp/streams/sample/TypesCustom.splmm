@@ -1,0 +1,278 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+
+	my $TRANSFORMER_OUTPUT_TYPE = $configurator->getEnum(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_OUTPUTTYPE());
+
+	my $CHAIN_SINK_TYPE = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	my $chainSinkRecordWriter = ($CHAIN_SINK_TYPE > 0) ? 1 : 0;
+
+	my $TRANSFORMER_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TAP());
+	my $TRANSFORMER_POST_DEDUP_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_TAP());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $useLookupTypeExtension = $configurator->isOn(Configurator::ITE_INGEST_READER_SCHEMAEXTENSIONFORLOOKUP());
+	
+%>
+namespace demoapp.streams.sample;
+
+<%if (0 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.streams::*;
+
+/**
+ * TypesCustom
+ * This composite contains the custom stream type definitions.
+ */
+public composite TypesCustom {
+
+	type 
+
+		/**
+		 * The custom reject reasons.
+		 * Value is applied for rejected records at RecordValidator or Transformer
+		 */
+		static rejectReason = enum {
+			rrDefault,
+			rrInvalidLine,
+			rrRecordDuplicate,
+			rrTableDuplicate,
+			rrInvalidAttribute,
+			rrRecordOutdated
+		};
+
+		/**
+		 * The base type of the Reader output stream.
+		 * Contains the attributes of the mapped input file attribute.
+		 */
+		static SampleRecordBaseStream = tuple<
+			rstring attr0,
+			rstring attr1, //#DEDUP
+			rstring attr2, //#DEDUP
+			rstring attr3, //#DEDUP
+			rstring attr4,
+			rstring attr5, //#DEDUP
+			rstring attr6,
+			rstring attr7,
+			rstring attr8,
+			rstring attr9, //#DEDUP
+			rstring attr10, //#DEDUP
+			rstring attr11,
+			rstring attr12, //#DEDUP
+			rstring attr13,
+			rstring attr14,
+			rstring attr15,
+			rstring attr16, //#DEDUP
+			rstring attr17,
+			rstring attr18,
+			rstring attr19, //#DEDUP
+			rstring attr20,
+			rstring attr21,
+			rstring attr22,
+			rstring attr23, //#DEDUP
+			rstring attr24,
+			rstring attr25,
+			rstring attr26,
+			rstring attr27,
+			rstring attr28,
+			rstring attr29
+		>;
+
+		/**
+		 * The type of the Reader output stream.
+		 */
+		static SampleRecordStream = tuple<
+			SampleRecordBaseStream
+		>;
+		
+		/**
+		* Custom tuple defines the results of lookup data for DimMaster2 segment.
+		* Sample data is written by LookupManager to shared memory segment
+		*/
+		static DSVCvalue_t = tuple <rstring SERVICE_CODE,
+									rstring TIME_START,
+									rstring TIME_END>;
+
+		/**
+		 * Attribute part of the output record containing the lookup value
+		 * Functor in ChainSinkCore reduces the schema.
+		 * The other LookupType attributes are not part of the output.
+		 */
+		static LookupTypeReduced = tuple<
+			rstring Any_Lookup	// Any_Lookup
+		>;		
+
+		/**
+		 * Extension of reader output stream for lookup data.
+		 */
+		static LookupType = tuple<
+			DSVCvalue_t,
+			LookupTypeReduced,
+			tuple <boolean lookupFound>	// lookup success indication required for LookupCache operator
+		>;
+		/**
+		* Extension of transformer output stream for partitioned deduplication.
+		* You must define the type matching the partitioning requirements of your project.
+		* The allowed SPL types (see reference of the BloomFilter description):
+		* int8, int16, int32, int64
+		* uint8, uint16, uint32, uint64
+		* float32, float64, decimal32, decimal64, decimal128
+		* rstring, ustring
+		* timestamp
+		*/
+		static PartitionIdType = uint8; // example of partitionId type definition
+
+		/**
+		 * Schema of main target table
+		 */
+		static FctTableStream = tuple<
+			rstring COL1,	//#DEDUP
+			rstring COL2,
+			rstring COL3,	//#DEDUP
+			rstring COL4,	//#DEDUP
+			rstring COL5,	//#DEDUP
+			rstring COL6,
+			rstring COL7,	//#DEDUP
+			rstring COL8,	//#DEDUP
+			rstring COL9,	//#DEDUP
+			rstring COL10,
+			uint8   DUP_IND, // 0=no duplicate or 1=duplicate
+			rstring tablename // must be the last attribute (required by TableRowGenerator and used in TableFileWriter)
+		>;
+
+		/**
+		 * The table stream type
+		 * Used in transformer code only
+		 */
+		static MainTableStreamType = tuple<
+			FctTableStream, // custom schema
+			<%unless ($dedupDisabled) {%>TypesCommon.DedupStreamType, // mandatory attributes<%}%>
+			TypesCommon.FileInfo  // mandatory attributes
+			
+		>;
+
+		<%if (1==$TRANSFORMER_OUTPUT_TYPE) {%>
+		/**
+		 * The lookup attributes stream type
+		 * Extension for TableStream Type (output of Transformer)
+		 */
+		static ExtendedTableStream = tuple<
+			rstring LOOKUP1,
+			rstring LOOKUP2,
+			rstring LOOKUP3
+		>;
+		<%}%>
+
+		<%if (2==$TRANSFORMER_OUTPUT_TYPE) {%>
+			<%if (0 == $chainSinkRecordWriter) {%>
+		/**
+		 * Record Stream (output of Transformer)
+		 */
+		static TransformedRecord = tuple<
+			FctTableStream
+		>;
+			<%} else {%>
+		/**
+		 * Record Stream (output of Transformer)
+		 */
+		static TransformedRecord = tuple<
+			SampleRecordStream <% if ($useLookupTypeExtension) { %> , LookupType <% } %>
+		>;
+			<%}#endif $chainSinkRecordWriter%>
+		<%} #endif TRANSFORMER_OUTPUT_TYPE%>
+
+		/**
+		 * The type of output tuples written to checkpoint files
+		 * Add here the attributes from the ContextContainer
+		 * DataForContextDataProcessor_* stream that are
+		 * required to build your custom context.
+		 * This type is used for InRecoveryStream.
+		 */
+		static ContextCheckpointStreamType = tuple<
+			// ------------------------------------------------
+			// custom code begin
+			// ------------------------------------------------
+			rstring anyAttribute
+			// ------------------------------------------------
+			// custom code end
+			// ------------------------------------------------
+		>;
+
+		<%if (1 == $chainSinkRecordWriter) {%>
+			<%if (2==$TRANSFORMER_OUTPUT_TYPE) {%>
+		/**
+		 * Schema for custom Chain Sink (FileWriter)
+		 */
+		static ChainSinkType = tuple<
+			SampleRecordStream <% if ($useLookupTypeExtension) { %> , LookupTypeReduced <% } %>
+		>;
+			<%} else {%>
+		/**
+		 * Schema for custom Chain Sink (FileWriter)
+		 */
+		static ChainSinkType = tuple<
+			tuple <rstring tablename>,
+			tuple <rstring tablerow>
+		>;
+			<%} #endif TRANSFORMER_OUTPUT_TYPE%>
+		<%}%>
+
+		<% if (1 == $TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>
+		/**
+		 * The type of Transformer output bundles
+		 * Sample schema to write new subskeys to lookup-update-file
+		 */
+		static BundledTransformerOutputStreamType = tuple<
+			rstring subskey,
+			rstring circleId,
+			rstring subs_msisdn
+		>;
+		<%}%>
+		<% if (1 == $TRANSFORMER_POST_DEDUP_OUTPUT_FOR_BUNDLE) {%>
+		static BundledTransformerPostDedupOutputStreamType = tuple<
+			TypesCommon.FileInfoBasicType
+		>;
+		<%}%>
+
+}
+<%} #endif enabled%>

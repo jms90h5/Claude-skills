@@ -1,0 +1,565 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2014     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+
+namespace sample.CommodityPurchasing;
+
+use com.teracloud.streams.inet::InetSource;
+
+/** 
+ * The `WeatherConditions` application collects weather information
+ * from NOAA and prepares it for use by the rest of the sample
+ * application.  This preparation includes, filtering, cleaning,
+ * and aggregation steps.
+ * 
+ * **Exported Streams**
+ * 
+ * * `SupplierLocation` - Contains information about the locations 
+ * of our suppliers.
+ * * `WeatherSummary` - Contains the most recent weather information
+ * for a particular location paired with the most recent 
+ * aggregated information. Attributes are calculated, converted,
+ * etc. as necessary to support the needs of the rest of the 
+ * sample application.
+ */
+composite WeatherConditions
+{
+
+graph
+ 
+  //
+  // Data Sources
+  //
+
+  /*************************************************************************************
+  # Purpose:        Read information about the locations of our suppliers from an 
+  #                 external data source.  In this case, the external data is stored in  
+  #                 a local file.
+  #  
+  # Input Streams:  None  
+  #
+  # Output Streams: One tuple per supplier, as defined by the schema.
+  ************************************************************************************/
+  stream <WeatherLocationSchema> SupplierLocation = FileSource()
+  {
+    param
+      file:      "../Suppliers.csv";
+      format:    csv;
+      initDelay: 30.0;
+  }
+
+
+  //  Export the supplier stream so it can be used by other jobs.
+
+  () as SupplierExport = Export(SupplierLocation) 
+  {
+    param streamId : "SupplierLocation";
+  }
+ 
+
+  /************************************************************************************
+  # Purpose:        Get weather data from an external source.  In this case, the data
+  #                 is retrieved over the internet from a set of 24 URIs provided by 
+  #                 NOAA -- the National Oceanic and Atmospheric Administration -- an agency
+  #                 of the United States Federal Government.  
+  #
+  #                 The InetSource operator is used to get the data, both initially
+  #                 and on a periodic basis.
+  #
+  #                 Here is a snippet of the contents of one of the NOAA URIs:
+  #
+  #                 2009/04/17 02:45
+  #                 KCWV 170245Z AUTO 12003KT 10SM CLR 14/13 A3025 RMK AO2
+  #
+  #                 2009/04/17 02:46
+  #                 CYAY 170246Z AUTO 30011KT 6SM -SN OVC026 M09/M12 A2979 RMK SLP091
+  #
+  #                 2009/04/17 02:45
+  #                 PAER 170245Z 36915KT 11SM SKC 06/M09 A2990 RMK EPO
+  #
+  #                 2009/04/17 02:45
+  #                 K0F2 170245Z AUTO 11009G18KT 10SM VCTS OVC080 17/11 A2996 RMK AO2 LTG DSNT N THRU SE T01660111
+  #
+  # Input Streams:  None  
+  #
+  # Output Streams: Tuples contain strings in NOAA's METAR format.  One tuple contains
+  #                 the weather readings for a single weather station at a particular
+  #                 point in time.  Thus, from the first two entries in the above snippet, the
+  #                 resulting two output tuples will be:
+  #
+  #                 2009/04/17 02:45 KCWV 170245Z AUTO 12003KT 10SM CLR 14/13 A3025 RMK AO2
+  #                 2009/04/17 02:46 CYAY 170246Z AUTO 30011KT 6SM -SN OVC026 M09/M12 A2979 RMK SLP091
+  ************************************************************************************/
+  stream <rstring rawObservation> RawObservations = InetSource() {
+    param URIList : ["http://weather.noaa.gov/pub/data/observations/metar/cycles/00Z.TXT",
+                     "http://weather.noaa.gov/pub/data/observations/metar/cycles/01Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/02Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/03Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/04Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/05Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/06Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/07Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/08Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/09Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/10Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/11Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/12Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/13Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/14Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/15Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/16Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/17Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/18Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/19Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/20Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/21Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/22Z.TXT",
+        	     "http://weather.noaa.gov/pub/data/observations/metar/cycles/23Z.TXT"]; 
+           
+          // The incrementalFetch parameter causes the data only new since the previous URI scan
+          // to be streamed.  Observations are added to the end of the NOAA files, so this means
+          // that on each fetch, the observations added since the previous fetch will be streamed.
+          incrementalFetch : true;
+	       	
+          // The fetchIntervalSeconds parameter controls the amount of time between fetch cycles. 
+          fetchInterval : 240.0l;  // Roughly every 4 minutes
+        	
+          // Each observation consumes three lines in the NOAA file.  The inputLinesPerRecord
+          // parameter causes each group of three lines to be combined into a single line when
+          // the record is streamed out.  (A default pad value of a single blank is inserted 
+          // between the lines as they are combined.)
+          inputLinesPerRecord: 3u;
+        	
+          // As with other types of source operators, the initDelay parameter causes InetSource
+          // to wait this number of seconds before beginning its processing, after the application
+          // is started.
+          initDelay: 45.0l;
+            
+          // The punctPerFetch parameter causes InetSource to emit a "punctuation" to the output
+          // stream after each fetch cycle.  This punctuation can be used as a marker by other
+          // operators further downstream.
+          punctPerFetch : true;
+  }
+
+
+
+  //
+  // Stream Operations
+  //
+
+
+  /************************************************************************************
+  # Purpose:        The composite operator used below will perform a series of filtering,
+  #                 organization and calculation steps of the raw weather information. 
+  #                 The definition of this operator can be found at the end of this file.
+  #  
+  # Input Streams:  A stream of raw NOAA weather data from all weather stations.
+  #
+  # Output Streams: A filtered stream of weather data.  The data has been cleaned up 
+  #                 to ensure the accuracy of downstream calculations.  The stream has
+  #                 also been reduced to include only weather information for the
+  #                 (supplier) locations that we are interested in.  And some additional 
+  #                 attributes have been calculated and added to the stream. 
+  ************************************************************************************/
+  stream <AnnotatedWeatherSchema> FilteredAndPrepared = PrepareAndFilterWeatherData(RawObservations) 
+  { 
+  }
+
+
+  /************************************************************************************
+  # Purpose:        Calculate the 18-hour, running average temperature for a single 
+  #                 location.  Also capture the maximum and minimum temperature values
+  #                 in this 18-hour window.  
+  #  
+  # Input Streams:  The filtered stream of weather data for an individual supplier 
+  #                 location that has been annotated with calculated values needed by
+  #                 downstream processing.
+  #
+  # Output Streams: Tuples containing the 18-hour running average temperature for a 
+  #                 single location along with the maximum and minimum temperatures
+  #                 during this time period.
+  ************************************************************************************/
+  stream <rstring stationCode, float32 runningAvgTemp, float32 maxTemp, float32 minTemp> MultiHourTemp = Aggregate(FilteredAndPrepared)
+  {
+    window
+      /* Timestamps within an 18 hour span are kept in this window.  An aggregation tuple
+         is produced every 5 minutes.  We'd like the initial aggregation to include a full
+         18 hours of data, so waiting 5 minutes allows for the processing of the recent 
+         history to build up enough data to fill the 18 hours. */
+
+      FilteredAndPrepared: sliding, delta(observationTime, 64800l), time(300), partitioned;
+    param
+      partitionBy : stationCode;
+      aggregateIncompleteWindows: true;  // Produce an aggregate tuple even if the attribute delta criteria hasn't evicted any tuples yet
+    output MultiHourTemp : stationCode = Any(stationCode), 
+                           runningAvgTemp = Average(tempInF), 
+                           maxTemp = Max(tempInF), 
+                           minTemp = Min(tempInF);
+  }
+
+
+  /************************************************************************************
+  # Purpose:        Add the information about the supplier location to every filtered
+  #                 weather data tuple that flows through.  When a weather data tuple
+  #                 is processed, it is joined with the supplier location tuple.  
+  #  
+  # Input Streams:  There are two input streams:  1)  The stream of supplier location
+  #                 information: This stream only contains one tuple per supplier.
+  #                 2)  The filtered, annotated stream of current weather data: Unlike
+  #                 the supplier stream, this stream will continue to have new tuples 
+  #                 for each location, as long as the application is running.
+  #
+  # Output Streams: A stream containing both the supplier location information and the 
+  #                 latest weather data for that location.
+  ************************************************************************************/
+  stream <LocationSchema, AnnotatedWeatherSchema> LocationWeather = Join(SupplierLocation as L; FilteredAndPrepared as R) 
+  {
+    window
+      L : sliding, count(1), partitioned;
+      R : sliding, count(0);
+    param
+      partitionByLHS : weatherStationCode;
+      match: weatherStationCode == stationCode;
+  }
+
+
+  /************************************************************************************
+  # Purpose:        Produce a stream to export that adds the 18 hour temperature 
+  #                 information to the stream of supplier location and current weather 
+  #                 conditions.  The most recent 18 hour temperature tuple is joined 
+  #                 with each new location and current weather tuple.  
+  #  
+  # Input Streams:  The joined location / current-weather stream.
+  #
+  # Output Streams: A stream that includes supplier location information, current
+  #                 weather data, and 18-hour temperature data.
+  ************************************************************************************/
+  stream <WeatherSummarySchema> WeatherSummary = Join (LocationWeather; MultiHourTemp) 
+  {
+    window
+      LocationWeather : sliding, count(1), partitioned;
+      MultiHourTemp : sliding, count(1), partitioned;
+    param
+      partitionByLHS: LocationWeather.stationCode;
+      partitionByRHS: MultiHourTemp.stationCode;
+      match: LocationWeather.stationCode == MultiHourTemp.stationCode;
+    output
+      WeatherSummary : tempDelta = maxTemp-minTemp;
+  }
+
+
+  /*************************************************************************************
+  # Purpose:        Export the weather summary stream so it can be used by the other jobs. 
+  #  
+  # Input Streams:  The stream of summarized weather readings and calculations for a location.
+  #
+  # Output Streams: An exported weather summary.
+  ************************************************************************************/
+  () as WeatherSummaryExport = Export(WeatherSummary) 
+  {
+    param streamId : "WeatherSummary";
+  }
+
+
+  //
+  // Data Sinks (to support the application user interface)
+  //
+
+  /************************************************************************************
+  # Purpose:        Write the joined location / current-weather stream to an external
+  #                 sink.  In this case, the sink is a file that will be used as data 
+  #                 for the application user interface.  
+  #  
+  # Input Streams:  The joined location / current-weather stream.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as LocationWeatherSink = FileSink(LocationWeather)
+  {
+    param
+      file : "LocationWeather.result";
+      format : csv;
+      flush: 1u;
+  }
+
+
+  /************************************************************************************
+  # Purpose:        The composite operator used below will calculate per minute and total 
+  #                 tuple counts for the input stream and record them in sinks used by 
+  #                 the metrics portion of the application user interface.
+  #                 stream.  
+  #  
+  # Input Streams:  The joined location / current-weather stream.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as FilteredCounts = RecordTupleCounts(LocationWeather) 
+  {
+    param minuteSink: "FilteredTuplesPerMinute.result";
+          totalSink:  "TotalFilteredTuples.result";
+  }
+
+config placement : partitionColocation("same"); // place all operators into one PE
+}
+
+
+  //
+  // Composite Operators (used above)
+  //
+
+  /**
+   * Encapsulates the data preparation and filtering steps for the weather data.
+   *
+   * @input RawObservations A stream of raw NOAA weather data from all weather stations.
+   * @output FilteredAndPrepared A filtered stream of weather data.
+   */ 
+  composite PrepareAndFilterWeatherData (input RawObservations; output FilteredAndPrepared) {
+
+  graph
+
+    /************************************************************************************
+    # Purpose:        Convert the data from the raw, METAR format into a more structured
+    #                 stream.  
+    #  
+    # Input Streams:  The stream of raw observations with tuples containing strings in 
+    #                 METAR format.
+    #
+    # Output Streams: Tuples according to the schema below, containing attributes for
+    #                 the weather information.  One tuple contains a single weather 
+    #                 station at a particular point in time.
+    ************************************************************************************/
+    stream <WeatherStationSchema> WeatherStationReadings = Functor(RawObservations) 
+    {
+      logic  state : { mutable rstring locCode = "";
+                       mutable int64 obsTime = 0;
+                       mutable float32 temp = -999.0, dewp = -999.0;
+                       mutable int16 press = -999h, wSpeed = -999h, wHeading = -999h,wGust = -999h; }
+             onTuple RawObservations: {
+               mutable rstring obsData = "";
+  	       locCode = "";
+	       obsTime = 0l;
+	       temp = -999.0w; 
+	       dewp = -999.0w;
+	       press = -999h;
+	       wSpeed = -999h;
+	       wHeading = -999h;
+	       wGust = -999h;
+
+               // Example incoming record:
+               // 2009/04/17 02:45 KCWV 170245Z AUTO 12003KT 10SM CLR 14/13 A3025 RMK AO2
+
+               // Separate the observation time and location code from the rest of the information
+               // obsData is everything after the station location code, e.g. "170245Z AUTO 12003KT 10SM CLR 14/13 A3025 RMK AO2"
+               // locCode is the location code, e.g. "KCWV"
+               list<rstring> stationInfo = regexMatch(rawObservation, "([0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}) ([[:alnum:]]{4}) ([0-9]{6}.)(.*)");
+
+  	       if (size(stationInfo) > 4) {
+                 obsData = stationInfo[4] + " ";
+                 locCode = stationInfo[2];
+                 rstring ymdhms = stationInfo[1] + ":00";
+                 timestamp ts = toTimestamp(Sys.YYYY_MM_DD_hh_mm_ss, ymdhms, "GMT");
+                 obsTime = getSeconds(ts);
+  	       }
+
+               // Decode the temperature and dew point readings, if they are present (14/13 in the above example)		
+	       list<rstring> temp_dewpoint = regexMatch(obsData, " (M?)([0-9]{2})/((M?)([0-9]{2}))? ");
+	       if (size(temp_dewpoint) > 0) {
+                 temp = (float32) (temp_dewpoint[2]);
+                 if (temp_dewpoint[1] == "M")
+                   temp = -temp;
+                 if (size(temp_dewpoint) > 4) {
+                   dewp = (float32) (temp_dewpoint[5]);
+                   if (temp_dewpoint[4] == "M")
+                     dewp = -dewp;
+                 }
+	       }
+	
+               // Decode the wind speed data if present (12003KT in the above example)			
+	       list<rstring> wind = regexMatch(obsData, " ([0-9]{3}|VRB)([0-9]{2,3})(G([0-9]{2,3}))?(KT|MPS) ");
+ 	       if (size(wind) > 0) {
+                 if (wind[1] != "VRB")
+                   wHeading = (int16) (wind[1]);
+                 else
+                   wHeading = -1h;
+                 wSpeed = (int16) (wind[2]);
+                 wGust = wSpeed;
+                 //  index of units (KT/MPS) is last in list, could be at index 4 or 5 depending on whether
+  	         //  an optional gust value appeared in the measurement
+	         int32 unitIndex = size(wind) - 1;
+		
+                 if (size(wind) > 5) // observation included an optional gust value
+                   wGust = (int16) (wind[4]);
+			
+                 if (wind[unitIndex] == "MPS") {
+                   wSpeed = (int16) ((float64) wSpeed * 1.9438445);
+                   wGust = (int16) ((float64) wGust * 1.9438445);
+                 }
+	       }
+	
+               // Decode the barometric pressure if present (A3025 in the above example)		
+  	       list <rstring> baroA = regexMatch(obsData, " (A)([0-9]{4}) ");
+	       if (size(baroA) > 0)
+                 press = (int16) ((float64) (baroA[2]) * 0.3386);
+               else {
+                 list <rstring> baroQ = regexMatch(obsData, " (Q)([0-9]{3,4}) ");
+                 if (size(baroQ) > 0)
+                   press = (int16) (baroQ[2]);
+               }
+             }
+      output WeatherStationReadings :  stationCode = locCode,
+                                       observationTime = obsTime,
+                                       temp = temp,
+                                       dewpoint = dewp,
+                                       pressureMillibars = press,
+                                       windHeadingDegrees = wHeading,
+                                       windSpeedKnots = wSpeed,
+                                       windGustKnots = wGust;
+    } 
+
+
+    /************************************************************************************
+    # Purpose:        Filter out weather data for any locations that we don't require.  
+    #                 Since the application analyzes weather information from a known set
+    #                 of suppliers, we only pass along the data from the relevant 
+    #                 locations for further processing.
+    #  
+    # Input Streams:  The stream of weather observations from any location.
+    #
+    # Output Streams: A stream of weather observations containing tuples for the locations
+    #                 where we have suppliers.  Command line arguments passed in during
+    #                 on the spadec compile with the IDs for the weather stations for
+    #                 each of our supplier locations.
+    ************************************************************************************/
+    stream <WeatherStationSchema> InitialFilter = Functor(WeatherStationReadings)
+    {
+      param filter : stationCode==getCompileTimeValue("S0") || 
+                     stationCode==getCompileTimeValue("S1") || 
+                     stationCode==getCompileTimeValue("S2") || 
+                     stationCode==getCompileTimeValue("S3") || 
+                     stationCode==getCompileTimeValue("S4") || 
+                     stationCode==getCompileTimeValue("S5") || 
+                     stationCode==getCompileTimeValue("S6") || 
+                     stationCode==getCompileTimeValue("S7") || 
+                     stationCode==getCompileTimeValue("S8") || 
+                     stationCode==getCompileTimeValue("S9") || 
+                     stationCode==getCompileTimeValue("S10") ||  
+                     stationCode==getCompileTimeValue("S11"); 
+    }
+
+
+    /********************************************************************************
+    # Purpose:        Throw out tuples that have missing values for attributes that 
+    #                 we use in our analysis.  Earlier steps in the processing have 
+    #                 replaced missing fields with the sentinel value, -999.  
+    #                 Tuples containing missing values must be thrown out, so that
+    #                 that downstream windowing calculations are not adversely
+    #                 affected.  Even though we throw out a tuple that is missing
+    #                 a value, a complete tuple with the same timestamp may flow
+    #                 through later.  
+    #  
+    # Input Streams:  A stream of weather data for an individual supplier location
+    #                 that contains sentinel values.  The filter condition in the 
+    #                 functor below ensures that only tuples with real values for
+    #                 temperature and dew point are received by the functor.
+    #
+    # Output Streams: A stream of weather data for an individual supplier location
+    #                 with no tuples that have missing values for the required 
+    #                 attributes.
+    ********************************************************************************/
+    stream <WeatherStationSchema> FilteredMissingValues = Filter(InitialFilter)
+    {
+      // Its important that this filtering occurs prior to the filtering of duplicate 
+      // tuples.  This will prevent throwing out a higher-quality duplicate in that step
+      param filter : temp > -999.0w && dewpoint > -999.0w;
+    }
+
+
+    /********************************************************************************
+    # Purpose:        Remove duplicate tuples from the stream.  A duplicate in this
+    #                 case is defined to be a tuple with the same station code and 
+    #                 timestamp as a previously processed tuple.
+    #  
+    # Input Streams:  A stream of weather data that has already undergone some filtering.
+    #
+    # Output Streams: A stream of weather data for an individual supplier location that
+    #                 is not a duplicate of an earlier tuple.
+    ********************************************************************************/
+    stream<WeatherStationSchema> NoDuplicates = DeDuplicate(FilteredMissingValues)
+    {                                                                            
+      param                                                                         
+        timeOut : 86400.0;                   // No dups within a 24 hour period.                           
+        key : stationCode, observationTime;  
+    }
+
+
+    /************************************************************************************
+    # Purpose:        This Functor servers two purposes:  1) It filters out any tuples
+    #                 with timestamps that are over 18 hours old.  If a tuple over 18
+    #                 hours old flows past this point, it would compromise the 18 hour 
+    #                 windowing later in the flow by causing the eviction of newer data.
+    #                 2) It calculates some values needed by downstream processing.
+    #                 It converts temperatures in degrees C to degrees F, and it 
+    #                 calculates the estimated relative humidity using the temperature and 
+    #                 dew point values.
+    #  
+    # Input Streams:  The stream of weather data that has undergone some filtering in 
+    #                 earlier steps.
+    #
+    # Output Streams: A stream of weather data that also includes the newly calculated 
+    #                 values.  The stream should contain no duplicate tuples because of
+    #                 the earlier filtering.
+    ************************************************************************************/
+    stream <AnnotatedWeatherSchema> FilteredAndPrepared = Functor(NoDuplicates) 
+    {
+      param filter : observationTime > ((getSeconds(getTimestamp())) - 64800l);
+                     // The observationTime attribute is greater than a timestamp in seconds of 18 hours ago
+       
+      output FilteredAndPrepared : 
+             // Convert temp to degrees Fahrenheit and output in a separate attribute 
+             tempInF = (9.0w/5.0w)*temp+32.0w, 
+             // Calculate estimated relative humidity using the temperature and dew point
+             relativeHumidity = exp((17.269w*dewpoint)/(273.3w+dewpoint))/exp((17.269w*temp)/(273.3w+temp));
+    }
+
+
+    /************************************************************************************
+    # Purpose:        The composite operator used below will calculate per minute and total 
+    #                 tuple counts for the input stream and record them in sinks used by 
+    #                 the metrics portion of the application user interface.
+    #  
+    # Input Streams:  The stream of NOAA weather station data after the step of converting
+    #                 them into a more structured stream.
+    #
+    # Output Streams: None.
+    ************************************************************************************/
+    () as ReadingsCounts = RecordTupleCounts(WeatherStationReadings) 
+    {
+      param minuteSink: "WeatherTuplesPerMinute.result";
+            totalSink:  "TotalWeatherTuples.result";
+    }
+
+}
+

@@ -1,0 +1,147 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $isEnabled = ! $contextDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM());
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+%>
+namespace demoapp.context.sample;
+
+<%if ((1 == $isEnabled) && (0 == $ENABLE_CUSTOM_CODE)) {%>
+use demoapp.streams::*;
+
+/**
+ * ContextDataProcessor
+ * Custom composite thats receives processing context specific data tuples from the chains.
+ *
+ * @input  InData Data stream from ChainProcessor
+ * @input  InCommandStream Command stream with checkpoint commands
+ * @input  InRecoveryStream Recovery stream with data saved in checkpoint files
+ * @output OutCommandRespStream Command responses
+ * @output OutRecoveryRespStream Recovery response stream (punctuation only)
+ *
+ * @param groupId - context identifier
+ * @param checkpointFile - checkpoint file name for read and write cmd
+ * @param outputDir - configured output base directory
+ */
+public composite ContextDataProcessor
+(
+	input
+		InDataStream,
+		stream<TypesCommon.ContextCommandType> InCommandStream,
+		stream<TypesCommon.ContextCheckpointStreamType> InRecoveryStream;
+	output
+		OutCommandRespStream,
+		OutRecoveryRespStream
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $checkpointFile;
+		expression<rstring> $outputDir;
+
+	graph
+
+		@spl_category(name="sample")
+		(
+		stream<TypesCommon.ContextCommandRespType> OutCommandRespStream;
+		stream<TypesCommon.ContextCheckpointStreamType> OutRecoveryRespStream
+		) as CustomContextLogic = Custom(InDataStream as Data; InCommandStream as Cmd; InRecoveryStream as Recovery) {
+			logic
+				onTuple Data : {
+					if (true == Data.chainPunct) {
+						// ------------------------------------------------
+						// custom code begin
+						// ------------------------------------------------
+						
+						// ------------------------------------------------
+						// custom code end
+						// ------------------------------------------------
+					} else {
+						// ------------------------------------------------
+						// custom code begin
+						// ------------------------------------------------
+						
+						// ------------------------------------------------
+						// custom code end
+						// ------------------------------------------------
+					}
+				}
+				onTuple Cmd : {
+					Cmd.success = true;
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+					submit(Cmd, OutCommandRespStream);
+				}
+				onTuple Recovery : {
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+				}
+				onPunct Recovery : {
+					if (currentPunct() == Sys.WindowMarker) { // end of training phase
+						// ------------------------------------------------
+						// custom code begin
+						// ------------------------------------------------
+
+						// ------------------------------------------------
+						// custom code end
+						// ------------------------------------------------
+						submit(Sys.WindowMarker, OutRecoveryRespStream);
+					}
+				}
+		}
+
+}
+
+<%} #endif enabled%>

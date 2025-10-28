@@ -1,0 +1,1058 @@
+/*
+==============================================
+# Licensed Materials - Property of IBM
+# Copyright IBM Corp. 2021, 2024
+==============================================
+*/
+
+/*
+==================================================================
+First created on: Mar/05/2021
+Last modified on: Mar/05/2024
+
+This is an example application that shows how to use the
+eval_predicate function to evaluate an SPL expression a.k.a
+user defined rule.
+
+This function is written in C++. Full source code for this
+function can be found in the impl/include directory of that toolkit.
+
+Please note that the Streams product already has its own
+built-in function named evalPredicate whereas we are talking here
+about a new function named eval_predicate. This new function differs
+from the other built-in function in these ways.
+ 
+1) This new eval_predicate function allows the user
+given expression (rule) to access map elements.
+
+2) This new eval_predicate function allows the user
+given expression (rule) to access nested tuple attributes.
+
+3) This new eval_predicate function allows the user
+given expression (rule) to have operational verbs such as
+contains, startsWith, endsWith, notContains, notStartsWith,
+notEndsWith, in. For case insensitive (CI) string operations, these
+operational verbs can be used: containsCI, startsWithCI,
+endsWithCI, inCI, equalsCI, notContainsCI, notStartsWithCI,
+notEndsWithCI, notEqualsCI.
+For checking the size of the set, list and map, these
+operational verbs can be used: sizeEQ, sizeNE, sizeLT,
+sizeLE, sizeGT, sizeGE
+
+4) This new eval_predicate function supports the following operations.
+--> It supports these relational operations: ==, !=, <, <=, >, >=
+--> It supports these logical operations: ||, &&
+--> It supports these arithmetic operations: +, -, *, /, %
+--> It supports these special operations for rstring, set, list and map:
+    contains, startsWith, endsWith, notContains, notStartsWith, 
+    notEndsWith, in, containsCI, startsWithCI, endsWithCI, inCI, equalsCI, 
+    notContainsCI, notStartsWithCI, notEndsWithCI, notEqualsCI,
+    sizeEQ, sizeNE, sizeLT, sizeLE, sizeGT, sizeGE
+--> No bitwise operations are supported at this time.
+
+5) Following are the data types currently allowed in an expression (rule).
+If you need more data types to be allowed, please contact product
+support. 
+
+boolean, int32, uint32, int64, uint64, float32, float64, rstring,
+set<int32>, set<int64>, set<float32>, set<float64>, set<rstring>,
+list<int32>, list<int64>, list<float32>, list<float64>, list<rstring>, list<TUPLE>, 
+map<rstring,int32>, map<int32,rstring>, map<rstring,int64>, map<int64,rstring>,
+map<rstring,float32>, map<float32,rstring>, map<rstring,float64>,
+map<float64,rstring>, map<rstring,rstring>, map<int32,int32>, map<int32,int64>, 
+map<int64,int32>, map<int64,int64>, map<int32,float32>, map<int32,float64>, 
+map<int64,float32>, map<int64,float64>, map<float32,int32>, map<float32,int64>, 
+map<float64,int32>, map<float64,int64>, map<float32,float32>, map<float32,float64>, 
+map<float64,float32>, map<float64,float64> and nested tuple references
+pointing to any of the attributes made using the types shown above.
+
+Following are three tuple examples with varying degree of complexity.
+1) tuple<rstring symbol,float32 price,uint32 quantity,boolean buyOrSell> 
+2) tuple<tuple<rstring name,rstring title,int32 id,rstring gender,set<rstring> skills> employee,tuple<rstring name,rstring id,rstring manager,int32 employeeCnt> department>
+3) tuple<rstring name,tuple<tuple<tuple<float32 latitude,float32 longitude> geo,tuple<rstring state,rstring zipCode,map<rstring,rstring> officials,list<rstring> businesses> info> location,tuple<float32 temperature,float32 humidity> weather> details,tuple<int32 population,int32 numberOfSchools,int32 numberOfHospitals> stats,int32 rank,list<int32> roadwayNumbers,map<rstring,int32> housingNumbers>
+
+Following are the examples of expressions that can be sent for evaluation.
+We support either zero or single level or multilevel (nested) parenthesis combination.
+Within a given subexpression, you must use the same logical operators.
+
+Zero parenthesis is used in this expression:
+a == "hi" && b contains "xyz" && g[4] > 6.7 && id % 8 == 3
+
+Single level parenthesis is used within each subexpression:
+(a == "hi") && (b contains "xyz" || g[4] > 6.7 || id % 8 == 3)
+(a == "hi") && (b contains "xyz") && (g[4] > 6.7) && (id % 8 == 3)
+
+Following expressions use nested parenthesis.
+(a == "hi") && ((b contains "xyz" || g[4] > 6.7) && id % 8 == 3)
+(a == "hi") && (b contains "xyz" && (g[4] > 6.7 || id % 8 == 3))
+(a == "hi") && ((b contains "xyz") || (g[4] > 6.7) || (id % 8 == 3))
+(a == "hi") && ((b contains "xyz") || (g[4] > 6.7 || id % 8 == 3))
+((a == "hi" || c endsWith 'pqr') && (b contains "xyz")) || (g[4] > 6.7 || id % 8 == 3)
+(((a == 'hi') || (x <= 5) || (t == 3.14) || (p > 7)) && ((j == 3) && (y < 1) && (r == 9)) && s endsWith 'Nation')
+
+In addition to showing how to do rule expression processing,
+this example shows another feature of the eval_predicate
+toolkit i.e. how to get a value of a specific tuple attribute as
+that is expressed via a user provided string input.
+In this example, you can search for get_tuple_attribute_value to
+see 10 different test cases on that topic.
+
+Another feature available in the eval_prediate toolkit is to
+compare the attribute values of two tuples that are made of
+the same schema and to return a list containing the 
+attribute names that differ in their values. In this example,
+you can search for compare_tuple_attributes to see a few
+test cases on that topic.
+
+Another feature available in the eval_predicate toolkit is to
+get the schema literal string of a given tuple along with the 
+fully qualified attribute names and their SPL type names.
+In this example, you can search for get_tuple_schema_and_attribute_info
+to see a few test cases on that topic.
+
+How can you use this new eval_predicate function?
+-------------------------------------------------
+Any other application that wants to use this function must
+do the following two steps.
+1) Make the streamsx.eval_predicate toolkit as a dependency for
+   that application. (via the
+   -t compiler option in a project makefile.)
+
+2) In your SPL application, it will be necessary to have this statement.
+   use com.teracloud.streams.evalpredicate::*;
+
+How can you build this example application?
+-------------------------------------------
+1) If you are a command line person, you can use the
+Makefile provided in this toolkit directory to build it.
+On a Streams Linux machine, simply type 'make' from a
+terminal window by being within this toolkit's top-level directory.
+
+2) Alternatively, the extracted toolkit directory can also be 
+imported into Microsoft Visual Studio Code. 
+Before importing, it is a must to rename that Makefile in that 
+top-level directory to Makefile.org. Only with that renaming of 
+the Makefile, the example application will build correctly after 
+importing the toolkit into the development environment.
+==================================================================
+*/
+// eval_predicate function is available from this namespace.
+namespace com.teracloud.streams.evalpredicate.test;
+
+// We have to declare the use of this namespace from where we will get the
+// eval_predicate native functions that are called from this application.
+use com.teracloud.streams.evalpredicate::*;
+
+// This is the main composite for this application.
+composite EvalPredicateExample {
+	param
+		// This constant can be used to specify whether a 
+		// detailed tracing message to be displayed from inside the
+		// eval_predicate function or not. [Useful for debugging.]
+		expression<boolean> $EVAL_PREDICATE_TRACING : 
+			(boolean)getSubmissionTimeValue("EvalPredicateTracing", "false");
+			
+		// This constant can be used to specify whether the
+		// value of the tuple attribute fetched via the
+		// get_tuple_attribute_value should be displayed on 
+		// the console or not.
+		expression<boolean> $DISPLAY_FETCHED_ATTRIBUTE_VALUE : 
+			(boolean)getSubmissionTimeValue("DisplayFetchedAttributeValue", "true");
+			
+	type
+		// These are types or schema of the tuples that we will use to 
+		// evaluate different kinds of expressions.
+		//
+		// 1) A simple flat schema with no nesting.
+		Ticker_t = rstring symbol, float32 price, rstring priceInString, 
+			uint32 quantity, boolean buyOrSell;
+
+		// 2) A schema with multilevel types with no nesting.
+		Person_t = rstring name, rstring title, 
+			int32 id, rstring gender, set<rstring> skills;
+		Department_t = rstring name, rstring id, 
+			rstring manager, int32 employeeCnt;
+		Employee_t = Person_t employee, Department_t department;
+		
+		// 3) A schema with multilevel types and nesting that includes
+		// primitive and collection data types such as lists and maps.
+		GeoCoords_t = float32 latitude, float32 longitude;
+		CityInfo_t = rstring state, rstring zipCode, map<rstring, rstring> officials, list<rstring> businesses;
+		Weather_t = float32 temperature, float32 humidity;
+		Demography_t = int32 population, int32 numberOfSchools, int32 numberOfHospitals;
+		CityDetails_t = tuple<GeoCoords_t geo, CityInfo_t info> location, Weather_t weather;
+		City_t = rstring name, CityDetails_t details, Demography_t stats, 
+			int32 rank, list<int32> roadwayNumbers, map<rstring, int32> housingNumbers;
+
+		// 4) Another simple flat schema with no nesting.
+		AccuWeather_t = rstring city, float64 humidity,
+			map<int64, float64> hourlyTemperatureMap, boolean sunnyDay;
+			
+	graph
+		// Start this application with a dummy signal.
+		(stream<boolean dummy> Signal as S) as SignalGenerator = Beacon() {
+			param
+				iterations: 1;
+		}
+		
+		// We will do different test cases that will put the 
+		// eval_predicate function to use in different ways.
+		() as MySink1 = Custom(Signal as S) {
+			logic
+				onTuple S: {
+					mutable rstring rule = "";
+					mutable rstring attributeName = "";
+					mutable int32 error = 0;
+					mutable boolean result = false;
+
+					// ============== TESTCASE GROUP 1 ============== 
+					mutable Ticker_t myTicker = {};
+					myTicker.symbol = "INTC";
+					myTicker.price = (float32)79.25;
+					myTicker.priceInString = "79.25";
+					myTicker.quantity = 1287u;
+					myTicker.buyOrSell = true;
+					
+					// Evaluate an expression (i.e. rule).
+					// Arg1: Expression string i.e. your custom rule.
+					// Arg2: Your tuple
+					// Arg3: A mutable int32 variable to receive a non-zero eval error code if any.
+					//       (You can refer to top of the impl/include/eval_predicate.h file in the 
+					//        streamsx.eval_predicate toolkit for the meaning of a given error code.)
+					// Arg4: A boolean value to enable debug tracing inside this function.
+					// It returns true if the expression's evaluation criteria is met.
+					// It returns false and error=0 if the expression's evaluation criteria is not met.
+					// It returns a non-zero error when there is an evaluation execution failure.
+					//					
+					// 1.1
+					rule = "(price == -476.18)";
+					result = eval_predicate(rule, myTicker, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 1.1: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 1.1: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 1.1: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					//1.2
+					rule = "quantity > 2156";
+					result = eval_predicate(rule, myTicker, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 1.2: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 1.2: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 1.2: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 1.3
+					rule = "symbol startsWith 'INTC' && priceInString <= '97.34' && buyOrSell == true";
+					// rule = "(symbol startsWith 'INTC' && priceInString <= '97.34' && buyOrSell == true)"; 
+					result = eval_predicate(rule, myTicker, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 1.3: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 1.3: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 1.3: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 1.4 (MIXED_LOGICAL_OPERATORS_FOUND_IN_INTER_SUBEXPRESSIONS 92)
+					rule = "(symbol == 'IBM' && price % 20. > 17.23) && (quantity > 100) || (buyOrSell == false)";
+					result = eval_predicate(rule, myTicker, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 1.4: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 1.4: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 1.4: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 1.5 (EXPRESSION_WITH_NO_LHS_AND_OPERATION_VERB_AND_RHS 80)
+					// Tests different incorrect expression syntax.
+					rule = "          ";
+					// rule = "   (     )   (())       (    )   ";
+					// rule = "   (    ";
+					result = eval_predicate(rule, myTicker, error, $EVAL_PREDICATE_TRACING);
+
+					if(result == true) {
+						printStringLn("Testcase 1.5: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 1.5: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 1.5: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// ============== TESTCASE GROUP 2 ============== 
+					mutable Employee_t myEmployee = {};
+					myEmployee.employee.name = "Jill Doe";
+					myEmployee.employee.title = "Software Engineer";
+					myEmployee.employee.id = 452397;
+					myEmployee.employee.gender = "Female";
+					myEmployee.employee.skills = {"C++", "Java", "Python", "SPL"};
+					myEmployee.department.name = "Process Optimization";
+					myEmployee.department.id = "XJ825";
+					myEmployee.department.manager = "Mary Williams";
+					myEmployee.department.employeeCnt = 18;
+
+					// Evaluate an expression (i.e. rule).
+					// Arg1: Expression string i.e. your custom rule.
+					// Arg2: Your tuple
+					// Arg3: A mutable int32 variable to receive a non-zero eval error code if any.
+					//       (You can refer to top of the impl/include/eval_predicate.h file in the 
+					//        streamsx.eval_predicate toolkit for the meaning of a given error code.)
+					// Arg4: A boolean value to enable debug tracing inside this function.
+					// It returns true if the expression's evaluation criteria is met.
+					// It returns false and error=0 if the expression's evaluation criteria is not met.
+					// It returns a non-zero error when there is an evaluation execution failure.
+					//
+					// 2.1
+					rule = "(employee.skills contains 'Fortran')";
+					result = eval_predicate(rule, myEmployee, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 2.1: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 2.1: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 2.1: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 2.2
+					rule = "employee.name == 'Jill Doe' && employee.id == 452397 && department.name endsWith 'zation'";
+					result = eval_predicate(rule, myEmployee, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 2.2: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 2.2: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 2.2: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 2.3
+					rule = "(employee.title != 'Software Architect' && department.manager == 'Mary Williams' && department.id == 'XJ825') && (employee.gender == 'Female' && employee.skills contains 'Java')";
+					result = eval_predicate(rule, myEmployee, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 2.3: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 2.3: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 2.3: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 2.4 (LHS_NOT_MATCHING_WITH_ANY_TUPLE_ATTRIBUTE 16)
+					// Let us try to access an invalid (non-existing) tuple attribute.
+					// employee.specialty.skills doesn't exist in the myEmployee tuple.
+					rule = "(employee.title != 'Software Architect' && department.manager == 'Mary Williams' && department.id == 'XJ825') && (employee.gender == 'Female' && employee.specialty.skills   contains   'Python')";
+					result = eval_predicate(rule, myEmployee, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 2.4: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 2.4: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 2.4: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// Get the value of a given tuple attribute name.
+					// Arg1: Fully qualified attribute name
+					// Arg2: Your tuple
+					// Arg3: A mutable variable of an appropriate type in which the
+					//       value of a given attribute will be returned.
+					// Arg4: A mutable int32 variable to receive non-zero error code if any.
+					// Arg5: A boolean value to enable debug tracing inside this function.
+					// It is a void method that returns nothing.
+					//
+					// 2.5
+					// Get an int32 value of a given tuple attribute name.
+					attributeName = "employee.id";
+					mutable int32 employeeId = 0;
+					get_tuple_attribute_value(attributeName, myEmployee,
+						employeeId, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 2.5: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)employeeId);
+						}
+					} else {
+						printStringLn("Testcase 2.5: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 2.6
+					// Get the full set<rstring> value of a given tuple attribute name.
+					attributeName = "employee.skills";
+					mutable set<rstring> employeeSkills = {};
+					get_tuple_attribute_value(attributeName, myEmployee,
+						employeeSkills, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 2.6: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)employeeSkills);
+						}
+					} else {
+						printStringLn("Testcase 2.6: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// Compare the attribute values of two tuples that are based on the same schema.
+					// Arg1: Your tuple1
+					// Arg2: Your tuple2
+					// Arg3: A mutable variable of list<string> type in which the
+					//       attribute names that have a match in their values will be returned.
+					// Arg4: A mutable variable of list<string> type in which the
+					//       attribute names that differ in their values will be returned.
+					// Arg5: A mutable int32 variable to receive non-zero error code if any.
+					// Arg6: A boolean value to enable debug tracing inside this function.
+					//
+					// 2.7
+					// Compare two tuples that have no differing attribute values.
+					//
+					// Declare a nested tuple data structure to be used in this test case.
+					type NestedType1_t = int32 x, float64 y, rstring z, list<int32> l;
+					type NestedType2_t = NestedType1_t m, map<int32, boolean> n, timestamp o;
+					type Test_t = boolean a, int32 b, uint64 c, float32 d, float64 e,
+						rstring f, set<int32> g, list<rstring> h, map<int32, rstring> i,
+						map<rstring, float64> j, NestedType2_t k;
+					
+					// Create two tuples that are based on the same schema.
+					mutable Test_t myTuple1 = {};
+					mutable Test_t myTuple2 = {};
+					mutable list<rstring> matchingAttributes = [];
+					mutable list<rstring> differingAttributes = [];
+					
+					// Populate the tuple with some data.
+					myTuple1.a = true;
+					myTuple1.b = 456;
+					myTuple1.c = 789ul;
+					myTuple1.d = (float32)123.45;
+					myTuple1.e = 987.65;
+					myTuple1.f = "Life is mainly there to have fun.";
+					myTuple1.g = {5, 9, 2, 6};
+					myTuple1.h = ['One', 'Two', 'Three'];
+					myTuple1.i = {1:'One', 2:'Two', 3:'Three'};
+					myTuple1.j = {"One":1.0, "Two":2.0, "Three":3.0};
+					myTuple1.k.m.x = 678;
+					myTuple1.k.m.y = 936.27;
+					myTuple1.k.m.z = "String inside a nested tuple.";
+					myTuple1.k.m.l = [67, 78, 89];
+					myTuple1.k.n = {1:true, 2:false, 3:true}; 
+					myTuple1.k.o = getTimestamp();
+						
+					// Make the second tuple same as the first tuple.
+					myTuple2 = myTuple1;
+					
+					// Compare them now.
+					compare_tuple_attributes(myTuple1, myTuple2,
+						matchingAttributes, differingAttributes, 
+						error, $EVAL_PREDICATE_TRACING);
+	    			
+					if(error == 0) {
+						printStringLn("Testcase 2.7: Compare tuple attributes function returned successfully. " +
+							", matchingAttributes = " + (rstring)matchingAttributes + 
+							", differingAttributes = " + (rstring)differingAttributes);
+					} else {
+						printStringLn("Testcase 2.7: Compare tuple attributes function returned an error. Error=" + (rstring)error);
+					}
+	    					
+					// 2.8
+					// Compare two tuples that have differing attribute values.
+					//
+					// Make the second tuple to have a few different attribute values than the first tuple.
+					myTuple2.a = false;
+					myTuple2.d = (float32)145.12;
+					myTuple2.f = "Life is mainly there to have joy and peace.";
+					myTuple2.i = {10:'Ten', 9:'Nine', 8:'Eight'};
+					myTuple2.k.m.y = 27.93;
+					myTuple2.k.m.z = "Different string inside a nested tuple.";
+					myTuple2.k.n = {1:true, 2:true, 3:true};
+					// Wait for 2 seconds for time to change.
+					block(2.0);
+					myTuple2.k.o = getTimestamp(); 
+					
+					// Clear the list.
+					matchingAttributes = (list<rstring>)[];
+					differingAttributes = (list<rstring>)[];
+					// Compare them now.
+					compare_tuple_attributes(myTuple1, myTuple2,
+						matchingAttributes, differingAttributes, 
+						error, $EVAL_PREDICATE_TRACING);
+	    			
+					if(error == 0) {
+						printStringLn("Testcase 2.8: Compare tuple attributes function returned successfully. " +
+							", matchingAttributes = " + (rstring)matchingAttributes + 
+							", differingAttributes = " + (rstring)differingAttributes);
+					} else {
+						printStringLn("Testcase 2.8: Compare tuple attributes function returned an error. Error=" + (rstring)error);
+					}
+
+					// 2.9
+					// Get tuple schema literal string along with its attribute information.
+					//
+					mutable rstring tupleSchema = "";
+					mutable map<rstring, rstring> attributeInfo = {};
+					
+					// Call the specific function that can do this for us.
+					// It will return the tuple schema literal string in the 
+					// mutable string variable passed as a second function argument.
+					// It will return the tuple attribute information in the
+					// mutable map variable passed as a third function argument.
+					// This map's keys will hold the fully qualified tuple attribute names.
+					// This map's values will hold the SPL type names of the tuple attribute names.
+					get_tuple_schema_and_attribute_info(myTuple1, tupleSchema,
+						attributeInfo, error, $EVAL_PREDICATE_TRACING);
+
+					if(error == 0) {
+						printStringLn("Testcase 2.9: Get tuple schema function returned successfully. " +
+							", tupleSchema = " + tupleSchema + 
+							", attributeInfo = " + (rstring)attributeInfo);
+					} else {
+						printStringLn("Testcase 2.9: Get tuple schema function returned an error. Error=" + (rstring)error);
+					}					
+					
+					// ============== TESTCASE GROUP 3 ============== 
+					mutable City_t myCity = {};
+					myCity.name = "White Plains";
+					myCity.details.location.geo = {latitude=(float32)125.23, longitude=(float32)42.18};
+					myCity.details.location.info = {state="NY", zipCode="10601",
+						officials={"Mayor":"Jane Doe", "Supervisor":"John Tikki", 
+							"Clerk":"Jill Maidy", "People's Champion":"Martha O'Leary"},
+						businesses=["Pepsi", "Auto Nation", "Craft Foods"]};
+					myCity.details.weather = {temperature=(float32)45.28, humidity=(float32)37.39};
+					myCity.stats = {population=58129, numberOfSchools=8, numberOfHospitals=5};
+					myCity.rank = 5;
+					myCity.roadwayNumbers = [287, 684, 120, 119, 22];
+					myCity.housingNumbers = {"SingleFamily":379, "Condo":86, "TownHome":54};
+
+					// Evaluate an expression (i.e. rule).
+					// Arg1: Expression string i.e. your custom rule.
+					// Arg2: Your tuple
+					// Arg3: A mutable int32 variable to receive a non-zero eval error code if any.
+					//       (You can refer to top of the impl/include/eval_predicate.h file in the 
+					//        streamsx.eval_predicate toolkit for the meaning of a given error code.)
+					// Arg4: A boolean value to enable debug tracing inside this function.
+					// It returns true if the expression's evaluation criteria is met.
+					// It returns false and error=0 if the expression's evaluation criteria is not met.
+					// It returns a non-zero error when there is an evaluation execution failure.
+					//
+					// 3.1 (INVALID_KEY_FOR_LHS_MAP_ATTRIBUTE 102)
+					rule = "details.location.info.officials['abc'] == 'xyz'    ";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.1: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.1: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.1: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 3.2
+					rule = "  (  details.location.geo.latitude + 14.82 >= 125.12 && details.location.info.zipCode != '10532' && details.location.info.officials['Clerk'] startsWith 'Jill' && details.location.info.businesses[2] endsWith 'Foods'    )   ";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.2: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.2: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.2: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.3
+					rule = "(stats.numberOfSchools == 8) || (rank==5) || (roadwayNumbers contains 120) || ( housingNumbers [ 'Condo' ]  >=  80 ) ";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.3: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.3: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.3: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 3.4
+					// Similar to previous expression except for the use of 
+					// logical AND instead of logical OR.
+					rule = "(stats.numberOfHospitals <= 5) && (rank % 5 == 0) && (roadwayNumbers contains 22) && ( housingNumbers [  'SingleFamily'    ]  /  379  >= 1  ) ";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.4: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.4: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.4: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 3.5
+					// To check the reusable aspect of an expression during
+					// its repeated use, we can stay in a loop and evaluate the
+					// same expression. Underlying C++ code for the eval_predicate
+					// function should do some optimization in such cases by
+					// reusing the expression details from its internal cache.
+					mutable int32 cnt = 0;
+					rule = "name == 'White Plains' && details.location.info.officials['Mayor'] contains 'Doe' && rank == 5 && roadwayNumbers[1] == 684";
+					
+					while(cnt++ < 5) {
+						// Evaluate the same expression a few times.						
+						result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+						
+						if(result == true) {
+							printStringLn("Testcase 3.5 (" + (rstring)cnt + "): Evaluation criteria is met.");
+						} else if(result == false && error == 0) {
+							printStringLn("Testcase 3.5 (" + (rstring)cnt + "): Evaluation criteria is not met.");
+						} else {
+							printStringLn("Testcase 3.5 (" + (rstring)cnt + "): Evaluation execution failed. Error=" + (rstring)error);
+						}
+					} // End of while loop.
+
+					// 3.6 (TUPLE_SCHEMA_MISMATCH_FOUND_IN_EXP_EVAL_PLAN_CACHE 95)
+					// Let us try to evaluate an expression by passing a wrong tuple type.
+					// This should definitely result in a failure with a non-zero error code.
+					rule = "(stats.numberOfSchools == 8) || (rank==5) || (roadwayNumbers contains 120) || ( housingNumbers [ 'Condo' ]  >=  80 ) ";
+					result = eval_predicate(rule, myTicker, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.6: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.6: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.6: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.7
+					// Nested expression pattern 1.
+					rule = "(stats.numberOfSchools == 8) && ((rank==5 || roadwayNumbers contains 120) && housingNumbers [ 'Condo' ]  >=  80 ) ";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.7: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.7: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.7: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.8
+					// Nested expression pattern 2.
+					rule = "(stats.numberOfSchools == 8) && (rank==5 && (roadwayNumbers contains 120 || housingNumbers['Condo'] >= 80))";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.8: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.8: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.8: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.9
+					// Nested expression pattern 3.
+					rule = "(stats.numberOfSchools == 8) && ((rank==5) || (roadwayNumbers contains 120) || (housingNumbers['Condo'] >= 80))";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.9: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.9: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.9: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.10
+					// Nested expression pattern 4.
+					rule = "(stats.numberOfSchools == 8) && ((rank==5) || (roadwayNumbers contains 120 || housingNumbers['Condo'] >= 80))";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.10: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.10: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.10: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.11
+					// Nested expression pattern 5.
+					rule = "((stats.numberOfSchools == 8 || rank==5) && (roadwayNumbers contains 120)) || (housingNumbers['Condo'] >= 80 || details.location.info.state =='NY')";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.11: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.11: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.11: Evaluation execution failed. Error=" + (rstring)error);
+					}
+	
+					// 3.12
+					// Nested expression pattern 6.
+					rule = "(((stats.numberOfSchools == 8) || (rank==5) || (roadwayNumbers contains 120) || (housingNumbers['Condo'] >= 80)) && ((details.location.info.state =='NY') && (name == 'White Plains') && (details.weather.humidity >= 37.39)) && details.location.info.businesses[1] endsWith 'Nation')";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.12: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.12: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.12: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.13
+					// Size check for list<built-in type>.
+					// Possible choices: sizeEQ, sizeNE, sizeLT, sizeLE, sizeGT, sizeGE
+					rule = "(roadwayNumbers sizeGE 6 && roadwayNumbers[5] == 117)";
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.13: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.13: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.13: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// 3.14
+					// Use of quote characters in map key string and in RHS string value.
+					// If the entire rule expression is in a single string literal,
+					// then the embedded quote characters may require escaping.
+					rule = '(details.location.info.officials["People\'s Champion"] == "Martha O\'Leary")';
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.14: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.14: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.14: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 3.15
+					// Another example for using quote characters in 
+					// map key string and in RHS string value.
+					// If the entire rule expression is in a single string literal,
+					// then the embedded quote characters may require escaping.
+					rule = '(details.location.info.officials["People\'s Champion"] == "Martha O\'Leary" && ' +
+						' details.location.info.officials["People\'s Champion"] endsWith " O\'Donnel")';
+					result = eval_predicate(rule, myCity, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 3.15: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 3.15: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 3.15: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// Get the value of a given tuple attribute name.
+					// Arg1: Fully qualified attribute name
+					// Arg2: Your tuple
+					// Arg3: A mutable variable of an appropriate type in which the
+					//       value of a given attribute will be returned.
+					// Arg4: A mutable int32 variable to receive non-zero error code if any.
+					// Arg5: A boolean value to enable debug tracing inside this function.
+					// It is a void method that returns nothing.
+					//
+					// 3.16
+					// Get an rstring value of a given tuple attribute name.
+					attributeName = "name";
+					mutable rstring cityName = "";
+					get_tuple_attribute_value(attributeName, myCity,
+						cityName, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 3.16: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)cityName);
+						}
+					} else {
+						printStringLn("Testcase 3.16: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 3.17
+					// Get a float32 value of a given tuple attribute name.
+					attributeName = "details.location.geo.latitude";
+					mutable float32 latitude = (float32)0.0;
+					get_tuple_attribute_value(attributeName, myCity,
+						latitude, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 3.17: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)latitude);
+						}
+					} else {
+						printStringLn("Testcase 3.17: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 3.18
+					// Get a list<rstring>[idx] value of a given tuple attribute name.
+					attributeName = "details.location.info.businesses[2]";
+					mutable rstring businessName = "";
+					get_tuple_attribute_value(attributeName, myCity,
+						businessName, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 3.18: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)businessName);
+						}
+					} else {
+						printStringLn("Testcase 3.18: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 3.19
+					// Get a map<rstring,rstring>[key] value of a given tuple attribute name.
+					attributeName = "details.location.info.officials['Mayor']";
+					mutable rstring mayor = "";
+					get_tuple_attribute_value(attributeName, myCity,
+						mayor, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 3.19: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)mayor);
+						}
+					} else {
+						printStringLn("Testcase 3.19: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 3.20
+					// Get a map<rstring,rstring>[key] value of a given tuple attribute name.
+					// In this case, the map key string has a quote character in it.
+					// If the entire rule expression is in a single string literal,
+					// then the embedded quote characters may require escaping.
+					attributeName = 'details.location.info.officials["People\'s Champion"]';
+					mutable rstring peopleChampion = "";
+					get_tuple_attribute_value(attributeName, myCity,
+						peopleChampion, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 3.20: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)peopleChampion);
+						}
+					} else {
+						printStringLn("Testcase 3.20: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 3.21
+					// Get the entire list<rstring> value of a given tuple attribute name.
+					attributeName = "roadwayNumbers";
+					mutable list<int32> routeNumbers = [];
+					get_tuple_attribute_value(attributeName, myCity,
+						routeNumbers, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 3.21: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)routeNumbers);
+						}
+					} else {
+						printStringLn("Testcase 3.21: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 3.22
+					// Get the entire map<rstring,rstring> value of a given tuple attribute name.
+					attributeName = "housingNumbers";
+					mutable map<rstring,int32> housingReport = {};
+					get_tuple_attribute_value(attributeName, myCity,
+						housingReport, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 3.22: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)housingReport);
+						}
+					} else {
+						printStringLn("Testcase 3.22: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// ============== TESTCASE GROUP 4 ============== 					
+					mutable AccuWeather_t myWeather = {};
+					myWeather.city = "New York";
+					myWeather.humidity = 12.87;
+					insertM(myWeather.hourlyTemperatureMap,
+						333343l, 87.355);
+					insertM(myWeather.hourlyTemperatureMap,
+						443536l, 84.31);
+					insertM(myWeather.hourlyTemperatureMap,
+						592311l, 85.72);
+					insertM(myWeather.hourlyTemperatureMap,
+						693127l, 86.128);
+					insertM(myWeather.hourlyTemperatureMap,
+						729841l, 85.853);
+					myWeather.sunnyDay = true;
+					
+					type AccuWeatherTestData_t = list<AccuWeather_t> weatherList;
+					mutable AccuWeatherTestData_t accuWeatherTestData = {};
+					appendM(accuWeatherTestData.weatherList, myWeather);
+					
+					// Evaluate an expression (i.e. rule).
+					// Arg1: Expression string i.e. your custom rule.
+					// Arg2: Your tuple
+					// Arg3: A mutable int32 variable to receive a non-zero eval error code if any.
+					//       (You can refer to top of the impl/include/eval_predicate.h file in the 
+					//        streamsx.eval_predicate toolkit for the meaning of a given error code.)
+					// Arg4: A boolean value to enable debug tracing inside this function.
+					// It returns true if the expression's evaluation criteria is met.
+					// It returns false and error=0 if the expression's evaluation criteria is not met.
+					// It returns a non-zero error when there is an evaluation execution failure.
+					//					
+					// 4.1
+					// Usage of list<TUPLE>
+					rule = "(((weatherList[0].sunnyDay == false) || (weatherList[0].city containsCI 'york') || (weatherList[0].humidity <= 12.87)) && ((weatherList[0].hourlyTemperatureMap[592311] != 89.16)) && weatherList[0].sunnyDay == true)";
+					result = eval_predicate(rule, accuWeatherTestData, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 4.1: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 4.1: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 4.1: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					// 4.2
+					// Size check for list<TUPLE>.
+					// Possible choices: sizeEQ, sizeNE, sizeLT, sizeLE, sizeGT, sizeGE
+					rule = "((weatherList sizeLT 2) && (weatherList[0].sunnyDay == true))";
+					result = eval_predicate(rule, accuWeatherTestData, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 4.2: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 4.2: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 4.2: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					// Get the value of a given tuple attribute name.
+					// Arg1: Fully qualified attribute name
+					// Arg2: Your tuple
+					// Arg3: A mutable variable of an appropriate type in which the
+					//       value of a given attribute will be returned.
+					// Arg4: A mutable int32 variable to receive non-zero error code if any.
+					// Arg5: A boolean value to enable debug tracing inside this function.
+					// It is a void method that returns nothing.
+					//
+					// 4.3
+					// Get a list<TUPLE>[idx] value of a given tuple attribute name.
+					attributeName = "weatherList[0].hourlyTemperatureMap";
+					mutable map<int64, float64> myTemperatureMap = {};
+					get_tuple_attribute_value(attributeName, accuWeatherTestData,
+						myTemperatureMap, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 4.3: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)myTemperatureMap);
+						}
+					} else {
+						printStringLn("Testcase 4.3: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+
+					// 4.4
+					// Get the entire list<TUPLE> value of a given tuple attribute name.
+					attributeName = "weatherList";
+					mutable list<AccuWeather_t> myWeatherList = [];
+					get_tuple_attribute_value(attributeName, accuWeatherTestData,
+						myWeatherList, error, $EVAL_PREDICATE_TRACING);
+					
+					if(error == 0) {
+						printStringLn("Testcase 4.4: Tuple attribute value was fetched successfully.");
+						
+						if($DISPLAY_FETCHED_ATTRIBUTE_VALUE == true) {
+							printStringLn(attributeName + "=" + (rstring)myWeatherList);
+						}
+					} else {
+						printStringLn("Testcase 4.4: Tuple attribute value was not fetched successfully. Error=" + (rstring)error);
+					}
+					
+					// ============== TESTCASE GROUP 5 ============== 	
+					type Role_t = rstring role, int32 age, float64 salary;
+					mutable Role_t myRole = {};
+					myRole.role = "Admin";
+					myRole.age = 56;
+					myRole.salary = 10514.00; 
+					
+					//					
+					// 5.1
+					// Usage of in for an rstring tuple attribute
+					// It does case sensitive membership test using a list literal string.
+					rule = 'role in ["Developer", "Tester", "Admin", "Manager"]';
+					result = eval_predicate(rule, myRole, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 5.1: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 5.1: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 5.1: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					//					
+					// 5.2
+					// Usage of inCI for an rstring tuple attribute
+					// It does case insensitive membership test using a list literal string.
+					myRole.role = "mAnAgEr";
+					rule = 'role inCI ["Developer", "Tester", "Admin", "Manager"]';
+					result = eval_predicate(rule, myRole, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 5.2: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 5.2: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 5.2: Evaluation execution failed. Error=" + (rstring)error);
+					}
+					
+					//	
+					// 5.3
+					// Usage of in for an int32 tuple attribute
+					// It does membership test using a list literal string.
+					rule = 'age in [22, 40, 43, 50, 56, 65]';
+					result = eval_predicate(rule, myRole, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 5.3: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 5.3: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 5.3: Evaluation execution failed. Error=" + (rstring)error);
+					}
+
+					//	
+					// 5.4
+					// Usage of in for a float64 tuple attribute
+					// It does membership test using a list literal string.
+					rule = 'salary in [68326.45, 92821.87, 10514.00, 120529,32]';
+					result = eval_predicate(rule, myRole, error, $EVAL_PREDICATE_TRACING);
+					
+					if(result == true) {
+						printStringLn("Testcase 5.4: Evaluation criteria is met.");
+					} else if(result == false && error == 0) {
+						printStringLn("Testcase 5.4: Evaluation criteria is not met.");
+					} else {
+						printStringLn("Testcase 5.4: Evaluation execution failed. Error=" + (rstring)error);
+					}
+				} // End of onTuple S
+		} // End of the Custom operator.
+} // End of the main composite.

@@ -1,0 +1,189 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2015, 2017     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+                            
+namespace com.teracloud.streams.geospatial.sample.geometrymapmatcher ;
+use com.teracloud.streams.geospatial::* ;
+
+/**
+ * This sample demonstrates the usage of the GeometryMapMatcher operator to find edges in a given road net graph.
+ * Vehicles traveling on one the returned edges, can reach a given point of interest (POI) or area of interest (AOI) by 
+ * driving less than 1000 meters (parameter "distanceThreshold") along the road net graph. The GeometryMapMatcher uses
+ * a reverse Dijkstra algorithm to find these edges. 
+ * 
+ * The sample performs the following steps :
+ * 1) load a road map of Seattle into shared memory by means of the MapStore operator
+ * 2) send a query to the GeometryMapMatcher specifying an area of interest given as rectangle.
+ *    The GMM will access the shared map and calculate all edges that can reach the AOI and return them as list.
+ * 3) store results into a file  
+ * 
+ * A real use case could store the edge list (along with metadata) in an SPL map and use 
+ * the PointMapMatcher operator to calculate edge identifiers for multiple cars traveling in Seattle.
+ * Than it could match edge identifiers of the cars against edge lists of POIs/AOIs and take further 
+ * actions on cars that are in reach of the POI/AOI (for example sending notifications to the cars).
+ */
+composite Main
+{
+	param 
+		expression<rstring> $resultDir : getSubmissionTimeValue("resultFileDirectory", "results");
+
+	type
+	
+		// The road net data is send as tuples in this format 
+		UpdateTuple = tuple
+ 		<
+ 			UpdateType updateType,			// one of NODE (to add a waypoint of a road) or EDGE (to add an edge of the road net graph)
+ 			UpdateFlags updateFlags,		// operation type : ADD or remove 
+ 			int64 objectId,					// the identifier of the edge/node 
+ 			float64 latitude,				// the latitude of a node (ignored for edges)
+ 			float64 longitude,				// the longitude of a node (ignored for edges)
+ 			int64 startNodeId,				// the start node of a edge (ignored for nodes)
+ 			int64 endNodeId,				// the end node of a edge (ignored for nodes)
+ 			boolean isOneWay				// indicator of a oneway edge (ignored for nodes)
+ 		>;
+	
+		// The response events of the MapStore operator
+		ResponseTuple = tuple
+		<
+			MapStoreTypes.TupleTypes tupleType,
+			MapStoreTypes.Events event
+		>, UpdateTuple;
+		
+		// The tuple schema for the GeometryMapMatcher operator
+		// This tuple is contains input parameter as well as output parameter 
+		// all attributes not written by the GMM operator are passed through the operator as is
+		QueryTuple = tuple
+		<
+ 			int64 objectId,				// not used by the GMM, it could serve as unique identifier of the point of interest (e.g. accident id) 
+ 			int64 timeStamp,			// not used by the GMM, could serve as timestamp of the accident for example
+ 			rstring geometry,			// input attribute for the GMM: the geometry of the area of interest in WKT format
+ 			float64 distance,			// input attribute for the GMM: the maximum on-track distance of an edge to the POI/AOI 
+ 			float64 buffer,				// input attribute for the GMM: an additional "border" to consider around the geometry, use for POINT() only  
+ 			list<GeometryMapMatcherTypes.EdgeData> edgeList,	// output attribute of the GMM: the list of edges detected by the path finder algorithm	
+ 			GeometryMapMatcherTypes.ResultCode errorCode		// output attribute of the GMM: the error code (outcome of the operation)
+		>;
+
+	graph
+	
+		// Read Seattle road map data from file.
+		// The format is Streams tuples txt format. The tuples are send to the MapStore operator
+		stream<UpdateTuple> GeometrySourceData = FileSource()
+		{
+			param
+				file : getApplicationDir() + "/data/Seattle_map.gz";
+				format : txt;
+				compression : gzip;
+		}
+		
+		// The MapStore operator loads the map data into a shared memory segment named "SeattleMap". 
+		// Multiple PointMapMatcher and GeometryMapMatcher operators can access the map data concurrently.  
+		// The size of the segment is 1GB. On application shutdown the segment is removed.
+		(stream<ResponseTuple> Responses as O) as Storage = MapStore(GeometrySourceData as I)
+		{
+			param
+				storeName: "SeattleMap";
+				storeSize: 1ul * 1024ul * 1024ul * 1024ul;
+				removeSharedMapStoreOnShutdown: true;
+			output O:
+				tupleType = TupleType(),
+				event = Event();
+		}
+
+		// Send a geometry query to the GeometryMapMatcher operator. The Area of interest is given as Bounding Box.
+		// Other supported options are WKT POINT() and POLYGON() syntax. The query returns all road net edges 
+		// that can reach the Area of interest within 1000 meters (on-track distance to the AOI).  
+		(stream<QueryTuple> GeometryQueries as O) as Trigger = Custom()
+		{
+			logic
+			onProcess :
+			{
+				mutable QueryTuple t = (O){};
+				t.geometry = "BOUNDINGBOX (-122.327131 47.606514, -122.326294 47.608915)";
+				t.distance = 1000.0;
+				t.buffer = 0.0;
+				submit(t,O);
+			}
+		}
+
+		// The geometry map matcher attaches to the "SeattleMap" shared map maintained by the MapStore operator.
+		// The input tuple is forwarded to the output port, the edgeList attribute will contain the list of edges 
+		// that are in reach of the area of interest passed as WKT geometry in the geometry attribute of the input tuple.
+		// the errorCode attribute will contain the outcome of the matching operation.
+		// The read/write access to the shared map is coordinated by locks. 
+		(stream<I> MatchedGeometries as O) as GMMatcher = GeometryMapMatcher(GeometryQueries as I)
+		{
+			param
+				geometry : geometry;
+				distanceThreshold : distance;
+				geometryBuffer : buffer;
+				storeName : "SeattleMap";
+				faultHandling: GeometryMapMatcher.wait;
+			output O:
+				edgeList = getEdgeList(),
+				errorCode = getResultCode();
+		}
+		
+		// Write the output events of the MapStore operator to a file
+		() as StoreResponseSink = FileSink(Responses as I)
+		{
+			param
+				file : $resultDir + "/storeResponses.txt";
+				writePunctuations: true;
+				format : txt;
+				flush: 1u;
+		}
+
+		// Format the resulting edges from the GeometryMapMatcher for output. Each edge is send as a separate line 
+		// with two fileds (blank separated) :
+		// - the identifier of the edge
+		// - the distance of one of the edges nodes to the area of interest (the minimum distance is choosen)    
+		(stream<rstring outputline> EdgesFound as O) as Printer = Custom(MatchedGeometries as I)
+		{
+			logic
+			onTuple I :
+			{
+				for (GeometryMapMatcherTypes.EdgeData edge in I.edgeList)
+				{
+					rstring result = (rstring)edge.edgeId + " " + formatNumber(edge.distance,1u,3u,false);
+					// print result, so the output can be checked in the log viewer
+					println("edge: " + result);
+					submit( { outputline=result }, O);
+				}
+			}
+		}
+
+		// Write the formatted edges to an output file
+		() as EdgesSink = FileSink(EdgesFound)
+		{
+			param
+				file : $resultDir + "/edgesFound.txt";
+				format : line;
+				flush: 1u;
+		}
+
+		config
+			placement: partitionExlocation("X");	// place each operator in a separate PE
+		
+}

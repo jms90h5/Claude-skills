@@ -1,0 +1,35 @@
+//
+// *******************************************************************************
+// * Copyright (C)2014, International Business Machines Corporation and *
+// * others. All Rights Reserved. *
+// *******************************************************************************
+//
+namespace com.teracloud.streams.json.sample.ttoj;
+
+use com.teracloud.streams.json::*;
+
+/**
+ * Example of an using [com.teracloud.streams.json::TupleToJSON] to convert SPL tuples into JSON Strings.
+ * 
+ */
+public composite SimpleTupleConvert {
+	type 
+		JsonType = rstring name, int32 age, list<rstring> relatives;
+	
+	graph
+	//generate some tuples
+	stream<JsonType> InputS = Beacon() {
+	param
+		iterations : 1u;
+	output InputS : name = "Jane", age = 25, relatives = ["John", "Sam"];
+	}
+	//Convert the incoming tuples to JSON
+	stream<Json> JsonS = TupleToJSON(InputS) {
+	}
+	
+	() as SinkOp = Custom(JsonS) {
+		logic onTuple JsonS : {
+			println("Json String: " + (rstring)JsonS);
+		}
+	}
+}

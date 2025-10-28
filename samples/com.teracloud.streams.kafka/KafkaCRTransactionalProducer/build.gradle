@@ -1,0 +1,23 @@
+apply from: "${rootDir}/common.gradle"
+apply plugin: 'java'
+
+def toolkitPath = project(':com.teracloud.streams.kafka').projectDir
+def namespace = "com.teracloud.streams.kafka.sample"
+def mainComp = "KafkaCRTransactionalProducer"
+def dataDir = "data"
+
+task compile() {
+    dependsOn ':com.teracloud.streams.kafka:copyLibToImpl'
+    doLast {
+        compileAppDataDir(namespace, mainComp, toolkitPath, dataDir)
+    }   
+}
+
+task cleanIt() {
+    doLast {
+        cleanApp(namespace, mainComp)
+    }
+}
+
+build.dependsOn compile
+clean.dependsOn cleanIt

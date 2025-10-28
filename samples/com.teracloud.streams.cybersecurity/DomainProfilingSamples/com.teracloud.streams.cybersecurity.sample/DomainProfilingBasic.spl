@@ -1,0 +1,103 @@
+// begin_generated_Teracloud_ApS_copyright_prolog                   
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS MAKES NO REPRESENTATIONS OR WARRANTIES,            
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION           
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL TERACLOUD APS BE LIABLE 
+// TO ANY PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL 
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025                           
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_Teracloud_ApS_copyright_prolog                     
+namespace com.teracloud.streams.cybersecurity.sample ;
+
+use com.teracloud.streams.network.ipv4::* ;
+use com.teracloud.streams.network.enrichment::* ;
+use com.teracloud.streams.cybersecurity.types::* ;
+use com.teracloud.streams.cybersecurity.tagging::BWListTagger ;
+use com.teracloud.streams.cybersecurity.analytics::* ;
+use com.teracloud.streams.cybersecurity.types::DomainProfilingInput_t ;
+use com.teracloud.streams.cybersecurity.types::DomainProfilingResult_t ;
+
+public composite DomainProfilingBasic
+{
+	graph
+		(stream<DomainProfilingInput_t> BWTaggerOp_Stream) as BWTaggerOp =
+			BWListTagger(DPSrcOp_Stream)
+		{
+			param
+				domainAttr : questionName ;
+				blockDomainFile : getThisToolkitDir() + "/opt/bwlist/domainBlockList.txt" ;
+				blockIPFile : getThisToolkitDir() + "/opt/bwlist/ipBlockList.txt" ;
+				allowDomainFile : getThisToolkitDir() + "/opt/bwlist/domainAllowList.txt" ;
+				allowIPFile : getThisToolkitDir() + "/opt/bwlist/ipAllowList.txt" ;
+			output
+				BWTaggerOp_Stream : bwTag = getDomainTags()[0] ;
+		}
+
+		(stream<DomainProfilingInput_t> DomainProfilingInput_Stream) as BWFilter =
+			Filter(BWTaggerOp_Stream)
+		{
+			param
+				filter : bwTag != allowList;
+		}
+
+		(stream<DomainProfilingResult_t> DomainProfilingOp_Stream) as
+			DomainProfilingOp = DomainProfiling(DomainProfilingInput_Stream)
+		{
+			window
+				DomainProfilingInput_Stream : tumbling, time(20.0), partitioned ;
+			param
+				warmupFile : getThisToolkitDir() + "/etc/DomainProfilingWarmup.txt" ;
+			output
+				DomainProfilingOp_Stream : domain = getDomain(), profileLastUpdate =
+					getProfileLastUpdate(), predictedClass = getPredictedClass(),
+					featureVector = getFeatureVector() ;
+		}
+
+		(stream<DPDNSResponseMessage_t> DPSrcOp_Stream) as DPSrcOp = DPSrc()
+		{
+			param
+				directory : getThisToolkitDir() + "/opt/" ;
+				pattern : "domain_profiling_sample.pcap" ;
+		}
+
+
+		(stream<DomainProfilingResult_t> Suspicious_Stream ;
+			stream<DomainProfilingResult_t> Benign_Stream) as PredictionFilter =
+			Filter(DomainProfilingOp_Stream as inputStream)
+		{
+			param
+				filter : predictedClass == "suspicious" ;
+		}
+
+		stream<rstring result> Result = Custom(Benign_Stream as I; Suspicious_Stream as J){
+			logic
+				onTuple I : {
+					printStringLn((rstring)I);
+					submit ({result=""}, Result);
+				}
+				onTuple J : {
+					printStringLn((rstring)J);
+					submit ({result=""}, Result);
+				}
+		}
+}
+
+
+
+

@@ -1,0 +1,477 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+
+	########### CHAIN SINK configuration BEGIN ################################
+	my $theFileWriterComposite="TableFileWriterCore";
+	my $theFileWriterName="TableFileWriter";
+	my $customFileWriter = 0;
+	my $noDataFile = 0;
+	my $CHAIN_SINK_TYPE = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	if (1==$CHAIN_SINK_TYPE){
+		$theFileWriterComposite="RecordFileWriterCore";
+		$theFileWriterName = "RecordWriter";
+	}
+	elsif (2==$CHAIN_SINK_TYPE) {
+		$theFileWriterComposite="FileWriterCustom";
+		$customFileWriter = 1;
+		$theFileWriterName = "CustomWriter";
+	}
+	elsif (3==$CHAIN_SINK_TYPE) {
+	 	$noDataFile = 1;
+	 	$theFileWriterComposite="NoFileWriterCore";
+	 	$theFileWriterName = "NoFileWriter";		
+	}
+
+	my $hashFileWriterEnabled = ! $dedupDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_CHECKPOINTING());
+
+	my $storeAuditOutputs = $configurator->isOn(Configurator::ITE_STORAGE_AUDITOUTPUTS());
+
+	my $CHAIN_SINK_ARCHIVE_INPUT_FILES_IN_DATE_DIR = $configurator->isOn(Configurator::ITE_ARCHIVE_INPUTFILESINTODATEDIRECTORY());
+
+	my $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_TAP());
+	my $CONTEXT_CUSTOM_COMPOSITE_ENABLED = ! $contextDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM());
+
+	my $custContextFileWriterEnabled = $CONTEXT_CUSTOM_COMPOSITE_ENABLED && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM_CHECKPOINTING());
+
+	my $FILE_DEDUP_ENABLED = $configurator->isOn(Configurator::ITE_INGEST_DEDUPLICATION());
+	print "//FILE_DEDUP_ENABLED=$FILE_DEDUP_ENABLED\n";
+	
+	my $useCustomRejectWriter = $configurator->isOn(Configurator::ITE_STORAGE_REJECTWRITER_CUSTOM());
+	
+	my $ITE_INGEST_ARCHIVEMODE = $configurator->getEnum(Configurator::ITE_INGEST_ARCHIVEMODE());
+
+	my $ITE_FUSE_GROUPWITHCHAIN_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_GROUPWITHCHAIN_OPERATORS());
+	my $ITE_FUSE_CHAIN_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_CHAIN_OPERATORS());
+	
+	my ($n, $v) = $configurator->getEnumList(Configurator::ITE_EXPORT_STREAMS());
+	my %hash = map { $_ => undef } @{$v};
+	my $exportEnabled = (exists $hash{writer});
+	
+	my $INGEST_CUSTOMFILECONTROL = $configurator->isOn(Configurator::ITE_INGEST_CUSTOMFILECONTROL());
+	########### CHAIN SINK configuration END ##################################
+
+	# -------------------------------------------------------------------------
+%>
+namespace demoapp.chainsink;
+
+
+use demoapp.streams::*;
+use demoapp.functions::*;
+<%if (1==$ENABLE_CUSTOM_CODE) {%>
+use demoapp.chainsink.custom::*;
+<%} else {%>
+use demoapp.chainsink.sample::*;
+<%}%>
+use com.teracloud.streams.teda.internal.ingestion::FileValidity;
+use com.teracloud.streams.teda.internal.ingestion::DBSchemaFileInfo;
+
+/**
+ * ChainSinkCore
+ * Writes transformed records to output files in target directory
+ * Moves input files to archive/duplicate/failed/invalid directory
+ *
+ * @input  InRecordTableStream Record tuples or table tuples for sink
+ * @input  InStatStream Statistic tuples
+ * @input  InRej rejected records
+ * @input  InChainStatus The application control acknowledgment from chain control - the chain status
+ * @output OutChainFileAck End of file processing indicator for ChainControl
+ * @output OutFileStat Statistic tuples
+ * 
+ * @param groupId Name of groupID
+ * @param chainId Name of chainID
+ * @param archiveDir Target directory for input files to be archived
+ * @param duplicateFilesDir Target directory for input files to be archived as duplicate
+ * @param failedFilesDir Target directory for input files to be archived as failed
+ * @param invalidFilesDir Target directory for input files to be archived as invalid
+ * @param tableWriterOutputDir Working directory chain output files
+ * @param dbLoaderInputDir Base directory of table files (for successful processed files only)<%if (0 == $contextDisabled) {%>
+ * @param checkpointDir Base output directory of hash code files<%}%>
+ * @param rejectedRecordsDir Output directory of rejected records (meta data only)
+ * @param reprocessDir Target directory for files to be reprocessed
+ */
+public composite ChainSinkCore (
+	input 
+		InRecordTableStream,
+		InStatStream,
+		InRej,
+		InChainStatus;
+	output
+		OutChainFileAck,
+		OutFileStat<%print "," if ((1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE) && (0 == $contextDisabled));%>
+		<%print "OutTap" if ((1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE) && (0 == $contextDisabled));%>
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $archiveDir;
+		expression<rstring> $duplicateFilesDir;
+		expression<rstring> $failedFilesDir;
+		expression<rstring> $invalidFilesDir;
+		expression<rstring> $tableWriterOutputDir;
+		expression<rstring> $dbLoaderInputDir;
+		expression<rstring> $checkpointDir;
+		expression<rstring> $rejectedRecordsDir;
+		expression<rstring> $reprocessDir;
+		expression<rstring> $peExLocationLabel;		
+
+	graph
+
+		<%if (0 == $contextDisabled) {%>
+		// ########################################################
+		// Post Context Synchronizer 
+		// Sends punctuation and forwards Statistic tuple when all
+		// expected tuples are received or when timeout is detected
+		// --------------------------------------------------------
+		@spl_category(name="common")
+		(
+		stream<InRecordTableStream> SyncTableStream;
+		stream<InStatStream> SyncStatStream;
+		stream<TypesCommon.RejectedDataStreamType> RejSync<%if (1 == $hashFileWriterEnabled) {%>;
+		stream<TypesCommon.HashStreamType> HashStream<%} #endif hashFileWriterEnabled%><%if (1 == $custContextFileWriterEnabled) {%>;
+		stream<TypesCommon.ContextCheckpointFileStreamType> CustomContextStream<%} #endif custContextFileWriterEnabled%>
+		) = PostContextSynchronizerCore(InRecordTableStream; InStatStream) {
+			param
+				groupId:			$groupId;
+				chainId: 			$chainId;
+		}
+
+		// ########################################################
+		// Post Context Logic (transform, reject)
+		// --------------------------------------------------------
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ChainSinkStreamType> DataSinkStream;
+		stream<TypesCommon.FileStatistics> StatStream;
+		stream<TypesCommon.RejectedDataStreamType> RejDedup<%if (1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE){%>;
+		stream<TypesCommon.BundledPostContextOutputStreamType> OutTap<%}%>
+		) = PostContextProcessorCore(SyncTableStream; SyncStatStream) {
+			param
+				groupId:			$groupId;
+				chainId: 			$chainId;
+				reprocessDir:		$reprocessDir;
+		}
+		<%} else {%>
+		// ------------------------------------------------------
+		// reduce schema
+		@spl_category(name="common")<%if (0==$noDataFile) { %>
+		(stream <TypesCommon.ChainSinkStreamType> DataSinkStream)= Functor(InRecordTableStream) {}<%}else{%>
+		(stream <TypesCommon.ChainSinkStreamType> DataSinkStream)= Custom(InRecordTableStream as I) {
+			logic
+			// forward window punctuation only (onTuple is NOT implemented here)
+			onPunct I: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(Sys.WindowMarker, DataSinkStream);
+				}
+			}
+		}
+		<%}%>
+		// ------------------------------------------------------		
+		<%} #endif context%>
+		
+		<%if ($exportEnabled) {%>
+		@spl_category(name="common")
+		() as Exporter = Export(DataSinkStream) {
+			param
+				properties: { ite="demoapp.chainsink_input_Writer" };
+				allowFilter: true;
+				congestionPolicy: dropConnection; // prevents back-pressure from slow importer 
+		}
+		<%}%>		
+
+		// ########################################################
+		// TABLE / RECORD / CUSTOM FILE WRITER / NO-FILE
+		// --------------------------------------------------------
+		<%if (0 == $customFileWriter) {%>@spl_category(name="common")<%}%>
+		(stream<TypesCommon.FileStatistics> FileStat
+		) as <%=$theFileWriterName%> = <%=$theFileWriterComposite%> (<%if (0 == $contextDisabled) {%>DataSinkStream; StatStream<%}else{%>DataSinkStream;InStatStream<%}%>) {
+			param
+				outputDir: 			$tableWriterOutputDir;
+				commitDir: 			$dbLoaderInputDir;
+				groupId:			$groupId;
+				chainId: 			$chainId;
+		}
+
+		<%if ((0 == $contextDisabled) && (0 == $dedupDisabled) && (1 == $hashFileWriterEnabled)) {%>
+		// ########################################################
+		// HASH FILE WRITER
+		// --------------------------------------------------------
+		// Write hash codes to file in order to restore bloom on startup
+		@spl_category(name="common")
+		() as HashWriter = HashFileWriterCore(HashStream; MoveChkFiles) {
+			param
+				checkpointDir: $checkpointDir;
+		}
+		<%}%>
+
+		<%if ((0 == $contextDisabled) && (1 == $custContextFileWriterEnabled)) {%>
+		// ########################################################
+		// CUSTOM CONTEXT DATA FILE WRITER
+		// --------------------------------------------------------
+		// Write data tuples to file in order to restore custom context on startup
+		@spl_category(name="common")
+		() as CustomContextDataFileWriter = ContextDataFileWriterCore(CustomContextStream; MoveChkFiles) {
+			param
+				checkpointDir: $checkpointDir+"/custom";
+		}
+		<%}%>
+
+
+		// ########################################################
+		// REJECT FILE WRITER
+		// --------------------------------------------------------
+		<%my $rejectWriterOperator="RejectWriterCore";
+		my $category="common";
+		if ($useCustomRejectWriter) {
+			$rejectWriterOperator="RejectWriterCustom";
+		}
+		if (0==$ENABLE_CUSTOM_CODE) {
+			$category="sample";
+		}
+		%>
+		<%if ($rejectWriterOperator eq "RejectWriterCore") {%>@spl_category(name="<%=$category%>")<%}%>
+		() as RejWriter = <%=$rejectWriterOperator%> (InRej<%if (0 == $contextDisabled) {%>,RejSync,RejDedup<%}%>) {
+			param
+				rejectedRecordsDir:		$rejectedRecordsDir;
+		}
+
+		// Chain Finalizer
+		// Chain Ack handling
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.FileMoveSchema> InputFileMove; // moves input file to archive, failed, duplicateFiles
+		<%if ($storeAuditOutputs) {%>
+		stream<TypesCommon.FileStatistics> StatsToAudit as OutAuditStat;
+		<%} else {%>
+		stream<TypesCommon.FileStatistics> OutFileStat;
+		<%}%>		
+		stream<TypesCommon.AcknowledgedFilesType> OutChainFileAck<%if ((1 == $hashFileWriterEnabled) || (1 == $custContextFileWriterEnabled)) {%>;
+		stream<boolean move> MoveChkFiles as HashCommit<%}%>
+		) as ChainFinalize = Custom(FileStat as InStat; InChainStatus) {
+			logic
+			state : {
+				<%if (1 == $ITE_INGEST_ARCHIVEMODE) {%> 
+				mutable rstring inputDirectory = "";<%}%>
+				mutable OutChainFileAck otuple = {}; // Ack to ChainControl
+				mutable InputFileMove outMoverTuple = {};
+				mutable timestamp stopTimestamp;
+				<%if (1 == $CHAIN_SINK_ARCHIVE_INPUT_FILES_IN_DATE_DIR) {%>
+				mutable rstring dateDir = "";
+				<%}%>
+				<%if ($FILE_DEDUP_ENABLED) {%>
+				mutable rstring checkpointDir = $checkpointDir;
+				mutable rstring checkpointFile;
+				mutable boolean initDone = false;
+				mutable uint64 fileWriteH = 0; //the write file handle for the checkpoint file
+				mutable int32 ferror = -1;
+				mutable DBSchemaFileInfo fileTuple = {};
+				<%}%>
+			}
+			onTuple InStat : {
+				<%if ($FILE_DEDUP_ENABLED) {%>
+				if (! initDone) {
+					if (substring(checkpointDir, length(checkpointDir) - 1, 1) != "/") {
+						checkpointDir = checkpointDir + "/";
+					}
+					checkpointFile = checkpointDir + "fileDedupcheck_" + $groupId + "_" + $chainId + ".chk";
+					initDone = true;
+				}
+				<%}%>
+				// do not move any file if shutdown requested
+				if (false == isShutdown()) {
+					<%if (1 == $ITE_INGEST_ARCHIVEMODE) {%>
+					inputDirectory = com.teracloud.streams.teda.file.path::dirname(filename);
+					<%}%>
+					// Move files
+					if (0 == spl.collection::size(InStat.errors)) {
+						<%if ($FILE_DEDUP_ENABLED) {%>
+						if (! reprocess) {
+							//write to file dedup checkpoint file if the file was successfully processed and it is no re-process file
+							if (0ul == fileWriteH) {
+								fileWriteH = spl.file::fopen(checkpointFile, "a", ferror);
+								if (0!=ferror) {
+									appTrc(Trace.error, "Can not open fileDedupCheckpointFile="+checkpointFile+" ferror="+strerror(ferror), "ChainSink,DeduppedDirScan");
+									fileWriteH = 0ul;
+									shutdownPE();
+								} else {
+									appTrc(Trace.info, "Open file success fileDedupCheckpointFile="+checkpointFile, "ChainSink,DeduppedDirScan");
+								}
+							}
+							if (0ul != fileWriteH) {
+								fileTuple.n = com.teracloud.streams.teda.file.path::filename(filename);//filenameOnly;
+								fileTuple.t = filetime;
+								rstring s = (rstring)fileTuple + "\n";
+								spl.file::fwriteString(s, fileWriteH, ferror);
+								if (0!=ferror) {
+									appTrc(Trace.error, "Error during write fileDedupCheckpointFile="+checkpointFile+" ferror="+strerror(ferror), "ChainSink,DeduppedDirScan");
+								}
+								if (0!=spl.file::fflush(fileWriteH, ferror)) {
+									appTrc(Trace.error, "On fflush ferror="+strerror(ferror), "ChainSink,DeduppedDirScan");
+								}
+							}
+						}
+						<%}%>
+						//move file
+						<%if (1 == $CHAIN_SINK_ARCHIVE_INPUT_FILES_IN_DATE_DIR) {%>
+						// get current date
+						dateDir = getDateNow();
+						<%}%>
+						// FileMove operator is automatically creating sub directory for dateDir
+						// move to archive dir
+						outMoverTuple.filename = InStat.filename;
+						<%if (1 == $ITE_INGEST_ARCHIVEMODE) {%>
+						outMoverTuple.destPath = inputDirectory + "/" + $archiveDir + "/" <%if (1 == $CHAIN_SINK_ARCHIVE_INPUT_FILES_IN_DATE_DIR) {%>+ dateDir + "/"<%}%>;
+						<%}else{%>
+						outMoverTuple.destPath = $archiveDir + "/" <%if (1 == $CHAIN_SINK_ARCHIVE_INPUT_FILES_IN_DATE_DIR) {%>+ dateDir + "/"<%}%>;
+						<%}%>
+						submit(outMoverTuple,InputFileMove);
+					}
+					else {
+						// errors
+						outMoverTuple.filename = InStat.filename;
+						if (InStat.invalidFile != validFile) {
+							// move to invalid dir
+							<%if (1 == $ITE_INGEST_ARCHIVEMODE) {%>
+							outMoverTuple.destPath = inputDirectory + "/" + $invalidFilesDir + "/";
+							<%}else{%>
+							outMoverTuple.destPath = $invalidFilesDir + "/";
+							<%}%>
+						}
+						else {
+							// move to failed dir
+							<%if (1 == $ITE_INGEST_ARCHIVEMODE) {%>
+							outMoverTuple.destPath = inputDirectory + "/" + $failedFilesDir + "/";
+							<%}else{%>
+							outMoverTuple.destPath = $failedFilesDir + "/";
+							<%}%>
+						}
+						submit(outMoverTuple,InputFileMove);
+					}
+					<%if ((1 == $hashFileWriterEnabled) || (1 == $custContextFileWriterEnabled)) {%>
+					// move hash codes if not failed - tuple is required in any case
+					submit({move=((0 == spl.collection::size(InStat.errors)) ? true : false)}, HashCommit);
+					<%}%>
+
+					// stop time measurement and update statistics
+					stopTimestamp = getTimestamp();
+					InStat.processingStartedAt=getCCYYMMDDhhmmssDB2Format(startTimestamp);
+					InStat.processingStoppedAt=getCCYYMMDDhhmmssDB2Format(stopTimestamp);
+					InStat.duration=diffAsSecs(stopTimestamp,startTimestamp);
+
+					// Write to Statistic log and write to FileName checkpoint file
+					// forward statistic tuple after internal chain file ack
+					<%if ($storeAuditOutputs) {%>
+					if (invalidFile == validFile) {
+						submit(InStat,OutAuditStat); // submit to audit table writer
+					}
+					<%} else {%>
+					submit(InStat,OutFileStat); // forwards statistic tuple to StatisticFileWriter
+					<%}%>
+	
+					// Chain File Ack (end of file processing - chain inactive indicator)
+					
+					<%if ($INGEST_CUSTOMFILECONTROL) {%>
+					// fill the ack tuple, because the data is needed by the custom ingest::FileControl composite
+                    otuple.filenameOnly=InStat.filename;
+                    otuple.reprocess=InStat.urgent;
+                    otuple.filetime=InStat.filetime;
+                    otuple.success=(InStat.invalidFile==validFile);
+                    otuple.chainPunct=true;
+                    otuple.groupId=InStat.groupId;
+                    otuple.chainId=InStat.chainId;
+					<%}%>
+					submit(otuple,OutChainFileAck); // send tuple to chainControl
+				}
+			}
+			onPunct InStat : {
+				appTrc(Trace.debug, "Punct on In " + (rstring)currentPunct(), "ChainSink,DeduppedDirScan");
+				<%if ($FILE_DEDUP_ENABLED) {%>
+				if (Sys.FinalMarker == currentPunct()) {
+					if ((0ul != fileWriteH) && (0!=spl.file::fclose(fileWriteH, ferror))) {
+						appTrc(Trace.error, "On fclose file: " + checkpointFile + " ferror="+strerror(ferror), "ChainSink,DeduppedDirScan");
+					}
+					fileWriteH = 0ul;
+				}
+				<%}%>
+			}
+			onTuple InChainStatus : {
+				<%if ($FILE_DEDUP_ENABLED) {%>
+				if (! start) {	//the chain was stopped -> close the file
+					if (0ul != fileWriteH) {
+						appTrc(Trace.debug, "Close fileDedupCheckpointFile="+checkpointFile, "ChainSink,DeduppedDirScan");
+						if (0!=spl.file::fclose(fileWriteH, ferror)) {
+							appTrc(Trace.error, "On fclose file: " + checkpointFile + " ferror="+strerror(ferror), "ChainSink,DeduppedDirScan");
+						}
+						fileWriteH = 0ul;
+					}
+				}
+				<%}%>
+			}
+			config threadedPort: queue(InChainStatus, Sys.Wait, 1);	//to avoid the deadlock with chainControl
+		}
+
+		<%	if ($storeAuditOutputs) {%>
+		// Write to AUDIT Table(s)
+		<%if (0==$ENABLE_CUSTOM_CODE){%>@spl_category(name="sample")<%}%>
+		(stream<StatsToAudit> OutFileStat) as AuditWriter = AuditTableWriter(StatsToAudit) {
+			param
+				outputDir: 			$tableWriterOutputDir;
+				commitDir: 			$dbLoaderInputDir;
+		}
+		<%	}%>
+
+		// File Mover
+		@spl_category(name="common")
+		() as InputFileMover  = com.teracloud.streams.teda.internal.ingestion::FileMove(InputFileMove) {
+		}
+
+	<%if ((0==$ITE_FUSE_CHAIN_OPERATORS) && (0==$ITE_FUSE_GROUPWITHCHAIN_OPERATORS))  {%>
+	config placement: partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>");
+	<%}%>	
+
+}

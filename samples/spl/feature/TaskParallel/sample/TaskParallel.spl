@@ -1,0 +1,87 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2012     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample;
+ 
+uint64 factorial(uint64 i) 
+{ 
+  if(i<=1ul) 
+    return 1ul; 
+  else 
+    return i * factorial(i-1ul);
+}
+
+boolean isprime(uint64 number) 
+{ 
+    if(number > 3ul) {
+        if(number % 2ul == 0ul) 
+            return false;
+        if(number % 3ul == 0ul) 
+            return false;
+    }
+    mutable uint64 divisor = 5ul;
+    mutable uint64 increment = 2ul;
+    mutable uint64 maxDivisor = sqrt(number) + 1ul;
+    
+    while(divisor <= maxDivisor) {
+        if(number % divisor == 0ul) 
+            return false;
+        divisor += increment;
+        increment = 6ul - increment;
+    }
+    return true;
+}
+
+composite TaskParallel {
+
+  graph 
+    stream<uint64 i> Src = Beacon() 
+    {
+      logic 
+        state : mutable uint64 i = 0;
+      param iterations : 20u;
+      output Src : i = IterationCount() +1ul;
+    }
+
+    stream<uint64 i, uint64 f> Fct = Functor(Src) 
+    {  
+      output Fct : f = factorial(i); 
+      config threadedPort: queue(Src, Sys.Wait, 10);
+    }
+
+    stream<uint64 i, boolean p> Prm = Functor(Src) 
+    {  
+      output Prm : p = isprime(i); 
+      config threadedPort : queue(Src, Sys.Wait, 10);
+    }
+
+    stream<uint64 i, uint64 f, boolean p> 
+        Res = Barrier(Fct; Prm) {}
+
+    () as Writer = FileSink(Res) 
+    { 
+      param file : "Results.txt";
+    }
+}

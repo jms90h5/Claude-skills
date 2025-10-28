@@ -1,0 +1,5 @@
+{tupleType=event,event=started,updateType=NODE,updateFlags=ADD,objectId=0,latitude=0,longitude=0,startNodeId=0,endNodeId=0,isOneWay=false}
+{tupleType=event,event=waitingForData,updateType=NODE,updateFlags=ADD,objectId=0,latitude=0,longitude=0,startNodeId=0,endNodeId=0,isOneWay=false}
+{tupleType=event,event=ready,updateType=NODE,updateFlags=ADD,objectId=0,latitude=0,longitude=0,startNodeId=0,endNodeId=0,isOneWay=false}
+Punctuation received: WindowMarker
+Punctuation received: FinalMarker

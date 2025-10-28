@@ -1,0 +1,184 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	use Data::Dumper;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_INGEST_READER_DEBUG());
+	
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+
+	my $numTypes = 0;
+	my $compositeName = "";
+	my @fileTypeList;
+	my @compositeList;
+
+	my $paramList = $configurator->getStringList(Configurator::ITE_INGEST_READER_PARSERLIST());
+	foreach my $ft (defined $paramList ? @{$paramList} : ())
+	{
+		my @ftlist = split (/\|/,$ft);
+		push @fileTypeList, $ftlist[0];
+		push @compositeList, $ftlist[1];
+		$compositeName = $ftlist[1];
+		$numTypes++;
+	}	
+%>
+
+
+namespace demoapp.chainprocessor.reader;
+
+use demoapp.streams::*;
+<%if (1 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.chainprocessor.reader.custom::*;
+<%}%>
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+
+/**
+ * FileReaderCore
+ * Selects the Parser operator(s).
+ *
+ * @input  FileIn tuple containing name of file to be parsed
+ *
+ * @output OutRec Record tuples
+ * @output OutStat Statistic tuples
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ */
+composite FileReaderCore (
+	input 
+		FileIn;
+	output
+		OutRec,
+		OutStat
+) {
+	
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+		<%if (1 == $numTypes) {%>
+		// single parser
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRec;
+		stream<TypesCommon.ParserStatisticsStream> OutStat
+		) = <%=$compositeName%>(FileIn as IN) {
+			param
+				groupId : $groupId;
+				chainId : $chainId;
+		}
+		<%} else {%>
+		// multiple file types
+
+		// Split on file type
+		@spl_category(name="common")
+		(
+		<% my $i=0; foreach (@fileTypeList) { 
+		print ("\n\t\tstream<IN> FileIn_".$i);
+		print ";" if ($i < $numTypes-1);
+		++$i;
+		}%>
+		) as FileTypeSplit = Custom(FileIn as IN) {
+			logic
+				state : {
+					map<rstring /* fileType */, uint32 /* port */> ftConfig = {
+					<% my $i=0; foreach (@fileTypeList) { 
+					print ("\n\t\t\t\t\t\"$_\": $i");
+					print "," if ($i < $numTypes-1);
+					++$i;
+					}%>
+					};
+				}
+			onTuple IN: {
+				submit(IN, ftConfig[IN.fileType]);
+			}
+		}
+
+		<%	my $i=0;
+			foreach (@compositeList) {%>
+		<%if (0 == $ENABLE_CUSTOM_CODE) {%>@spl_category(name="sample")<%}%>
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRec_<%=$i%>;
+		stream<TypesCommon.ParserStatisticsStream> OutStat_<%=$i%>
+		) = <%=$_%>(FileIn_<%=$i%> as IN) {
+			param
+				groupId : $groupId;
+				chainId : $chainId;
+		}
+		<%		$i++;%>
+		<%	}%>
+
+		//merge streams to single output
+		@spl_category(name="common")
+		stream<TypesCommon.ReaderOutStreamType> OutRec = Custom(<%=join(",",map { 'OutRec_'.$_; }(0..$numTypes-1))%> as I) {logic onTuple I: {submit (I,OutRec);} onPunct I: {submit(currentPunct(), OutRec);}}
+		@spl_category(name="common")
+		stream<TypesCommon.ParserStatisticsStream> OutStat = Custom(<%=join(",",map { 'OutStat_'.$_; }(0..$numTypes-1))%> as I) {logic onTuple I:{submit (I,OutStat);}}
+
+		<%} # end multi types%>
+
+		<% if($tapEnabled) {%>
+		// printout parser output 
+		@spl_category(name="debug")
+		() as ParserRecSink = FileSink(OutRec) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param
+				file	: "./debug/FILE_READER_OUT_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush	: 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ParserStatSink = FileSink(OutStat) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param
+				file	: "./debug/FILE_READER_STAT_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush	: 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+}
+

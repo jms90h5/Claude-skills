@@ -1,0 +1,14 @@
+Overview: NativeFunction demonstrates the use of C++ functions from SPL.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+Notes: 
+  - One of the functions (getMcCarthy91_recursive_generic) is implemented as a
+    C++ template function and is registered with the system using SPL generics.
+    It works with multiple types.
+  - The 'impl' directory contains the code and the library for the C++
+    implementations of the native functions.

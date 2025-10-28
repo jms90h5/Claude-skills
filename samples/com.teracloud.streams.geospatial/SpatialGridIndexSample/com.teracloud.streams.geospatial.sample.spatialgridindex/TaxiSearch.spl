@@ -1,0 +1,139 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2015, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace com.teracloud.streams.geospatial.sample.spatialgridindex;
+use com.teracloud.streams.geospatial::*;
+use com.teracloud.streams.geospatial.st::*;
+
+use com.teracloud.streams.geospatial.ext::*;
+
+/**This sample demonstrates the use of the indexing and query function SpatialGridIndex operator.*
+ * The goal is to be able to identify which taxis, if any, are closest to a client.
+ * The data is real taxi data from over 200 Taxis generally in and around London on December 31, 2013. 
+ * The data is found in the file data/input/taxiLocationData within this project.
+ * The index tracks each taxi as it reports its current location over time.
+ * It also responds to queries that are defined in the file data/input/queries.txt within this project.
+ * The queries represent users looking for a taxi nearest their current location.
+ */
+
+
+
+composite TaxiSearch {
+
+type
+/**Incoming data type for the operator */
+ TaxiLocationInfo = rstring taxi_Id, uint32 objectUpdateFlag, rstring taxiGeometry,  int64 timeStamp ;
+/***Output data type for the search results.  The query that each result tuple is associated with is also included in the tuple.  */
+ TaxiSearchResults = rstring clientId, rstring clientLocation, float64 proximity, rstring taxiId, rstring taxiLocation;
+
+	graph
+	
+		stream< rstring taxi_Id, uint32 objectUpdateFlag, float64 latitude, float64 longitude, int64 timeStamp> RawCSVData = FileSource()
+		{
+			param
+				file : "input/taxiLocationData.txt" ;
+				format : csv ;
+		}
+
+		//input into the query stream to search for taxis by location
+		// in this application called the TaxiSearchStream
+		stream<rstring  clientId, rstring clientLocation, float64 proximity> TaxiSearchStream =
+			FileSource()
+		{
+			param
+				file : "input/taxiSearchQueries.txt" ;
+				initDelay : 5.0 ;
+				format : csv ;
+		}
+
+		
+		//reformat the data for the operator - this is the input into the object stream
+		stream<TaxiLocationInfo> TaxiLocationStream  = Functor(RawCSVData)
+		{
+			/*The csv data is a set of points, but the operator requires that
+		 * the location be in Well Known Text (WKT) format.
+		 * Use the point() function from the toolkit to generate a WKT formatted geometry for each tuple
+		 */
+			logic state: mutable rstring geometryStr = "";
+			onTuple RawCSVData : {
+				 geometryStr = point(longitude,latitude);
+			}
+			output
+				TaxiLocationStream: taxiGeometry = geometryStr;
+		}
+		
+
+		stream<TaxiSearchResults> FoundTaxis =
+			SpatialGridIndex(TaxiLocationStream ; TaxiSearchStream)
+		{
+			param
+			// parameters for spatial index
+				numRows : 1u;
+				numColumns : 1u;
+				bboxSouthLatitude : 47.129076;
+				bboxWestLongitude : -4.2897045 ;
+				bboxNorthLatitude :  53.492499;
+				bboxEastLongitude : -0.045639 ;
+				//field name mappings
+				objectId : taxi_Id ;
+				objectGeometry : taxiGeometry ;
+				queryGeometry : clientLocation ;
+				punctPerQuery: true;
+				queryRange : proximity ;
+			output
+				FoundTaxis : 
+					taxiId = RetrievedObjectId(),
+					taxiLocation = RetrievedObjectGeometry();
+		}
+
+		stream <tuple<uint64 distanceFromClient>, FoundTaxis>  ResultFunctor = Functor(FoundTaxis) {
+			output //add the distance from the client to the result for each found taxi
+				ResultFunctor: distanceFromClient = (uint64) distance(taxiLocation, clientLocation) ;	// Were not interested in the distance's fraction
+		}
+		
+		
+///sort each query result by distance from client in increasing order
+		stream <tuple<uint64 distanceFromClient>, FoundTaxis>  SortedResults = Sort(ResultFunctor as inputStream)
+		{
+			window
+				//the SpatialGridIndex will produce a punctuation at the end of each query
+				//this punct will flush the sorted window of results, if there are any.
+				inputStream : tumbling, punct() ; 
+			param
+				sortBy : distanceFromClient, taxiId ;
+				order : ascending ;
+		}
+		
+			
+		
+		() as QueryAnswerWriter = FileSink(SortedResults)
+		{
+			param
+				file : "results/foundTaxis.txt" ;
+				format : csv ;
+				flush : 1u ;
+				writePunctuations : true;
+		}
+}

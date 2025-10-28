@@ -1,0 +1,218 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+    use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $generateTableRows = 0;
+	my $TRANSFORMER_OUTPUT_TYPE = $configurator->getEnum(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_OUTPUTTYPE());
+
+	my $CHAIN_SINK_TYPE = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	my $chainSinkRecordWriter = ($CHAIN_SINK_TYPE > 0) ? 1 : 0;
+
+	if ((2 == $TRANSFORMER_OUTPUT_TYPE) && (0 == $chainSinkRecordWriter)) {
+		# Need to convert Record Type stream for TableFileWriter
+		$generateTableRows = 1;
+	}
+
+	my $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_TAP());
+
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+
+	my $useCustomPostProcessing = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_POSTPROCESSING_CUSTOM());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $useCustomRejectWriter = $configurator->isOn(Configurator::ITE_STORAGE_REJECTWRITER_CUSTOM());
+
+%>
+namespace demoapp.chainsink;
+
+<%if (0 == $contextDisabled) {%>
+use demoapp.streams::*;
+	<%if (1 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.chainsink.custom::*;
+use demoapp.streams.custom::*;
+	<%} else {%>
+use demoapp.chainsink.sample::*;
+use demoapp.streams.sample::*;
+	<%}%>
+use demoapp.utility::TableRowGenerator;
+use com.teracloud.streams.teda.utility::BloomFilterTypes;
+
+/**
+ * PostContextProcessorCore
+ * Rejects duplicates (OutRej), updates Statistics and forwards it (OutStat)
+ *
+ * @input  InRec Record tuples
+ * @input  InStat Statistic tuples
+ *
+ * @output OutRec Record tuples (TypesCommon.ChainSinkStreamType)
+ * @output OutStat Statistic tuples
+ * @output OutRej Rejected duplicates
+ * 
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ * 
+ * @param reprocessDir
+ * Target directory for files to be reprocessed
+ */
+public composite PostContextProcessorCore (
+	input
+		InRec,
+		InStat;
+	
+	output
+		OutRec,
+		OutStat,
+		OutRej<%print "," if (1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE);%>
+		<%print "OutTap" if (1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE);%>
+) {
+
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $reprocessDir;
+
+	graph
+		<%if (($useCustomPostProcessing)) {
+		%>(
+		stream<TypesCommon.ChainSinkStreamType> OutRec as OutStream;
+		stream<InStat> OutStat;
+		stream<TypesCommon.RejectedDataStreamType> OutRej;
+		stream<TypesCommon.BundledPostContextOutputStreamType> OutTap
+		) as DedupedRecord = PostContextDataProcessor(InRec; InStat) {
+			param
+				groupId:			$groupId;
+				chainId: 			$chainId;
+				reprocessDir:		$reprocessDir;
+		}
+		<%} else {%>
+		@spl_category(name="common")
+		(
+		stream<InRec> DedupedRecordStream as OutStream;
+		stream<InStat> OutStat;
+		stream<TypesCommon.RejectedDataStreamType> OutRej;
+		stream<InRec> TapStream
+		) as DedupedRecord = Custom(InRec; InStat) {
+			logic state: {
+					mutable int64 detectedRecordDuplicates = 0l;
+					mutable int64 detectedOutdatedRecords = 0l;
+				}
+				onTuple InRec: {
+					<%if (0 == $dedupDisabled) {%>
+					if (BloomFilterTypes.unique == bloomFilterResult) {
+						submit(InRec,OutStream);<%
+						if (1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE){%>
+						submit(InRec,TapStream);<%}%>
+					} else {
+						// send rejected tuple
+						mutable OutRej rejDuplicate = {};
+						if (BloomFilterTypes.unknown == bloomFilterResult) {
+							// check if outdated tuple, to increase statistics counter
+							detectedOutdatedRecords++;
+							rejDuplicate.rejectreason = (uint32)TypesCustom.rrRecordOutdated;
+						} else {
+							detectedRecordDuplicates++;
+							rejDuplicate.rejectreason = (uint32)TypesCustom.rrRecordDuplicate;
+						}
+						rejDuplicate.filename=InRec.filename;
+						rejDuplicate.readerLinenumber=InRec.readerLinenumber;<%if ($useCustomRejectWriter) {%>
+						assignFrom(rejDuplicate.readerOutput, InRec);<%}%>
+						submit(rejDuplicate,OutRej);
+					}<%}
+					else {%>
+					submit(InRec,OutStream);<%
+					if (1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE){%>
+					submit(InRec,TapStream);<%
+					}%><%}%>
+				}
+				onTuple InStat: {
+					<%if (0 == $dedupDisabled) {
+					%>// update statistics with detected duplicates
+					InStat.recordDuplicates=detectedRecordDuplicates;
+					InStat.outdatedRecords=detectedOutdatedRecords;<%
+					}%>
+					// forward statistic tuple
+					submit(InStat,OutStat);
+					<%if (0 == $dedupDisabled) {%>// reset member
+					detectedRecordDuplicates = 0l;
+					detectedOutdatedRecords = 0l;<%
+					}%>
+				}
+				onPunct InRec: {
+					if (currentPunct() == Sys.WindowMarker) {
+						// send punctuation
+						submit(Sys.WindowMarker, OutStream);
+						submit(Sys.WindowMarker, OutRej);
+						<%if (1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE){%>
+						submit(Sys.WindowMarker, TapStream);
+						<%}%>
+					}
+				}
+		}
+		<%if (1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE){
+		%>// ------------------------------------------------------
+		// reduce schema
+		@spl_category(name="common")
+		(stream<TypesCommon.BundledPostContextOutputStreamType> OutTap
+		)= Functor(TapStream) {}
+		// ------------------------------------------------------
+		<%}%>
+		<%if (1 == $generateTableRows) {
+		%>// ------------------------------------------------------
+		// Generates a single comma separated line of string of Table attributes.
+		@spl_category(name="common")
+		(stream <TypesCommon.ChainSinkStreamType> OutRec
+		) = TableRowGenerator(DedupedRecordStream){}
+		// ------------------------------------------------------
+		<%} else {
+		%>// ------------------------------------------------------
+		// reduce schema
+		@spl_category(name="common")
+		(stream <TypesCommon.ChainSinkStreamType> OutRec)= Functor(DedupedRecordStream) {}
+		// ------------------------------------------------------
+		<%
+		}%><%
+		} #endif useCustomPostProcessing%>
+}
+<%} # endif context disabled%>

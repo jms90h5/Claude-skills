@@ -1,0 +1,754 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEBUG());
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+	
+	# check the new timeToKeep parameter
+	my $secondsToKeep = $configurator->getTimeToKeepSeconds(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_TIMETOKEEP());
+	$secondsToKeep = "-1" unless ($secondsToKeep); # mark disabled 
+	print "// secondsToKeep=$secondsToKeep (${\Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_TIMETOKEEP()})\n";
+	my $isPartitioningEnabledForTupleDeduplication = !$dedupDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_PARTITIONING());
+	my $maxNumberOfFilterPartitionsForTupleDeduplication = $configurator->getInteger(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_PARTITIONING_COUNT());
+	my $isSearchAllPartitionsEnabledForTupleDeduplication = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_PARTITIONING_SEARCHALLPARTITIONS());
+	my $isCustomCode = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+		
+	my ($n, $v) = $configurator->getEnumList(Configurator::ITE_EXPORT_STREAMS());
+	my %hash = map { $_ => undef } @{$v};
+	my $exportEnabled = (exists $hash{dedup});
+	
+%>
+namespace demoapp.context;
+
+<%if (0 == $dedupDisabled) {%>
+
+use demoapp.streams::*;
+<%if (1 == $isCustomCode) {%>
+use demoapp.streams.custom::*;
+<%} else {%>
+use demoapp.streams.sample::*;
+<%}%>
+use demoapp.functions::getCCYYMMDDhhmmssDB2Format;
+use com.teracloud.streams.teda.internal.fileutils::writeCommandFile;
+use com.teracloud.streams.teda.internal.fileutils::readCommandFile;
+use com.teracloud.streams.teda.internal.fileutils::getDir;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+
+use com.teracloud.streams.teda.utility::BloomFilter;
+use com.teracloud.streams.teda.utility::BloomFilterTypes;
+
+/**
+ * DedupCore
+ * Record/Table row deduplication is performed with BloomFilter operator
+ *
+ * BloomFilter creates checkpoint files when receiving the *write* command.
+ * BloomFilter memory is cleaned when receiving the *clear* command.
+ * BloomFilter is trained with checkpoint data by receiving the *read* command.
+ * If checkpoint file is present then BloomFilter is reading this file on *read* command.
+ * Otherwise the HashFileReader as FileSource operator is reading the hash code files 
+ * and passes the hashcodes through the BloomFilter operator.
+ * 
+ * @input  InDedupCtrlStream Commands for reload and shutdown (Bloom training and checkpointing)
+ * @input  InMergedTableStream Record tuples or table tuples for deduplication
+ * 
+ * @output OutDedupedStream Stream with duplicate flags set
+ * @output OutReady Command response sent to Controller
+ * @output DedupStatistics Command log tuples
+ * 
+ * @param groupId
+ * Level1Id to identify the DedupCore
+ *
+ * @param bloomHashFilesDir
+ * Base directory of hash code files
+ *
+ * @param bloomN
+ * BloomFilter parameter N
+ *
+ * @param bloomProbability
+ * BloomFilter parameter probability
+ *
+ * @param statisticsDir
+ * Directory parameter for statistic output files
+ *
+ * @param statisticsArchiveDir
+ * Directory parameter for archiving the statistic files
+ */
+public composite DedupCore (
+	input 
+		InDedupCtrlStream,
+		InMergedTableStream;
+	output
+		OutDedupedStream,
+		OutReady,
+		DedupStatistics
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $bloomHashFilesDir;
+		expression<uint64>  $bloomN;
+		expression<float64> $bloomProbability;
+		expression<rstring> $statisticsDir;
+		expression<rstring> $statisticsArchiveDir;
+
+	graph
+
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as SinkBloomInCtrlTap = FileSink (InDedupCtrlStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/DEDUP_CMD_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as SinkBloomInTap = FileSink (InMergedTableStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/DEDUP_IN_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+		// pre bloom operations
+		// tuple with chainPunct=true must be forwarded
+		@spl_category(name="common")
+		(stream<InData> BloomTableStream as Out;
+		stream<InData> PunctStream as OutPunct;
+		stream<InDedupCtrlStream> BloomStatusCommand as OutCmd
+		) as PreBloomFilter = Custom(InMergedTableStream as InData) {
+			logic
+				onTuple InData: {
+					if (false == InData.chainPunct) {
+						// forward input table stream tuple to BloomFilter
+						submit(InData, Out);
+					} else {
+						// forward punct - omit BloomFilter operator
+						submit(InData, OutPunct);
+						mutable InDedupCtrlStream sTuple = {};
+						sTuple.command = "status";
+						submit(sTuple, OutCmd);
+					}
+				}
+		}
+
+		@spl_category(name="common")
+		(stream<InCtrl> BloomControlStream as BloomCtrl;
+		stream<InCtrl> HashFileReaderControlStream as ReaderCtrl;
+		stream<TypesCommon.CommandInfoType> CommandInfoStream as Info;
+		stream<InCtrl, BloomFilterTypes.Status> FinalyzerControlStream as FinalCtrl
+		) as BloomCmdFilter = Custom(InDedupCtrlStream as InCtrl) {
+			logic
+				state: {					
+					rstring chkPointFilename = $bloomHashFilesDir+"/"+$groupId+"/"+$groupId;
+					rstring hashFilesDir = $bloomHashFilesDir+"/"+$groupId+"/"+"<%=CodeGenFrw::getConstant('COMMIT_DIR')%>";
+					boolean dirOk = createDir(hashFilesDir); // create checkpoint dir
+					mutable Info infoTuple = {};
+					mutable list<rstring> nameList;
+					mutable list<int64> mtimeList;
+					mutable list<uint64> sizeList;
+					int64 timeToKeepSec = <%=$secondsToKeep%>l;
+					mutable boolean dropCleanup = false;
+				}
+				onTuple InCtrl: {
+					// write command is shutdown preparation
+					// clear command is reload preparation
+					// read command is the trigger for
+					// 		a) HashFileReader to start scanning dir and reading hash code files
+					//		b) BloomFilter to read the checkpoint file
+					// if partitioned BloomFilter then check failureOccurred attribute - pass if true
+					<%if (1 == $isPartitioningEnabledForTupleDeduplication) {%>
+					if (("clear" == InCtrl.command) && !InCtrl.failureOccurred) { // drop cleanup because not on failure
+						dropCleanup = true;
+						if (isTraceable(Trace.trace)) {
+							appTrc(Trace.trace, "Drop 'clear command'", "DedupCore");
+						}
+					}
+					if (dropCleanup && ("clear" == InCtrl.command)) {
+						// none action, set status success and forward the response to the finalizer
+						mutable FinalCtrl ctlTuple = {};
+						assignFrom(ctlTuple,InCtrl);
+						ctlTuple.success = true;
+						ctlTuple.dedupLevel1Id = $groupId;
+						// Send response tuple to Resp port of DedupFinalizer
+						
+						submit(ctlTuple, FinalCtrl);
+					}
+					else {<%} # end of (1 == $isPartitioningEnabledForTupleDeduplication)
+						# continue with usual command handling%>
+						if (("write" == InCtrl.command) || ("read" == InCtrl.command) || ("clear" == InCtrl.command)){
+							InCtrl.dedupLevel1Id = $groupId;
+							if ("write" == InCtrl.command) {
+								// add tmp extension - file is renamed by controller if result is success
+								InCtrl.argument = chkPointFilename + ".tmp"; // checkpoint filename for BloomFilter
+							}
+							else if ("read" == InCtrl.command) {
+								InCtrl.argument = chkPointFilename; // checkpoint filename for BloomFilter
+							}
+	
+							infoTuple.command = InCtrl.command;
+							infoTuple.chkState = 1l; // init state (start time measurement for log entry)
+							submit(infoTuple, Info); // for log entry
+	
+							if ("read" == InCtrl.command) {
+								mutable int32 ferror = -1;
+								// -----------------------------------------
+								// cleanup hash code files
+								if (0 == getDir(hashFilesDir, true, nameList, mtimeList, sizeList)) {
+									// old files needs be deleted
+									mutable int32 idx = 0;
+									int64 currentTime = getSeconds(getTimestamp());
+									int64 borderTime = currentTime - timeToKeepSec;
+									for (rstring fname in nameList) {
+										if (mtimeList[idx] < borderTime) {
+											rstring filename=hashFilesDir+"/"+fname;
+											if (isTraceable(Trace.info)) {
+												appTrc(Trace.info, "delete file="+ filename + ", mtime=" + (rstring)mtimeList[idx], "DedupCore");
+											}
+											spl.file::remove(filename, ferror);
+											if (0 != ferror) {
+												appTrc(Trace.error, "Error on file remove of file: "+ filename + ", " + strerror(ferror), "DedupCore");
+											}
+										}
+										idx++;
+									}
+								}
+								// -----------------------------------------
+								// check if bloom checkpoint file is present
+								uint64 fileRH = spl.file::fopen(chkPointFilename, "r", ferror);
+								if (0!=ferror) { 
+									if (dropCleanup) {
+										// none action, set status success and forward the response to the finalizer
+										mutable FinalCtrl ctlTuple = {};
+										assignFrom(ctlTuple,InCtrl);
+										ctlTuple.success = true;
+										// Send response tuple to Resp port of DedupFinalizer
+										
+										dropCleanup = false; // switch off the dropping
+										// Send response tuple to Resp port of DedupFinalizer
+										submit(ctlTuple, FinalCtrl);
+									}
+									else { 
+										// bloom checkpoint file not present
+										// forward command tuple to read hashes from check point files
+										submit(InCtrl, ReaderCtrl);
+									}
+								} else {
+									// checkpoint file present
+									spl.file::fclose(fileRH, ferror);
+									// forward command tuple to command port of BloomFilter
+									submit(InCtrl, BloomCtrl);
+									// remove the checkpoint file
+									spl.file::remove(chkPointFilename, ferror);
+									if (0 != ferror) {
+										appTrc(Trace.error, "Error on file remove of file: "+ chkPointFilename + ", " + strerror(ferror), "DedupCore");
+									}
+								}
+								// send "status" command to read bloom metrics
+								mutable BloomCtrl sTuple = {};
+								sTuple.command = "status";
+								submit(sTuple, BloomCtrl);
+							}
+							else {
+								// forward command tuple to command port of BloomFilter
+								submit(InCtrl, BloomCtrl);
+							}
+						}<%if (1 == $isPartitioningEnabledForTupleDeduplication) {%> // end of 'if (("write" ==...'
+					} // end of 'else' dropCleanup<%}%>
+				}
+			config
+				threadedPort: queue(InCtrl, Sys.Wait, 1);
+		}
+
+		@spl_category(name="common")
+		(stream <TypesCommon.FileName> ScannedHashFile;
+		stream <TypesCommon.CommandInfoType> HashMetricsData
+		) as HashFileChecker = Custom(HashFileReaderControlStream as I) {
+			logic
+				state : {
+					rstring hashFilesDir = $bloomHashFilesDir+"/"+$groupId+"/"+"<%=CodeGenFrw::getConstant('COMMIT_DIR')%>";
+					rstring chkFileValidator = ".*\\<%=CodeGenFrw::getConstant('HASH_FILE_EXTENSION')%>";
+					mutable list<rstring> nameList;
+					mutable list<int64> mtimeList;
+					mutable list<uint64> sizeList;
+				}
+				onTuple I : {
+					// list of scanned files
+					mutable list<rstring> scannedFiles = [];
+					// prepare metrics
+					mutable HashMetricsData metricTuple = {};
+					metricTuple.command = I.command;
+					metricTuple.success = true;
+					metricTuple.checkpointFile="<%=CodeGenFrw::getConstant('HASH_FILE_EXTENSION')%>";
+					metricTuple.chkState=0l; // state: 0=wait
+					
+					// scan for files in hash file directory after clean-up
+					if (0 == getDir(hashFilesDir, true, nameList, mtimeList, sizeList)) {
+						// prepare list with extension
+						for (rstring fname in nameList) {
+							// check if file extension matches
+							if (0 != spl.collection::size(regexMatch(fname, chkFileValidator))) {
+								appendM(scannedFiles,fname);
+							}
+						}
+					}
+					// init the read processing
+					metricTuple.filesToRead=(int64) spl.collection::size(scannedFiles);
+					// send number of expected files to operator behind FileSource
+					if (isTraceable(Trace.trace)) {
+						appTrc (Trace.trace, "send expected chk-files (begin of training)", "DedupCore");
+					}
+					submit(metricTuple, HashMetricsData); // submit to output metrics port
+					// send files to FileSource
+					for (rstring fname in scannedFiles) {
+						rstring filePath = hashFilesDir+"/"+fname;
+						// submit metric
+						metricTuple.chkState=1l; // state: 1=init
+						metricTuple.checkpointFile=chkFileValidator;
+						submit(metricTuple, HashMetricsData);
+
+						// send file
+						if (isTraceable(Trace.trace)) {
+							appTrc (Trace.trace, "send file (" + filePath + ") to read content", "DedupCore");
+						}
+						submit({filename=filePath}, ScannedHashFile);
+					}
+					clearM(scannedFiles);
+				}
+		}
+
+		@spl_category(name="common")
+		(
+		stream <tuple<rstring hashcode<%if (1 == $isPartitioningEnabledForTupleDeduplication) {%>,
+		TypesCustom.PartitionIdType partitionId<%}%>>> HashFileReader
+		) = FileSource(ScannedHashFile) {
+			param
+				format: csv;
+		}
+
+		// Emits punctuation when all files are processed
+		@spl_category(name="common")
+		(
+		stream<InMergedTableStream> ChkHashes;
+		stream<TypesCommon.CommandInfoType> ReadCheckFileInfoStream as Info
+		) as ContextFileReadHandler = Custom(HashFileReader as I; HashMetricsData) {
+			logic
+				state : {
+					mutable Info infoTuple = {};
+					mutable int64 filesExpected = 0l;
+					mutable int64 filesFinished = 0l;
+					mutable uint64 bloomEntries = 0ul;
+				}
+				onTuple I: {
+					bloomEntries++;
+					mutable ChkHashes hashTuple={};
+					assignFrom(hashTuple,I);
+					infoTuple.entries = bloomEntries;
+					submit (hashTuple, ChkHashes);
+				}
+				onPunct I: { 
+					if (isTraceable(Trace.trace)) {
+						appTrc (Trace.trace, "HashFileReader: punct received", "DedupCore");
+					}
+					if (currentPunct() == Sys.WindowMarker) {
+						// punct from FileSource at end of file
+						// increase the number of processed files 
+						filesFinished++;
+						infoTuple.filesProcessed=filesFinished;
+						if (filesExpected == infoTuple.filesProcessed) {
+							// send punctuation to mark end of training phase
+							if (isTraceable(Trace.trace)) {
+								appTrc (Trace.trace, "send punct to BloomFilter (end of training)", "DedupCore");
+							}
+							submit(Sys.WindowMarker, ChkHashes);
+							// set flag for end of training
+							infoTuple.chkState = 2l; // end state
+							// send info tuple for statistic log
+							if (isTraceable(Trace.trace)) {
+								appTrc (Trace.trace, "send metric (end of training)" + (rstring) infoTuple, "DedupCore");
+							}
+							submit(infoTuple, Info); // for log entry
+							// reset members
+							filesExpected = 0l;
+							bloomEntries = 0ul;
+							filesFinished=0l;
+							infoTuple.filesProcessed = 0l;
+							infoTuple.filesToRead = 0l;
+							infoTuple.chkState = 0l;
+							infoTuple.entries = 0ul;
+							infoTuple.checkpointFile = "";
+							infoTuple.command = "";
+							infoTuple.success = false;
+						}
+						else {
+							submit(infoTuple, Info); // send metric
+						}
+					}
+				}
+				onTuple HashMetricsData: {
+					if (isTraceable(Trace.trace)) {
+						appTrc (Trace.trace, "HashMetricsData tuple received: "+(rstring) HashMetricsData, "DedupCore");
+					}
+					// get determined number of files
+					filesExpected = HashMetricsData.filesToRead;
+					// set metric data of infoTuple
+					assignFrom(infoTuple,HashMetricsData);
+					infoTuple.filesProcessed=filesFinished;
+					if (filesExpected == infoTuple.filesProcessed) {
+						// send punctuation to mark end of training phase
+						if (isTraceable(Trace.trace)) {
+							appTrc (Trace.trace, "send punct to BloomFilter (end of training)", "DedupCore");
+						}
+						submit(Sys.WindowMarker, ChkHashes);
+						// send info tuple for statistic log
+						infoTuple.chkState = 2l; // end state
+						if (isTraceable(Trace.trace)) {
+							appTrc (Trace.trace, "send metric (end of training)" + (rstring) infoTuple, "DedupCore");
+						}
+						submit(infoTuple, Info); // for log entry
+						// reset members
+						filesExpected = 0l;
+						bloomEntries = 0ul;
+						filesFinished= 0l;
+						infoTuple.filesProcessed = 0l;
+						infoTuple.filesToRead = 0l;
+						infoTuple.chkState = 0l;
+						infoTuple.entries = 0ul;
+						infoTuple.checkpointFile = "";
+						infoTuple.command = "";
+						infoTuple.success = false;
+					}
+					else {
+						submit(infoTuple, Info); // send metric
+					}
+				}
+		}
+
+		// invoke bloomfilter
+		@spl_category(name="common")
+		(
+		stream<InMergedTableStream> DedupedData as O;
+		stream<TypesCommon.ContextReadyType, BloomFilterTypes.Status> BloomRespStream as C
+		) = BloomFilter(BloomTableStream,ChkHashes; BloomControlStream,BloomStatusCommand)
+		{
+			param
+				numberOfExpectedUniques : $bloomN;
+				probability             : $bloomProbability;
+				hashAttribute           : hashcode;
+				commandAttribute        : command;
+				argumentAttribute       : argument;
+				alarmThresholds: 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0;<%
+				if (1 == $isPartitioningEnabledForTupleDeduplication) {%>
+				// partitioning parameters:
+				partitionBy: partitionId;
+				partitionCount: <%=$maxNumberOfFilterPartitionsForTupleDeduplication%>u;
+				searchAllPartitions: <%=($isSearchAllPartitionsEnabledForTupleDeduplication ? "true" : "false")%>;<%
+				} # endif isPartitioningEnabledForTupleDeduplication%>
+				
+			output
+				O: bloomFilterResult = Result();
+				C: success = Succeeded(),
+				   fillLevel = FillLevel(),
+				   nUniques = UniqueTupleCount();
+		}
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as SinkBloomOutTapXX = FileSink (DedupedData) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/BLOOM_OUT_"+$groupId+".csv";
+				format	: csv;
+				quoteStrings : false;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as SinkBloomRespOutTapXX = FileSink (BloomRespStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/BLOOM_OUT_RESP_"+$groupId+".csv";
+				format	: csv;
+				quoteStrings : false;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+		// Update dedup statistics
+		// Send ready status to Controller
+		@spl_category(name="common")
+		(
+		stream<DedupedData> OutDedupedStream as Out;
+		stream<BloomRespStream> StartupReady;
+		stream<int64 entries, float64 fillLevel, int64 outdatedEntries> BloomMetricsData;
+		stream<TypesCommon.CommandInfoType> CommandInfoRespStream as Info
+		) as DedupFinalizer = Custom(DedupedData; PunctStream; BloomRespStream,FinalyzerControlStream as Resp; CommandInfoStream) {
+			logic
+				state: {
+					mutable int64 numBloomEntries = 0l;
+					mutable float64 bloomFillLevel = 0fl;
+					int64 metricsCnt = 1000l;
+					mutable boolean isActiveReadCmd = false;
+					mutable int64 numOutdatedBloomEntries = 0l;
+				}
+				onTuple CommandInfoStream: {
+					if ("read" == command) {
+						isActiveReadCmd = true;
+					}
+					else {
+						isActiveReadCmd = false;
+					}
+				}
+				onTuple DedupedData: {
+					// do no forward if filename is empty - output of bloom training
+					if ("" != filename) {
+						if (BloomFilterTypes.unknown == bloomFilterResult) {
+							numOutdatedBloomEntries++; // increment if outdated result
+							if (isTraceable(Trace.trace)) {
+								appTrc (Trace.trace, "Outdated entry #" + (rstring)numOutdatedBloomEntries + ": " + (rstring)DedupedData, "DedupCore");
+							}
+						}
+						else if (BloomFilterTypes.unique == bloomFilterResult) {
+							numBloomEntries++; // increment if unique and not outdate
+						}
+						// forward to postDedupProcessor
+						submit(DedupedData,Out);
+					}
+					else {
+						if (BloomFilterTypes.unknown == bloomFilterResult) {
+							numOutdatedBloomEntries++; // increment if dropped result
+							if (isTraceable(Trace.trace)) {
+								appTrc (Trace.trace, "Outdated entry #" + (rstring)numOutdatedBloomEntries + ": " + (rstring)DedupedData, "DedupCore");
+							}
+						}
+						else {
+							numBloomEntries++; // increment if not duplicate
+						}
+						if (0l==(numBloomEntries % metricsCnt) || 0l==((numBloomEntries + numOutdatedBloomEntries) % metricsCnt)) {
+							submit({entries=numBloomEntries,fillLevel=bloomFillLevel,outdatedEntries=numOutdatedBloomEntries}, BloomMetricsData);
+						}
+					}
+				}
+				onTuple PunctStream: {
+					// forward to postDedupProcessor
+					mutable Out outTuple = {};
+					outTuple.groupId = PunctStream.groupId;
+					outTuple.chainId = PunctStream.chainId;
+					outTuple.chainPunct = PunctStream.chainPunct;
+					submit(outTuple,Out);
+
+					// update metrics
+					submit({entries=numBloomEntries,fillLevel=bloomFillLevel,outdatedEntries=numOutdatedBloomEntries}, BloomMetricsData);
+				}
+				onPunct DedupedData: {
+					if (currentPunct() == Sys.WindowMarker){ // end of training phase
+						// update metrics
+						submit({entries=numBloomEntries,fillLevel=bloomFillLevel,outdatedEntries=numOutdatedBloomEntries}, BloomMetricsData);
+						if (isActiveReadCmd) {
+							// sent ready signal to Controller
+							mutable StartupReady readyTuple = {};
+							readyTuple.command="read";
+							readyTuple.dedupLevel1Id=$groupId;
+							readyTuple.success = true;
+							submit(readyTuple,StartupReady);
+							isActiveReadCmd = false;
+						}
+					}
+				}
+				onTuple Resp: {
+						if ((true == Resp.success) &&
+						("status" == Resp.command /* triggered request */|| "" == Resp.command /* event result */)) { 
+							bloomFillLevel = Resp.fillLevel;
+							// update metrics
+							submit({entries=numBloomEntries,fillLevel=bloomFillLevel,outdatedEntries=numOutdatedBloomEntries}, BloomMetricsData);
+						}
+						else {
+							if ("clear" == Resp.command) {
+								<%if (1 == $isPartitioningEnabledForTupleDeduplication) {
+								%>if (Resp.failureOccurred) {
+									numBloomEntries = 0l;
+									numOutdatedBloomEntries = 0l;
+									bloomFillLevel = Resp.fillLevel;
+								}<%} else {
+								%>
+								numBloomEntries = 0l;
+								bloomFillLevel = Resp.fillLevel;<%
+								}%>
+								// update metrics
+								submit({entries=numBloomEntries,fillLevel=bloomFillLevel,outdatedEntries=numOutdatedBloomEntries}, BloomMetricsData);
+							}
+							else if ("read" == Resp.command) {
+								bloomFillLevel = Resp.fillLevel;
+								mutable rstring valueStr = "";
+								// read metrics file and update numBloomEntries;
+								if (readCommandFile(Resp.argument+".meta", valueStr)) {
+									numBloomEntries = (int64)valueStr;
+									// update metrics
+									submit({entries=numBloomEntries,fillLevel=bloomFillLevel,outdatedEntries=numOutdatedBloomEntries}, BloomMetricsData);
+									// remove meta file
+									mutable int32 ferror = -1;
+									spl.file::remove(Resp.argument+".meta", ferror);
+								}
+							}
+							else if ("write" == Resp.command) {
+								bloomFillLevel = Resp.fillLevel;
+								// write metrics file
+								if (Resp.success) {
+									Resp.argument = rtrim(Resp.argument,".tmp");
+								}
+								rstring metaFile = rtrim(Resp.argument,".tmp") + ".meta";
+								writeCommandFile(metaFile, (rstring)numBloomEntries);
+							}
+							mutable Info infoTuple = {};
+							if ("" != Resp.argument) {
+								infoTuple.filesProcessed = 1l;
+								infoTuple.checkpointFile = Resp.argument;
+							}
+							infoTuple.success = Resp.success;
+							infoTuple.command = Resp.command;
+							infoTuple.entries = (uint64)numBloomEntries;
+							infoTuple.chkState = 2l; // end state (stop time measurement for log entry)
+							submit(infoTuple, Info); // for log entry
+						}
+				}
+		}
+		
+		<%if ($exportEnabled) {%>
+		@spl_category(name="common")
+		() as Exporter = Export(OutDedupedStream) {
+			param
+				properties: { ite="demoapp.context_output_Dedup" };
+				allowFilter: true;
+				congestionPolicy: dropConnection; // prevents back-pressure from slow importer 
+		}
+		<%}%>		
+
+		// combined output of DedupReady (Bloom command response and Startup/Training ready)
+		@spl_category(name="common")
+		(stream<TypesCommon.ContextReadyType> OutReady) as DedupCmdReponse = Functor(StartupReady, BloomRespStream, FinalyzerControlStream as Resp) {
+			param
+				filter : command != "status"; // do not forward status command responses to Controller
+		}
+
+		// time measurement and logging of bloom training
+		@spl_category(name="common")
+		(stream<TypesCommon.ContextLogType> DedupStatistics as Out
+		) as BloomTrainingLogger = Custom(CommandInfoStream, CommandInfoRespStream, HashMetricsData, ReadCheckFileInfoStream as IN) {
+			logic
+				state : {
+					mutable timestamp startTimeTraining;
+					mutable timestamp endTimeTraining;
+					mutable boolean isRunning = false;
+					mutable rstring theID = "J["+(rstring)jobID()+"],P["+(rstring)PEID()+"]["+instanceID()+"][DEDUP]";
+				}
+				onTuple IN: {
+					if (1l == IN.chkState) { // 1 = init state (start file scan and bloom training)
+						if (false == isRunning) {
+							startTimeTraining = getTimestamp();
+						}
+						isRunning = true;
+					}
+					else if (2l == IN.chkState) { // 2 = end state (bloom training finished)
+						isRunning = false;
+						mutable Out outTuple = {};
+						outTuple.id = theID;
+						outTuple.filesProcessed = IN.filesProcessed;
+						outTuple.entries = IN.entries;
+						outTuple.command = IN.command;
+						outTuple.checkpointFile = IN.checkpointFile;
+						outTuple.success = IN.success;
+
+						endTimeTraining = getTimestamp(); 
+						outTuple.duration = diffAsSecs(endTimeTraining,startTimeTraining);
+						if (outTuple.duration < 0.01) {
+							outTuple.duration = 0.0;
+						}
+						outTuple.startTime = getCCYYMMDDhhmmssDB2Format(startTimeTraining);
+						outTuple.endTime = getCCYYMMDDhhmmssDB2Format(endTimeTraining);
+						submit(outTuple,Out);
+					}
+				}
+		}
+
+		@spl_category(name="common")
+		() as BloomMetrics = MetricsSink(BloomMetricsData) {
+			param
+				metrics		: entries, (int64)fillLevel, outdatedEntries;
+				names		: "entries", "fill level", "outdated";
+				descriptions: "number of hashes processed by bloom filter", "fill level (in percent), if partitioned then valid for the most used partition", "number of outdated entries (valid for partitions only)";
+		}
+
+		@spl_category(name="common")
+		() as HashMetrics = MetricsSink(CommandInfoStream,CommandInfoRespStream,ReadCheckFileInfoStream) {
+			param
+				metrics		: filesProcessed, filesToRead, chkState;
+				names		: "chkFilesProcessed", "chkFilesToRead", "chkState";
+				descriptions: "number of hash code files processed to train the bloom filter", "number of checkpoint files found in dir", "State: 0=wait, 1=init, 2=done";
+		}
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as SinkBloomOutTap = FileSink (OutDedupedStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/DEDUP_OUT_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as SinkBloomReadyOutTap = FileSink (OutReady) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/DEDUP_CMD_RESP_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+}
+<%} #endif dedup disabled%>

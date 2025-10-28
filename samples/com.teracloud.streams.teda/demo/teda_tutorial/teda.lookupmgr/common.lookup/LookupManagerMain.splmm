@@ -1,0 +1,273 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=1;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $customizingXmlFile="$ENV{LOOKUP_CUSTOM_XML}";
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::LookupManager(), warnings => 1);
+
+	### Common config - begin
+	my $applControlFile;
+	if (-e ".mkrun") { # checks if makefile was called
+		$applControlFile = CodeGenFrw::getConstant("APPL_CTRL_FILE");
+	}
+	my $shutdownControlFile=$applControlFile.".cmd";
+	
+	my $disableDbQuery = $configurator->isOff(Configurator::LM_DB());
+	print "// DB query disabled\n" if ($disableDbQuery);
+	my $disableCSVFile = $configurator->isOff(Configurator::LM_FILE());
+	print "// CSV File source disabled\n" if ($disableCSVFile);
+	my $ignoreEmptyLines;
+	my $getEolMarker;
+	my $ignoreHeaderLines;
+	my $isCSVLineQuoted;
+	my $getSeparator;
+	unless ($disableCSVFile) {
+		$ignoreEmptyLines  = $configurator->isOn(Configurator::LM_FILE_IGNOREEMPTYLINES());
+		$ignoreHeaderLines = $configurator->isOn(Configurator::LM_FILE_IGNOREHEADERLINES());
+		$isCSVLineQuoted	  = $configurator->isOn(Configurator::LM_FILE_QUOTED());
+		$getEolMarker	  = $configurator->getString(Configurator::LM_FILE_EOLMARKER());
+		$getSeparator	  = $configurator->getString(Configurator::LM_FILE_SEPARATOR());
+	}
+
+	my $hostTagPrefix = "common.lookup";
+	$hostTagPrefix =~ s/\./_/g;  
+
+	my $cfgDbName = $configurator->getString(Configurator::LM_DB_NAME());
+	my $cfgDbUser = $configurator->getString(Configurator::LM_DB_USER());
+	my $cfgDbPass = $configurator->getString(Configurator::LM_DB_PASSWORD());
+	my $applConfigName = $configurator->getString(Configurator::LM_APPLICATIONCONFIGURATION());
+	print "// Appl. configuration: $applConfigName\n" if ($applConfigName);
+	
+	my $multiHost = $configurator->isOn(Configurator::GLOBAL_MULTIHOST());
+	my $lookup_writer;
+	my $lookup_host_writer;
+	
+	### Common config - end
+
+	### application list - begin
+	my @appls;
+	if (-e ".mkrun") { # checks if makefile was called
+		CodeGenFrw::getAllApplications ($customizingXmlFile, \@appls);
+	}
+	my $applControlRespFile = "@appls";
+	$applControlRespFile =~ s/ /,/g;
+	print "// APPL RESP FILES: $applControlRespFile\n";
+	### application list - end
+	
+	### host-tag list - begin
+	my $hosttagsFile = catfile("./config","hosttags.txt");
+	if ($multiHost) {
+		my $hosttagsFile = catfile("./config","hosttags.txt");
+		$lookup_writer = $hostTagPrefix . "_lookup_writer";
+		$lookup_host_writer = $hostTagPrefix . "_lookup_host_writer";
+		open(HOSTTAGS, '>', $hosttagsFile) or die TedaToolkitResource::TEDA_FILE_CANNOT_OPEN_REASON($hosttagsFile, $!);
+		print HOSTTAGS "$lookup_writer,$lookup_host_writer";
+		close(HOSTTAGS);
+	} else {
+		unlink ($hosttagsFile);
+	}
+	### host-tag list - end
+
+%>
+namespace common.lookup;
+use common.lookup.lookupmgr::*;
+
+use com.teracloud.streams.teda.internal.fileutils::*;
+
+/**
+ * This **Lookup Manager** is the main composite of the lookup repository writer job. It is responsible for look-up of data form 'database' or from 'CSV-files' and store them in lookup repository data segments and data stores.
+ * The data integrity is very important in the processing of telecommunications data. Therefore the write access to lookup repository is controlled and synchronized by 'Application Control Master', that is 
+ * a part of the 'Lookup Manager'. The application control interrupts the file processing of the registered applications before beginning of the processing of the next file and it starts the write process
+ * to the segments of the repository. Successful finished, the application control starts to continue with the file processing in the registered applications.
+ * The status of the 'Application Control Master' is by 'control-files' stored in 'control directory'.
+ * 
+@param inputDir The path to input directory including the command files. It's relative to 'data'.
+ * *Submission name*: <%=Configurator::LM_COMMANDSDIRECTORY()%>
+@param statisticsDir Name of directory to locate the statistics. It is relative to 'data' folder. 
+ * *Submission name*: <%=Configurator::LM_STATISTICSDIRECTORY()%>
+<%unless ($disableCSVFile) {%>@param csvSourceFileDir The directory that includes the source look-up data in CSV format. It is relative to 'data' folder. 
+ * *Submission name*: <%=Configurator::LM_FILE_DIRECTORY()%><%}%>
+@param applControlDir The control directory where the application control-files are placed. This is the common folder for ITE applications and for the 'Application Control Master'
+ * *Submission name*: <%=Configurator::GLOBAL_APPLICATIONCONTROLDIRECTORY()%>
+@param applControlRespFiles This is the list of application names defined by ITE application namespace and controlled by 'Application Control Master'
+ * *Default*: <%=$applControlRespFile%>
+ * *Submission name*: <%=Configurator::LM_CONTROLLEDAPPLICATIONS()%>
+@param applControlRespFilesChecklist The compiled in list of controlled ITE applications
+*  *Fixed value*: <%=$applControlRespFile%>
+@param applControlFile This is the name of master application control file 
+ * *Default*: <%=$applControlFile%> 
+@param shutdownControlFile This file contains control strings to initiate a re-start or shutdown
+*  *Default*: <%=$shutdownControlFile%>
+@param period The period (in seconds) for status control check of control-files.
+ * *Fixed value*: 2.0 
+@param initDelay The initial delay (in seconds) for start of first control-file check
+ * *Fixed value*: 2.0 
+@param dirScanPattern The 'regex' pattern for selection of command files
+ * *Fixed value*: ".*.cmd$ 
+<%unless ($disableDbQuery) {
+%>@param dbName The name of database. 
+ * *Default*: <%=$cfgDbName%> 
+ * *Submission name*: <%=Configurator::LM_DB_NAME()%>
+@param dbUser The name of DB user. 
+ * *Default*: <%=$cfgDbUser%> 
+ * *Submission name*: <%=Configurator::LM_DB_USER()%>
+@param dbPass Password of DB user
+ * *Default*: <%=$cfgDbPass%>
+ * *Submission name*: <%=Configurator::LM_DB_PASSWORD()%>
+@param applConfigName The repository name of the application configuration 
+<%if ($applConfigName){%> * *Default*: <%=$cfgDbPass%>
+<%}%> * *Submission name*: <%=Configurator::LM_APPLICATIONCONFIGURATION()%><%
+}%>
+<%unless ($disableCSVFile) {%>
+@param ignoreEmptyCSVLines The parameter defines how to handle empty lines.
+ * *Default*: <%=$ignoreEmptyLines%>
+@param ignoreHeaderCSVLines The parameter defines how to handle header lines.
+ * *Default*: <%=$ignoreHeaderLines%>
+@param isCSVLineQuoted The parameter defines if the attributes are quoted.
+ * *Default*: <%=$isCSVLineQuoted%>
+@param csvEolMarker The parameter defines the end-of-line marker.
+ * *Default*: <%=$getEolMarker%>
+@param csvSeparator The parameter defines the separator between attributes.
+ * *Default*: <%=$getSeparator%><%}%>
+ */
+@threading(model=manual)
+composite LookupManagerMain{
+	param 
+		expression<rstring> $inputDir: convertDataDir(getSubmissionTimeValue (<%=$configurator->getSubmissionTimeValueArguments(Configurator::LM_COMMANDSDIRECTORY())%>));
+		expression<rstring> $statisticsDir: convertDataDir(getSubmissionTimeValue (<%=$configurator->getSubmissionTimeValueArguments(Configurator::LM_STATISTICSDIRECTORY())%>));
+		expression<rstring> $applControlDir: convertDataDir(getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::GLOBAL_APPLICATIONCONTROLDIRECTORY())%>));
+		expression<rstring> $applControlRespFiles: getSubmissionTimeValue(<%=sprintf("\"%s\", \"%s\"", Configurator::LM_CONTROLLEDAPPLICATIONS(), $applControlRespFile)%>);
+		expression<rstring> $applControlRespFilesChecklist: "<%=$applControlRespFile%>";
+		<%unless ($disableCSVFile) {
+		%>expression<rstring> $csvSourceFileDir: convertDataDir(getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::LM_FILE_DIRECTORY())%>));
+		expression<boolean> $ignoreEmptyCSVLines: <%=($ignoreEmptyLines ? "true" : "false")%>;
+		expression<boolean> $ignoreHeaderCSVLines: <%=($ignoreHeaderLines ? "true" : "false")%>;
+		expression<rstring> $csvEolMarker: "<%=$getEolMarker%>";
+		expression<rstring> $csvSeparator: "<%=$getSeparator%>";
+		<%}%>
+		expression<rstring> $applControlFile: "<%=$applControlFile%>";
+		expression<rstring> $shutdownControlFile: "<%=$shutdownControlFile%>";
+		expression<rstring> $dirScanPattern: ".*.cmd$";
+		expression<float64> $period: 2.0;
+		expression<float64> $initDelay: 2.0;
+		<%unless ($disableDbQuery) { 
+		%>// Application configuration repository
+		expression<rstring> $applConfigName: getSubmissionTimeValue ("<%=Configurator::LM_APPLICATIONCONFIGURATION()%>",<%if ($applConfigName) {%>"<%=$applConfigName%>"<%} else {%>""<%}%>);
+		// DB settings
+		expression<rstring> $dbName: getSubmissionTimeValue ("<%=Configurator::LM_DB_NAME()%>",<%if ($cfgDbName) {%>"<%=$cfgDbName%>"<%} else {%>""<%}%>);
+		expression<rstring> $dbUser: getSubmissionTimeValue ("<%=Configurator::LM_DB_USER()%>",<%if ($cfgDbUser) {%>"<%=$cfgDbUser%>"<%} else {%>""<%}%>);
+		expression<rstring> $dbPass: getSubmissionTimeValue ("<%=Configurator::LM_DB_PASSWORD()%>",<%if ($cfgDbPass) {%>"<%=$cfgDbPass%>"<%} else {%>""<%}%>);<%
+		}%>
+
+	graph
+
+		/*
+		 * Dumps out submission parameters of this composite.
+		 */
+		() as CfgDump = Custom() {
+			logic onProcess : {
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "inputDir: " + $inputDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "statisticsDir: " + $statisticsDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlDir: " + $applControlDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlFile: " + $applControlFile);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlRespFiles: " + $applControlRespFiles);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlRespFilesChecklist: " + $applControlRespFilesChecklist);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "shutdownControlFile: " + $shutdownControlFile);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "dataDir: " + dataDirectory());
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "period: " + (rstring)$period);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "initDelay: " + (rstring)$initDelay);
+					<%unless ($disableCSVFile) {
+					%>printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "csvSourceFileDir: " + $csvSourceFileDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "ignoreEmptyCSVLines: " + (rstring)$ignoreEmptyCSVLines);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "ignoreHeaderCSVLines: " + (rstring)$ignoreHeaderCSVLines);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "isCSVLineQuoted: <%=($isCSVLineQuoted ? 'on' : 'off' )%>");
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "csvEolMarker: " + $csvEolMarker);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "csvSeparator: " + $csvSeparator);<%
+					}%><%unless ($disableDbQuery) {%>
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "dbName: " + (rstring)$dbName);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "dbUser: " + (rstring)$dbUser);
+					// do not dump password
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applConfigName: " + (rstring)$applConfigName);<%}%>
+				}
+			config
+				placement : partitionColocation("CFGDUMP"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>")<%if ($multiHost) {%>, host(LookupManagerPool)<%}%>;
+		}
+
+		// DirectoryScanner
+		// supervise the directory and generate for each file a tuple
+		() as Main = LookupManagerCore() {
+			param
+				inputDir: $inputDir;
+				statisticsDir: $statisticsDir;
+				statisticsArchiveDir: $statisticsDir + "/archive";
+				dirScanPattern: $dirScanPattern;
+				applControlDir: $applControlDir;
+				applControlFile: $applControlFile;
+				applControlRespFiles: $applControlRespFiles;
+				applControlRespFilesChecklist: $applControlRespFilesChecklist;
+				shutdownControlFile: $shutdownControlFile;
+				period: $period;
+				initDelay: $initDelay;
+				<%unless ($disableCSVFile) {%>
+				// CSV file settings
+				csvFilesDir: $csvSourceFileDir;
+				ignoreEmptyCSVLines: $ignoreEmptyCSVLines;
+				ignoreHeaderCSVLines: $ignoreHeaderCSVLines;
+				csvEolMarker: $csvEolMarker;
+				csvSeparator: $csvSeparator;<%
+				}%>
+				<%unless ($disableDbQuery) {%>
+				// DB settings
+				dbName: $dbName;
+				dbUser: $dbUser;
+				dbPass: $dbPass;
+				applConfigName: $applConfigName;<%
+				}%>
+		}
+	config
+		relocatable : false;
+		restartable : false;	
+		tracing	: error;
+		<%if ($multiHost) {%>hostPool	: 
+			LookupManagerPool=createPool({tags=["<%=$lookup_writer%>"]}, Sys.Shared),
+			LookupManagerHostPool=createPool({tags=["<%=$lookup_host_writer%>"]}, Sys.Shared);<%}%>
+}
+

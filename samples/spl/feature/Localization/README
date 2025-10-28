@@ -1,0 +1,16 @@
+Overview: Localization will demonstrate the use of a resource bundle
+to hold translatable messages that can be loaded either at compile time
+or at runtime, and formatted appropriatly for the execution locale.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+3. To run the sample application under a different locale, try
+   LANG=tr_TR.UTF-8
+   ./output/bin/standalone
+
+Notes: 
+  - The resulting output is written to the file 'data/Results.txt'.

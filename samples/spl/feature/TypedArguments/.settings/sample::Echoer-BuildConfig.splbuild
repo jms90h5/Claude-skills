@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>SPL Build Configuration: BuildConfig</comment>
+  <entry key="com.ibm.streams.studio.splproject:OUTPUT_DIR">BuildConfig</entry>
+  <entry key="com.ibm.streams.studio.splproject:NAME">BuildConfig</entry>
+  <entry key="com.ibm.streams.studio.splproject:MAIN_COMPOSITE">sample::Echoer</entry>
+  <entry key="com.ibm.streams.studio.splproject:ACTIVE">T</entry>
+</properties>

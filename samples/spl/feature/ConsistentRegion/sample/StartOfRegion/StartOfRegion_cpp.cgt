@@ -1,0 +1,103 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2009, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+
+// Compiler time checks. This start operator does not support the operatorDriven
+// mode of a consistent region.
+<%
+   SPL::CodeGen::implementationPrologue($model);
+   my $isInConsistentRegion = $model->getContext()->getOptionalContext("ConsistentRegion");
+%>
+
+// Registers state handler
+MY_OPERATOR::MY_OPERATOR()
+: _counter(0)
+{
+  <%if ($isInConsistentRegion) {%>
+      _crContext = static_cast<ConsistentRegionContext *> 
+          (getContext().getOptionalContext(CONSISTENT_REGION));
+      getContext().registerStateHandler(*this);
+  <%}%>
+}
+
+void MY_OPERATOR::allPortsReady()
+{
+    createThreads (1);
+}
+
+// Main loop of the operator
+void MY_OPERATOR::process(uint32_t) 
+{
+    SPLAPPTRC(L_DEBUG, "StartOfRegion startup...", SPL_OPER_DBG);
+    ProcessingElement& pe = getPE();
+    while(!pe.getShutdownRequested()) {
+        // If in a consistent region, the loop body is protected by
+        // the ConsistentRegionPermit. State update and tuple
+        // submission are performed under the same instance of the 
+        // lock guard, as these two actions cannot be 
+        // dissociated from each other. This is because if the operator state
+        // is reset, the next tuple submission must already capture the 
+        // new value of the counter. 
+        // The region permit blocks when a draining or a resetting. 
+        // The operator state can be checkpointed or restored while the lock guard
+        // is blocked. 
+        <%if ($isInConsistentRegion) {%>
+            {  
+                ConsistentRegionPermit crp(_crContext);
+        <%}%>
+            {
+                AutoMutex am (_mutex);
+                OPort0Type tuple(_counter);
+                submit (tuple, 0);
+                _counter++;
+            }
+        <%if ($isInConsistentRegion) {%>
+            }
+        <%}%>
+        // Sleep call is outside of the lock guard, so that it does not block a
+        // drain or reset progress.
+        pe.blockUntilShutdownRequest(0.2);
+    }
+    SPLAPPTRC(L_DEBUG, "StartOfRegion exiting...", SPL_OPER_DBG);
+}
+
+<%if ($isInConsistentRegion) {%>
+void MY_OPERATOR::checkpoint(Checkpoint & ckpt)
+{
+    // Acquiring lock, as the thread that invokes the checkpoint and restore
+    // methods in a start operator is different than the main operator thread.
+    AutoMutex am(_mutex);
+
+    ckpt << _counter;
+}
+
+void MY_OPERATOR::reset(Checkpoint & ckpt)
+{
+    AutoMutex am(_mutex);
+
+    ckpt >> _counter;
+}
+
+void MY_OPERATOR::resetToInitialState()
+{
+    AutoMutex am(_mutex);
+
+    _counter = 0;
+    return;
+}
+<%}%>
+
+
+<%SPL::CodeGen::implementationEpilogue($model);%>

@@ -1,0 +1,77 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace demoapp.fileingestion.custom;
+
+use com.teracloud.streams.teda.internal.ingestion::ProcessFileInfo;
+use com.teracloud.streams.teda.internal.ingestion::FileValidity;
+
+
+/**
+ * Implements a file type validation. The determined file type is used to send
+ * the file content to the parser that is able to handle this content.
+ *
+ * Valid file types set the file type ID and pass through to the first output
+ * port, invalid or unknown file types go to the second output port. The
+ * implemented algorithm that can, for example, evaluate the file name or the
+ * file content, must be consistent with the types that are specified with
+ * the **ite.ingest.reader.parserList** parameter.
+ *
+ * Turn the **ite.ingest.customFileTypeValidator** parameter on to activate
+ * this composite operator.
+ * 
+ * Do not throw any exceptions here.
+ * Use error traces and second output port for invalid or unknown filenames only.
+ * Every received tuple must be forwarded.
+ * Do not submit a tuple to both output ports.
+ * Window punctuation must be forwarded to first output port.
+ * 
+ * @input FilesIn
+ * Tuples to be validated
+ *
+ * @output FileOut
+ * Valid tuples with fileType attribute set
+ * 
+ * @output InvalidOut
+ * Rejected tuples
+ */
+public composite FileTypeValidator (
+	input
+		stream<ProcessFileInfo> FilesIn;
+	output
+		stream<ProcessFileInfo> FileOut,
+		stream<ProcessFileInfo> InvalidOut
+) {
+
+	graph
+
+		(
+			stream<ProcessFileInfo> FileOut;
+			stream<ProcessFileInfo> InvalidOut
+		) as FileTypePrepare = Custom(FilesIn as FileIn) {
+			logic
+				onTuple FileIn: {
+					// The file name pattern that is specified with the
+					// ite.ingest.directoryScan.processFilePattern parameter,
+					// ensures that each incoming file name has an extension,
+					// which is either .asn, .csv, or .bin.
+					// The extension is used to build the value for the
+					// fileType attribute, which can be: ASN, CSV, or BIN.
+					FileIn.fileType = upper(substring(FileIn.filenameOnly, length(FileIn.filenameOnly) - 3, 3));
+					submit(FileIn, FileOut);
+				}
+				onPunct FileIn: {
+					if (currentPunct() == Sys.WindowMarker) submit(Sys.WindowMarker, FileOut);
+				}
+		}
+}

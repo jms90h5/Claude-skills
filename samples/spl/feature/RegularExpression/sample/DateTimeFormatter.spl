@@ -1,0 +1,161 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+/** 
+The `RegularExpression` sample demonstrates how regular expression pattern matching and tokenization may be used 
+to perform transforms on stream data.
+
+You can modify this sample to create new applications.  Here are some things you might want to experiment with:
+*  Change the regular expressions used in the tokenization and/or replacement functions to parse and format the incoming
+   string values to yield different results.
+*  Add another transform table and add logic to the transformation Functor so an hour of '00' is represented by the 
+   string 'midnight' and an hour of '12' is represented by the string 'noon'.
+*  Further enhance the transform logic to convert the 24-hour time format to a 12-hour format (with AM or PM suffix as appropriate).
+
+The same process is performed twice, first with `rstring` types, then with `ustring` types.  The results are similar except
+the ustring-based technique is capable of handling UTF-16 unicode characters rather than single-byte characters.
+1. An `spl.adapter::FileSource` operator reads a text file and sends each line from the file as an output tuple containing an attribute of 
+   type `rstring` (or `ustring` in the second example).  Each line contains a date and time similar to the format: `2007-01-05 00:05:49`
+2. An `spl.relational::Functor` operator is configured to apply the built-in SPL `regexMatch` function against the string contained in each 
+   incoming tuple.  The `regexMatch` function is configured with a pattern-matching regular expression that tokenizes the incoming string 
+   into four subvalues.  Each subvalue is placed as a member of a list of string values in the output tuple.
+3. A second `Functor` operator is used to convert the 'month' token from numeric form into a three-character abbreviation of the month 
+   name that corresponds to the month number.  The order of the date tokens is also rearranged in the output tuple so the day appears 
+   first, followed by the month, then the year.
+4. A third `Functor` is configured to apply the built-in SPL `regexReplace` function against the 'time' attribute of the incoming tuples.  
+   The `regexReplace` function is configured with a regular expression that removes any leading zeroes present in the hour, minute,
+   or second values.
+5. Finally, an `spl.adapter::FileSink` operator writes the transformed tuples to an output file.
+ */
+                               
+namespace sample;
+
+composite DateTimeFormatter
+{
+
+graph 
+
+  // with rstring 
+
+  // A FileSource operator reads the file SourceData.txt and sends each line from the file as an output tuple containing
+  // an attribute of type rstring.
+  stream<rstring dateTime> RawDataR = FileSource()
+  {
+    param file : "SourceData.txt";
+  }
+
+  // A Functor operator is configured to apply the built-in SPL regexMatch function against the string
+  // contained in each incoming tuple.  The regexMatch function is configured with a pattern-matching regular expression that
+  // tokenizes the incoming string into four subvalues.  Each subvalue is placed as a member of a list of string values in the output
+  // tuple.
+  stream<list<rstring> tokens> TokenizedR = Functor(RawDataR)
+  {
+      output TokenizedR : 
+        tokens = regexMatch(dateTime, "([0-9]*)-([0-9]*)-([0-9]*) (.*)");
+      // result from regexMatch has 5 entries: at index 0 we have the complete
+      // match, following it are the 4 individual matches.
+  }
+
+  // Another Functor operator is used to convert the 'month' token from numeric form into a three-character abbreviation of
+  // the month name that corresponds to the month number.  The order of the date tokens is also rearranged in the output tuple so the
+  // day appears first, followed by the month, then the year.
+  stream<rstring date, rstring time> ParsedR = Functor(TokenizedR)
+  {
+      logic
+        state : list<rstring> months = 
+                    ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+                     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+      output ParsedR : 
+        date = tokens[3] + "-" + months[(int32)tokens[2] - 1] + "-" + tokens[1], 
+        time = tokens[4];
+  }
+
+  // Another Functor is configured to apply the built-in SPL regexReplace function against the 'time' attribute
+  // of the incoming tuples.  The regexReplace function is configured with a regular expression that removes any leading zeroes
+  // present in the hour, minute, or second values.
+  stream<rstring date, rstring time> FinalR = Functor(ParsedR)
+  {
+      output FinalR : time = regexReplace(time,"0([0-9])","\\1",true);
+  }
+
+  // A FileSink operator writes the transformed tuples to the output file SinkDataR.txt.
+  () as WriterR = FileSink(FinalR)
+  {
+    param file : "SinkDataR.txt";      
+  }  
+
+  // Now with ustring
+
+  // A FileSource operator reads the file SourceData.txt and sends each line from the file as an output tuple containing
+  // an attribute of type ustring.
+  stream<ustring dateTime> RawDataU = FileSource()
+  {
+    param file : "SourceData.txt";
+  }
+
+  // A Functor operator is configured to apply the built-in SPL regexMatch function against the string
+  // contained in each incoming tuple.  The regexMatch function is configured with a pattern-matching regular expression that
+  // tokenizes the incoming string into four subvalues.  Each subvalue is placed as a member of a list of string values in the output
+  // tuple.  (This instance also uses a slightly different, yet equivalent, regular expression than the earlier rstring-based instance.)
+  stream<list<ustring> tokens> TokenizedU = Functor(RawDataU)
+  {
+      output TokenizedU : 
+        tokens = regexMatch(dateTime, "([[:digit:]]*)-([[:digit:]]*)-([:digit:]*) ([:print:]*)"u);
+      // result from regexMatch has 5 entries: at index 0 we have the complete
+      // match, following it are the 4 individual matches.
+  }
+
+  // Another Functor operator is used to convert the 'month' token from numeric form into a three-character abbreviation of
+  // the month name that corresponds to the month number.  The order of the date tokens is also rearranged in the output tuple so the
+  // day appears first, followed by the month, then the year.
+  stream<ustring date, ustring time> ParsedU = Functor(TokenizedU)
+  {
+      logic
+        state : list<ustring> months = 
+                    ["JAN"u, "FEB"u, "MAR"u, "APR"u, "MAY"u, "JUN"u,
+                     "JUL"u, "AUG"u, "SEP"u, "OCT"u, "NOV"u, "DEC"u];
+      
+      output ParsedU : 
+        date = tokens[3] + "-"u + months[(int32)tokens[2]-1] + "-"u + tokens[1], 
+        time = tokens[4];
+  }
+
+  // Another Functor is configured to apply the built-in SPL regexReplace function against the 'time' attribute
+  // of the incoming tuples.  The regexReplace function is configured with a regular expression that removes any leading zeroes
+  // present in the hour, minute, or second values.  (This instance also uses a slightly different, yet equivalent, regular expression
+  // than the earlier rstring-based instance.)
+  stream<ustring date, ustring time> FinalU = Functor(ParsedU)
+  {
+      output FinalU : time = regexReplace(time, "0([[:digit:]])"u, "$1"u, true);
+  }
+
+  // A FileSink operator writes the transformed tuples to the output file SinkDataU.txt.
+  () as WriterU = FileSink(FinalU)
+  {
+    param file : "SinkDataU.txt";      
+  }  
+
+}

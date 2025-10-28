@@ -1,0 +1,134 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample;
+
+/**
+ * Sample demonstrating invocation of operators implemented
+ * using the Java Operator model API. Java operators can
+ * be invoked though the generic JavaOp operator or as a
+ * Java primitive operator.
+ *
+ * Java primitive operators are the preferred mechanism as
+ * they allow natural integration of a Java operator into SPL.
+ * A Java primitive operator is described by a single operator
+ * model XML file, that describes its basic syntactic and
+ * semantic properties, including how the SPL operator maps
+ * to an instance of the `com.ibm.streams.operator.Operator interface`.
+ *
+ * The `JavaOp` is a simple call out to a Java that allows
+ * simple invocation of a Java operator from SPL.
+ *
+ * This sample application creates an output file "properties.txt"
+ * containing a dump of the Java Virtual Machine's system properties
+ * with additional simple tagging driven by the parameters to the
+ * `JavaOp` invocation and directory listing for the values of
+ * some of the properties (e.g. `java.home`) driven by the parameter
+ * to the Java primitive operator DirectoryLister.
+ */
+composite JavaOperators
+{
+
+graph 
+
+  // Invocation of Java operator using the the JavaOp operator
+  // from the SPL toolkit. 
+  //
+  // Creates a stream containing the Java VM's system properties
+  stream<ustring name, ustring value, set<ustring> tags> SystemProperties
+   = JavaOp()
+  {
+    param
+      // Class name of the Java Operator to be invoked.
+      // Set to a class that implements com.ibm.streams.operator.Operator
+      //
+      className : "com.ibm.streams.operator.samples.sources.SystemPropertySource";
+      // Where the class is located. A list of jar files or
+      // directories containing the required classes for the
+      // Operator instance.
+      // In this case the class is from the set of samples
+      // provided with the Java Operator API and thus is always
+      // in the class path.
+
+      classLibrary: "";
+
+      // Arbitrary JVM arguments can be passed using vmArg.
+      // When multiple Java operators invocations are fused
+      // together or executed in standalone mode they must
+      // have identical vmArg values.
+      // To avoid different vmArgs settings, it is
+      // recommended that system properties set in vmArg
+      // are limited to those that must be set during JVM startup.
+      // Other properties may be set by initialization Java code
+      // of the Operator instance.
+
+      vmArg: "-Xmx128m";
+
+      // JavaOp allows additional arbitrary parameters that
+      // are made available to the Operator instance through
+      // methods on the OperatorContext api. A parameter may
+      // have one or more values
+      // 
+      // SystemProperties class puts the value of the parameter
+      // tags as the tags attribute for any system property that
+      // starts with the value of the tagged parameter.
+     
+      tagged: "java.";
+      tags: "system", "vm";
+  }
+
+  /**
+   * Invocation of a Java primitive operator. The Java primitive operator
+   * is defined in `sample/DirectoryLister` through its operator model
+   * `DirectoryLister.xml`. The operator model describes the Java class
+   * to be called (`sample.DirectoryPropertyLister`), its source
+   * is in `impl/java/src` and is compiled into `impl/java/bin`.
+   *
+   * `DirectoryLister` submits a tuple for each it receives,
+   * adding a directory listing as attribute "files" if the
+   * "name" attribute is contained in the required parameter
+   * **listDirectory**. The directory listed is from the "value" attribute.
+   */
+  stream<SystemProperties, tuple<list<ustring> files>> SystemPropertiesDir
+   = DirectoryLister(SystemProperties)
+  {
+   param
+    // The operator model defines the paramters the operator allows,
+    // here a single parameter is required with rstring values.
+    // List the directories for the values of these system properties.
+    listDirectory: "java.home", "user.dir", "java.io.tmpdir";
+
+    // Any Java primitive may be passed in vm arguments as well
+    // as defining its own in its operator model. Here we have
+    // a value to match the JavaOp invocation to allow the operators
+    // to co-exist in standalone mode.
+    vmArg: "-Xmx128m";
+  }
+
+  () as SystemPropertiesOut = FileSink(SystemPropertiesDir)
+  {
+    param file : "properties.txt";      
+  }  
+}

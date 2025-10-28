@@ -1,0 +1,176 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2012, 2017     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample;
+
+use com.teracloud.streams.timeseries.modeling::BoundedAnomalyDetector;
+
+/**
+ * Calculates the timestamp of a sampling point (created every sampling period) from a given timestamp.
+ *
+ * @param timeStamp       the timestamp in seconds, milliseconds or microseconds as time since epoch
+ * @param samplingPeriod  the sampling period in the same time unit as the timestamp
+ * @param upperBound      controls whether the sample timestamp is calculated as upper or lower boundary of the time interval defined by the sampling period
+ *
+ * @return the timestamp of a sample point in the same time unit as the timestamp
+ */
+public uint64 sampleTime (uint64 timeStamp, uint64 samplingPeriod, boolean upperBound) {
+    uint64 div = timeStamp / samplingPeriod;
+    if (!upperBound) return div * samplingPeriod;
+
+    // for upper bound timestamps we must evaluate the remains of the division
+    uint64 mod = timeStamp % samplingPeriod;
+    if (mod == 0ul) return div * samplingPeriod;
+    return (div + 1ul) * samplingPeriod;
+}
+
+type RecordType = enum {VIDEO, VOICE, DATA};  // {0, 1, 2}
+type CallTermination = tuple <uint64 terminationTimeInSec, float64 dataVolume, RecordType recType>;
+
+public composite OutliersInSeasonalDataMain {
+param
+    expression <int32> $samplingPeriod: 3600;    // interpreted as seconds because our timestamps are also seconds
+    expression <int32> $trainingSamples: 336;    // 336 = 2 weeks of 60-minutes intervals
+
+graph
+
+    stream <CallTermination> CallTerminations = FileSource() {
+        param
+            file: getThisToolkitDir() + "/opt/calls_in.csv.gz";
+            compression: gzip;
+            initDelay: 10.0;
+    }
+
+    // Sort events globally according their timestamps in ascending order to ensure ascending timestamps.
+    // Unfortunately the Sort operator has not the option for delta eviction policy with sliding window.
+    stream <I> CallTerminationsChronologicallySorted = Sort (CallTerminations as I) {
+        window I: sliding, count(100);
+        param
+            sortBy: terminationTimeInSec;
+            order: ascending;
+    }
+ 
+    // Insert a window marker after every full sampling period, for example after every full hour;
+    // the timestamps must behave ascending for this method of punctuation.
+    (stream <I> PunctedPerSamplingPeriod) as SamplePunctor = Punctor (CallTerminationsChronologicallySorted as I) {
+        logic state: uint64 _samplingPeriod = (uint64) $samplingPeriod;
+        param
+            position: before;
+            // Note:
+            // For the very first tuple, I[1] is initialized by tuple's default constructor.
+            // The timestamp attribute has the value 0, so that the Punctor always emits a WindowMarker
+            // in front of the very first tuple. This is not a problem here. We can deal with this.
+            punctuate: I.terminationTimeInSec/_samplingPeriod > I[1].terminationTimeInSec/_samplingPeriod;
+    }
+
+    // Create a group of tuples every sampling interval, for example every full hour, which contain the sum of the data volume
+    stream <RecordType recType, float64 sum, uint64 lastTimestamp> HourlySumsPerGroup as O = Aggregate (PunctedPerSamplingPeriod as I) {
+        window I: tumbling, punct();
+        param
+            groupBy: recType;
+        output O:
+            sum = Sum (dataVolume),
+            lastTimestamp = Max (terminationTimeInSec);
+            // All other attributes are auto-assigned by using the 'Last' COF.
+    }
+
+
+    // Now we have one tuple every sampling period as long as there was input data within the sampling period.
+    // We must make sure that we have a regular timeseries with a sample point every sampling period.
+    //
+    // When we create artificial tuples to make the time series regular, we must take care what data we create and what
+    // data the downstream forecasting operator can handle. If we generate zeros and use an operator that uses a BATS model,
+    // we must disable the Box-Cox transformation because Box-Cox can handle only positive (greater than 0) values.
+    stream <RecordType recType, float64 sum, uint64 sampleTimestamp> RegularTimeseries = Custom (HourlySumsPerGroup as I) {
+        logic
+        state: {
+            uint64 _samplingPeriod = (uint64) $samplingPeriod;
+            mutable map <RecordType, uint64> _lastSubmittedTimestamps;
+        }
+        onTuple I: {
+            uint64 sampleTimestamp = sampleTime (I.lastTimestamp, _samplingPeriod, true);
+            mutable RegularTimeseries oTuple = {};
+            assignFrom (oTuple, I);
+            oTuple.sampleTimestamp = sampleTimestamp;
+            if (I.recType in _lastSubmittedTimestamps) {
+                // see, if we need to generate artificial tuples to make the timeseries regular:
+                // Note for this implementation detail:
+                // The timeDiff variable is declared as an unsigned integer. If 'sampleTimestamp' gets smaller than
+                // '_lastSubmittedTimestamps[I.recType]' for any reason, the difference is a very, very high value
+                // because it is defined as an unsigned. This would make the following code go nuts.
+                // Therefore the input data MUST be sorted in ascending order according the timestamp.
+                mutable uint64 timeDiff = sampleTimestamp - _lastSubmittedTimestamps[I.recType];
+                if (timeDiff > _samplingPeriod) {
+                    mutable RegularTimeseries artificialOutTuple = {};
+                    assignFrom (artificialOutTuple, I);
+                    mutable uint64 sampleTs = _lastSubmittedTimestamps[I.recType] + _samplingPeriod;
+                    while (timeDiff > _samplingPeriod) {
+                        artificialOutTuple.sampleTimestamp = sampleTs;
+                        artificialOutTuple.sum = 0.0;
+                        submit (artificialOutTuple, RegularTimeseries);
+                        timeDiff -= _samplingPeriod;
+                        sampleTs += _samplingPeriod;
+                    }
+                }
+            }
+            _lastSubmittedTimestamps[I.recType] = sampleTimestamp;
+            submit (oTuple, RegularTimeseries);
+        }
+    }
+
+
+    // outlier detection with BATS forecasting model and forecast bounds
+    stream <I, tuple<boolean isAnomaly>> OutlierDetector = BoundedAnomalyDetector(RegularTimeseries as I) {
+        param
+            partitionBy: recType;
+            inputTimeSeries: sum;
+            inputTimestamp: sampleTimestamp;
+            confidenceLevel: 0.99;
+            useBoxCox: false;
+            initSamples: $trainingSamples;
+    }
+    
+    // enum {VIDEO, VOICE, DATA};  // {0, 1, 2}
+    (stream <I> OutlierDetect_VIDEO; stream <I> OutlierDetect_VOICE; stream <I> OutlierDetect_DATA) as TypeSplit
+    = Split (OutlierDetector as I) {
+        param index: (int32) I.recType;
+    }
+
+    // write CSV files that can be explored in a spreadsheet program
+    () as Output_VIDEO = FileSink (OutlierDetect_VIDEO) {
+        param
+            file: "/tmp/OutliersMarkedHourly_VIDEO.csv";
+    }
+    () as Output_VOICE = FileSink (OutlierDetect_VOICE) {
+        param
+            file: "/tmp/OutliersMarkedHourly_VOICE.csv";
+    }
+    () as Output_DATA = FileSink (OutlierDetect_DATA) {
+        param
+            file: "/tmp/OutliersMarkedHourly_DATA.csv";
+    }
+    config placement: partitionIsolation;
+}
+

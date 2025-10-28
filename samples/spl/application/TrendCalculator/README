@@ -1,0 +1,12 @@
+Overview: TrendCalculator is a stock trading program. It will read a stream of
+stock trades and report up/down trends for each stock.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone 
+
+Notes: 
+  - This application will run for a long time, and write large amounts of
+    text to the standard output.

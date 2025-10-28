@@ -1,0 +1,83 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+/** 
+The `Sequence` composite demonstrates how parameter values are passed into an invocation of a composite operator.
+
+Modify this example to create new applications.  Some suggestions: 
+
+1. Change the parameter values supplied to the `SeqFilter` operator and observe the results.
+2. Change the output assignment values on the `Beacon` operator so it generates age values that vary for each generated tuple.  
+(The SPL `random()` function may be useful).
+3. Define additional parameters on the `SeqFilter` operator that further specify the configuration of its 
+`sample::SeqFilter:Functor:O` operator, and set those parameters on the `SeqFilter` operator instance within this file.
+
+The `spl.utility::Beacon` and `spl.adapter::FileSink` operators are part of the 
+SPL Standard toolkit.  The `sample::SeqFilter` operator is defined in the SeqFilter.spl file.
+
+1. A `Beacon` operator produces a stream of tuples containing an `rstring name` and a `uint32 age`.
+2. A `SeqFilter` operator consumes the stream of names and ages, discards the tuples whose age value is 2 or less, 
+and assigns a sequence number to a user-configured attribute within its output stream.
+3. A `FileSink` operator writes the resulting filtered and sequence-numbered stream to a file.
+ */
+
+namespace sample;
+
+composite Sequence 
+{
+type
+    SeqType = tuple<uint64 seqno>;
+graph
+    /*
+     * The spl.utility::Beacon operator produces a stream of ten tuples, each containing an rstring attribute name and a uint32 attribute age.
+     */
+    stream<rstring name, uint32 age> Src = Beacon() 
+    { 
+        param iterations : 10u; 
+        output Src : name = "spl", age = 3u;
+    }
+
+    /*
+     * The sample::SeqFilter operator filters out tuples whose age attribute value is 2 or less, then assigns an ascending sequence
+     * number to the seqno attribute in the output stream.
+     */
+    stream<Src, SeqType> SeqSrc = SeqFilter(Src)
+    {
+        param 
+            seq : SeqSrc.seqno;
+            seqType : SeqType;
+            filter : age > 2u;
+    }
+
+    /*
+     * The spl.adapter::FileSink operator writes the resulting output stream to a file.
+     */
+    () as Writer = FileSink(SeqSrc)
+    {
+        param
+            file : "result.txt";
+    }
+}

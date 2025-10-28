@@ -1,0 +1,54 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2010, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+#include "LinuxPipe.h"
+<%
+  use LinuxPipeCommon;
+  LinuxPipeCommon::verify($model);
+  my $hasErr = $model->getNumberOfOutputPorts() == 2;
+%>
+
+<%SPL::CodeGen::headerPrologue($model);%>
+
+class MY_OPERATOR : public MY_BASE_OPERATOR 
+{
+public:
+    MY_OPERATOR();
+    
+    virtual ~MY_OPERATOR();
+
+    void allPortsReady(); 
+
+    void prepareToShutdown(); 
+
+    void process(uint32_t idx);
+    
+    void process(Tuple const & tuple, uint32_t port);
+
+    void process(Punctuation const & punct, uint32_t port);
+private:
+    OPort0Type otuple0_;
+    <%if($hasErr) {%>
+        OPort1Type otuple1_;
+    <%}%> 
+    bool drained_;
+    SPL::CV drainCV_;
+    SPL::Mutex drainMutex_;
+    SPL::Mutex mutex_;
+    Sample::LinuxPipe pipe_;
+}; 
+
+<%SPL::CodeGen::headerEpilogue($model);%>
+

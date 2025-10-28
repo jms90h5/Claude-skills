@@ -1,0 +1,39 @@
+# -----------------------------------------------------------------------------
+# If the application framework (or com.teracloud.streams.teda.internal.shm functions)
+# are used with Streams 3.2 on a Power architecture then additional
+# CXXFLAGS are required.
+#
+# Streams 3.2 uses the AT5 toolchain and provides the boost
+# version 1.42. This combination requires the -fno-inline -fpermissive CXXFLAGS
+# or will fail during compilation or runtime while interacting with the
+# boost interprocess library.
+# -----------------------------------------------------------------------------
+
+# Per default additional compiler flags are not required.
+CXXFLAGS :=
+
+### determine 'streamtool'
+ifneq ($(realpath $(STREAMS_INSTALL)),)
+ST=$(STREAMS_INSTALL)/bin/streamtool
+else 
+$(error STREAMS_INSTALL not defined)
+endif
+
+# The additional compiler flags are required for the Power architecture only.
+IS_PPC := $(shell uname -m | grep ppc64 -c)
+ifeq ("$(IS_PPC)","1")
+
+	# The additional compiler flags are required for Streams 3.2 only
+	# but not for Streams 3.2.2 that is a beta release.
+	REQUIRED = $(shell $(ST) version | perl -ne 'm/^Version=(.*)/ && (print ($$1 =~ m/^3\.2\.[01]\./ ? "yes" : "no"));')
+	ifeq ("$(REQUIRED)","yes")
+
+		CXXFLAGS := -fno-inline -fpermissive
+		# Tab in front of the $(info ...) means that the line is interpreted
+		# as command of a make target but we have no make target here. So,
+		# either use spaces or no indent.
+$(info INFO: The application framework requires for Streams 3.2.0 and 3.2.1 on Power the following sc compiler cxx-flags: $(CXXFLAGS))
+
+	endif
+
+endif

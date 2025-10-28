@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_copyright_prolog                             -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- 5724-Y95                                                         -->
+<!-- (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_copyright_prolog                               -->
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.ibm.com/software/data/infosphere/streams/parser StructureParserMapping.xsd"
+                    xmlns="http://www.ibm.com/software/data/infosphere/streams/parser">
+
+<!-- the stream definition for reference:
+
+			rstring attr0,
+			rstring attr1,
+			rstring attr2,
+			rstring attr3,
+			rstring attr4,
+			rstring attr5,
+			rstring attr6,
+			rstring attr7,
+			rstring attr8,
+			rstring attr9,
+			rstring attr10,
+			rstring attr11,
+			rstring attr12,
+			rstring attr13,
+			rstring attr14,
+			rstring attr15,
+			rstring attr16,
+			rstring attr17,
+			rstring attr18,
+			rstring attr19,
+			rstring attr20,
+			rstring attr21,
+			rstring attr22,
+			rstring attr23,
+			rstring attr24,
+			rstring attr25,
+			rstring attr26,
+			rstring attr27,
+			rstring attr28,
+			rstring attr29
+-->
+	<attribute name="attr0">
+		<from structure="binaryRecord" field="intval0">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr1">
+		<from structure="binaryRecord" field="intval1">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr2">
+		<from structure="binaryRecord" field="intval2">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr3">
+		<from structure="binaryRecord" field="intval3">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr4">
+		<from structure="binaryRecord" field="intval4">
+			<!--  convert into an octal string -->
+			<toString base="oct"/>
+		</from>
+	</attribute>
+	<attribute name="attr5">
+		<from structure="binaryRecord" field="intval5">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr6">
+		<from structure="binaryRecord" field="intval6">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr7">
+		<from structure="binaryRecord" field="intval7">
+			<!--  convert into an hex string -->
+			<toString base="hex"/>
+		</from>
+	</attribute>
+	<attribute name="attr8">
+		<from structure="binaryRecord" field="intval8">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr9">
+		<from structure="binaryRecord" field="intval9">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr10">
+		<from structure="binaryRecord" field="floatval10">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>	
+	</attribute>
+	<attribute name="attr11">
+		<from structure="binaryRecord" field="intval11">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr12">
+		<from structure="binaryRecord" field="intval12">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr13">
+		<from structure="binaryRecord" field="intval13">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr14">
+		<from structure="binaryRecord" field="intval14">
+			<!--  convert into an octal string -->
+			<toString base="oct"/>
+		</from>
+	</attribute>
+	<attribute name="attr15">
+		<from structure="binaryRecord" field="intval15">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr16">
+		<from structure="binaryRecord" field="intval16">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr17">
+		<from structure="binaryRecord" field="intval17">
+			<!--  convert into an hex string -->
+			<toString base="hex"/>
+		</from>
+	</attribute>
+	<attribute name="attr18">
+		<from structure="binaryRecord" field="intval18">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr19">
+		<from structure="binaryRecord" field="stringval19" />
+	</attribute>
+	<attribute name="attr20">
+		<from structure="binaryRecord" field="intval20">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr21">
+		<from structure="binaryRecord" field="intval21">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr22">
+		<from structure="binaryRecord" field="intval22">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr23">
+		<from structure="binaryRecord" field="intval23">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr24">
+		<from structure="binaryRecord" field="intval24">
+			<!--  convert into an octal string -->
+			<toString base="oct"/>
+		</from>
+	</attribute>
+	<attribute name="attr25">
+		<from structure="binaryRecord" field="intval25">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr26">
+		<from structure="binaryRecord" field="intval26">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr27">
+		<from structure="binaryRecord" field="intval27">
+			<!--  convert into an hex string -->
+			<toString base="hex"/>
+		</from>
+	</attribute>
+	<attribute name="attr28">
+		<from structure="binaryRecord" field="intval28">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+	<attribute name="attr29">
+		<from structure="binaryRecord" field="intval29">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>
+	</attribute>
+
+</mapping>

@@ -1,0 +1,50 @@
+Overview: 
+  There are three examples illustrating the use of @consistent annotations:
+    - sample::MultipleSources shows an example of a time driven consistent 
+      region with two start operators. 
+    - sample::StatefulPrimitive shows an example of an operator 
+      driven consistent region with a single start operator and with one
+      C++ stateful primitive operator that checkpoints and rollbacks its 
+      state on a failure.
+    - sample::ReplayableSource shows an example of a time driven consistent
+      region with a C++ primitive operator that starts the consistent region. 
+      The start operator pauses tuple submission during a drain or a restore.
+  When injecting failures, tuples are replayed by the start operators of the
+region and no data is lost. The currently supported fault model includes the 
+crash or restart of any PE and disconnection of inter-PE connections.
+  When executing applications with a consistent region, the 
+'instance.checkpointRepository' and the 
+'instance.checkpointRepositoryConfiguration' properties must be set.
+
+1. To build the sample applications:
+  make
+
+2. To run the sample applications:
+  streamtool submitjob -d yourDomain -i yourInstance output/MultipleSources/sample.MultipleSources.sab
+  streamtool submitjob -d yourDomain -i yourInstance output/StatefulPrimitive/sample.StatefulPrimitive.sab
+  streamtool submitjob -d yourDomain -i yourInstance output/ReplayableSource/sample.ReplayableSource.sab
+
+3. To inject failures:
+  3.1. Identify the host and process ID of a PE by using streamtool
+    streamtool lspes -d yourDomain -i yourInstance
+  3.2. Stop/kill a PE
+    Alternative 1) Log into the reported host (Resource column) and kill the PE process 
+ using the value reported in the PID column. 
+      ssh hostUsedByPE "kill -9 PePid"
+    Alternative 2) Stop a PE and restart it
+      streamtool stoppe PEID -d yourDomain -i yourInstance
+      streamtool restartpe PEID -d yourDomain -i yourInstance
+
+4. To check the correctness of the output
+  sample::MultipleSources - ./checkMultipleSourcesOutput.pl
+    The output tuples have two attributes: 
+      beatId - the source identifier (0 or 1)
+      itCount - if beatId is 0, even numbers starting at 0 and with increments of 2; 
+                if beatId is 1, odd numbers starting at 1 and with increments of 2. 
+  sample::StatefulPrimitive - ./checkStatefulPrimitiveOutput.pl
+    The output tuples have two attributes: 
+      itCount - even numbers starting at 0 and with increments of 2;
+      numTuples - numbers starting at 1 and with increments of 1
+  sample::ReplayableSource - ./checkReplayableSource.pl
+    The output tuples have a single attribute:
+      counter - once output is sorted, numbers starting at 0 and with increments of 1. 

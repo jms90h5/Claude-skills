@@ -1,0 +1,137 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=1;
+	my $projDir = dirname(__FILE__);
+	my $namespace;
+	$namespace=basename($projDir);
+	$namespace=~s/\.tap\.custom//;
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	my $scriptsDir = catdir($projDir,"scripts");
+	eval "use lib qw($scriptsDir);
+		use Configurator;
+		use CodeGenFrw;";
+	die "Error loading module:\n$@\n" if ($@);
+	my $configurator=new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE(), warnings => 1);
+	######################################################################
+	# namespace of the application
+	# change this name if you use this composite in another project
+	my $applNamespace=$namespace; 
+	######################################################################
+%>
+namespace <%=$applNamespace%>.tap.custom;
+
+use com.teracloud.streams.teda.internal.fileutils::*;
+
+/**
+ * Job state watcher
+ * This composite must exist once per application only.
+ * Place this composite in the <namespace>.tap.custom::TransformerTap
+ * without any input or output port:
+ * () as JSC = JobStateCheck() {}
+ * Set the configuration parameter ite.businessLogic.transformation.tap to on.
+ */
+public composite JobStateCheck ()
+{
+	param
+		expression<rstring> $applControlDir: convertDataDir(getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::GLOBAL_APPLICATIONCONTROLDIRECTORY())%>));
+		expression<rstring> $applControlRespFile: "<%=$applNamespace%>";
+		// Apply the sab file as submission parameter if your output directory is not in the same directory as your data directory. 
+		expression<rstring> $sabFile: convertDataDir(getSubmissionTimeValue ("ite.sabFile", "../output/ITEMain/"+"<%=$applNamespace%>"+".ITEMain.sab"));
+
+	graph
+
+		/**
+		 * Restarts the unhealthy job
+		 * For example in case of crashed PEs or if a host goes down
+		 */
+		() as JobStateWatcher = Custom() {
+			logic
+				state : {
+					rstring _applControlDir = $applControlDir;
+					rstring _applControlRespFile = $applControlRespFile;
+					rstring _restartScript = getThisToolkitDir() + "/etc/scripts/restart-job.sh" ;
+					rstring _checkStateScript = getThisToolkitDir() + "/etc/scripts/check-job-state.sh";
+					mutable rstring _sabFile = $sabFile;
+					mutable int32 _rc = 0;
+					mutable rstring _response = "";
+					mutable boolean _restartApplication = false;
+					rstring _statusCommandResponseFile = "."+"<%=$applNamespace%>" + "_status";
+					rstring _oldStatusFile = "."+"<%=$applNamespace%>" + "_restart";
+					mutable boolean _doHealthCheck = false;
+				}
+				onProcess: {
+					// check if sab file is present
+					mutable int32 ferror = -1;
+					uint64 fileRH = spl.file::fopen(_sabFile, "r", ferror);
+					if (0!=ferror) {
+						appTrc (Trace.error, "Invalid sab file configured: " + _sabFile, "");
+					} else {
+						// sab file present
+						spl.file::fclose(fileRH, ferror);
+						// check if ITE is in run state 
+						while ((false == _doHealthCheck) && (false == isShutdown())) {
+							block(5.0);
+							if (readCommandFileNoWarn(_applControlDir, _applControlRespFile, _response)) {
+								if (_response == "run") {
+									// ready for health checks
+									_doHealthCheck = true;
+								}
+							}
+						}
+					}
+					while ((_doHealthCheck) && (false == isShutdown())) {
+						block(60.0);
+						if (false == isShutdown()) {
+							_rc = com.teracloud.streams.teda.internal.fileutils::startCommand(_checkStateScript+" "+(rstring)jobID()+" "+domainID()+" "+instanceID()+" "+getEnvironmentVariable ("STREAMS_INSTALL")+" "+_applControlDir+"/"+_statusCommandResponseFile);
+							if (readCommandFileNoWarn(_applControlDir, _statusCommandResponseFile, _response)) {
+								if (_response == "restart [j="+(rstring)jobID()+"][d="+domainID()+"][i="+instanceID()+"]") {
+									_restartApplication = true;
+									// delete the response file
+									mutable int32 err = 0;
+									spl.file::remove(_applControlDir+"/"+_statusCommandResponseFile, err);
+								}
+							}
+							if ((_restartApplication) && (false == isShutdown())) {
+								// read application state
+								if (readCommandFileNoWarn(_applControlDir, _applControlRespFile, _response)) {
+									// checkpoint old application state
+									// ITE goes into run state without LM if old state was run only.
+									writeCommandFile(_applControlDir, _oldStatusFile, _response);
+								}
+								// restart the application
+								_rc = com.teracloud.streams.teda.internal.fileutils::startCommand(_restartScript+" "+(rstring)jobID()+" "+domainID()+" "+instanceID()+" "+getEnvironmentVariable ("STREAMS_INSTALL")+" "+_sabFile);
+								if (_rc != 0) {
+									appTrc (Trace.error, "Launching the script failed.", "");
+								}
+							}
+						}
+					}
+				}
+				config 
+					relocatable : true;
+					restartable : true;
+					placement : partitionIsolation;				
+		}
+		
+}

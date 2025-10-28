@@ -1,0 +1,9 @@
+Overview: WindowingLibrary illustrates the use of the windowing APIs from within
+generic and non-generic C++ primitive operators.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+  

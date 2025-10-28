@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2009, 2015     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<html>
+<head>
+  <title>Infoberry Purchasing Analysis</title>
+  <meta http-equiv="refresh" content="150">
+  <!-- old dojo: dojo-release-1.2.3 -->
+  <style type="text/css">
+    @import "dojo/dijit/themes/claro/claro.css";
+    @import "dojo/dojox/grid/resources/Grid.css";
+    @import "dojo/dojox/grid/resources/claroGrid.css";
+    @import "general.css";
+  </style>
+  <script type="text/javascript" src="dojo/dojo/dojo.js"></script>
+  <script type="text/javascript" src="dojo/dojo/fx.js"></script>
+  <script type="text/javascript" src="purchasing.js" ></script>
+</head>
+<body class="claro">
+<img src="logo.png" />
+<div >
+  <div  class="oneThird" >
+    <h1>Projected Supply</h1>
+    <div class="partsContainer">
+      <div id="SupplyHistoryGraph"  style="width: 300px; height: 200px;" ></div>
+    </div>
+  </div>
+  </div>
+  <div  class="oneThird" >
+    <h1>Avg Purchase Score</h1>
+    <div class="partsContainer" >
+      <div id="PurchaseAveragesGraph"  style="width: 300px; height: 200px;" ></div>
+    </div>
+  </div>
+  </div>
+
+  <div  class="oneThird" >
+    <h1>Buy Distribution</h1>
+    <div class="partsContainer" >
+      <div id="PurchaseDistributionGraph"  style="width: 300px; height: 200px;" ></div>
+    </div>
+  </div>
+
+</div>
+
+<br clear="all">
+
+<div>
+
+  <div class="twoThirds" >
+    <h1>Optimal Supplier Ranking</h1>
+    <div class="partsContainer">
+      <div class="gridContainer" >
+      <table id="rankingGridNode" jsid="rankingGrid" dojoType="dojox.grid.DataGrid"
+        query="{ Station: '*' }" store="rankings_display"  >
+        <thead>
+          <tr>
+            <th field="Location" width="8em">Location</th>
+            <th field="Score" width="5em">Overall Score</th>
+            <th field="WeatherScore" width="5em">Weather Score</th>
+            <th field="Warnings" width="5em">Weather Warnings</th>
+            <th field="TempDelta" formatter="formatDegrees" width="6em">18 Hour Temp Range</th>
+            <th field="AvgTemp" formatter="formatDegrees" width="6em">18 Hour Temp Avg</th>
+            <th field="RelativeHumidity" formatter="formatHumidity" width="6em">Relative Humidity</th>
+          </tr>
+        </thead>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="oneThird" >
+    <h1>Purchase History</h1>
+    <div class="partsContainer">
+      <div class="gridContainer" >
+      <table id="purchaseTransactionsGridNode" jsid="purchaseTransactionsGrid" dojoType="dojox.grid.DataGrid"
+        query="{ Timestamp: '*' }" store="purchase_transactions"  >
+        <thead>
+          <tr>
+            <th field="Location" width="7em">Supplier</th>
+            <th field="AmountPurchased" width="5em">Bushels</th>
+            <th field="WeatherScore" width="3em">Score</th>
+            <th field="Timestamp" formatter="formatTimestamp" width="7em">Date</th>
+          </tr>
+        </thead>
+      </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<br clear="all">
+
+<div>
+  <div dojoType="dijit.form.Button">
+    Chart Selected Locations
+    <script type="dojo/method" event="onClick" args="evt">
+    chartSelectedLocations(rankingGrid.selection.getSelected());
+    </script>
+  </div>
+</div>
+
+<br clear="all">
+
+<div>
+
+  <div  class="oneThird" >
+    <h1>Weather Scores</h1>
+    <div class="partsContainer">
+      <div id="WeatherScoreGraph"  style="width: 300px; height: 200px;" ></div>
+    </div>
+  </div>
+
+  <div  class="oneThird" >
+    <h1>Recent Temps</h1>
+    <div class="partsContainer">
+      <div id="TemperatureGraph"  style="width: 300px; height: 200px;" ></div>
+    </div>
+  </div>
+
+  <div  class="oneThird" >
+    <h1>Recent Humidity (%)</h1>
+    <div class="partsContainer">
+      <div id="RelativeHumidityGraph"  style="width: 300px; height: 200px;" ></div>
+    </div>
+
+</div>
+
+</body>
+</html>

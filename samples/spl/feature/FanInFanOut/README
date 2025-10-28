@@ -1,0 +1,9 @@
+Overview: FanInFanOut illustrates how to connect operators using various fan-in
+and fan-out configurations.
+
+1. To build the sample application:
+   make
+
+Note: This sample is compile-only.
+
+    

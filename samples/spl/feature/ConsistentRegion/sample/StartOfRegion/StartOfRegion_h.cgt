@@ -1,0 +1,64 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2009, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+#include <SPL/Runtime/Utility/Mutex.h>
+<%
+   my $crContext = $model->getContext()->getOptionalContext("ConsistentRegion");
+   my @includes;
+   my $isTriggerOperator = 0;
+   if ($crContext) {
+       push @includes, "#include <fstream>";
+       push @includes, "#include <sstream>";
+       push @includes, "#include <SPL/Runtime/Operator/State/StateHandler.h>";
+       push @includes, "#include <SPL/Runtime/Operator/State/ConsistentRegionContext.h>";
+       $isTriggerOperator = $crContext->isTriggerOperator();
+       if ($isTriggerOperator) {
+           SPL::CodeGen::exitln("Operator does not support trigger=operatorDriven in a consistent region.", $model->getContext()->getSourceLocation());
+       }
+   }
+   SPL::CodeGen::headerPrologue($model,\@includes);
+%>
+
+
+class MY_OPERATOR : public MY_BASE_OPERATOR
+<%if ($crContext) {%>
+    , StateHandler
+<%}%>
+{
+public:
+   MY_OPERATOR();
+  
+   void allPortsReady();
+   void process(uint32_t index);
+
+   // Checkpoint related methods are only used if the operator is
+   // is a consistent region 
+   <%if ($crContext) {%>
+       virtual void checkpoint(Checkpoint & ckpt);
+       virtual void reset(Checkpoint & ckpt);
+       virtual void resetToInitialState();
+   <%}%>
+
+private:
+   uint64_t _counter;
+   Mutex _mutex;
+
+   <%if ($crContext) {%>
+       ConsistentRegionContext *_crContext;
+   <%}%>
+}; 
+
+<%SPL::CodeGen::headerEpilogue($model);%>
+

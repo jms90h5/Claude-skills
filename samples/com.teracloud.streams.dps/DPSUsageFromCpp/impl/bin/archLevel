@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# determine the location of the DPS toolkit
+# use: export STREAMSX_DPS_TOOLKIT=/some/path
+# before compilation to point to a different location than the default, which is the toolkit included in Streams
+STREAMSX_DPS_TOOLKIT=${STREAMSX_DPS_TOOLKIT:-$STREAMS_INSTALL/toolkits/com.teracloud.streams.dps}
+
+# the directory of the script
+BASEDIR=$( cd $(dirname $0) ; pwd -P )
+
+if [ "$1" == "libPath" ]; then
+	# copy the top level lib to our impl/lib directory to have it bundled within the SAB file
+	mkdir -p $BASEDIR/../lib
+	cp $STREAMSX_DPS_TOOLKIT/impl/lib/libDistributedProcessStoreLib.so $BASEDIR/../lib
+	echo ../../impl/lib
+
+elif [ "$1" == "includePath" ]; then
+	echo $STREAMSX_DPS_TOOLKIT/impl/include
+
+elif [ "$1" == "lib" ]; then
+	echo DistributedProcessStoreLib
+
+else
+	echo "unsupported option"
+fi

@@ -1,0 +1,117 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+/* This file contains common types used throughout the Commodity Purchasing application. */
+
+namespace sample.CommodityPurchasing;
+ 
+/** Schema for supplier location information.
+*/
+type LocationSchema =  rstring city,
+                       rstring stateAbbrev,
+                       rstring county,
+                       rstring latitude,
+                       rstring longitude;
+
+/** Schema for a location and its representative NOAA weather station.
+*/
+type WeatherLocationSchema = LocationSchema,
+                             tuple<rstring weatherStationCode>;
+
+/** Schema for the current weather readings obtained from a weather station.
+*/
+type WeatherStationSchema = rstring stationCode,
+                            int64 observationTime,
+                            float32 temp, 
+                            float32 dewpoint, 
+                            int16 pressureMillibars, 
+                            int16 windHeadingDegrees, 
+                            int16 windSpeedKnots,
+                            int16 windGustKnots;
+
+/** Schema for weather station readings dropping one attribute and adding some
+ * additional, calculated attributes.
+ */
+type AnnotatedWeatherSchema  = rstring stationCode,
+                               int64 observationTime,
+                               float32 temp,
+                               float32 tempInF, 
+                               float32 relativeHumidity,
+                               float32 dewpoint,  
+                               int16 windHeadingDegrees, 
+                               int16 windSpeedKnots,
+                               int16 windGustKnots;
+
+/** Schema with all necessary weather information for a supplier location.
+ */
+type WeatherSummarySchema = rstring city,
+                            rstring stateAbbrev,
+                            rstring county,
+                            rstring latitude,
+                            rstring longitude,
+                            rstring stationCode,
+                            int64 observationTime,
+                            float32 temp,
+                            float32 tempInF, 
+                            float32 relativeHumidity,
+                            float32 dewpoint,
+                            int16 windHeadingDegrees,
+                            int16 windSpeedKnots,
+                            int16 windGustKnots,
+                            float32 runningAvgTemp,
+                            float32 tempDelta;
+
+/** Schema for communicating the number of weather alerts at a particular location.
+ */
+type LocationAlertSchema = rstring county, 
+                           rstring stateAbbrev,
+                           rstring city, 
+                           int32 alertCount;
+
+/** Schema of information about a purchase from a particular supplier.
+ */
+type PurchaseTransactionSchema = int32 amountPurchased, 
+                                 rstring city, 
+                                 int32 weatherScoreAtPurchase,
+                                 int64 timeSeconds;
+
+/** Schema for communicating the top supplier at the current time.
+ */
+type OptimalSupplierSchema = rstring city, 
+                             int32 overallRating, 
+                             int32 weatherScore, 
+                             int16 severeWeatherAlerts;
+
+/** Schema for the current supply level.
+ */
+type SupplySchema = int32 stockAmount, 
+                    int32 stockDelta, 
+                    int64 tStamp;
+
+/** Schema for communicating a chnage in supply due to consumption or a purchase.
+ */
+type SupplyChangeSchema = int32 stockDelta, 
+                          int64 timeSeconds;
+

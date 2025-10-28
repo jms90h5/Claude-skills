@@ -1,0 +1,40 @@
+/*
+** Copyright (C) 2011, 2015  International Business Machines Corporation
+** All Rights Reserved
+*/
+
+namespace sample;
+
+use com.teracloud.streams.network.source::*;
+
+composite TestPacketFileSourceConsistentRegion {
+
+    param
+    expression<rstring> $pcapFilename: getSubmissionTimeValue("pcapFilename", "../../SampleNetworkToolkitData/data/sample_dns+dhcp.pcap.pcap" );
+
+    type
+
+    FullPacketType =
+        uint64 packetNumber,        // sequence number of packet, as emitted by operator
+        float64 captureTime,        // time that packet was captured, in seconds since Unix epoch
+        uint32 packetLength,        // original length of packet (not necessarily all captured)
+        blob packetData;            // contents of packet captured, including network headers (not necessarily complete)
+
+
+    graph
+
+    @consistent(trigger=operatorDriven)
+    stream<FullPacketType> FullPacketStream as Out = PacketFileSource() {
+        param
+            pcapFilename: $pcapFilename;
+        output Out:
+            packetNumber = packetsProcessed() - 1ul,
+            captureTime = (float64)CAPTURE_SECONDS() + (float64)CAPTURE_MICROSECONDS() / 1000000.0,
+            packetLength = PACKET_LENGTH(),
+            packetData = PACKET_DATA();
+    }
+    () as FullPacketSink = FileSink(FullPacketStream) { param file: "debug.TestPacketFileSourceConsistentRegion.FullPacketStream.out"; format: txt; hasDelayField: true; flush: 1u; }
+
+    () as JCP = JobControlPlane() {}
+
+}

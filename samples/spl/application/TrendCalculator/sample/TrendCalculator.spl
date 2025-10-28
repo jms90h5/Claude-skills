@@ -1,0 +1,251 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2009, 2018     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+/** 
+This example illustrates various ways of doing inline calculations in a Streams application.
+ 
+The application computes the momentum 
+of a series of stock transactions. For each trade, the application
+determines whether the price of the stock yields a change in direction
+(up or down).  
+
+The inline calculations that parse inbound data, process the streaming 
+stock transactions and track the momentum of price chances are handled by 
+a combination of SPL `Custom` operators and an SPL function called 
+`calculateTrend`. 
+
+The `Custom` operator that outputs the `StockTradeSource` stream tokenizes
+the lines in an input file to yield a stream of stock transaction data. 
+Inline logic that maintains a map of stock transaction data is demonstrated
+by the `Custom` operator that processes the `StockTradeSource` stream.
+The `onTuple` clauses of this operator populates the map, and 
+invokes `calculateTrend` function to compute the trend.
+*/
+
+namespace sample;
+use spl.file::*; 
+
+/** Calculates new momentum data for this Stock Trade, updating the previous momentum data in place.
+@param data maintains current smoothed, min and max trade values.
+@param parameters maintains weights and thresholds used for calculations.
+@param price current trade price.
+*/
+void calculateTrend( mutable TrendCalculator.TrendData data, 
+                     TrendCalculator.TrendParameters parameters,
+                     uint32 price ) 
+{
+  // calculate new values for smoothed trade value, based on new trade price
+  data.currentSTV = parameters.lamda* (float32) price + 
+                    (1.0w-parameters.lamda)*data.currentSTV;
+  data.minimumSTV = (data.currentSTV<data.minimumSTV || 
+                     data.minimumSTV==0.0w) ? data.currentSTV 
+                                            : data.minimumSTV;
+  data.maximumSTV = (data.currentSTV>data.maximumSTV || 
+                     data.maximumSTV==0.0w) ? data.currentSTV 
+                                            : data.maximumSTV;
+
+  // detect changes in momentum direction, adjust minimum/maximum if necessary
+  if (data.direction==TrendCalculator.DOWN) {
+    mutable float32 delta = data.currentSTV / data.minimumSTV;
+    if (delta>parameters.thresholdUp) { 
+       data.direction = TrendCalculator.UP; 
+       data.maximumSTV = data.currentSTV; 
+    }
+  } else if (data.direction==TrendCalculator.UP) {
+    mutable float32 delta = data.maximumSTV / data.currentSTV;
+    if (delta>parameters.thresholdDown) { 
+      data.direction = TrendCalculator.DOWN; 
+      data.minimumSTV = data.currentSTV; 
+    }
+  } else { // (momentumDirection==TrendCalculator.NONE) 
+    mutable float32 delta = data.maximumSTV / data.currentSTV;
+    if (delta>parameters.thresholdDown) {
+      data.direction = TrendCalculator.DOWN; 
+    } else {
+      delta = data.currentSTV / data.minimumSTV;
+      if (delta>parameters.thresholdUp) data.direction = TrendCalculator.UP; 
+    }
+  }
+}
+
+/** 
+`TrendCalculator` is a stock trading program. 
+
+It reads a stream of stock trades from an input file and reports up/down trends for each stock. 
+A tuple containing the stock transaction, derived indicators, 
+and momentum is output to standard out.
+
+@param defaultLamda movement smoothing factor, between 0.0 and 1.0.
+@param defaultThresholdUp upwards movement sensitivity, between 1.0 and 1.1.
+@param defaultThresholdDown downwards movement sensitivity, between 1.0 and 1.1.
+*/
+composite TrendCalculator 
+{
+  param
+      expression<float32> $defaultLamda : 0.5w;
+      expression<float32> $defaultThresholdUp : 1.05w;
+      expression<float32> $defaultThresholdDown : 1.05w;
+ 
+  type
+    static StockTrade = 
+      rstring symbol,       // stock symbol, in uppercase letters
+      uint32 price,         // trade price, in pennies
+      uint32 size,          // trade size, in shares
+      uint32 seqNum,        // sequence number assigned by exchange
+      timestamp ingestTime; // ingest time of packet containing message, in microseconds
+
+    static Direction = enum { NONE, UP, DOWN };    
+
+    static TrendParameters =
+      rstring symbol,          // stock symbol, in uppercase letters
+      float32 lamda,           // movement smoothing factor, between 0.0 and 1.0
+      float32 thresholdUp,     // upwards movement sensitivity, between 1.0 and 1.1
+      float32 thresholdDown;   // downwards movement sensitivity, between 1.0 and 1.1
+
+    static TrendData =
+      float32 currentSTV,      // current Smoothed Trade Value
+      float32 minimumSTV,      // local minimum of Smoothed Trade Value
+      float32 maximumSTV,      // local maximum of Smoothed Trade Value
+      Direction direction;     // momentum direction indicator
+
+    static TrendState = 
+      TrendParameters parameters, // current parameters
+      TrendData data;             // result of previous momentum calculation
+
+    static TrendValue = 
+      StockTrade trade,        // this Stock Trade
+      TrendData data,          // result of momentum calculation for this Stock Trade
+      boolean directionChange; // momentum direction change indicator
+   
+  graph     
+
+    // This should be a real source in practice
+    stream<TrendParameters> TrendParametersSource = Beacon() 
+        { param period: 1.0; } 
+
+    stream<int8 i> Beat = Beacon() 
+        { param period: 0.0; iterations: 1u;}
+
+    stream<StockTrade> StockTradeSource = Custom (Beat)
+    {
+      logic onTuple Beat :
+      {
+        mutable int32 err = -1;
+        uint64 f = fopen (getThisToolkitDir() + "/feed/UTDF1_StockTradeStream.csv", "r", err);
+        assert (err == 0);
+        while (!isShutdown()) {
+          rstring line = freadLine(f, err);
+          assert (err == 0 || isEOF(err));
+          if (feof (f)) break;
+          list<rstring> tokens = tokenize (line, ",", true);
+          StockTrade st = { symbol = tokens[1], 
+                            price  = (uint32) tokens[2],
+                            size   = (uint32) tokens[3], 
+                            seqNum = (uint32) tokens[4],
+                            ingestTime = getTimestamp() };
+          block((float64) tokens[0]);
+          submit(st, StockTradeSource);
+        }
+      }
+    }
+
+    // This stream produces a new TrendValue for each Stock Trade received
+    stream<TrendValue> NewTrendValue
+      = Custom ( TrendParametersSource as newParameters ; 
+                 StockTradeSource as currentTrade ) 
+    {
+      logic
+        // remember the current parameters and previous momentum 
+        // separately for each stock symbol
+        state : 
+        {
+          mutable map<rstring,TrendState> momentumMap;       
+          TrendData emptyTrendData = {
+            currentSTV = 0.0w,
+            minimumSTV = 0.0w,
+            maximumSTV = 0.0w,
+            direction = TrendCalculator.NONE
+          };
+        }
+
+        // when new parameters for a symbol are received, save them in the map
+        onTuple newParameters : 
+        {
+          // get the old parameters for the symbol from the map, or else create
+          // a new map entry 
+          if (newParameters.symbol in momentumMap) { 
+            momentumMap[newParameters.symbol].parameters = newParameters;
+          } else {
+            TrendState momentum = { parameters = newParameters, data = emptyTrendData};
+            // save the new parameters for the symbol in the map
+            momentumMap[newParameters.symbol] = momentum;
+          } 
+        }
+
+        // when a new Stock Trade is received, calculate new momentum data for its symbol
+        onTuple currentTrade : 
+        { 
+          // get the parameters and previous result for this Stock Trade's symbol
+          // from the map, or else create a new map entry with default values
+          mutable TrendState momentum;
+          if (currentTrade.symbol in momentumMap) {
+            momentum = momentumMap[currentTrade.symbol];
+          } else{ 
+            momentum = {
+              parameters = { symbol = currentTrade.symbol, 
+                             lamda = $defaultLamda,
+                             thresholdUp = $defaultThresholdUp,
+                             thresholdDown = $defaultThresholdDown },  
+              data = emptyTrendData };
+            momentumMap[currentTrade.symbol] = momentum;
+          } 
+
+          // save the previous momentum direction temporarily
+          Direction previousDirection = momentum.data.direction;
+
+          // calculate new momentum data for this Stock Trade, updating the 
+          // previous momentum data in place
+          calculateTrend(momentum.data, momentum.parameters, currentTrade.price);
+
+          // update the map entry for this symbol with the new momentum data
+          momentumMap[currentTrade.symbol] = momentum;
+           
+          // create an outbound tuple containing the Stock Trade and new momentum data
+          TrendValue value = {trade = currentTrade, data = momentum.data,
+                                 directionChange = (previousDirection!=momentum.data.direction)};
+
+          // send the output tuple downstream
+          submit(value, NewTrendValue); 
+        }      
+    }
+
+    () as TrendValueSink = Custom(NewTrendValue as I)
+    {
+      logic onTuple I : { println(I); }
+    } 
+}
+
+ 

@@ -1,0 +1,39 @@
+MyModule DEFINITIONS IMPLICIT TAGS ::= 
+BEGIN
+
+TEST ::= SEQUENCE
+{
+	attr0 [0] OCTET STRING,
+	attr1 [1] BOOLEAN,
+	attr2 [2] INTEGER,
+	attr3 [3] INTEGER,
+	attr4 [4] OCTET STRING OPTIONAL,
+	attr5 [5] GeneralizedTime,
+	attr6 [6] BOOLEAN,
+	attr7 [7] OCTET STRING OPTIONAL,
+	attr8 [8] OCTET STRING,
+	attr9 [9] OCTET STRING,
+	attr10 [10] REAL,
+	attr11 [11] OCTET STRING,
+	attr12 [12] IA5String,
+	attr13 [13] OCTET STRING,
+	attr14 [14] OCTET STRING,
+	attr15 [15] OCTET STRING,
+	attr16 [16] OCTET STRING,
+	attr17 [17] OCTET STRING,
+	attr18 [18] OCTET STRING,
+	attr19 [19] UTF8String,
+	attr20 [20] OCTET STRING,
+	attr21 [21] BOOLEAN,
+	attr22 [22] INTEGER,
+	attr23 [23] INTEGER,
+	attr24 [24] OCTET STRING OPTIONAL,
+	attr25 [25] OCTET STRING,
+	attr26 [26] OCTET STRING,
+	attr27 [27] OCTET STRING,
+	attr28 [28] OCTET STRING,
+	attr29 [29] OCTET STRING OPTIONAL,
+	...
+}
+
+END

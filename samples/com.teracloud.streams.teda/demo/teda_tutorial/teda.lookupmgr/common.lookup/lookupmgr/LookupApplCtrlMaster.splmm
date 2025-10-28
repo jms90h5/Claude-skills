@@ -1,0 +1,708 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::LookupManager());
+
+%>
+namespace common.lookup.lookupmgr;
+use common.lookup.lookuptypes::*;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+use com.teracloud.streams.teda.internal.fileutils::writeCommandFile;
+use com.teracloud.streams.teda.internal.fileutils::checkAllCommandFiles;
+use com.teracloud.streams.teda.internal.fileutils::readCommandFileNoWarn;
+use com.teracloud.streams.teda.internal::Beacon2;
+use com.teracloud.streams.teda.internal.control::StartupControl;
+use spl.file::remove;
+
+/**
+ * The **Application Control Master** composite synchronizes jobs processing on lookup manager request.
+ * It stops the file processing of slave jobs on incoming command and restarts them after finalized write processing.
+ * The process status is controlled by control-files: appl.ctl (master) and <unique-application-name> (slave)
+ * There are processing states described as static type `LookupApplCtrlMaster.State`.
+ * 
+ * Reference of tuple types:[common.lookup.lookuptypes::LookupMgrTypes.spl]
+ *
+@input ReadCmd command tuple read from command file forwarded for processing. *Type*: 'LookupMgrTypes.LookupMgrCommandLine'.
+@input CmdAck Acknowledge on finalized command processing. *Type*: 'LookupMgrTypes.LookupMgrControlAck'.
+
+@output ControlledCommand This port forwards the command from 'ReadCmd' input port to command reader. *Type*: 'LookupMgrTypes.LookupMgrCommandLine'.
+@output ApplCtrlMasterStats This port generates the statistics
+
+@param applControlDir Directory including master and slaves control-files
+@param applControlFile Name of master control-file, default: appl.ctl 
+@param applControlRespFiles Comma separated list of slave control files defined at submission time. The names are defined by ITE application namespace.
+@param applControlRespFilesChecklist the compiled in list of the controlled ITE applications 
+@param shutdownControlFile The command file to control the shutdown and re-start
+@param period period (in seconds) for status control check of control-files.
+@param initDelay initial delay (in seconds) for start of first control-file check
+ */
+ public composite LookupApplCtrlMaster (
+	input
+		ReadCmd,
+		CmdAck;
+	output
+		ControlledCommand,
+		ApplCtrlMasterStats
+)
+{
+	param 
+		expression<rstring> $applControlDir;
+		expression<rstring> $applControlFile;
+		expression<rstring> $jobNameFile: "<%=CodeGenFrw::getConstant('LM_JOBNAME_FILE')%>";
+		expression<rstring> $applControlRespFiles;
+		expression<rstring> $applControlRespFilesChecklist;
+		expression<float64> $period: 2.0;
+		expression<float64> $initDelay: 10.0;
+		expression<rstring> $shutdownControlFile;
+
+	type
+		//the definition of the internal states
+/**
+Processing states of application control 
+ * **invalid** not a valid state used for receiving and initial value
+ * **initial** the initial state - everything is stopped. Reader and writer: initialization is running
+ * **stop** stop requested - The reader job may read data but the readers are advised to stop the operation. The reader initialization may run.
+ * **stopped** stop acknowledged from input stream. The writer access lookup repository.
+ * **start** start requested - The writer has finished writing the readers may start with read operations
+ * **run** stop acknowledged from input stream. Read operation is in progress and data processing jobs in progress
+ * **shutdown** the job was gracefully shut down
+ * **terminated** the job was canceled
+ */
+ 		static State = enum {
+			invalid,
+			initial,
+			stop,
+			stopped,
+			start,
+			run,
+			shutdown,
+			terminated
+		};
+		
+/**
+ * The request received from the shutdown control file
+ */
+		static Request = enum {
+			noneRequest,
+			restartRequest,
+			forceRequest,
+			shutdownRequest
+		};
+
+	graph
+
+
+		// ---------------- Startup Controller ----------------------
+		// Internal generator to drive the state logic of the controller
+/**
+ * @output Driver Boolean 'step' triggering Application Control Master operator 
+ * 
+ * @param $period period (in seconds) for status control check of control-files.
+ * @param $initDelay initial delay (in seconds) for start of first control-file check
+ */
+		stream<boolean step> Driver0 = Beacon2 () {
+			param	period : $period;
+					initDelay  : $initDelay;
+			output	Driver0 : step = true;
+		}
+		// Startup control passes the pacemaker tuples after startup check
+		stream<boolean step> Driver = StartupControl(Driver0) {
+			param
+				applControlDir : $applControlDir;
+				applUniqueName : $applControlFile;
+		}
+		// Application Controller 
+/**
+ * @input ReadCmd Command content from file reader 
+ * @input CmdAck Response from 'Command Controller'
+ * @input Driver - trigger from Beacon 
+
+ * @output ControlledCommand This port forwards the command from 'ReadCmd' input port to command reader
+ * @output ApplCtrlMasterStats This ports submits the statistics
+ */
+		(stream<LookupMgrTypes.LookupMgrCommandLine> ControlledCommand as CMD; stream<LookupMgrTypes.LookupMgrStatisticsSchema> ApplCtrlMasterStats as STAT) as ApplCtrlMaster
+		= Custom(ReadCmd; CmdAck; Driver) {
+		logic
+			state : {
+				//rstring initialApplControlFiles = regexReplace($applControlRespFiles,"((\\w)+\\.)+lookupmgr(,)+|(,)+((\\w)+\\.)+lookupmgr","",true);
+				//list<rstring> applControlRespFileControlL = csvTokenize(initialApplControlFiles);
+				list<rstring> respFilesChecklist = tokenize($applControlRespFilesChecklist, ",", false);
+				mutable list<rstring> respFiles = []; //the actual response file list
+				rstring applControlDir = $applControlDir;
+				boolean dirOk = createDir(applControlDir); //create the application control directory
+				rstring applControlFile = $applControlFile;
+				rstring shutdownControlFile = $shutdownControlFile;
+				mutable State myState = invalid; //the state variable of this job - invalid at start up
+				//the control file is written after startup control fires the first tuple
+				mutable boolean commandWritten = false;
+				mutable boolean cmdPending = false; //a command is in processing state
+				mutable boolean cmdFailed = false;
+				mutable boolean oneCommandProcessed = false;
+				mutable list<LookupMgrTypes.LookupMgrCommandLine> myCommandList;
+				mutable int32 stateNotChanged = 0;
+				mutable rstring requestString = "";	//the command string from shutdown file
+				mutable list<rstring> requestL; //the tokenized request the first entry is the command
+				mutable rstring tempRq = ""; //a temprary request string
+				mutable Request request = noneRequest; //the request
+				rstring asp = "ApplControlMaster";
+				boolean res = createControllerMetrics();
+			}
+			onTuple ReadCmd: {
+				if (isTraceable(Trace.debug)) {
+					appTrc(Trace.debug, "Received Tuple ReadCmd:"+(rstring)ReadCmd, asp);
+				}
+				if (isTraceable(Trace.info)) {
+					appTrc(Trace.info, "Queue cmd:" + (rstring)ReadCmd + " cmdPending="+(rstring)cmdPending+" myState="+(rstring)myState, asp);
+				}
+				enqueueCommand(ReadCmd, myCommandList);
+			} //ReadCmd
+			onTuple CmdAck: {
+				if (isTraceable(Trace.debug)) {
+					appTrc(Trace.debug, "Received Tuple CmdAck"+(rstring)CmdAck+" ackReceived = true", asp);
+				}
+				if ((!cmdPending)||(stopped != myState)) {
+					appTrc(Trace.error,
+						"No CmdAck expected! cmdAck="+(rstring)CmdAck+" cmdPending="+(rstring)cmdPending+" myState="+(rstring)myState,
+						asp);
+				}
+//				oneCommandProcessed = true;
+				cmdPending = false;
+				if (!finalFlag) {	//cmd not successfully processed
+					incrementMetric("WriterCmdFailedAndStopped");
+					cmdFailed = true;
+					appTrc(Trace.error, "Error during command processing "+(rstring)CmdAck+" myState="+(rstring)myState, asp);
+				} else {
+					oneCommandProcessed = true;
+					incrementMetric("WriterCmdProcessed");
+				}
+			} //CmdAck
+			onTuple Driver: {
+				if (isTraceable(Trace.debug)) {
+					appTrc(Trace.debug, "Driver tuple received.", asp);
+				}
+				if (isShutdown()) {
+					appTrc(Trace.error, "Shutdown", asp);
+				} else {
+					if (myState == invalid) { //first time Driver tuple
+						appTrc(Trace.info, "First Driver tuple", asp);
+						myState = initial;
+						//store the JobName to file - required for the segment 
+						writeCommandFile(applControlDir, $jobNameFile, regexReplacePerl(getJobName(),"_"+ (rstring)jobID() +"$","", true));
+						// set control file
+						setCustomMetricValue("WriterApplicationState", (int64)myState);
+						commandWritten = writeCommandFile(applControlDir, applControlFile, (rstring)initial);
+						//check the submission time response file list
+						list<rstring> temp = tokenize($applControlRespFiles, ",", false);
+						if (checkRestartRequestList(temp, respFilesChecklist, false)) {
+							respFiles = temp;
+							if (isTraceable(Trace.info)) {
+								appTrc(Trace.info, "Start ApplControlMaster with slave list:" + (rstring)respFiles, asp);
+							}
+						} else {
+							appTrc(Trace.error, "Abort ApplControlMaster with slave list:" + (rstring)temp + " the respFilesChecklist:" + (rstring)respFilesChecklist, asp);
+							abort();
+						}
+						//remove all response files and shutdown control file
+						removeRespFiles(applControlDir, respFilesChecklist);
+						mutable int32 err = 0;
+						spl.file::remove(applControlDir+"/"+shutdownControlFile, err);
+						submit(genStat("", "submit", true), STAT); //write statistics
+					}
+					if (!commandWritten) {
+						appTrc(Trace.error, "re-write command file="+applControlDir+"/"+applControlFile+" state="+(rstring)myState);
+						commandWritten = writeCommandFile(applControlDir, applControlFile, (rstring)myState);
+					} else {
+						mutable State stateChange = invalid;
+						if (cmdFailed) {
+							if (myState != stopped) {
+								if (myState < stopped) {
+									stateChange = myState;
+									appTrc(Trace.error, "A command has failed before initialized so we switch to current state:" + (rstring)myState, asp);
+								}
+								else {
+									stateChange = stop;
+									appTrc(Trace.error, "A command has failed. We switch to state stop", asp);
+								}
+								request = forceRequest;
+							}
+							else {
+								appTrc(Trace.error, "A command has failed. We keep state stopped and wait for new command.", asp);
+								oneCommandProcessed = false;
+							}
+							cmdFailed = false;
+						} else {
+							//check the shutdown file
+							mutable rstring temp = "";
+							if (readCommandFileNoWarn(applControlDir, shutdownControlFile, temp)) {
+								if (temp == tempRq) {	//check whether the command file is stable
+									if (tempRq != requestString) {
+										requestString = tempRq;
+										requestL = csvTokenize(tempRq);
+										int32 s = size(requestL);
+										if ((s > 0) && (requestL[0] == "restart")) {
+											if (checkRestartRequestList(requestL, respFilesChecklist, true)) {
+												request = restartRequest;
+											} else {
+												request = noneRequest;
+												restartFailed(requestString, requestL, respFilesChecklist, applControlDir, shutdownControlFile);
+												submit(genStat(shutdownControlFile, requestString, false), STAT);
+											}
+										} else if ((s > 0) && (requestL[0] == "forced-restart")) {
+											if (checkRestartRequestList(requestL, respFilesChecklist, true)) {
+												request = forceRequest;
+											} else {
+												request = noneRequest;
+												restartFailed(requestString, requestL, respFilesChecklist, applControlDir, shutdownControlFile);
+												submit(genStat(shutdownControlFile, requestString, false), STAT);
+											}
+										} else if ((s > 0) && (requestL[0] == "shutdown")) {
+											request = shutdownRequest;
+										} else if ((s > 0) && (requestL[0] == "Response:")){
+											if (isTraceable(Trace.debug)) {
+												appTrc(Trace.debug, "Response seen:"+requestString, asp);
+											}
+											request = noneRequest;
+										} else {
+											request = noneRequest;
+											appTrc(Trace.error, "Ignore a wrong action request string: "+ requestString, asp);
+											incrementMetric("WriterRequestsFailed");
+											writeCommandFile(applControlDir, shutdownControlFile, tempRq + "(failed unknown request)");
+											submit(genStat(shutdownControlFile, requestString, false), STAT);
+										}
+									}
+								} else {
+									tempRq = temp;
+								}
+							} else {
+								requestString = "";
+								tempRq = "";
+								request = noneRequest;
+							}
+							//**** initial ****
+							if (initial == myState) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "State=initial.", asp);
+								}
+								if ((request == forceRequest) || (request == restartRequest)) {
+									restart(requestString, requestL, respFilesChecklist, respFiles, applControlDir, shutdownControlFile);
+									request = noneRequest;
+									submit(genStat(shutdownControlFile, requestString, true), STAT);
+								} else if (request == shutdownRequest) {
+									if (isTraceable(Trace.info)) {
+										appTrc(Trace.info, "Shutdown received from state initial", asp);
+									}
+									stateChange = shutdown;
+									request = noneRequest;
+								}
+								if (checkAllCommandFiles(applControlDir, respFiles, (rstring)initial)) {
+									if (isTraceable(Trace.debug)) {
+										appTrc(Trace.debug, "All slaves are in state initial. We enter state stop from state initial", asp);
+									}
+									stateChange = stop;
+								} else {
+									stateNotChanged++;
+									if (stateNotChanged < 50) {
+										if (isTraceable(Trace.debug)) {
+											appTrc(Trace.debug, "We keep state initial", asp);
+										}
+									} else {
+										appTrc(Trace.error, "We keep state initial. State not changed for more than: 50 periods", asp);
+										stateNotChanged = 0;
+									}
+								}
+							//**** stop ****
+							} else if (stop == myState) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "State=stop.",  asp);
+								}
+								if (request == forceRequest) {
+									restart(requestString, requestL, respFilesChecklist, respFiles, applControlDir, shutdownControlFile);
+									stateChange = initial;
+									request = noneRequest;
+									submit(genStat(shutdownControlFile, requestString, true), STAT);
+								} else if (request == shutdownRequest) {
+									if (isTraceable(Trace.info)) {
+										appTrc(Trace.info, "Shutdown received from state stop", asp);
+									}
+									stateChange = shutdown;
+									request = noneRequest;
+								}
+								if (checkAllCommandFiles(applControlDir, respFiles, (rstring)stopped)) {
+									if (isTraceable(Trace.info)) {
+										appTrc(Trace.info, "All slaves are in state stopped. We enter state stopped from state stop", asp);
+									}
+									stateChange = stopped;
+								} else {
+									stateNotChanged++;
+									if (stateNotChanged++ < 500) {
+										if (isTraceable(Trace.debug)) {
+											appTrc(Trace.debug, "We keep state stop", asp);
+										}
+									} else {
+										appTrc(Trace.error, "We keep state stop. State not changed for more than: 500 periods", asp);
+										stateNotChanged = 0;
+									}
+								}
+							//**** stopped ****
+							} else if (stopped == myState) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "State=stopped.",  asp);
+								}
+								if (cmdPending) {
+									if (isTraceable(Trace.debug)) {
+										appTrc(Trace.debug, "We keep state stopped: cmdPending -> wait for ack", asp);
+									}
+								} else { //no cmdPending
+									mutable int32 commandListSize = size(myCommandList);
+									if (commandListSize > 0) {
+										commandListSize--;
+										LookupMgrTypes.LookupMgrCommandLine cl = myCommandList[0];
+										dequeueCommand(myCommandList);
+										if (isTraceable(Trace.debug)) {
+											appTrc(Trace.debug, "We keep state stopped: Send tuple from myCommandList[0] : "+(rstring)cl+" new Command List Size="+(rstring)commandListSize, asp);
+										}
+										cmdPending = true;
+										submit(cl, CMD);
+									} else {
+										if ((request == forceRequest) || (request == restartRequest)) {
+											restart(requestString, requestL, respFilesChecklist, respFiles, applControlDir, shutdownControlFile);
+											stateChange = initial;
+											request = noneRequest;
+											submit(genStat(shutdownControlFile, requestString, true), STAT);
+										} else if (request == shutdownRequest) {
+											if (isTraceable(Trace.info)) {
+												appTrc(Trace.info, "Shutdown received from state stopped", asp);
+											}
+											stateChange = shutdown;
+											request = noneRequest;
+										} else if (oneCommandProcessed) {
+											if (isTraceable(Trace.info)) {
+												appTrc(Trace.info,
+													"No ack pending && queue empty && oneCommandProcessed. We enter state start from state stopped", asp);
+											}
+											stateChange = start;
+										} else {
+											if (isTraceable(Trace.info)) {
+												appTrc(Trace.info, "We keep state stopped: Wait for initial command", asp);
+											}
+										}
+									}
+								}
+							//**** start ****
+							} else if (start == myState) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "State=start.",  asp);
+								}
+								if (request == forceRequest) {
+									restart(requestString, requestL, respFilesChecklist, respFiles, applControlDir, shutdownControlFile);
+									stateChange = initial;
+									request = noneRequest;
+									submit(genStat(shutdownControlFile, requestString, true), STAT);
+								} else if (request == shutdownRequest) {
+									if (isTraceable(Trace.info)) {
+										appTrc(Trace.info, "Shutdown received from state start", asp);
+									}
+									stateChange = shutdown;
+									request = noneRequest;
+								}
+								if (checkAllCommandFiles(applControlDir, respFiles, (rstring)run)) {
+									if (isTraceable(Trace.info)) {
+										appTrc(Trace.info, "All slaves are in state run. We enter state run from state start", asp);
+									}
+									stateChange = run;
+								} else {
+									stateNotChanged++;
+									if (stateNotChanged++ < 500) {
+										if (isTraceable(Trace.debug)) {
+											appTrc(Trace.debug, "We keep state start", asp);
+										}
+									} else {
+										appTrc(Trace.error, "We keep state start. State not changed for more than: 500 periods", asp);
+										stateNotChanged = 0;
+									}
+								}
+							//**** run ****
+							} else if (run == myState) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "State=run.",  asp);
+								}
+								if ((request == forceRequest) || (request == restartRequest)) {
+									restart(requestString, requestL, respFilesChecklist, respFiles, applControlDir, shutdownControlFile);
+									stateChange = initial;
+									request = noneRequest;
+									submit(genStat(shutdownControlFile, requestString, true), STAT);
+								} else if (request == shutdownRequest) {
+									if (isTraceable(Trace.info)) {
+										appTrc(Trace.info, "Shutdown received from state run", asp);
+									}
+									stateChange = shutdown;
+									request = noneRequest;
+								} else if (size(myCommandList) > 0) { //we leave state run if regular command is pending
+									if (isTraceable(Trace.debug)) {
+										appTrc(Trace.debug, "Command queued. We enter state stop from state  run", asp);
+									}
+									stateChange = stop;
+								} else {
+									if (isTraceable(Trace.debug)) {
+										appTrc(Trace.debug, "We keep state run", asp);
+									}
+								}
+							//**** shutdown ****
+							} else if (shutdown == myState) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "State=shutdown", asp);
+								}
+							//**** terminated ****
+							} else if (terminated == myState) {
+								if (isTraceable(Trace.debug)) {
+									appTrc(Trace.debug, "State=terminated", asp);
+								}
+							//**** else ****
+							} else {
+								appTrc(Trace.error, "we have wrong state="+(rstring)myState, asp);
+								abort();
+							}
+						} // /if (cmdFailed)
+						if (invalid != stateChange) {
+							if ((myState == run) && ((stateChange == stop) || (stateChange == initial))) {
+								incrementMetric("numberStopRequests");
+							}
+							if (stateChange == shutdown) {
+								incrementMetric("WriterRequestsProcessed");
+								writeCommandFile(applControlDir, shutdownControlFile, "Response:,"+requestString+"(successful)");
+								submit(genStat(shutdownControlFile, requestString, true), STAT);
+							}
+							myState = stateChange;
+							setCustomMetricValue("WriterApplicationState", (int64)myState); //set metrics
+							stateNotChanged = 0;
+							commandWritten = writeCommandFile(applControlDir, applControlFile, (rstring)myState);
+						}
+					}
+				}
+			} //Driver
+			onPunct ReadCmd: {
+				if (isTraceable(Trace.info)) {
+					appTrc(Trace.info, "ReadCmd punct received: "+(rstring)currentPunct(), asp);
+				}
+				if (currentPunct() == Sys.WindowMarker) {
+					submit (Sys.WindowMarker, CMD);
+				}
+			} //ReadCmd
+			onPunct CmdAck: {
+				if (isTraceable(Trace.info)) {
+					appTrc(Trace.info, "CmdAck punct received: "+(rstring)currentPunct(), asp);
+				}
+			} //CmdAck
+			onPunct Driver: {
+				if (isTraceable(Trace.info)) {
+					appTrc(Trace.info, "Driver punct received: "+(rstring)currentPunct(), asp);
+				}
+				if (myState != invalid) { //write the terminated state only when this job was active
+					myState = terminated;
+					commandWritten = writeCommandFile(applControlDir, applControlFile, (rstring)terminated);
+					submit(genStat("", "cancel", true), STAT);
+				}
+			} //Driver
+		config
+			placement :	partitionColocation("APPL_CONTROL_MASTER"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>");
+		}
+}
+
+
+/**
+ * Create all custom metrics for Application Control Master: Function must be called in logic state
+ @return `boolean` returns 'true' finishing the function.
+ */
+stateful boolean createControllerMetrics() {
+	createCustomMetric("WriterApplicationState", "The global application control state of lookup manager", Sys.Gauge, 0l /* in gui: state 0 is startup-check */);
+	createCustomMetric("numberStopRequests", "The number of run -> stop requests", Sys.Counter, 0l);
+	createCustomMetric("numberRestartRequests", "The number restart requests", Sys.Counter, 0l);
+	createCustomMetric("WriterCmdQueueSize", "The length of the command queue", Sys.Gauge, 0l);
+	createCustomMetric("WriterCmdProcessed", "The number of successfully processed writer commands", Sys.Counter, 0l);
+	createCustomMetric("WriterCmdFailedAndStopped", "The number of failed writer commands", Sys.Counter, 0l);
+	createCustomMetric("WriterRequestsProcessed", "The number of successfully processed requests restart/force/shutdown", Sys.Counter, 0l);
+	createCustomMetric("WriterRequestsFailed", "The number of failed requests", Sys.Counter, 0l);
+	return true;
+}
+
+/**
+ * Increment a custom metric counter with name: metricName
+@param metricName The name of the metric.
+@return `int64` Returns the new counter of the metric.
+*/
+stateful int64 incrementMetric(rstring metricName) {
+	mutable int64 x = 0l;
+	getCustomMetricValue(metricName, x);
+	x++;
+	setCustomMetricValue(metricName, x);
+	return x; 
+}
+
+/**
+ * Clean the internal list of ITE jobs supported by application control.
+@param dir The path to the common control folder of the applications.
+@param files The list of files defined by the namespace of ITE applications.
+*/
+stateful void removeRespFiles(rstring dir, list<rstring> files) {
+	mutable int32 err = 0;
+	mutable int32 x = 0;
+	while (x < size(files)) {
+		rstring f = dir + "/" + files[x];
+		remove(f, err);
+		if (isTraceable(Trace.info)) {
+			appTrc(Trace.info, "Removed file: " + f + " err=" + (rstring)err, "ApplControlMaster");
+		}
+		x++;
+	}
+}
+
+/**
+ * Append the new command to the queue and update the queue size metric.
+@param cmd The new queue element defined as command tuple.
+@param queue The mutable list of LookupMgrTypes.LookupMgrCommandLine tuples defined as command queue.
+*/
+stateful void enqueueCommand(LookupMgrTypes.LookupMgrCommandLine cmd, mutable list<LookupMgrTypes.LookupMgrCommandLine> queue) {
+	appendM(queue, cmd);
+	setCustomMetricValue("WriterCmdQueueSize", (int64)size(queue));
+}
+
+/**
+ * Remove the first queue element form defined as input queue and update the queue size metric. 
+@param queue The mutable list of LookupMgrTypes.LookupMgrCommandLine tuples defined as command queue.
+*/
+stateful void dequeueCommand(mutable list<LookupMgrTypes.LookupMgrCommandLine> queue) {
+	removeM(queue, 0);
+	setCustomMetricValue("WriterCmdQueueSize", (int64)size(queue));
+}
+
+/**
+ * Process a restart or force command.
+ * Actions performed 
+ * * the response file list is updated
+ * * all possible response files are removed
+ * * the metric is updated
+@param request the request string
+@param requestL the tokenized request
+@param respFilesChecklist the response file control list (compile time value)
+@param respFiles the response file list
+@param applControlDir the application control dir
+@param shutdownFile the filename of the shutdown file
+*/
+stateful void restart(
+		rstring request,
+		list<rstring> requestL,
+		list<rstring> respFilesChecklist,
+		mutable list<rstring> respFiles,
+		rstring applControlDir,
+		rstring shutdownFile) {
+
+	mutable list<rstring> applsL = requestL;
+	removeM(applsL, 0); //remove the first entry (the request) from this list
+	incrementMetric("numberRestartRequests");
+	respFiles = applsL;
+	if (isTraceable(Trace.info)) {
+		appTrc(Trace.info, requestL[0] + " command: New list respFiles: "+(rstring)respFiles, "ApplControlMaster");
+	}
+	removeRespFiles(applControlDir, respFilesChecklist);
+	incrementMetric("WriterRequestsProcessed");
+	writeCommandFile(applControlDir, shutdownFile, "Response:,"+request+"(successful)");
+}
+
+/**
+ * Process a failed restart or force command.
+ * Actions performed:
+ * * error log 
+ * * the metric is updated
+@param request the request string
+@param requestL the tokenized request
+@param respFilesChecklist the response file control list (compile time value)
+@param applControlDir the application control dir
+@param shutdownFile the filename of the shutdown file
+*/
+stateful void restartFailed(
+		rstring request,
+		list<rstring> requestL,
+		list<rstring> respFilesChecklist,
+		rstring applControlDir,
+		rstring shutdownFile) {
+
+	appTrc(Trace.error, requestL[0] + " command: wrong entry in response list: "+(rstring)requestL+"  the control List:"+(rstring)respFilesChecklist, "ApplControlMaster");
+	incrementMetric("WriterRequestsFailed");
+	writeCommandFile(applControlDir, shutdownFile, "Response:,"+request + "(failed)");
+}
+
+/**
+ * This function checks whether all entries from the request are in the control list (compile time checklist)
+@param requestL the list with the appnames to check
+@param respFilesChecklist the response file control list (compile time value)
+@param restartList if this param is true the first entry in the request list is ignored
+@return true if all entries from the request are in the checklist or requestL is empty, false otherwise
+ */
+boolean checkRestartRequestList(list<rstring> requestL, list<rstring> respFilesChecklist, boolean restartList) {
+	int32 sz = size(requestL);	mutable int32 x = 0;
+	mutable boolean allOk = true;
+	if (restartList) x = 1;
+	while (x < sz) {
+		int32 foundIndex = findFirst(respFilesChecklist, requestL[x], 0);
+		if (foundIndex == -1) {
+			allOk = false;
+			break;
+		}
+		x++;
+	}
+	return allOk;
+}
+
+/**
+ * This function generates the content of statistic stream defined by LookupMgrTypes.LookupMgrStatisticsSchema.
+@param file The name of command file
+@param cmd The command type
+@param success The flag defining information it command request was successful.
+@return [common.lookup.lookuptypes::LookupMgrTypes|LookupMgrTypes.LookupMgrStatisticsSchema] The content of LookupMgrTypes.LookupMgrStatisticsSchema tuple
+*/
+stateful LookupMgrTypes.LookupMgrStatisticsSchema genStat(rstring file, rstring cmd, boolean success) {
+	if (success) {
+		return {filename=file, command="SUCCESS request:"+cmd, commandStartedAt=ctime(getTimestamp()), commandProcessedAt="", hostStatistics=(list<rstring>)[]};
+	} else {
+		return {filename=file, command="ERROR request:"+cmd, commandStartedAt=ctime(getTimestamp()), commandProcessedAt="", hostStatistics=(list<rstring>)[]};
+	}
+}

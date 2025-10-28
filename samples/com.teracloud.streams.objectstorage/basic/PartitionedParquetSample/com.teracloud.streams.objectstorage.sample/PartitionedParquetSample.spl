@@ -1,0 +1,174 @@
+/*
+** Copyright (C) 2018  International Business Machines Corporation
+** All Rights Reserved
+*/
+namespace com.teracloud.streams.objectstorage.sample;
+
+use com.teracloud.streams.objectstorage::*;
+
+/**
+ * The sample demonstrates object creation with parquet format
+ * 
+ * Additional purpose of the sample is to demonstrate how to configure the operators and functions with basic (HMAC) authentication.
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Optional parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param objectStorageURI 
+ * Set a bucket name and protocol in URI in 'cos://bucket/' or 's3a://bucket/' format
+ * 
+ * @param objectName
+ * Object name used by Sink operator
+ *
+ * @param timePerObject
+ * Time to keep an object name before closing
+ *
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ */
+public composite PartitionedParquetSample {
+	param
+		expression<rstring> $accessKeyID : getSubmissionTimeValue("os-access-key-id");
+		expression<rstring> $secretAccessKey : getSubmissionTimeValue("os-secret-access-key");
+		expression<rstring> $endpoint : getSubmissionTimeValue("os-endpoint", "s3.us.cloud-object-storage.appdomain.cloud");
+		expression<rstring> $objectStorageURI: getSubmissionTimeValue("os-uri");
+		expression<rstring> $objectName: getSubmissionTimeValue("objectName", "testOS%TIME"); 
+		expression<float64> $timePerObject: (float64)getSubmissionTimeValue("timePerObject", "20.0");
+		expression<boolean> $sslEnabled: (boolean) getSubmissionTimeValue("sslEnabled", "true");
+
+	graph
+
+		stream<rstring result> SampleRes = PartitionedParquetSampleBasic() {
+			param
+				accessKeyID: $accessKeyID;
+				secretAccessKey: $secretAccessKey;
+				objectStorageURI: $objectStorageURI;
+				endpoint: $endpoint;
+				objectName: $objectName;
+				timePerObject: $timePerObject;
+				sslEnabled: $sslEnabled;
+		}	
+}
+
+/**
+ * Composite used by PartitionedParquetSample main composite and test application
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Optional parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param objectStorageURI 
+ * Set a bucket name and protocol in URI in 'cos://bucket/' or 's3a://bucket/' format
+ * 
+ * @param objectName
+ * Object name used by Sink operator
+ *
+ * @param timePerObject
+ * Time to keep an object name before closing
+ *
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ *
+ * @output SampleResult
+ * This stream is evaluated by the tester.
+ */
+public composite PartitionedParquetSampleBasic (output SampleResult) {
+	param
+		expression<rstring> $accessKeyID;
+		expression<rstring> $secretAccessKey;
+		expression<rstring> $objectStorageURI;
+		expression<rstring> $endpoint: "s3.us.cloud-object-storage.appdomain.cloud";
+	
+		expression<rstring> $objectName; 
+		expression<float64> $timePerObject;
+		expression<boolean> $sslEnabled: true;
+
+	type 
+		RawNetworkEvent_t = 
+			rstring dt_orig,
+			rstring computer_id, 
+			rstring process_name,                       
+			rstring operation, 
+			rstring operation_result, 
+			rstring source_host, 
+			int32 source_port, 
+			int32 tcpLength, 
+			int64 mms,
+			rstring dest_host, 
+			int32 dest_port, 
+			rstring filename, 
+			int64 fileLength; 
+	
+	graph
+
+		stream<rstring filename> DataFile = Beacon()  {
+			param
+				period: 0.05; // trigger data upload each 2 seconds
+				iterations: 2; // limits the number of objects
+			output DataFile:
+				filename = getThisToolkitDir() + "/etc/partitionSampleData.txt";
+		}
+		
+		/**
+		 * Read and Parse raw events
+		 */		
+		stream<RawNetworkEvent_t> NetworkEvent = FileSource(DataFile) {
+			param
+				format: csv;
+				separator: "|";
+		}
+
+		/**
+		 * Add partition-specific attributes
+		 */
+		stream<NetworkEvent, tuple<int32 YEAR, int32 MONTH,  int32 DAY, int32 HOUR>> PartitionedNetworkEvent = Functor(NetworkEvent) {
+			logic 
+				state: {
+					mutable timestamp dt_orig_ts;
+				}
+				onTuple NetworkEvent: {
+					// original format 2014-07-28 12:42:45.618
+					dt_orig_ts = toTimestamp(Sys.YYYY_MM_DD_hh_mm_ss_mmm,dt_orig);
+				}
+			
+			output PartitionedNetworkEvent:
+				YEAR = (int32)year(dt_orig_ts), 
+				MONTH = ((int32)month(dt_orig_ts)) + 1 + (int32) (random() * 50.0), 
+				DAY = (int32)day(dt_orig_ts), 
+				HOUR = (int32)hour(dt_orig_ts) + (int32) (random() * 50.0);            	
+		}
+     
+		stream<rstring objectname, uint64 size> ObjStSink = ObjectStorageSink(PartitionedNetworkEvent) {
+			param
+				objectStorageURI : $objectStorageURI;
+				objectStorageUser : $accessKeyID;
+				objectStoragePassword : $secretAccessKey;
+				objectName : $objectName;
+				endpoint : $endpoint;
+				timePerObject: $timePerObject;
+				storageFormat: "parquet";
+				partitionValueAttributes: "YEAR", "MONTH", "DAY", "HOUR";
+				sslEnabled: $sslEnabled;
+		} 
+     
+		stream<rstring result> SampleResult = Custom(ObjStSink as I) {
+			logic 
+			onTuple I: {
+				println((rstring)I);
+				submit ({result="ok"}, SampleResult);
+			}
+		}
+}

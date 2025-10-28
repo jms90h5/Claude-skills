@@ -1,0 +1,71 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.utility;
+
+/**
+ * PunctReduce
+ * Reduces the number of punctuations that are increased
+ * by the internal split of user-defined parallelism.
+ * Window punctuations received on input port are counted
+ * and forwarded only when number of received punctuations
+ * matches the value given with the composite parameter numChannels.
+ *
+ * @input  I input tuples (forwarded to output port)
+ * @output O output tuples
+ *
+ * @param numChannels
+ * Number of channels (one punctuation per channel)
+ */
+public composite PunctReduce (input I; output O)
+{
+	param
+		expression<int32> $numChannels;
+
+	graph
+
+		@spl_category(name="common")
+		(stream<I> O) as PunctReduce = Custom(I) {
+			logic
+				state: {
+					int32 numChannels = (($numChannels > 0) ? $numChannels : 1);
+					mutable int32 receivedPuncts = 0;
+				}
+			onTuple I : {
+				submit (I, O);				
+			}
+			onPunct I : {
+				if(currentPunct() == Sys.WindowMarker) {
+					receivedPuncts++;
+					if (numChannels == receivedPuncts) {
+						submit(Sys.WindowMarker, O);
+						receivedPuncts=0;
+					}
+				}
+			}
+		}
+}

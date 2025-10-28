@@ -1,0 +1,136 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2015, 2020     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace com.teracloud.streams.geospatial.sample.geofence ;
+
+use com.teracloud.streams.geospatial::* ;
+use com.teracloud.streams.geospatial.ext::* ;
+
+
+/**
+ * This application demonstrates the basic use of the GeoFence operator.
+ * The entity stream is data from a cell phone in GPX format and resides
+ * in the project under data/input/gpxData.xml.
+ * The fence stream is read from the file data/input/fences.csv, 
+ * which defines fences in the Toronto, Ontario area.
+ * The output contains the entity ID, the current location, the list
+ * of fences the entity is in, the list of fences the entity just entered,
+ * and the list of fences the entity just exited.
+ * 
+ * */
+composite GeofenceWktGpxSample {
+
+	type
+		GpxData				= tuple<rstring gpxXmlLine> ;
+		PointTuple			= tuple<rstring id, float64 longitude, float64 latitude> ;
+		PointWktTuple		= tuple<rstring id, rstring wkt> ;
+		EntityTuple			= PointWktTuple, tuple<uint32 updateAction, rstring note> ;
+		EntityTupleExt		= PointTuple, tuple<float64 elevation, uint32 updateAction, rstring note> ;
+		FenceDataTuple		= tuple<rstring fenceId, int32 fenceUpdateAction, rstring fencePolygon> ;
+		MatchedFencesTuple	= tuple<list<rstring> fences, list<rstring> fencesEntered, list<rstring> fencesExited> ;
+
+		
+	graph
+		
+
+		stream<FenceDataTuple> FencesDataStream = FileSource()
+		{
+			param
+				file :		"input/fences.csv" ;
+				format :	csv ;
+				initDelay :	5.0 ;
+		}
+
+
+		(stream<GpxData> GpxDataStream) as GpxDataReader = FileSource()
+		{
+			param
+				file :		"input/gpxData.xml" ;
+				format : 	line ;
+				initDelay :	10.0 ;
+		}
+		
+	
+//		() as GpxDataDumper = FileSink(GpxDataStream)
+//		{
+//			param
+//				file : 	"results/dumpedGpxData.xml" ;
+//				format : line ;
+//		}
+
+
+		(stream<EntityTupleExt> EntitiesStream) as GPXDataParser = XMLParse(GpxDataStream)
+		{
+			param
+				xmlInput : 		gpxXmlLine ;
+				trigger :		"/gpx/trk/trkseg/trkpt" ;
+				
+			output
+				EntitiesStream :
+					id				= "myId",
+					longitude		= (float64) XPath("@lon"),
+					latitude		= (float64) XPath("@lat"),
+					elevation		= (float64) XPath("ele/text()"),
+					updateAction	= 1u,
+					note			= "GPX data";
+		}
+
+//		() as EntitiesStreamDumper = FileSink(EntitiesStream)
+//		{
+//			param
+//				file : 	"results/parsedData.xml" ;
+//				format : csv ;
+//		}
+
+
+		(stream<EntityTuple> NarrowedEntitiesStream) as Narrower = Functor(EntitiesStream)
+		{
+			output
+				NarrowedEntitiesStream:
+					wkt	= com.teracloud.streams.geospatial.ext::point(longitude, latitude);
+		}
+
+
+		stream<PointWktTuple, MatchedFencesTuple> MatchedFencesStream = Geofence(NarrowedEntitiesStream; FencesDataStream)
+		{
+			param
+				outputMode :	events ;
+				geometry :		wkt ;
+			output
+				MatchedFencesStream :
+					fences			= CurrentFences(),
+					fencesEntered	= FencesEntered(),
+					fencesExited	= FencesExited() ;
+		}
+
+
+		() as MatchedFenceSink = FileSink(MatchedFencesStream)
+		{
+			param
+				file : 	"results/triggeredFences.txt" ;
+				format : csv ;
+		}
+
+}

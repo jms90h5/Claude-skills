@@ -1,0 +1,782 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace demoapp.functions;
+
+/**
+ * Helper functions for
+ * * Validations
+ * * Time conversions
+ * * String conversions
+ * * Pattern matching
+ * * Path and filename conversions
+ */
+
+// *** Validation Helper
+
+
+/**
+ * isIntegerValid - Check if the data passed is having digits only.
+ * If max-length is given as 0 length of the data can be unlimited
+ * else it should not be more then max-length. If 
+ * allowNegative is true then data can have '-' and will not be considered while checking the length of data.
+ * An input literal starting with '+' will be considered as invalid.
+ * @param data the string to be checked
+ * @param maxlength the maximum number of digits in the input string
+ * @param allowNegative allow negative literals if set
+ * @return true if the check has been passed, false otherwise
+ */
+public boolean isIntegerValid(rstring data, uint32 maxlength, boolean allowNegative) { 
+	mutable rstring data1 = data ; // Store data in temp variable 
+
+	if( length( data1 ) == 0 )
+	{
+			appTrc(Trace.error,"isIntegerValid: data: " + data + " is INVALID!");
+			return(false) ;
+	}
+	if(allowNegative == true)
+	{ // check if negative is allowed, if allowed remove the '-' from data before checking it for maxlength and digit only.
+		int32 signIndex = findFirst(data1, "-") ;
+		if(signIndex != - 1 && signIndex == 0)
+		{
+			data1 = substring(data, signIndex + 1, length(data) - 1) ;
+		}
+
+		else if(signIndex > 0)
+		{
+			appTrc(Trace.error,"isIntegerValid: data: " + data + " is INVALID!");
+			return(false) ;
+		}
+
+	}
+	
+	if((maxlength != 0u && length(data1) <=(int32) maxlength) || maxlength == 0u)
+	{ // Check the length of data if maxlength is not 0 else go ahead and check for only digit condition
+		if(size(regexMatch(data1, "[^0-9.]")) == 0)
+		{
+			return(true) ;
+		}
+
+		else
+		{
+			appTrc(Trace.error,"isIntegerValid: data: " + data + " is INVALID!");
+			return(false) ;
+		}
+
+	}
+	appTrc(Trace.error,"isIntegerValid: data: " + data + " is INVALID!");
+	return(false) ;
+}
+
+/**
+ * isDigitStringValid - Check if the data passed is having digits only.
+ * If max-length is given as 0 length of the data can be unlimited
+ * else it should not be more then max-length. A starting '-' or '+' is allowed and
+ * will not be considered while checking the length of data.
+ * @param data the input string to be checked
+ * @param maxlength the maximum number of digits
+ * @return true if the check has been passed, false otherwise
+ */
+public boolean isDigitStringValid(rstring data, uint32 maxlength)
+{
+	//calls isDigitStringValid with minlength as 0
+	return(isDigitStringValid(data,0u,maxlength)) ;
+}
+
+
+/**
+ * isDigitStringValid - Check if the data passed is having digits only.
+ * If max-length is given as 0 length of the data can be unlimeted
+ * else it should not be more then max-length. '-' and '+' are allowed and
+ * will not be considered while checking the length of data. 
+ * @param data the input string to be checked
+ * @param minlength the minimum number of digits
+ * @param maxlength the maximum number of digits
+ * @return true if the check has been passed, false otherwise
+ */
+public boolean isDigitStringValid(rstring data, uint32 minlength, uint32 maxlength)
+{
+	mutable rstring data1 = data ; // Store data in temp variable 
+
+	//check if '-' or '+' sign is present in data if its there remove the sign before checking for max length and digit only condition.
+	int32 negativeSignIndex = findFirst(data1, "-") ;
+	int32 positiveSignIndex = findFirst(data1, "+") ;
+	if((negativeSignIndex != - 1 && negativeSignIndex == 0) ||(positiveSignIndex
+		!= - 1 && positiveSignIndex == 0))
+	{
+		data1 = substring(data, 1, length(data) - 1) ;
+	}
+	if((minlength != 0u && length(data1) >= (int32)minlength) || minlength == 0u)
+		{
+			if((maxlength != 0u && length(data1) <=(int32) maxlength) || maxlength == 0u)
+			{ // Check the length of data if maxlength is not 0 else go ahead and check for only digit condition
+				if(size(regexMatch(data1, "[^0-9.]")) == 0)
+				{
+					return(true) ;
+				}
+		
+				else
+				{
+					appTrc(Trace.error,"isDigitStringValid: data: " + data + " is INVALID!");
+					return(false) ;
+				}
+		
+			}
+		}
+	appTrc(Trace.error,"isDigitStringValid: data: " + data + " is INVALID!");
+	return(false) ;
+}
+
+/**
+ * isHexStringValid - Check if the data passed is having digits and characters A-F or a-f only.
+ * If max-length is given as 0 length of the data can be unlimited
+ * else it should not be more then max-length. '-' and '+' are allowed and
+ * will not be considered while checking the length of data. 
+ * @param data the input string to be checked
+ * @param maxlength the maximum number of digits
+ * @return true if the check has been passed, false otherwise
+ */
+public boolean isHexStringValid(rstring data, uint32 maxlength) {
+/*
+do we have to check for proper hexadecimal format e.g. 0xffff or the checking we are doing in our function is enough? 
+*/
+	mutable rstring data1 = data; 					// Store data in temp variable 
+	
+	int32 negativeSignIndex = findFirst(data1,"-");
+	int32 positiveSignIndex = findFirst(data1,"+");
+	if ((negativeSignIndex != -1 && negativeSignIndex == 0)|| (positiveSignIndex != -1 && positiveSignIndex == 0)){
+		data1 = substring(data,1, length(data)-1); 
+	}
+		
+	
+	if ((maxlength != 0u &&length(data1) <= (int32)maxlength) || maxlength == 0u){		// Check the length of data if maxlength is not 0 else go ahead and check if data have characters other then 0-9, a-f or A-F
+		
+		if ( size(regexMatch(data1, "[^0-9a-fA-F]")) == 0 ){
+			return(true);
+		}else {
+			return(false);
+		}
+	}
+	return(false);
+}
+
+
+/**
+ * isIPv4Valid - checks if data contains a valid IPv4 address
+ * The input must have s format a.b.c.d, where a/b/c/d must be in range 000...255.
+ * Valid formats are like 1.1.1.1 , 01.01.01.01 and 001.001.001.001. 
+ * @param data the input string to be checked
+ * @return true if the check has been passed, false otherwise
+ */
+public boolean isIPv4Valid ( rstring data ) {
+	if ( size ( regexMatch ( data , "[^0-9.]"	) ) == 0 && length ( data ) < 16 ) { 			//Check string should have digits and '.' only and length should not be more than 15
+		 list <rstring> splitedString = splitString ( data , "." );								//Split the string on '.'
+		 for ( rstring value in	splitedString ) {
+		 	int32 intVal = strtoll(value,10);													//parse the string to int32 with base 10 and check if the value is between 0-255
+		 	if (0 < intVal && intVal < 256) {
+		 		continue;
+		 	} else {
+				return false; 
+			} 
+		} 
+		return true; 
+	} 
+	return false; 
+} 
+
+
+/**
+ * isIPv6Valid - checks, if data contains a valid IPv6 address
+ * valid format a:b:c:d:e:f:g:h and where a/b/c/d/e/f/g/h are in hexadecimal format
+ * @param data the input string to be checked
+ * @return true if the check has been passed, false otherwise
+ */
+public boolean isIPv6Valid ( rstring data ) {
+	if ( size ( regexMatch ( data , "[^0-9a-fA-F:]"	) ) == 0 && length ( data ) < 40 ) {		//Check string should have 0-9,a-f or A-F(hexadecimal values) and ':' only and length should not be more than 39
+		 list <rstring> splitedString = splitString ( data , ":" );								//Split the string on ':'
+		 for ( rstring value in	splitedString ) {												//loop through the list and check if hexadecimal value have length equal to 4
+		 	if ( length(value) == 4 ) {
+		 		continue;
+		 	} else {
+				return false; 
+			} 
+		} 
+		return true; 
+	} 
+	return false; 
+} 
+
+
+/**
+ * splitString - splits the string on the given delimiter and returns a list.
+ * @param data the input string
+ * @param delimiter the delimiter
+ * @return the list of split strings
+ */
+public list <rstring > splitString ( rstring data , rstring delimiter ) {
+	 return ( tokenize( data , delimiter , true ) ); 
+}
+
+
+/**
+ * isLocalTimeStampValid - checks the length and digit only condition for the timestamp.
+ * checks if data contains digits only and
+ * fits into pattern CCYYMMDDhhmmss
+ * gets year,month,day,hour,min and seconds validates them
+ * @param data the string to be checked
+ * @return true if the check has been passed, false otherwise
+ */
+public boolean isLocalTimeStampValid ( rstring data ) {
+	
+	 if ( size ( regexMatch (	data , "[^0-9]" ) ) == 0 && length(data) == 14) {
+	 	timestamp localTimeStamp = toTimestamp(Sys.YYYYMMDDhhmmss,data);
+//	 	uint32 year = gmyear(localTimeStamp);
+	 	uint32 month = gmmonth(localTimeStamp);
+	 	uint32 day = gmday(localTimeStamp);
+	 	uint32 hour = gmhour(localTimeStamp);
+	 	uint32 minute = gmminute(localTimeStamp);
+	 	uint32 seconds = gmsecond(localTimeStamp);
+	 	if (month<1u || month > 12u || day<1u || day>31u || hour>23u || minute>59u || seconds>59u){
+	 		return false;
+	 	}
+	 	return true;
+	 	
+	 }
+	  return false;
+}
+
+
+// *** Time Helper  
+
+
+/**
+ * timestampToUTCString - Gets the seconds since the epoch part form a timestamp as string.
+ * ( (seconds,x,y) => seconds )
+ * @param aGMTTime the input timestamp
+ * @return seconds part of the timestamp as rstring
+ */
+public rstring timestampToUTCString( timestamp aGMTTime ) {
+	rstring _utcTime = regexReplace( regexReplace( (rstring)aGMTTime, "^\\(", "", true ), ",.*$", "", true );
+	return( _utcTime );
+}
+
+
+/**
+ * standardizeTimestamp - Gets local timestamp string in YYYYMMDDhhmmss format and offset from GMT to convert it into a standard time format.
+ * @param data input time in format YYYYMMDDhhmmss
+ * @param offsetFromGMT the offset from GMT
+ * @return the timestamp string
+ */
+public rstring standardizeTimestamp ( rstring data, rstring offsetFromGMT ) {
+	
+	//convert timestamp string to UTC timestamp
+	timestamp localTimestamp = toTimestamp(Sys.YYYYMMDDhhmmss,data);
+	
+	//get timestamp in GMT
+	mutable timestamp standardTimestamp = toGMTTimestamp(localTimestamp, offsetFromGMT);
+	
+	//return standardized timestamp string in YYYYMMDDhhmmss format
+	return(toTimestampString(standardTimestamp));
+}
+
+
+/**
+ * standardizeTimestampGMT - Gets local timestamp string in YYYYMMDDhhmmss format and offset from GMT to convert it into a standard time format.
+ * @param data input time in format YYYYMMDDhhmmss
+ * @param offsetFromGMT the offset from GMT
+ * @return the timestamp
+ */
+public timestamp standardizeTimestampGMT ( rstring data, rstring offsetFromGMT ) {
+	
+	//convert timestamp string to UTC timestamp
+	timestamp localTimestamp = toTimestamp(Sys.YYYYMMDDhhmmss,data);
+	
+	//get timestamp in GMT
+	mutable timestamp standardTimestamp = toGMTTimestamp(localTimestamp, offsetFromGMT);
+	
+	//return standardized timestamp in GMT
+	return(standardTimestamp);
+}
+/**
+ * toGMTTimestamp - takes timestamp and offset from GMT and converts the timestamp to GMT.
+ * @param data input time in format YYYYMMDDhhmmss
+ * @param offsetFromGMT the offset from GMT
+ * @return the timestamp
+ */
+public timestamp toGMTTimestamp(timestamp data, rstring offsetFromGMT){
+	mutable timestamp gmtTimestamp;
+	
+	//get the index of '-' or '+' signs
+	int32 negativeSignIndex = findFirst(offsetFromGMT, "-") ;
+	int32 positiveSignIndex = findFirst(offsetFromGMT, "+") ;
+	
+	//get hours and minutes out of offset from GMT
+	mutable uint64 hours;
+	mutable uint64 minutes;
+	if((negativeSignIndex != - 1 && negativeSignIndex == 0) ||(positiveSignIndex
+		!= - 1 && positiveSignIndex == 0))
+	{
+		hours = strtoull(substring(offsetFromGMT, 1, 2),10);
+		minutes = strtoull(substring(offsetFromGMT, 3, 2),10);
+	} else {
+		hours = strtoull(substring(offsetFromGMT, 0, 2),10);
+		minutes = strtoull(substring(offsetFromGMT, 2, 2),10);
+	}
+	
+	//calculate offset in terms of seconds
+	mutable float64 seconds = hours*(uint64)(60*60) + minutes*(uint64)60;
+	
+	
+	//add seconds in timestamp to get the timestamp in GMT
+	if(negativeSignIndex != - 1 && negativeSignIndex == 0){
+		gmtTimestamp = add(data,-seconds);
+	}else {
+		gmtTimestamp = add(data,seconds);
+	}
+	
+	//return timestamp
+	return(gmtTimestamp);
+}
+
+/**
+ * toTimestampString - converts the timestamp into a YYYYMMDDhhmmss string.
+ * @param data the input timestamp
+ * @return the time string
+ */
+public rstring toTimestampString(timestamp data)
+{
+    
+    // retrieve year, month and day of the current day
+    uint32 tsYear = year(data);
+    uint32 tsMonth = month(data);
+    uint32 tsDay = day(data);
+    // retrieve hour, minute and second of the current time
+    uint32 tsHour = hour(data);
+    uint32 tsMinute = minute(data);
+    uint32 tsSecond = second(data);
+
+
+    // build time string in the format CCYYMMDDhhmmss
+    rstring strTimestamp = (rstring)tsYear
+            + ((tsMonth < 9u) ? "0" : "") + (rstring)(tsMonth + 1u)
+            + ((tsDay < 10u) ? "0" : "") + (rstring)tsDay
+            + ((tsHour < 10u) ? "0" : "") + (rstring)tsHour
+            + ((tsMinute < 10u) ? "0" : "") + (rstring)tsMinute
+            + ((tsSecond < 10u) ? "0" : "") + (rstring)tsSecond;
+
+    // return result
+    return strTimestamp;
+}
+
+
+/**
+ * Calculates the number of days since 1970 up to now.
+ * 
+ * @return
+ * stateful uint32 number of days
+ */
+public stateful uint32 daysSince1970()
+{
+    // determine current system time and date
+    timestamp tsNow = getTimestamp();
+
+    // retrieve year, month and day of the current day
+    uint32 nowYear = year(tsNow);
+    uint32 nowMonth = month(tsNow);
+    uint32 nowDay = day(tsNow);
+
+    // build time string in the format YYYYMMDD000000
+    rstring strToday = (rstring)nowYear
+            + ((nowMonth < 9u) ? "0" : "") + (rstring)(nowMonth + 1u)
+            + ((nowDay < 10u) ? "0" : "") + (rstring)nowDay
+            + "000000";
+
+    // convert to timestamp
+    timestamp ts = toTimestamp(Sys.YYYYMMDDhhmmss, strToday, "UTC");
+
+    // return result
+    return daysSince1970(ts);
+}
+
+/**
+ * Calculates the number of days since 1970 from the given timestamp and Assumes UTC time.
+ * @param ts the input timestamp
+ * @return number of days
+ */
+public uint32 daysSince1970(timestamp ts)
+{
+    // retrieve the total number of seconds since 1970
+    int64 seconds = getSeconds(ts);
+
+    // calculate the number of days
+    uint32 days = (uint32)(seconds / 86400l);
+
+    // return result
+    return days;
+}
+
+/**
+ * getNow - Get a current timestamp as rstring in format CCYYMMDDhhmmss.
+ * 
+ * @return the time in format CCYYMMDDhhmmss
+ */
+public stateful rstring getNow()
+{
+    // determine current system time and date
+    timestamp tsNow = getTimestamp();
+    return getCCYYMMDDhhmmss(tsNow);
+}
+
+/**
+ * getCurrentTimeStampDB2Format - Get a current timestamp as rstring in yyyy-mm-dd hh:mm:ss format.
+ * 
+ * @return the current time in DB2 format
+ */
+public stateful rstring getCurrentTimeStampDB2Format()
+{
+    // determine current system time and date
+    timestamp tsNow = getTimestamp();
+    return getCCYYMMDDhhmmssDB2Format(tsNow);
+}
+
+/**
+ * getCCYYMMDDhhmmssDB2Format - Get a timestamp as rstring in yyyy-mm-dd hh:mm:ss format.
+ * @param tsNow the input timestamp
+ * @return the time in DB2 format
+ */
+public rstring getCCYYMMDDhhmmssDB2Format(timestamp tsNow)
+{
+    // retrieve year, month and day of the current day
+    uint32 nowYear = year(tsNow);
+    uint32 nowMonth = month(tsNow);
+    uint32 nowDay = day(tsNow);
+    // retrieve hour, minute and second of the current time
+    uint32 nowHour = hour(tsNow);
+    uint32 nowMinute = minute(tsNow);
+    uint32 nowSecond = second(tsNow);
+
+    // build time string in the format CCYY-MM-DD hh:mm:ss
+    rstring strNow = (rstring)nowYear
+    		+ "-"
+            + ((nowMonth < 9u) ? "0" : "") + (rstring)(nowMonth + 1u)
+            + "-"
+            + ((nowDay < 10u) ? "0" : "") + (rstring)nowDay
+            + " "
+            + ((nowHour < 10u) ? "0" : "") + (rstring)nowHour
+            + ":"
+            + ((nowMinute < 10u) ? "0" : "") + (rstring)nowMinute
+            + ":"
+            + ((nowSecond < 10u) ? "0" : "") + (rstring)nowSecond;
+
+    // return result	
+	return strNow;
+}
+
+/**
+ * getCCYYMMDDhhmmss - get a time sting in format CCYYMMDDhhmmss from a timestamp.
+ * @param tsNow the input timestamp
+ * @return the converted time string
+ */
+public rstring getCCYYMMDDhhmmss(timestamp tsNow)
+{
+    // retrieve year, month and day of the current day
+    uint32 nowYear = year(tsNow);
+    uint32 nowMonth = month(tsNow);
+    uint32 nowDay = day(tsNow);
+    // retrieve hour, minute and second of the current time
+    uint32 nowHour = hour(tsNow);
+    uint32 nowMinute = minute(tsNow);
+    uint32 nowSecond = second(tsNow);
+
+    // build time string in the format CCYYMMDDhhmmss
+    rstring strNow = (rstring)nowYear
+            + ((nowMonth < 9u) ? "0" : "") + (rstring)(nowMonth + 1u)
+            + ((nowDay < 10u) ? "0" : "") + (rstring)nowDay
+            + ((nowHour < 10u) ? "0" : "") + (rstring)nowHour
+            + ((nowMinute < 10u) ? "0" : "") + (rstring)nowMinute
+            + ((nowSecond < 10u) ? "0" : "") + (rstring)nowSecond;
+
+    // return result	
+	return strNow;
+}
+
+/**
+ * getDateNow - Get a current timestamp as rstring in format CCYYMMDD
+ * 
+ * @return the time string in format CCYYMMDD
+ */
+public stateful rstring getDateNow()
+{
+    // determine current system time and date
+    timestamp tsNow = getTimestamp();
+
+    // retrieve year, month and day of the current day
+    uint32 nowYear = year(tsNow);
+    uint32 nowMonth = month(tsNow);
+    uint32 nowDay = day(tsNow);
+
+    // build time string in the format CCYYMMDD
+    rstring strNow = (rstring)nowYear
+            + ((nowMonth < 9u) ? "0" : "") + (rstring)(nowMonth + 1u)
+            + ((nowDay < 10u) ? "0" : "") + (rstring)nowDay;
+
+    // return result
+    return strNow;
+}
+
+/**
+ * getDateYesterday - Get a timestamp-24h as rstring in format CCYYMMDD
+ * 
+ * @return the time string in format CCYYMMDD
+ */
+public stateful rstring getDateYesterday()
+{
+	mutable timestamp tsYesterday;
+	// determine current system time and date
+	timestamp tsNow = getTimestamp();
+
+	//calculate offset in terms of seconds
+	mutable float64 seconds = (uint64)24*(uint64)(60*60);
+	tsYesterday = add(tsNow,-seconds);
+
+	// retrieve year, month and day of the current day
+	uint32 yYear = year(tsYesterday);
+	uint32 yMonth = month(tsYesterday);
+	uint32 yDay = day(tsYesterday);
+
+	// build time string in the format CCYYMMDD
+	rstring strY = (rstring)yYear
+			+ ((yMonth < 9u) ? "0" : "") + (rstring)(yMonth + 1u)
+			+ ((yDay < 10u) ? "0" : "") + (rstring)yDay;
+
+	// return result
+	return strY;
+}
+
+/**
+ * getInfoDate - Get a Date timestamp as rstring in INFO format "Month/Day/Year hh:mm:ss".
+ * The hour, minute and second is always retured in a 2 digit format.
+ * @param theYear the year
+ * @param theMonth the month
+ * @param theDay the day
+ * @param theHour the hour in format h or hh
+ * @param theMinute the minute in format m or mm
+ * @param theSecond the second in format s or ss
+ * @return the time string in format "Month/Day/Year hh:mm:ss"
+ */
+public rstring getInfoDate( uint32 theYear, uint32 theMonth,  uint32 theDay,
+                              uint32 theHour, uint32 theMinute, uint32 theSecond )
+{
+    // build time string in the format "[M]M/[D]D/CCYY hh:mm:ss"
+    rstring strInfo = 
+              (rstring)theMonth + "/" + (rstring)theDay + "/" + (rstring)theYear
+            + " "
+            + ((theHour < 10u) ? "0" : "") + (rstring)theHour + ":"
+            + ((theMinute < 10u) ? "0" : "") + (rstring)theMinute + ":"
+            + ((theSecond < 10u) ? "0" : "") + (rstring)theSecond;
+
+    // return result
+    return strInfo;
+}
+
+
+
+// *** Conversion Helper
+
+/**
+ * isPureDigit - Checks whether the input string is digits only and returns true.
+ * Period and spaces are not allowed.
+ * Does not consider leading zeros as special.
+ * @param inp Input string to be checked
+ * @param maxLen : The maximum length of a valid input string. If 0 -> unlimited
+ * @param minLen : The minimum length of a valid input string. 0 .. n
+ * @return true if the check has been passed, false otherwise
+ */
+ public boolean isPureDigit ( rstring inp, uint32 maxLen, uint32 minLen) {
+ 	mutable rstring pattern;
+ 	if (0u == minLen) {
+ 		pattern = "^[0-9]*$";
+ 	} else {
+ 		pattern = "^[0-9][0-9]*$";
+  	}
+  	mutable boolean res = true;
+  	list<rstring> matches = regexMatch(inp, pattern);
+  	if (spl.collection::size(matches) == 0) {
+  		res = false;
+  	}
+  	if (0u != maxLen) {
+  		if ((uint32)spl.string::length(inp) > maxLen) {
+  			res = false;
+  		}
+  	}
+  	if (minLen > 1u) {
+  		if ((uint32)spl.string::length(inp) < minLen) {
+  			res = false;
+  		}
+  	}
+  	return res;
+ }
+ 
+/**
+ * isPureDigit - Checks whether the input string is digits only and at least one digit returns true.
+ * Period and spaces are not allowed.
+ * Does not consider leading zeros as special.
+ * @param inp Input string to be checked
+ * @return true if the check has been passed, false otherwise
+ */
+  public boolean isPureDigit ( rstring inp ) {
+  	return isPureDigit (inp, 0u, 1u);
+  }
+ 
+ /**
+  * Function Name: columnSubstitution
+  * @param tableRow a rstring that contains the columns as comma separated list
+  *         there must be at least one column
+  * @param columnSubstitute a map with the columns to substitute
+  *         key is the index of the column to substitute (zero based)
+  *         value is the content to substitute
+  * @return : a csv table row after substitution
+  * Errors : If the columnSubstitute map contains a higher index value as
+  *          the number of columns in the tableRow input a runtime error is issued
+  */
+  public rstring columnSubstitution(rstring tableRow, map<int32, rstring> columnSubstitute) {
+  	mutable list<rstring> columns = csvTokenize(tableRow);
+  	for (int32 i in columnSubstitute) {
+  		columns[i] = columnSubstitute[i];
+  	}
+  	mutable rstring res = columns[0];
+  	int32 noColumns = size(columns);
+  	mutable int32 x = 1;
+  	while (x < noColumns) {
+  		res = concat(res, concat(",", columns[x]));
+  		x++;
+  	}
+  	return res;
+  }
+
+/**
+ * convertFromFileDateToTimestamp - Convert a timestring from a given format into a timestamp.
+ * @param timestring the string with the time to be converted
+ * @param timetype the format of `timestring`
+ * The valid input string formats are:
+ * * "YYYYMMDDhhmmss"
+ * * "YYYYMMDD"
+ * * "MMDDYYYY"
+ * * "MMDDYYYYhhmmss"
+ * * "DDMMYYYY"
+ * * "DDMMYYYYhhmmss"
+ * * "YYYY_MM_DD"
+ * * "MM_DD_YYYY"
+ * * "DD_MM_YYYY"
+ * * "YYYY_MM_DD_hh_mm_ss"
+ * * "MM_DD_YYYY_hh_mm_ss"
+ * * "DD_MM_YYYY_hh_mm_ss"
+ * * "YYYY_MM_DD_hh_mm_ss_mmm"
+ * * "MM_DD_YYYY_hh_mm_ss_mmm"
+ * * "DD_MM_YYYY_hh_mm_ss_mmm"
+ * **Note:** the formats with a separator '_' accept any kind of separator
+ *
+ * The execution is aborted if the `timestring` is not one of the above values
+ * @return the timestamp
+ */
+public stateful timestamp convertFromFileDateToTimestamp(rstring timestring, rstring timetype) {
+	mutable Sys.TimestampFormat tsf = Sys.YYYYMMDDhhmmss;
+	mutable rstring mydat = timestring;
+	if ("YYYYMMDDhhmmss" == timetype) {
+		mydat = substring(mydat, 0, 14);
+	} else if ("YYYYMMDD" == timetype) {
+		mydat = substring(mydat, 0, 8);
+		while (length(mydat) < 14) {
+			mydat = mydat + "0";
+		}
+	} else if ("MMDDYYYY" == timetype) {
+		tsf = Sys.MM_DD_YYYY_hh_mm_ss;
+		rstring temp = substring(mydat, 0, 8);
+		mydat = substring(temp, 0, 2)+"_"+substring(temp, 2, 2)+"_"+substring(temp, 4, 4)+" 00:00:00";
+	} else if ("MMDDYYYYhhmmss" == timetype) {
+		tsf = Sys.MM_DD_YYYY_hh_mm_ss;
+		rstring temp = substring(mydat, 0, 14);
+		mydat = substring(temp, 0, 2)+"_"+substring(temp, 2, 2)+"_"+substring(temp, 4, 4)+" "+substring(temp, 8, 2)+":"+substring(temp, 10, 2)+":"+substring(temp, 12, 2);
+	} else if ("DDMMYYYY" == timetype) {
+		tsf = Sys.DD_MM_YYYY_hh_mm_ss;
+		rstring temp = substring(mydat, 0, 8);
+		mydat = substring(temp, 0, 2)+"_"+substring(temp, 2, 2)+"_"+substring(temp, 4, 4)+" 00:00:00";
+	} else if ("DDMMYYYYhhmmss" == timetype) {
+		tsf = Sys.DD_MM_YYYY_hh_mm_ss;
+		rstring temp = substring(mydat, 0, 14);
+		mydat = substring(temp, 0, 2)+"_"+substring(temp, 2, 2)+"_"+substring(temp, 4, 4)+" "+substring(temp, 8, 2)+":"+substring(temp, 10, 2)+":"+substring(temp, 12, 2);
+	} else if ("YYYY_MM_DD" == timetype) {
+		tsf = Sys.YYYY_MM_DD_hh_mm_ss;
+		mydat = substring(mydat,0,4)+"_"+substring(mydat,5,2)+"_"+substring(mydat,8,2)+" 00:00:00";
+	} else if ("MM_DD_YYYY" == timetype) {
+		tsf = Sys.MM_DD_YYYY_hh_mm_ss;
+		mydat = substring(mydat,0,2)+"_"+substring(mydat,3,2)+"_"+substring(mydat,6,4)+" 00:00:00";
+	} else if ("DD_MM_YYYY" == timetype) {
+		tsf = Sys.DD_MM_YYYY_hh_mm_ss;
+		mydat = substring(mydat,0,2)+"_"+substring(mydat,3,2)+"_"+substring(mydat,6,4)+" 00:00:00";
+	} else if ("YYYY_MM_DD_hh_mm_ss" == timetype) {
+		tsf = Sys.YYYY_MM_DD_hh_mm_ss;
+		mydat = substring(mydat, 0, 19);
+	} else if ("MM_DD_YYYY_hh_mm_ss" == timetype) {
+		tsf = Sys.MM_DD_YYYY_hh_mm_ss;
+		mydat = substring(mydat, 0, 19);
+	} else if ("DD_MM_YYYY_hh_mm_ss" == timetype) {
+		tsf = Sys.DD_MM_YYYY_hh_mm_ss;
+		mydat = substring(mydat, 0, 19);
+	} else if ("YYYY_MM_DD_hh_mm_ss_mmm" == timetype) {
+		tsf = Sys.YYYY_MM_DD_hh_mm_ss_mmm;
+		mydat = substring(mydat, 0, 23);
+	} else if ("MM_DD_YYYY_hh_mm_ss_mmm" == timetype) {
+		tsf = Sys.MM_DD_YYYY_hh_mm_ss_mmm;
+		mydat = substring(mydat, 0, 23);
+	} else if ("DD_MM_YYYY_hh_mm_ss_mmm" == timetype) {
+		tsf = Sys.DD_MM_YYYY_hh_mm_ss_mmm;
+		mydat = substring(mydat, 0, 23);
+	} else {
+		appTrc(Trace.error, "wrong time format: "+timetype+" execution abort");
+		abort();
+	}
+
+	appTrc(Trace.debug,"convertFromFileDateToTimestamp: used string for date conversion="+mydat+" used format="+(rstring)tsf);
+	timestamp t = toTimestamp(tsf, mydat);
+	return t;
+}
+
+/**
+ * match - check whether a input string matches a pattern.
+ * @param str the input string
+ * @param patt the pattern
+ * @return true is the string matches the pattern
+ * The execution is aborted if the `patt`is not a valid regex pattern
+ */
+public boolean match(rstring str, rstring patt) {
+	list<rstring> result = regexMatch(str,patt);
+	int32 sz = size(result);
+	if(sz>2) {
+		appTrc(Trace.info, "Warning: Matching pattern '"+patt+"' on string '"+str+"' found more than one match: " + (rstring)sz);
+	}
+	return sz>0;
+}

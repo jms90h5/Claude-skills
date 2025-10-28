@@ -1,0 +1,66 @@
+/* Additional includes go here */
+#include <fstream>
+#include <sstream>
+
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+<%
+   my $isInConsistentRegion = $model->getContext()->getOptionalContext("ConsistentRegion");
+%>
+
+
+// Constructor 
+MY_OPERATOR::MY_OPERATOR()
+    : numTuples_(0)
+{
+    <%if ($isInConsistentRegion) {%>
+      getContext().registerStateHandler(*this);
+    <%}%>
+}
+
+// Destructor
+MY_OPERATOR::~MY_OPERATOR() 
+{
+}
+
+// Notify port readiness
+void MY_OPERATOR::allPortsReady() 
+{
+}
+ 
+// Notify pending shutdown
+void MY_OPERATOR::prepareToShutdown() 
+{
+}
+
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port)
+{
+    // Updates internal state and submit it as a tuple attribute
+    AutoPortMutex am(mutex_, *this);
+    numTuples_++;    
+    OPort0Type otuple(tuple.getAttributeValue(0), numTuples_);
+    submit (otuple, 0);
+}
+
+<%if ($isInConsistentRegion) {%>
+// Persist state to shared file system
+void MY_OPERATOR::checkpoint(Checkpoint & ckpt)
+{
+    ckpt << numTuples_ << "\n";
+}
+
+// Restore state from shared file system
+void MY_OPERATOR::reset(Checkpoint & ckpt)
+{
+    ckpt >> numTuples_;
+}
+
+// Sets operator state to its initial state
+void MY_OPERATOR::resetToInitialState()
+{
+    numTuples_ = 0;
+}
+<%}%>
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

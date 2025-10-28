@@ -1,0 +1,11 @@
+Overview: Sudoku is an application that illustrates the use of native functions
+and SPL functions in conjunction. The application is designed to generate and
+solve sudoku puzzles. The sudoku generation is done in SPL, but relies on a
+solver that is implemented as a C++ native function.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone 
+

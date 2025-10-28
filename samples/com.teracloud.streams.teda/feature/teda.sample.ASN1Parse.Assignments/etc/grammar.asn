@@ -1,0 +1,39 @@
+MyModule DEFINITIONS IMPLICIT TAGS ::= 
+BEGIN
+
+A ::= CHOICE
+{
+	integer [0] INTEGER,
+	b [1] B,
+	...
+}
+
+B ::= SEQUENCE
+{
+	boolean [0] BOOLEAN OPTIONAL,
+	integer [1] INTEGER DEFAULT "3",
+	c [2] SEQUENCE OF C,
+	...
+}
+
+C ::= CHOICE
+{
+	d [0] D,
+	e [1] E,
+	...
+}
+
+D ::= SEQUENCE
+{
+	string [0] UTF8String,
+	...
+}
+
+E ::= SEQUENCE
+{
+	integer [0] INTEGER,
+	strings [1] SEQUENCE OF UTF8String OPTIONAL,
+	...
+}
+
+END

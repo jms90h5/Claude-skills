@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2014     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<info:toolkitInfoModel xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common"
+ xmlns:info="http://www.ibm.com/xmlns/prod/streams/spl/toolkitInfo">
+ <info:identity>
+   <info:name>CommodityPurchasing</info:name>
+   <info:description>Demo application illustrating how multiple features of SPL can be used to implement a use case.</info:description>
+   <info:version>1.0.0</info:version>
+   <info:requiredProductVersion>2.0.0</info:requiredProductVersion>
+ </info:identity>
+ <info:dependencies>
+   <info:toolkit>
+     <common:name>com.teracloud.streams.inet</common:name>
+     <common:version>4.0.0</common:version>
+   </info:toolkit>
+ </info:dependencies>
+</info:toolkitInfoModel>

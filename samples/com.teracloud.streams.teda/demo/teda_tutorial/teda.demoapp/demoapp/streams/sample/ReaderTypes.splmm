@@ -1,0 +1,68 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+%>
+namespace demoapp.streams.sample;
+
+<%if (0 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.streams::*;
+
+/**
+ * Defines the common record schema that is the superset of all required
+ * attributes across all parsing operators. For example, your application
+ * supports the ASN.1 and CSV input formats. Each input format has a large
+ * set of attributes but your business logic requires three attributes from
+ * the ASN.1 and four attributes from the CSV input only. Two attributes
+ * have the same semantic for both input formats. The common record schema
+ * has five attributes, two with the same semantic from both inputs, one
+ * attribute for ASN.1 inputs and two attributes for CSV inputs.
+ * 
+ * The ReaderRecordType type is part of the 
+ * demoapp.streams::TypesCommon.ReaderOutStreamType
+ * schema. 
+ */
+type ReaderRecordType = tuple <
+	TypesCustom.SampleRecordStream
+>;
+
+<%} #endif enabled%>

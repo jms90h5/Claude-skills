@@ -1,0 +1,2561 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=1;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator=new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE(), warnings => 1);
+	my $curDir = $projDir;
+
+	###------------ ARGUMENTS -------------###	
+	print "// pathCfg = $projDir\n";
+	### Header - end
+
+	my $numOfChars = 2;
+	sub l0($) {
+		my $string = shift;
+		while (length($string)<$numOfChars) {
+			$string = "0${string}";
+		}
+		return $string;
+	}
+
+	
+	# directories relative to input dir
+	my $archiveDir			= "\$inputDir"."+\"/archive\"";
+	my $duplicateFilesDir	= "\$inputDir"."+\"/duplicate\"";
+	my $failedFilesDir		= "\$inputDir"."+\"/failed\"";
+	my $invalidFilesDir		= "\$inputDir"."+\"/invalid\"";
+	my $reprocessDir		= "\$inputDir"."+\"/reprocess\"";
+
+	my $ITE_INGEST_ARCHIVEMODE = $configurator->getEnum(Configurator::ITE_INGEST_ARCHIVEMODE());
+	if (1 == $ITE_INGEST_ARCHIVEMODE) {
+		# directories relative to inputDir or to directories in inputDirList
+		$archiveDir			= "\"archive\"";
+		$duplicateFilesDir	= "\"duplicate\"";
+		$failedFilesDir		= "\"failed\"";
+		$invalidFilesDir	= "\"invalid\"";
+		$reprocessDir		= "\"reprocess\"";
+	}
+
+	# directories relative to out dir
+	my $rejectedRecordsDir 		= "\$outputDir"."+\"/rejected\"";
+	my $loadDir		 		= "\$outputDir"."+\"/load\"";
+	
+	# directories relative to statistics dir
+	my $statisticsArchiveDir= "\$statisticsDir"."+\"/archive\"";
+
+	my $shutdownControlFile="demoapp".".cmd";
+
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+	my $bloomPDefault = $configurator->getFloat(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_PROBABILITY());
+
+	########### FILE_INGESTION configuration BEGIN ############################
+	# Either RoundRobinSplit or ThreadedSplit+Gate combination is used for balanced level2 Split
+	# 0 == $roundRobinSplitDisabled => RoundRobinSplit
+	# else => ThreadedSplit+Gate
+	my $roundRobinSplitDisabled = $configurator->isNotEqual(Configurator::ITE_INGEST_LOADDISTRIBUTION(), Configurator::Enum::LoadDistribution::roundRobin());
+
+	my $FILEINGESTION_LEVEL1_SPLIT_DISABLED = $configurator->isOff(Configurator::ITE_INGEST_FILEGROUPSPLIT());
+	my $chainsPerLevel1IdDisabled = ($FILEINGESTION_LEVEL1_SPLIT_DISABLED ? 1 : undef);
+	my $INGEST_CUSTOMFILECONTROL = $configurator->isOn(Configurator::ITE_INGEST_CUSTOMFILECONTROL());
+	########### FILE_INGESTION configuration END ##############################
+
+	my $chains;
+	my $groupIdBloomN;
+	my $numChains = 0;
+	my $numLevel1Ids = 0;
+	# -----------------------------------------------
+	if (0 == $contextDisabled) {
+		my $chainCfgFile = $curDir."/".$configurator->getString(Configurator::ITE_INGEST_LOADDISTRIBUTION_GROUPCONFIGFILE());
+		CodeGenFrw::getChainMapping($chainCfgFile,(\%{$chains}),(\%{$groupIdBloomN}));
+		print("//\t\tCHAIN CONFIGURATION\n");
+		foreach my $chId (keys (%{$chains}))
+		{
+			print("//\t\t$chId:$chains->{$chId}\tbloomN:$groupIdBloomN->{$chId}\n");
+			$numChains += $chains->{$chId};
+			++$numLevel1Ids;
+		}
+		print("//\t\t[GROUPS=$numLevel1Ids]\n");
+	}
+	$numChains = $configurator->getInteger(Configurator::ITE_INGEST_LOADDISTRIBUTION_NUMBEROFPARALLELCHAINS()) if ($FILEINGESTION_LEVEL1_SPLIT_DISABLED);
+	print("//\t\t[CHAINS=$numChains]\n");
+
+	my $groupId_last = $numLevel1Ids;
+
+	sub getNumChainsByLevel1Number($)
+	{
+		my ($groupNum) = @_;
+		my $result = 0;
+		foreach my $chId (keys (%{$chains}))
+		{
+			$result = $chains->{$chId} if ($chId == $groupNum);
+		}
+		return($result);
+	}
+	sub getLevel1IdBloomN($)
+	{
+		my ($groupNum) = @_;
+		return($groupIdBloomN->{$groupNum});
+	}
+	# -----------------------------------------------
+	my @bundleTableStreamsList;
+	my @bundleStatStreamsList;
+	my $chainAckBundle;
+	my $chainAckPortBundle;
+	my $chainFilesBundle;
+	my $bundleFileStats;
+	my $fileStatStreamName;
+	my $bundleTableStreams;
+	my $bundleAppCtrlResponseStreams;
+	my $bundlePostContextTaps;
+	my $chainPostContextTapStreamName;
+	my $bundlePostTransformerTaps;
+	my $bundleContextInputStreams;
+	my @bundleContextInputStreamsList;
+	# -----------------------------------------------
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+
+	########### TRANSFORMER configuration BEGIN ################################
+	my $TRANSFORMER_LEVEL1_SPLIT = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TUPLEGROUPSPLIT());
+	my $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TAP());
+	my $postContextTapOutputSchema="TypesCommon.BundledPostContextOutputStreamType";
+	my $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_TAP());
+	my $postContextTapOutput = ($TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE ? "1" : undef);
+	########### TRANSFORMER configuration END ##################################
+
+	###########################################################################
+	my $ITE_FUSE_CHAIN_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_CHAIN_OPERATORS());
+	my $ITE_FUSE_GROUP_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_GROUP_OPERATORS());
+	my $ITE_FUSE_GROUPWITHCHAIN_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_GROUPWITHCHAIN_OPERATORS());
+	
+	my $PE_EXLOCATION_LABEL=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL');
+	my $PE_NAME_CONFIG_DUMP="CONFIGDUMP";
+	my $PE_NAME_EXPORT="EXPORT";
+	my $PE_NAME_CONTROL="CONTROLLER";
+	my $PE_NAME_STATISTICS_WRITER="STATISTICS_WRITER";
+	my $PE_NAME_SINK_TAP="POSTCONTEXTTAP";
+	my $PE_NAME_TRANSFORMER_TAP="POSTTRANSFORMERTAP";
+	my $PE_NAME_CHAIN_PROCESSOR="CHAIN_PROCESSOR";
+	my $PE_NAME_CHAIN_SINK=$PE_NAME_CHAIN_PROCESSOR; # fused to one PE
+	my $PE_NAME_FUSED_CONTEXT_AND_CHAINS="FILE_PROCESSOR";
+	my $PE_NAME_CONTEXT="CONTEXT";
+	$PE_NAME_CONTEXT = $PE_NAME_FUSED_CONTEXT_AND_CHAINS if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS);
+	# Queue after Round Robin split
+	my $QUEUE_SIZE_FILES_PER_CHAIN=2;
+	###########################################################################
+	my $TRANSFORMER_RECORD_OUT_TYPE =
+	(
+		$configurator->isEqual(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_OUTPUTTYPE(), Configurator::Enum::TransformationOutputType::recordStream())
+		? "TypesCommon.RecordStreamType" : "TypesCommon.TableStreamType"
+	);
+	my $CONTEXT_DATA_OUT_TYPE=$TRANSFORMER_RECORD_OUT_TYPE;
+
+	my $multiHost = $configurator->isOn(Configurator::GLOBAL_MULTIHOST());
+
+	my $hostPool = "demoapp"; # hostpool equals to namespace
+	$hostPool =~ s/\./_/g; #replace dot with underline
+	my $tags = $configurator->getStringList(Configurator::GLOBAL_MULTIHOST_CUSTOMHOSTTAGS());
+	my @hostPoolData = (defined $tags ? @{$tags} : ());
+	my @hostPoolMain;
+
+	#################
+	my $VARIANT_A = 0;
+	my $VARIANT_B = 0;
+	my $VARIANT_C = 0;
+	if ( (0 == $contextDisabled) && (0 == $FILEINGESTION_LEVEL1_SPLIT_DISABLED) && (0 == $TRANSFORMER_LEVEL1_SPLIT) ) {
+		$VARIANT_C = 1;
+		print "// VARIANT C\n";
+	} elsif ( (0 == $contextDisabled) && (1 == $FILEINGESTION_LEVEL1_SPLIT_DISABLED) && (1 == $TRANSFORMER_LEVEL1_SPLIT) ) {
+		$VARIANT_B = 1;
+		print "// VARIANT B\n";
+	} elsif ( (1 == $contextDisabled) && (1 == $FILEINGESTION_LEVEL1_SPLIT_DISABLED) && (0 == $TRANSFORMER_LEVEL1_SPLIT) ) {
+		$VARIANT_A = 1;
+		print "// VARIANT A\n";
+	} else {
+		print STDERR "ERROR: VARIANT not supported\n";
+		if (1 == $contextDisabled) {
+			print STDERR "ite.businessLogic.group=off => SET parameters ite.ingest.fileGroupSplit=off AND ite.businessLogic.transformation.tupleGroupSplit=off\n";
+		} else {
+			print STDERR "ite.businessLogic.group=on => SET parameters \n A) ite.ingest.fileGroupSplit=on AND ite.businessLogic.transformation.tupleGroupSplit=off or \n B) ite.ingest.fileGroupSplit=off AND ite.businessLogic.transformation.tupleGroupSplit=on\n";
+		}
+		exit 101;
+	}
+	my $CONTEXT_CUSTOM_COMPOSITE_ENABLED =
+		((1 == $VARIANT_C) || (1 == $VARIANT_B))
+		&& $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM());
+	###########################################################################
+	# User-defined Parallelism
+	my $PARALLELISM_FEATURE_ENABLED = $configurator->isOn(Configurator::ITE_INGEST_LOADDISTRIBUTION_UDP());
+	print "// Parameter ite.ingest.loadDistribution.udp = $PARALLELISM_FEATURE_ENABLED\n";
+%>
+
+/**
+ * SPL file with ITE Main composite and major composites
+ */
+
+namespace demoapp;
+
+use demoapp.chainprocessor.reader::*;
+use demoapp.chainprocessor.transformer::*;
+use demoapp.fileingestion::*;
+use demoapp.control::*;
+use demoapp.chainsink::*;
+<% if (0 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.tap.sample::*;
+<%print "use "."demoapp".".fileingestion.sample::FileControl;" if ($INGEST_CUSTOMFILECONTROL);%>
+<% }%>
+<% if (0 == $contextDisabled) { %>
+use demoapp.context::*;
+<% }%>
+use demoapp.streams::*;
+use demoapp.functions::*;
+<% if (1 == $ENABLE_CUSTOM_CODE) {%>
+<%print "use "."demoapp".".streams.custom::*;" if (defined $postContextTapOutput);%>
+<%print "use "."demoapp".".tap.custom::*;" if ((1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) || ((1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE) && (0 == $contextDisabled)));%>
+<%print "use "."demoapp".".fileingestion.custom::FileControl;" if ($INGEST_CUSTOMFILECONTROL);%>
+<% }%>
+<%
+	if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED)
+	{
+		my $namespaceExtension = ($ENABLE_CUSTOM_CODE ? "custom" : "sample");
+		print sprintf('use demoapp.context.%s::*;', $namespaceExtension);
+	}
+%>
+
+use com.teracloud.streams.teda.internal.fileutils::*;
+use com.teracloud.streams.teda.internal.utility::*;
+
+/**
+ * ITE Main composite
+ * Application is performing file based **Ingest Transform Enrich** functionality.
+ * File are ingested from one more directories.
+ * Records extracted from file parser are transformed in customizable code.
+ * Depending business logic requirements the records can be enriched with lookup data read from shared memory.
+ * Preferred output is file based, but can be customized.
+ *
+ * The main composite constructs the application structure including all core composites for file processing in parallel channels.
+ * 
+ * @param inputDir Base directory of input files to be processed this job (submissionParam: *inputDir*)
+ * @param inputDirList File containing input directories to be scanned (one directory per line) (submissionParam: *inputDirList*)
+ * @param outputDir Base directory of output files produced from this job (submissionParam: *outputDir*)
+ * @param statisticsDir Directory of statistic log output (submissionParam: *statisticsDir*)
+ * @param checkpointDir Directory for checkpoint files (submissionParam: *checkpointDir*)
+ * @param applControlDir Directory application control and chain status files (submissionParam: *applControlDir*)
+ * @param peNameDirScan Name for partitionColocation of directory scan operators from FileIngestion
+ * @param peNameSplit Name for partitionColocation of directory scan operators from FileIngestion
+ */
+@threading(model=manual)
+composite ITEMain {
+
+	param 
+		expression<rstring> $inputDir: convertDataDir(getSubmissionTimeValue (<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_INGEST_DIRECTORY_INPUT())%>));
+		expression<rstring> $inputDirList: getSubmissionTimeValue (<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_INGEST_DIRECTORY_INPUTLISTFILE())%>); // optional parameter to enable a list of input directories
+		expression<rstring> $outputDir: convertDataDir(getSubmissionTimeValue (<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_STORAGE_DIRECTORY_OUTPUTS())%>));
+		expression<rstring> $statisticsDir: convertDataDir(getSubmissionTimeValue (<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_STORAGE_DIRECTORY_STATISTICS())%>));
+		expression<rstring> $checkpointDir: convertDataDir(getSubmissionTimeValue (<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_CHECKPOINTING_DIRECTORY())%>));
+		expression<rstring> $applControlDir: convertDataDir(getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::GLOBAL_APPLICATIONCONTROLDIRECTORY())%>));
+		expression<boolean> $disableLookup: !convertOnOffValues(getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_LOOKUP())%>),"<%=Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_LOOKUP()%>");
+		<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+			<%if ($VARIANT_C) {%>
+				<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {%>
+		expression<int32>   $parallelChains<%=l0($i1)%>: (int32)getSubmissionTimeValue("<%=Configurator::ITE_INGEST_LOADDISTRIBUTION_GROUPCONFIGFILE() . ".chains." . l0($i1)%>", "<%=getNumChainsByLevel1Number(l0($i1))%>");
+				<%	} # end level01 loop%>
+			<%} else {%>
+		expression<int32>   $parallelChains: (int32)getSubmissionTimeValue("<%=Configurator::ITE_INGEST_LOADDISTRIBUTION_GROUPCONFIGFILE() . ".chains"%>", "<%=$numChains%>");
+			<%}%>
+		<%}#endif PARALLELISM_FEATURE_ENABLED%>
+		expression<rstring> $peNameDirScan: "DIR";
+		expression<rstring> $peNameSplit: "SPLIT";
+		expression<rstring> $iteJobName: getSubmissionTimeValue("<%=Configurator::ITE_JOBNAME()%>", "demoapp" ) ;
+
+	graph
+
+		/*
+		 * Dumps out submission parameters of this composite.
+		 */
+		@spl_category(name="common") 
+		() as CfgDumpITE = Custom() {
+			logic onProcess : {
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "inputDir: " + (rstring)$inputDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "inputDirList: " + (rstring)$inputDirList);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "outputDir: " + (rstring)$outputDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "statisticsDir: " + (rstring)$statisticsDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "checkpointDir: " + (rstring)$checkpointDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "applControlDir: " + (rstring)$applControlDir);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "disableLookup: " + (rstring)$disableLookup);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "dataDir: " + dataDirectory());
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "iteJobName: " + $iteJobName);
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "shutdownControlFile: " + $iteJobName + ".cmd");
+					<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+						<%if ($VARIANT_C) {%>
+							<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {%>
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "parallelChains<%=l0($i1)%>: " + (rstring)$parallelChains<%=l0($i1)%>);
+							<%	} # end level01 loop%>
+						<%} else {%>
+					printStringLn("CONFIG,J["+(rstring)jobID()+"],P["+(rstring)PEID()+"],CfgDump " + "parallelChains: " + (rstring)$parallelChains);
+						<%}%>
+					<%}#endif PARALLELISM_FEATURE_ENABLED%>
+				}
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			"partitionExlocation(\"${PE_EXLOCATION_LABEL}\")",
+			"partitionColocation(\"${PE_NAME_CONFIG_DUMP}\")",
+			($multiHost ? "host(ControllerPool)" : undef)
+		]
+	})};
+%>
+		}
+
+<%
+	if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED)
+	{
+		my @contextIds = sort(keys %{$chains});
+		my @inputStreams;
+		my @outputStreamDefinitions;
+		foreach (@contextIds)
+		{
+			push @inputStreams, "DataForContextDataProcessor_" . $_;
+			push @inputStreams, "CommandsForContextDataProcessor_" . $_;
+			push @inputStreams, "RecoveryDataForContextDataProcessor_" . $_;
+			push @outputStreamDefinitions, "stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor_" . $_;
+			push @outputStreamDefinitions, "stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor_" . $_;
+		}
+%>
+		(
+			<%=join(";\n\t\t\t", @outputStreamDefinitions)%>
+		) as Contexts = ContextContainer
+		(
+			<%=join(";\n\t\t\t", @inputStreams)%>
+		)
+		{
+			param
+				checkpointDirectory: $checkpointDir;
+				checkpointFile: "custom.chk";
+				outputDirectory: $outputDir;
+				applControlDir: $applControlDir;   // always pass through this parameter
+		}
+<%  } # end: if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) %>
+
+	<% if ($VARIANT_C) {%>
+		// ============================================================================================================
+		// VARIANT C: Chains per group - level1 split at FileIngestion - dedup per group
+		// ============================================================================================================
+	  <%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+		// user-defined parallelism enabled
+
+		// ------------------------------------------------------
+		// [FILE INGESTION] [C][udp]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		<%=join(";\n\t\t",map { 'stream<TypesCommon.FileIngestSchema> GroupFilesToProcess_'.l0($_); }(0..$numLevel1Ids-1))%>;
+		stream<CleanupTrigger> CleanupTriggerAckStream
+		) as IngestFiles = FileIngestC (FileIngestControlStream; CleanupTrigger; FileAck) {
+			param
+				inputDir:          getInputDir($inputDir, $inputDirList);
+				checkpointDir:     $checkpointDir;
+				invalidFilesDir:   <%=$invalidFilesDir%>;
+				duplicateFilesDir: <%=$duplicateFilesDir%>;
+				peNameDirScan:     $peNameDirScan;
+				peNameSplit:       $peNameSplit;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($multiHost ? "host(FileIngestPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		// ------------------------------------------------------
+		// [GROUPS: Chains + Context] [C][udp]
+		// ------------------------------------------------------
+		<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {%>
+		@parallel(width=$parallelChains<%=l0($i1)%>, partitionBy=[{port=ContextRecordStream_<%=l0($i1)%>, attributes=[chainId]}], broadcast=[AppCtrl])
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.FileStatistics> ChainFinalFileStat_<%=l0($i1)%>;
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> ChainRecordsToContext_<%=l0($i1)%>;
+		stream<TypesCommon.ApplicationCtrl> AppCtrlResp_<%=l0($i1)%><% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> TransformerTap_<%=l0($i1)%><%}%><%print ";" if (defined $postContextTapOutput);%>
+		<%print "stream<".$postContextTapOutputSchema."> ChainSinkTap_".l0($i1) if (defined $postContextTapOutput);%>
+		) as Chain<%=l0($i1)%> = ChainC (GroupFilesToProcess_<%=l0($i1)%>; AppCtrl; ContextRecordStream_<%=l0($i1)%>) {
+			param
+				groupId:              "<%=l0($i1)%>";
+				chainId:              (rstring)getChannel();
+				iteJobName:           $iteJobName;
+				applControlDir:       $applControlDir; // chain status file
+				archiveDir:           <%=$archiveDir%>;
+				duplicateFilesDir:    <%=$duplicateFilesDir%>;
+				failedFilesDir:       <%=$failedFilesDir%>;
+				invalidFilesDir:      <%=$invalidFilesDir%>;
+				tableWriterOutputDir: $outputDir;
+				dbLoaderInputDir:     <%=$loadDir%>;
+				checkpointDir:        $checkpointDir;
+				rejectedRecordsDir:   <%=$rejectedRecordsDir%>;
+				reprocessDir:         <%=$reprocessDir%>;
+				disableLookup:        $disableLookup;
+				peExLocationLabel:    "<%=$PE_EXLOCATION_LABEL%>";
+				peNameSplit:          $peNameSplit;<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>
+				peNameChain:          "<%=$PE_NAME_FUSED_CONTEXT_AND_CHAINS%>_"+"<%=l0($i1)%>";<%} else {%>
+				peNameChain:          "<%=$PE_NAME_CHAIN_PROCESSOR%>_"+"<%=l0($i1)%>_"+(rstring)getChannel();<%}%>
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s_%s\"", $PE_NAME_FUSED_CONTEXT_AND_CHAINS, l0($i1))
+					: sprintf("\"%s_%s_\" + (rstring)getChannel()", $PE_NAME_CHAIN_PROCESSOR, l0($i1))
+					))
+				: undef),
+			($multiHost ? sprintf("host(%s%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS ? "ContextPool" : "ChainPool"), $i1) : undef)
+		]
+	})};
+%>
+		}
+
+		<%my $bloomN=getLevel1IdBloomN(l0($i1));%>
+		@spl_category(name="common")
+		(
+			stream<<%=$CONTEXT_DATA_OUT_TYPE%>> ContextRecordStream_<%=l0($i1)%>;
+			stream<TypesCommon.ContextReadyType> ContextReady_<%=l0($i1)%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  stream<TypesCommon.TransformerOutType> DataForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		) as Context<%=l0($i1)%> = ContextCore
+		(
+			ContextCtrlStream;
+			ChainRecordsToContext_<%=l0($i1)%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  CommandResponsesFromContextDataProcessor_<%=l0($i1)%>
+		;  RecoveryResponsesFromContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		)
+		{
+			param
+				groupId:              "<%=l0($i1)%>";
+				iteJobName:           $iteJobName;
+				peName:               "<%=$PE_NAME_CONTEXT%>_<%=l0($i1)%>";
+				peExLocationLabel:    "<%=$PE_EXLOCATION_LABEL%>";
+				checkpointDir:        $checkpointDir;<% if (0 == $dedupDisabled) {%>
+				bloomN:               <%=$bloomN%>ul;
+				bloomProbability:     <%=$bloomPDefault%>;<%}%>
+				statisticsDir:        $statisticsDir;
+				statisticsArchiveDir: <%=$statisticsArchiveDir%>;
+				outputDir:            $outputDir;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_GROUP_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(\"%s_%s\")", $PE_NAME_CONTEXT, l0($i1))
+				: undef),
+			($multiHost ? sprintf("host(ContextPool%s)", $i1) : undef)
+		]
+	})};
+%>
+		}
+		
+<%	if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) { # BEGIN dummy operator to enforce partitionExlocation only %>
+		// ------------------------------------------------------ 
+		// dummy operator to enforce partitionExlocation only
+		// ------------------------------------------------------
+		@spl_category(name="common") 
+		() as Group<%=l0($i1)%>ChainFusion = Custom() {
+			logic onProcess : {} 
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			sprintf("partitionExlocation(\"%s\")", ${PE_EXLOCATION_LABEL}),
+			sprintf("partitionColocation(\"%s_%s\")", ${PE_NAME_FUSED_CONTEXT_AND_CHAINS}, l0($i1)),
+			($multiHost ? sprintf("host(ContextPool%s)", $i1) : undef)
+		]
+	})};
+%>
+		}
+<%	} # end dummy operator to enforce partitionExlocation only%>		
+		
+		<%	} # end level01 loop%>
+		<%
+		$bundleAppCtrlResponseStreams=join(",",map { 'AppCtrlResp_'.l0($_); }(0..$numLevel1Ids-1));
+		$bundlePostTransformerTaps=join(",",map { 'TransformerTap_'.l0($_); }(0..$numLevel1Ids-1));
+		$bundleFileStats=join(",",map { 'ChainFinalFileStat_'.l0($_); }(0..$numLevel1Ids-1));
+		$bundlePostContextTaps=join(",",map { 'ChainSinkTap_'.l0($_); }(0..$numLevel1Ids-1));
+		%>
+	  <%} else {%>
+
+		// ------------------------------------------------------
+		// FILE INGESTION [C]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		<%	my $isFirst = 1;
+			for (my $i1=0; $i1 < $numLevel1Ids; $i1++) { my $numParallelChains = getNumChainsByLevel1Number(l0($i1));
+				for (my $i2=0; $i2 < $numParallelChains; $i2++) {
+					if ($numParallelChains>0) {
+						$chainAckPortBundle.=";" if (0==$isFirst); $chainAckPortBundle.="ChainFileAck_".l0($i1)."_".l0($i2);
+						$chainAckBundle.="," if (0==$isFirst); $chainAckBundle.="ChainAck_".l0($i1)."_".l0($i2);
+						$isFirst = 0;
+					}
+					$chainFilesBundle.="," if (!($i1==0 && $i2==0)); $chainFilesBundle.="ChainFilesToProcess_".l0($i1)."_".l0($i2); %>
+		stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_<%=l0($i1)%>_<%=l0($i2)%><%print ";" if (!($i1==$numLevel1Ids-1 && $i2==$numParallelChains-1));%>
+		<%		}
+			}%>;
+		stream<CleanupTrigger> CleanupTriggerAckStream
+		) as IngestFiles = FileIngestC (FileIngestControlStream; CleanupTrigger; FileAck<% if ((defined $chainAckPortBundle) && (0 != $roundRobinSplitDisabled)) { %>;<%=$chainAckPortBundle%><%}%>) {
+			param
+				inputDir:          getInputDir($inputDir, $inputDirList);
+				checkpointDir:     $checkpointDir;
+				invalidFilesDir:   <%=$invalidFilesDir%>;
+				duplicateFilesDir: <%=$duplicateFilesDir%>;
+				peNameDirScan:     $peNameDirScan;
+				peNameSplit:       $peNameSplit;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";				
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($multiHost ? "host(FileIngestPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		// ------------------------------------------------------
+		// CHAIN PROCESSOR [C]
+		// --------------------------------------------------------
+		<%for (my $i1=0; $i1 < $numLevel1Ids; $i1++) { my $numParallelChains = getNumChainsByLevel1Number(l0($i1));
+			undef $bundleTableStreams;
+			undef $bundleContextInputStreams;
+			for (my $i2=0; $i2 < $numParallelChains; $i2++) {
+				my $appCtrlResponseStreamName = "AppCtrlResp_".l0($i1)."_".l0($i2);
+				if (defined $bundleAppCtrlResponseStreams){$bundleAppCtrlResponseStreams = $bundleAppCtrlResponseStreams . ", $appCtrlResponseStreamName";}
+				else {$bundleAppCtrlResponseStreams = $appCtrlResponseStreamName;}
+				my $tableStreamName = "TableStream_".l0($i1)."_".l0($i2);
+				# $bundleTableStreams contains streams as input of Context
+				# One input port for all chains
+				my $delimiter = ",";
+				if (defined $bundleTableStreams){$bundleTableStreams = $bundleTableStreams.$delimiter."$tableStreamName";}
+				else {$bundleTableStreams = $tableStreamName;}
+				if (defined $bundleContextInputStreams){$bundleContextInputStreams = $bundleContextInputStreams.",$tableStreamName";}
+				else {$bundleContextInputStreams = $tableStreamName;}
+				my $transformerTapStreamName = "TransformerTap_".l0($i1)."_".l0($i2);
+				if (defined $bundlePostTransformerTaps){$bundlePostTransformerTaps = $bundlePostTransformerTaps . ", $transformerTapStreamName";}
+				else {$bundlePostTransformerTaps = $transformerTapStreamName;}%>
+		// [CHAIN PROCESSOR <%=l0($i1)%>_<%=l0($i2)%>] read the records, validate input data and Transformer Logic
+		@spl_category(name="common")
+		(
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> <%=$tableStreamName%>;
+		stream<TypesCommon.FileStatistics> StatStream_<%=l0($i1)%>_<%=l0($i2)%>;
+		stream<TypesCommon.RejectedDataStreamType> RejChainProcessor_<%=l0($i1)%>_<%=l0($i2)%>;
+		stream<TypesCommon.ApplicationCtrl> ChainStatus_<%=l0($i1)%>_<%=l0($i2)%>;
+		stream<TypesCommon.ApplicationCtrl> <%=$appCtrlResponseStreamName%><% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> <%=$transformerTapStreamName%><%}%>
+		) as ChainProcessor<%=l0($i1)%>_<%=l0($i2)%> = ChainProcessorC (ChainFilesToProcess_<%=l0($i1)%>_<%=l0($i2)%>;ChainFileAck_<%=l0($i1)%>_<%=l0($i2)%>;AppCtrl) {
+			param
+				groupId:           "<%=l0($i1)%>";
+				chainId:           "<%=l0($i2)%>";
+				iteJobName:        $iteJobName;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";
+				applControlDir:    $applControlDir; // chain status file
+				reprocessDir:      <%=$reprocessDir%>;
+				disableLookup:     $disableLookup;<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>
+				peNameChain:       "<%=$PE_NAME_FUSED_CONTEXT_AND_CHAINS%>_"+"<%=l0($i1)%>";<%} else {%>
+				peNameChain:       "<%=$PE_NAME_CHAIN_PROCESSOR%>_<%=l0($i1)%>_<%=l0($i2)%>";<%}%>
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s_%s\"", $PE_NAME_FUSED_CONTEXT_AND_CHAINS, l0($i1))
+					: sprintf("\"%s_%s_%s\"", $PE_NAME_CHAIN_PROCESSOR, l0($i1), l0($i2))
+					))
+				: undef),
+			($multiHost ? sprintf("host(%s%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS ? "ContextPool" : "ChainPool"), $i1) : undef)
+		]
+	})};
+%>
+		}
+			<%} # end level02 loop
+			push @bundleTableStreamsList, $bundleTableStreams;
+			push @bundleContextInputStreamsList, $bundleContextInputStreams;%>
+			<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>			
+		@spl_category(name="common") 
+		() as Group<%=l0($i1)%>ChainFusion = Custom() {
+			logic onProcess : {} // dummy operator to enforce partitionExlocation only
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			sprintf("partitionExlocation(\"%s\")", ${PE_EXLOCATION_LABEL}),
+			sprintf("partitionColocation(\"%s_%s\")", ${PE_NAME_FUSED_CONTEXT_AND_CHAINS}, l0($i1)),
+			($multiHost ? sprintf("host(ContextPool%s)", $i1) : undef)
+		]
+	})};
+%>
+		}	<%} #endif ITE_FUSE_GROUPWITHCHAIN_OPERATORS%>
+		<%	
+		} # end level01 loop%>
+
+		// ------------------------------------------------------
+		// [CONTEXT] [C]
+		// ------------------------------------------------------
+		<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {
+				my $bloomN=getLevel1IdBloomN(l0($i1));
+				my $chainId_last = getNumChainsByLevel1Number(l0($i1));%>
+		@spl_category(name="common")
+		(
+			<%=join(";",map { 'stream<'.$CONTEXT_DATA_OUT_TYPE.'> ContextRecordStream_'.l0($i1)."_".l0($_); }(0..$chainId_last-1))%>;
+			stream<TypesCommon.ContextReadyType> ContextReady_<%=l0($i1)%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  stream<TypesCommon.TransformerOutType> DataForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		) as Context<%=l0($i1)%> = ContextC<%=l0($i1)%>
+		(
+			ContextCtrlStream;
+			<%=$bundleTableStreamsList[$i1]%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  CommandResponsesFromContextDataProcessor_<%=l0($i1)%>
+		;  RecoveryResponsesFromContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		)
+		{
+			param
+				groupId:              "<%=l0($i1)%>";
+				iteJobName:           $iteJobName;
+				peName:               "<%=$PE_NAME_CONTEXT%>_<%=l0($i1)%>";
+				peExLocationLabel:    "<%=$PE_EXLOCATION_LABEL%>";
+				checkpointDir:        $checkpointDir;<% if (0 == $dedupDisabled) {%>
+				bloomN:               <%=$bloomN%>ul;
+				bloomProbability:     <%=$bloomPDefault%>;<%}%>
+				statisticsDir:        $statisticsDir;
+				statisticsArchiveDir: <%=$statisticsArchiveDir%>;
+				outputDir:            $outputDir;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_GROUP_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(\"%s_%s\")", $PE_NAME_CONTEXT, l0($i1))
+				: undef),
+			($multiHost ? sprintf("host(ContextPool%s)", $i1) : undef)
+		]
+	})};
+%>
+		}
+		<%	} # end level01 loop%>
+
+		// ------------------------------------------------------
+		// CHAIN SINK [C]
+		// ------------------------------------------------------
+		<%for (my $i1=0; $i1 < $numLevel1Ids; $i1++) { my $numParallelChains = getNumChainsByLevel1Number(l0($i1));
+			for (my $i2=0; $i2 < $numParallelChains; $i2++) {
+				$fileStatStreamName = "FileStat_".l0($i1)."_".l0($i2);
+				if (defined $bundleFileStats){$bundleFileStats = $bundleFileStats . ", $fileStatStreamName";}
+				else {$bundleFileStats = $fileStatStreamName;} 
+				if (defined $postContextTapOutput) {
+					$chainPostContextTapStreamName = "ChainSinkTap_".l0($i1)."_".l0($i2);
+					if (defined $bundlePostContextTaps){$bundlePostContextTaps = $bundlePostContextTaps . ", $chainPostContextTapStreamName";}
+					else {$bundlePostContextTaps = $chainPostContextTapStreamName;} 
+				}%>
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.AcknowledgedFilesType> ChainFileAck_<%=l0($i1)%>_<%=l0($i2)%>;
+		stream<TypesCommon.FileStatistics> <%=$fileStatStreamName%><%print ";" if (defined $postContextTapOutput);%>
+		<%print "stream<".$postContextTapOutputSchema."> ".$chainPostContextTapStreamName if (defined $postContextTapOutput);%>
+		) as ChainSink<%=l0($i1)%>_<%=l0($i2)%> = ChainSinkCore (
+			ContextRecordStream_<%=l0($i1)%>_<%=l0($i2)%>;
+			StatStream_<%=l0($i1)%>_<%=l0($i2)%>;
+			RejChainProcessor_<%=l0($i1)%>_<%=l0($i2)%>;
+			ChainStatus_<%=l0($i1)%>_<%=l0($i2)%>
+		) {
+			param
+				groupId:              "<%=l0($i1)%>";
+				chainId:              "<%=l0($i2)%>";
+				peExLocationLabel:     "<%=$PE_EXLOCATION_LABEL%>";				
+				archiveDir:           <%=$archiveDir%>;
+				duplicateFilesDir:    <%=$duplicateFilesDir%>;
+				failedFilesDir:       <%=$failedFilesDir%>;
+				invalidFilesDir:      <%=$invalidFilesDir%>;
+				tableWriterOutputDir: $outputDir;
+				dbLoaderInputDir:     <%=$loadDir%>;
+				checkpointDir:        $checkpointDir;
+				rejectedRecordsDir:   <%=$rejectedRecordsDir%>;
+				reprocessDir:         <%=$reprocessDir%>;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s_%s\"", $PE_NAME_FUSED_CONTEXT_AND_CHAINS, l0($i1))
+					: sprintf("\"%s_%s_%s\"", $PE_NAME_CHAIN_SINK, l0($i1), l0($i2))
+					))
+				: undef),
+			($multiHost ? sprintf("host(%s%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS ? "ContextPool" : "ChainPool"), $i1) : undef)
+		]
+	})};
+%>
+		}
+		<%	} # end level02 loop%>
+		<%} # end level01 loop%>
+	  <%}#endif PARALLELISM_FEATURE_ENABLED%>
+	<% # end VARIANT C%>
+	<%} elsif ($VARIANT_B) {%>
+		// ============================================================================================================
+		// VARIANT B: Parallel Chains - no level1 split on FileIngestion - Transformer level1 split - dedup per group
+		// ============================================================================================================
+		<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+		// user-defined parallelism enabled
+
+		// ------------------------------------------------------
+		// [FILE INGESTION] [B][udp]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		stream<TypesCommon.FileIngestSchema> ChainFilesToProcess;
+		stream<CleanupTrigger> CleanupTriggerAckStream
+		) as IngestFiles = FileIngestC (FileIngestControlStream; CleanupTrigger; FileAck) {
+			param
+				inputDir:          getInputDir($inputDir, $inputDirList);
+				checkpointDir:     $checkpointDir;
+				invalidFilesDir:   <%=$invalidFilesDir%>;
+				duplicateFilesDir: <%=$duplicateFilesDir%>;
+				peNameDirScan:     $peNameDirScan;
+				peNameSplit:       $peNameSplit;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($multiHost ? "host(FileIngestPool)" : undef)
+		]
+	})};
+%>
+		}
+		// ------------------------------------------------------
+		// [CHAIN] - parallelized at submission time [B][udp]
+		// ------------------------------------------------------
+		@parallel(width=$parallelChains, partitionBy=[{port=ContextRecordStream_00, attributes=[chainId]}], broadcast=[AppCtrl])
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.FileStatistics> ChainFinalFileStat;
+		<%=join(";\n\t\t",map { 'stream<'.$TRANSFORMER_RECORD_OUT_TYPE.'> ChainRecordsToContext_'.l0($_); }(0..$numLevel1Ids-1))%>;
+		stream<TypesCommon.ApplicationCtrl> AppCtrlResp<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> TransformerTapStream<%}%><%print ";" if (defined $postContextTapOutput);%>
+		<%print "stream<".$postContextTapOutputSchema."> ChainSinkTap" if (defined $postContextTapOutput);%>
+		) as Chain = ChainC (ChainFilesToProcess; AppCtrl; <%=join(",",map { 'ContextRecordStream_'.l0($_); }(0..$numLevel1Ids-1))%>) {
+			param
+				groupId:               "00";
+				chainId:               (rstring)getChannel();
+				iteJobName:            $iteJobName;
+				peExLocationLabel:     "<%=$PE_EXLOCATION_LABEL%>";
+				applControlDir:        $applControlDir; // chain status file
+				archiveDir:            <%=$archiveDir%>;
+				duplicateFilesDir:     <%=$duplicateFilesDir%>;
+				failedFilesDir:        <%=$failedFilesDir%>;
+				invalidFilesDir:       <%=$invalidFilesDir%>;
+				tableWriterOutputDir:  $outputDir;
+				dbLoaderInputDir:      <%=$loadDir%>;
+				checkpointDir:         $checkpointDir;
+				rejectedRecordsDir:    <%=$rejectedRecordsDir%>;
+				reprocessDir:          <%=$reprocessDir%>;
+				disableLookup:         $disableLookup;
+				peNameSplit:           $peNameSplit;<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>
+				peNameChain:           "<%=$PE_NAME_FUSED_CONTEXT_AND_CHAINS%>";<%} else {%>
+				peNameChain:           "<%=$PE_NAME_CHAIN_PROCESSOR%>_"+(rstring)getChannel();<%}%>
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s\"", $PE_NAME_FUSED_CONTEXT_AND_CHAINS)
+					: sprintf("\"%s_\" + (rstring)getChannel()", $PE_NAME_CHAIN_PROCESSOR)
+					))
+				: undef),
+			($multiHost ? "host(ChainPool)" : undef)
+		]
+	})};
+%>
+		}
+		<%
+		$bundleAppCtrlResponseStreams="AppCtrlResp";
+		$bundlePostTransformerTaps="TransformerTapStream";
+		$bundleFileStats="ChainFinalFileStat";
+		$bundlePostContextTaps="ChainSinkTap";
+		%>
+		// ------------------------------------------------------
+		// [CONTEXT] [B][udp]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(
+		<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {%>
+			stream<<%=$CONTEXT_DATA_OUT_TYPE%>> ContextRecordStream_<%=l0($i1)%>;
+		<%	} # end level01 loop%>
+		<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {%>
+			stream<TypesCommon.ContextReadyType> ContextReady_<%=l0($i1)%><%=";" if ($i1 < $numLevel1Ids-1)%>
+		<%	} # end level01 loop%>
+<%
+	if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED)
+	{
+		for (my $id = 0; $id < $numLevel1Ids; $id++)
+		{
+			print "\t\t\t; stream<TypesCommon.TransformerOutType> DataForContextDataProcessor_" . l0($id) . "\n";
+			print "\t\t\t; stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor_" . l0($id) . "\n";
+			print "\t\t\t; stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor_" . l0($id) . "\n";
+		}
+	}
+%>
+		) as ContextCores = ContextC
+		(
+			ContextCtrlStream;
+			<%=join(";",map { 'ChainRecordsToContext_'.l0($_); }(0..$numLevel1Ids-1))%>
+<%
+	if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED)
+	{
+		for (my $id = 0; $id < $numLevel1Ids; $id++)
+		{
+			print "\t\t\t; stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor_" . l0($id) . "\n";
+			print "\t\t\t; stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor_" . l0($id) . "\n";
+		}
+	}
+%>
+		)
+		{
+			param
+				checkpointDir:        $checkpointDir;
+				statisticsDir:        $statisticsDir;
+				iteJobName:           $iteJobName;
+				peExLocationLabel:    "<%=$PE_EXLOCATION_LABEL%>";				
+				statisticsArchiveDir: <%=$statisticsArchiveDir%>;
+				outputDir:            $outputDir;
+		}
+
+		<%} else {%>
+		// ------------------------------------------------------
+		// [FILE INGESTION] [B]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		<%for (my $i2=0; $i2 < $numChains; $i2++) {%>
+		stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_<%=l0($i2)%><%=";" if ($i2 < $numChains-1)%>
+		<%}%>;
+		stream<CleanupTrigger> CleanupTriggerAckStream
+		) as IngestFiles = FileIngestC (FileIngestControlStream; CleanupTrigger; FileAck<% if (0 != $roundRobinSplitDisabled) { %>;<%=join(";",map { 'ChainFileAck_'.l0($_) }(0..$numChains-1))%><%}%>) {
+			param
+				inputDir:           getInputDir($inputDir, $inputDirList);
+				checkpointDir:      $checkpointDir;
+				invalidFilesDir:    <%=$invalidFilesDir%>;
+				duplicateFilesDir:  <%=$duplicateFilesDir%>;
+				peNameDirScan:      $peNameDirScan;
+				peNameSplit:        $peNameSplit;
+				peExLocationLabel:  "<%=$PE_EXLOCATION_LABEL%>";				
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($multiHost ? "host(FileIngestPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		// ------------------------------------------------------
+		// [CHAIN PROCESSOR] [B]
+		// ------------------------------------------------------
+		<%	for (my $i2=0; $i2 < $numChains; $i2++) {
+				my $appCtrlResponseStreamName = "AppCtrlResp_".l0($i2);
+				if (defined $bundleAppCtrlResponseStreams){$bundleAppCtrlResponseStreams = $bundleAppCtrlResponseStreams . ", $appCtrlResponseStreamName";}
+				else {$bundleAppCtrlResponseStreams = $appCtrlResponseStreamName;}
+				my $transformerTapStreamName = "TransformerTap_".l0($i2);
+				if (defined $bundlePostTransformerTaps){$bundlePostTransformerTaps = $bundlePostTransformerTaps . ", $transformerTapStreamName";}
+				else {$bundlePostTransformerTaps = $transformerTapStreamName;}
+		%>
+		@spl_category(name="common")
+		(
+		<%=join(";\n\t\t",map { 'stream<'.$TRANSFORMER_RECORD_OUT_TYPE.'> ChainRecordsToContext_'.l0($_).'_'.l0($i2); }(0..$numLevel1Ids-1))%>;
+		stream<TypesCommon.FileStatistics> StatStream_<%=l0($i2)%>;
+		stream<TypesCommon.RejectedDataStreamType> RejChainProcessor_<%=l0($i2)%>;
+		stream<TypesCommon.ApplicationCtrl> ChainStatus_<%=l0($i2)%>;
+		stream<TypesCommon.ApplicationCtrl> <%=$appCtrlResponseStreamName%><% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> <%=$transformerTapStreamName%><%}%>
+		) as ChainProcessor<%=l0($i2)%> = ChainProcessorC (ChainFilesToProcess_<%=l0($i2)%>;ChainFileAck_<%=l0($i2)%>;AppCtrl) {
+			param
+				groupId:           "00";
+				chainId:           "<%=l0($i2)%>";
+				applControlDir:    $applControlDir; // chain status file
+				reprocessDir:      <%=$reprocessDir%>;
+				iteJobName:        $iteJobName;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";
+				disableLookup:     $disableLookup;<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>
+				peNameChain:       "<%=$PE_NAME_FUSED_CONTEXT_AND_CHAINS%>";<%} else {%>
+				peNameChain:       "<%=$PE_NAME_CHAIN_PROCESSOR%>_<%=l0($i2)%>";<%}%>
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s\"", $PE_NAME_FUSED_CONTEXT_AND_CHAINS)
+					: sprintf("\"%s_%s\"", $PE_NAME_CHAIN_PROCESSOR, l0($i2))
+					))
+				: undef),
+			($multiHost ? "host(ChainPool)" : undef)
+		]
+	})};
+%>
+		}
+		<%	} # end level02 loop%>
+
+		// ------------------------------------------------------
+		// [CONTEXT] [B]
+		// ------------------------------------------------------
+		<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {
+				my $bloomN=getLevel1IdBloomN(l0($i1));%>
+		@spl_category(name="common")
+		(
+			<%=join(";",map { 'stream<'.$CONTEXT_DATA_OUT_TYPE.'> ContextRecordStream_'.l0($i1).'_'.l0($_); }(0..$numChains-1))%>;
+			stream<TypesCommon.ContextReadyType> ContextReady_<%=l0($i1)%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  stream<TypesCommon.TransformerOutType> DataForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		) as Context<%=l0($i1)%> = ContextC
+		(
+			ContextCtrlStream;
+			<%my $delimiter = ",";%>
+			<%=join($delimiter,map { 'ChainRecordsToContext_'.l0($i1).'_'.l0($_); }(0..$numChains-1))%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  CommandResponsesFromContextDataProcessor_<%=l0($i1)%>
+		;  RecoveryResponsesFromContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		) {
+			param
+				groupId:              "<%=l0($i1)%>";
+				iteJobName:           $iteJobName;
+				peExLocationLabel:    "<%=$PE_EXLOCATION_LABEL%>";<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>
+				peName:               "<%=$PE_NAME_FUSED_CONTEXT_AND_CHAINS%>";<%} else {%>
+				peName:               "<%=$PE_NAME_CONTEXT%>_<%=l0($i1)%>";<%}%>
+				checkpointDir:        $checkpointDir;<% if (0 == $dedupDisabled) {%>
+				bloomN:               <%=$bloomN%>ul;
+				bloomProbability:     <%=$bloomPDefault%>;<%}%>
+				statisticsDir:        $statisticsDir;
+				statisticsArchiveDir: <%=$statisticsArchiveDir%>;
+				outputDir:            $outputDir;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_GROUP_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s\"", $PE_NAME_FUSED_CONTEXT_AND_CHAINS)
+					: sprintf("\"%s_%s\"", $PE_NAME_CONTEXT, l0($i1))
+					))
+				: undef),
+			($multiHost ? sprintf("host(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS ? "ChainPool" : sprintf("ContextPool%s", $i1))) : undef) # TODO check because other pools than at other code places
+		]
+	})};
+%>
+		}
+		<%	} # end level01 loop%>
+
+		// ------------------------------------------------------
+		// [CHAIN SINK] [B]
+		// ------------------------------------------------------
+		<%	for (my $i2=0; $i2 < $numChains; $i2++) {
+				$fileStatStreamName = "ChainFinalFileStat_".l0($i2);
+				if (defined $bundleFileStats){$bundleFileStats = $bundleFileStats . ", $fileStatStreamName";}
+				else {$bundleFileStats = $fileStatStreamName;}
+				if (defined $postContextTapOutput) {
+					$chainPostContextTapStreamName = "ChainSinkTap_".l0($i2);
+					if (defined $bundlePostContextTaps){$bundlePostContextTaps = $bundlePostContextTaps . ", $chainPostContextTapStreamName";}
+					else {$bundlePostContextTaps = $chainPostContextTapStreamName;} 
+				}%>
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.AcknowledgedFilesType> ChainFileAck_<%=l0($i2)%>;
+		stream<TypesCommon.FileStatistics> <%=$fileStatStreamName%><%print ";" if (defined $postContextTapOutput);%>
+		<%print "stream<".$postContextTapOutputSchema."> ".$chainPostContextTapStreamName if (defined $postContextTapOutput);%>
+		) as ChainSink<%=l0($i2)%> = ChainSinkCore (
+			<%=join(",",map { 'ContextRecordStream_'.l0($_).'_'.l0($i2); }(0..$numLevel1Ids-1))%>;
+			StatStream_<%=l0($i2)%>;
+			RejChainProcessor_<%=l0($i2)%>;
+			ChainStatus_<%=l0($i2)%>
+		) {
+			param
+				groupId:               "00";
+				chainId:               "<%=l0($i2)%>";
+				peExLocationLabel:     "<%=$PE_EXLOCATION_LABEL%>";				
+				archiveDir:            <%=$archiveDir%>;
+				duplicateFilesDir:     <%=$duplicateFilesDir%>;
+				failedFilesDir:        <%=$failedFilesDir%>;
+				invalidFilesDir:       <%=$invalidFilesDir%>;
+				tableWriterOutputDir:  $outputDir;
+				dbLoaderInputDir:      <%=$loadDir%>;
+				checkpointDir:         $checkpointDir;
+				rejectedRecordsDir:    <%=$rejectedRecordsDir%>;
+				reprocessDir:          <%=$reprocessDir%>;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s\"", $PE_NAME_FUSED_CONTEXT_AND_CHAINS)
+					: sprintf("\"%s_%s\"", $PE_NAME_CHAIN_SINK, l0($i2))
+					))
+				: undef),
+			($multiHost ? sprintf("host(%s)", ($PE_NAME_CHAIN_SINK eq $PE_NAME_CHAIN_PROCESSOR ? "ChainPool" : "ChainSinkPool")) : undef)
+		]
+	})};
+%>
+		}
+		<%	} # end level02 loop%>
+		<%}#endif PARALLELISM_FEATURE_ENABLED%>
+		
+<%	if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) { # BEGIN dummy operator to enforce partitionExlocation only %>
+		// ------------------------------------------------------ 
+		// dummy operator to enforce partitionExlocation only
+		// ------------------------------------------------------
+		@spl_category(name="common") 
+		() as ChainGroupPeExlocator = Custom() {
+			logic onProcess : {} 
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			"partitionExlocation(\"${PE_EXLOCATION_LABEL}\")",
+			"partitionColocation(\"${PE_NAME_FUSED_CONTEXT_AND_CHAINS}\")",
+			($multiHost ? "host(ChainPool)" : undef)
+		]
+	})};
+%>
+		}
+<%	} # end dummy operator to enforce partitionExlocation only%>
+		
+	<% # end VARIANT B%>
+	<%} elsif ($VARIANT_A) {%>
+		// ============================================================================================================
+		// VARIANT A: Parallel Chains - no level1 split on FileIngestion - no dedup
+		// ============================================================================================================
+		<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+		// user-defined parallelism enabled
+
+		// ------------------------------------------------------
+		// [FILE INGESTION] [A][udp]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		stream<TypesCommon.FileIngestSchema> ChainFilesToProcess;
+		stream<CleanupTrigger> CleanupTriggerAckStream
+		) as IngestFiles = FileIngestC (FileIngestControlStream; CleanupTrigger; FileAck) {
+			param
+				inputDir:          getInputDir($inputDir, $inputDirList);
+				checkpointDir:     $checkpointDir;
+				invalidFilesDir:   <%=$invalidFilesDir%>;
+				duplicateFilesDir: <%=$duplicateFilesDir%>;
+				peNameDirScan:     $peNameDirScan;
+				peNameSplit:       $peNameSplit;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($multiHost ? "host(FileIngestPool)" : undef)
+		]
+	})};
+%>
+		}
+		// ------------------------------------------------------
+		// [CHAIN] - parallelized at submission time [A][udp]
+		// ------------------------------------------------------
+		@parallel(width=$parallelChains, broadcast=[AppCtrl])
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.FileStatistics> ChainFinalFileStat;
+		stream<TypesCommon.ApplicationCtrl> AppCtrlResp<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> TransformerTapStream<%}%>
+		) as Chain = ChainC (ChainFilesToProcess; AppCtrl) {
+			param
+				groupId:               "00";
+				chainId:               (rstring)getChannel();
+				iteJobName:            $iteJobName;
+				peExLocationLabel:     "<%=$PE_EXLOCATION_LABEL%>";				
+				applControlDir:        $applControlDir; // chain status file
+				archiveDir:            <%=$archiveDir%>;
+				duplicateFilesDir:     <%=$duplicateFilesDir%>;
+				failedFilesDir:        <%=$failedFilesDir%>;
+				invalidFilesDir:       <%=$invalidFilesDir%>;
+				tableWriterOutputDir:  $outputDir;
+				dbLoaderInputDir:      <%=$loadDir%>;
+				checkpointDir:         $checkpointDir;
+				rejectedRecordsDir:    <%=$rejectedRecordsDir%>;
+				reprocessDir:          <%=$reprocessDir%>;
+				disableLookup:         $disableLookup;
+				peNameSplit:           $peNameSplit;
+				peNameChain:           "<%=$PE_NAME_CHAIN_PROCESSOR%>_"+(rstring)getChannel();
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS
+				? sprintf("partitionColocation(\"%s_\" + (rstring)getChannel())", $PE_NAME_CHAIN_PROCESSOR)
+				: undef),
+			($multiHost ? "host(ChainPool)" : undef)
+		]
+	})};
+%>
+		}
+		<%
+		$bundleAppCtrlResponseStreams="AppCtrlResp";
+		$bundlePostTransformerTaps="TransformerTapStream";
+		$bundleFileStats="ChainFinalFileStat";
+		%>
+		<%} else {%>
+		// ------------------------------------------------------
+		// [FILE INGESTION] [A]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		<%for (my $i2=0; $i2 < $numChains; $i2++) {%>
+		stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_<%=l0($i2)%><%=";" if ($i2 < $numChains-1)%>
+		<%}%>;
+		stream<CleanupTrigger> CleanupTriggerAckStream
+		) as IngestFiles = FileIngestC (FileIngestControlStream; CleanupTrigger; FileAck<% if (0 != $roundRobinSplitDisabled) { %>;<%=join(";",map { 'ChainFileAck_'.l0($_) }(0..$numChains-1))%><%}%>) {
+			param
+				inputDir:          getInputDir($inputDir, $inputDirList);
+				checkpointDir:     $checkpointDir;
+				invalidFilesDir:   <%=$invalidFilesDir%>;
+				duplicateFilesDir: <%=$duplicateFilesDir%>;
+				peNameDirScan:     $peNameDirScan;
+				peNameSplit:       $peNameSplit;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";				
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($multiHost ? "host(FileIngestPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		// ------------------------------------------------------
+		// [CHAIN PROCESSOR] [A]
+		// ------------------------------------------------------
+		<%	for (my $i2=0; $i2 < $numChains; $i2++) {
+				my $appCtrlResponseStreamName = "AppCtrlResp_".l0($i2);
+				if (defined $bundleAppCtrlResponseStreams){$bundleAppCtrlResponseStreams = $bundleAppCtrlResponseStreams . ", $appCtrlResponseStreamName";}
+				else {$bundleAppCtrlResponseStreams = $appCtrlResponseStreamName;}
+				$fileStatStreamName = "ChainFinalFileStat_".l0($i2);
+				if (defined $bundleFileStats){$bundleFileStats = $bundleFileStats . ", $fileStatStreamName";}
+				else {$bundleFileStats = $fileStatStreamName;}
+				my $transformerTapStreamName = "TransformerTap_".l0($i2);
+				if (defined $bundlePostTransformerTaps){$bundlePostTransformerTaps = $bundlePostTransformerTaps . ", $transformerTapStreamName";}
+				else {$bundlePostTransformerTaps = $transformerTapStreamName;}
+		%>
+		@spl_category(name="common")
+		(
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> ChainRecords_<%=l0($i2)%>;
+		stream<TypesCommon.FileStatistics> StatStream_<%=l0($i2)%>;
+		stream<TypesCommon.RejectedDataStreamType> RejChainProcessor_<%=l0($i2)%>;
+		stream<TypesCommon.ApplicationCtrl> ChainStatus_<%=l0($i2)%>;
+		stream<TypesCommon.ApplicationCtrl> <%=$appCtrlResponseStreamName%><% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> <%=$transformerTapStreamName%><%}%>
+		) as ChainProcessor<%=l0($i2)%> = ChainProcessorC (ChainFilesToProcess_<%=l0($i2)%>;ChainFileAck_<%=l0($i2)%>;AppCtrl) {
+			param
+				groupId:           "00";
+				chainId:           "<%=l0($i2)%>";
+				applControlDir:    $applControlDir; // chain status file
+				reprocessDir:      <%=$reprocessDir%>;
+				disableLookup:     $disableLookup;
+				iteJobName:        $iteJobName;
+				peExLocationLabel: "<%=$PE_EXLOCATION_LABEL%>";				
+				peNameChain:       "<%=$PE_NAME_CHAIN_PROCESSOR%>_<%=l0($i2)%>";
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS
+				? sprintf("partitionColocation(\"%s_%s\")", $PE_NAME_CHAIN_PROCESSOR, l0($i2))
+				: undef),
+			($multiHost ? "host(ChainPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		// ------------------------------------------------------
+		// [CHAIN SINK] [A]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.AcknowledgedFilesType> ChainFileAck_<%=l0($i2)%>;
+		stream<TypesCommon.FileStatistics> <%=$fileStatStreamName%>
+		) as ChainSink<%=l0($i2)%> = ChainSinkCore (
+			ChainRecords_<%=l0($i2)%>;
+			StatStream_<%=l0($i2)%>;
+			RejChainProcessor_<%=l0($i2)%>;
+			ChainStatus_<%=l0($i2)%>
+		) {
+			param
+				groupId:               "00";
+				chainId:               "<%=l0($i2)%>";
+				peExLocationLabel:     "<%=$PE_EXLOCATION_LABEL%>";
+				archiveDir:            <%=$archiveDir%>;
+				duplicateFilesDir:     <%=$duplicateFilesDir%>;
+				failedFilesDir:        <%=$failedFilesDir%>;
+				invalidFilesDir:       <%=$invalidFilesDir%>;
+				tableWriterOutputDir:  $outputDir;
+				dbLoaderInputDir:      <%=$loadDir%>;
+				checkpointDir:         $checkpointDir;
+				rejectedRecordsDir:    <%=$rejectedRecordsDir%>;
+				reprocessDir:          <%=$reprocessDir%>;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_CHAIN_OPERATORS
+				? sprintf("partitionColocation(\"%s_%s\")", $PE_NAME_CHAIN_PROCESSOR, l0($i2))
+				: undef),
+			($multiHost ? "host(ChainPool)" : undef)
+		]
+	})};
+%>
+		}
+		<%	} # end level02 loop%>
+		<%}#endif PARALLELISM_FEATURE_ENABLED%>
+	<% # end VARIANT A%>
+	<%}%>
+
+		// ------------------------------------------------------
+		// CONTROLLER
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ApplicationCtrl> AppCtrl;
+		stream<TypesCommon.CleanupTriggerType> CleanupTrigger;
+		stream<TypesCommon.FileIngestControlType> FileIngestControlStream
+		<% if (1 == $contextDisabled) {%>
+		) as Control = ControllerCore (<%=$bundleAppCtrlResponseStreams%>; CleanupTriggerAckStream) {
+		<% } else {%>
+		;stream<TypesCommon.ContextCtrl> ContextCtrlStream
+		) as Control = ControllerCore (<%=$bundleAppCtrlResponseStreams%>; CleanupTriggerAckStream; FileStatusControlStream;<%=join(",",map { 'ContextReady_'.l0($_); }(0..$numLevel1Ids-1))%>) {
+		<% } #endif%>
+			param
+				applControlDir:        $applControlDir;
+				peName:                "<%=$PE_NAME_CONTROL%>";
+				peExLocationLabel:     "<%=$PE_EXLOCATION_LABEL%>";				
+				disableApplControl:    $disableLookup;
+				numChains:             <%if (1 == $PARALLELISM_FEATURE_ENABLED) {%><%if ($VARIANT_C) {%><%=join("+",map { '$parallelChains'.l0($_); }(0..$numLevel1Ids-1))%><%}else{%>$parallelChains<%}%><%}else{%><%=$numChains%><%}#endif PARALLELISM_FEATURE_ENABLED%>;
+				numLevel1Ids:          <%=$numLevel1Ids%>;
+				applControlRespFile:   $iteJobName; 
+				shutdownControlFile:   $iteJobName + ".cmd";
+
+
+
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			sprintf("partitionColocation(\"%s\")", $PE_NAME_CONTROL),
+			($multiHost ? "host(ControllerPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		// ------------------------------------------------------
+		// File Statistics
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.AcknowledgedFilesType> FileAck<% if (0 == $contextDisabled) { %>;
+		stream<TypesCommon.FileControlType> FileStatusControlStream<%}%>
+		) as Statistics = StatisticsC (<%=$bundleFileStats%>;DroppedFilesStat) {
+			param
+				statisticsDir:        $statisticsDir;
+				statisticsArchiveDir: <%=$statisticsArchiveDir%>;
+				iteJobName:           $iteJobName;
+				peNameStatWriter:     "<%=$PE_NAME_STATISTICS_WRITER%>";
+				peExLocationLabel:    "<%=$PE_EXLOCATION_LABEL%>";				
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			'partitionColocation($peNameDirScan)',
+			($multiHost ? "host(FileIngestPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		<%if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>
+		// ------------------------------------------------------
+		// POST TRANSFORMER TAP
+		// - receives TAP stream from all chains
+		// - Chainprocessor Transformer output
+		// ------------------------------------------------------
+		() as PostTransformerTapSink = TransformerTap (<%=$bundlePostTransformerTaps%>) {
+			param
+				outDir: $outputDir;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			sprintf("partitionColocation(\"%s\")", $PE_NAME_TRANSFORMER_TAP),
+			($multiHost ? "host(TapPool)" : undef)
+		]
+	})};
+%>
+		}
+
+		@spl_category(name="common") 
+		() as PostTransformerTapPeExlocator = Custom() {
+			logic onProcess : {} // dummy operator to enforce partitionExlocation only
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			"partitionExlocation(\"${PE_EXLOCATION_LABEL}\")",
+			"partitionColocation(\"${PE_NAME_TRANSFORMER_TAP}\")",
+			($multiHost ? "host(TapPool)" : undef)
+		]
+	})};
+%>
+		}		
+		<%}%>
+
+		<%if ((1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE) && (0 == $contextDisabled)) {%>
+		// ------------------------------------------------------
+		// POST CONTEXT TAP
+		// - receives PostContextDataProcessor TAP stream from all chains
+		// ------------------------------------------------------
+		() as PostContextTapSink = PostContextDataProcessorTap (<%=$bundlePostContextTaps%>) {
+			param
+				outDir: $outputDir;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			sprintf("partitionColocation(\"%s\")", $PE_NAME_SINK_TAP),
+			($multiHost ? "host(TapPool)" : undef)
+		]
+	})};
+%>
+		}
+		
+		@spl_category(name="common") 
+		() as PostContextTapPeExlocator = Custom() {
+			logic onProcess : {} // dummy operator to enforce partitionExlocation only
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			"partitionExlocation(\"${PE_EXLOCATION_LABEL}\")",
+			"partitionColocation(\"${PE_NAME_SINK_TAP}\")",
+			($multiHost ? "host(TapPool)" : undef)
+		]
+	})};
+%>
+		}		
+		<%}%>
+
+	config
+		relocatable : false;
+		restartable : false;	
+		tracing: error;
+		<%if ($multiHost) {%>
+		hostPool:
+			<%foreach (@hostPoolData) {%>
+			<%=$_%>Pool=createPool({tags=["<%=$_%>"]}, Sys.Shared),
+			<%} #foreach end
+			### Collect host-tags
+			push (@hostPoolMain,@hostPoolData);
+			push (@hostPoolMain,$hostPool."_ingest");
+			push (@hostPoolMain,$hostPool."_controller");
+			%>
+			FileIngestPool=createPool({tags=["<%=$hostPool."_ingest"%>"]}, Sys.Shared),
+			<%if ( (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) || ((1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE) && (0 == $contextDisabled)) ){%>
+			<%push (@hostPoolMain,$hostPool."_tap");%>
+			TapPool=createPool({tags=["<%=$hostPool."_tap"%>"]}, Sys.Shared),
+			<%}%>
+			<%for (my $i1=0; $i1 < $numLevel1Ids; $i1++) {
+				if (($VARIANT_B) && ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS)) {
+			print "// No ContextPool created for Variant B and ITE_FUSE_GROUPWITHCHAIN_OPERATORS=on\n" if (0==$i1);
+				}else{
+				my $currentHostpool = "$hostPool" . "_context_" . l0($i1);
+				push (@hostPoolMain,$currentHostpool);%>
+			ContextPool<%=$i1%>=createPool({tags=["<%=$hostPool."_context_".l0($i1)%>"]}, Sys.Shared),
+				<%}%>
+				<%if (!(defined $chainsPerLevel1IdDisabled)) {
+					if (($VARIANT_C) && ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS)) {
+			print "// No ChainPool created for Variant C and ITE_FUSE_GROUPWITHCHAIN_OPERATORS=on\n" if (0==$i1);
+					}else{
+				my $currentHostpool = "$hostPool" . "_chain_" . l0($i1);
+				push (@hostPoolMain,$currentHostpool);%>
+			ChainPool<%=$i1%>=createPool({tags=["<%=$hostPool."_chain_".l0($i1)%>"]}, Sys.Shared),
+					<%}%>
+				<%}%>
+			<%}%>
+			<%if (defined $chainsPerLevel1IdDisabled) {
+				push (@hostPoolMain,$hostPool . "_chain");%>
+			ChainPool=createPool({tags=["<%=$hostPool."_chain"%>"]}, Sys.Shared),
+			<%}%>
+			<%if ($PE_NAME_CHAIN_SINK ne $PE_NAME_CHAIN_PROCESSOR) {
+				push (@hostPoolMain,$hostPool."_chainsink");%>
+			ChainSinkPool=createPool({tags=["<%=$hostPool."_chainsink"%>"]}, Sys.Shared),
+			<%}%>
+			ControllerPool=createPool({tags=["<%=$hostPool."_controller"%>"]}, Sys.Shared);
+		<%} #endif multihost%>
+}
+<%
+###############################
+### Write host-tags in file ###
+###############################
+my $hosttagsFile = catfile("./config","hosttags.txt");
+if ($multiHost) {
+	my $tagsList = "@hostPoolMain";	
+	$tagsList =~s/ /,/g;
+	if (open(HOSTTAGS, '>', $hosttagsFile)) {
+		print HOSTTAGS "$tagsList";
+		close(HOSTTAGS);
+	} else {
+		warn TedaToolkitResource::TEDA_FILE_CANNOT_OPEN_REASON($hosttagsFile, $!);
+	}
+} else {
+	unlink ($hosttagsFile);
+}
+%>
+
+<%if (defined $chainsPerLevel1IdDisabled) {%>
+/**
+ * FileIngest - level2 split only
+ *
+ * @input  InControlStream the start command to start the directory scan
+ * @input  InCleanupTriggerStream the trigger for file dedup store clean up
+ * @input  FileAck Acknowledge for filename checkpointing
+ * @output DroppedFilesStat filenames of dropped duplicates files to be logged in statistic file
+ * @output ChainFilesToProcess_00 filenames split to chain
+ * @output CleanupTriggerAckStream This stream emits a tuple when the cleanup has finished
+ *
+ * @param inputDir Single input directory or directory-list-file
+ * @param checkpointDir Directory for checkpoint files
+ * @param invalidFilesDir Target directory for invalid files
+ * @param duplicateFilesDir Target directory for duplicate files
+ * @param peNameDirScan Name for partitionColocation of directory scan operators from FileIngestion
+ * @param peNameSplit Name for partitionColocation of directory scan operators from FileIngestion
+ * @param peExLocationLabel label used for partitionExlocation placement 
+ */
+public composite FileIngestC (
+	input 
+		InControlStream,
+		InCleanupTriggerStream,
+		FileAck<%if (0 == $roundRobinSplitDisabled) {%><%}elsif (0 == $PARALLELISM_FEATURE_ENABLED){%>,
+		<%=join(",\n\t\t",map { 'ChainAck_'.l0($_) }(0..$numChains-1))%><%}%>;
+	output
+		DroppedFilesStat,
+		<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+		FilesToProcess00
+		<%} else {%>
+		<%=join(",\n\t\t",map { 'ChainFilesToProcess_'.l0($_) }(0..$numChains-1))%>
+		<%} #endif parallelism%>
+		, CleanupTriggerAckStream
+) {
+	param
+		expression<rstring> $inputDir;
+		expression<rstring> $checkpointDir;
+		expression<rstring> $invalidFilesDir;
+		expression<rstring> $duplicateFilesDir;
+		expression<rstring> $peNameDirScan;
+		expression<rstring> $peNameSplit;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		// ------------------------------------------------------
+		// [FILE INGESTION]
+		@spl_category(name="common")
+		(stream<TypesCommon.FileIngestSchema> EnhancedFilesToProcess;
+		stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		stream<InCleanupTriggerStream> CleanupTriggerAckStream
+		)= FileIngestionCore(InControlStream; InCleanupTriggerStream; FileAck) {
+			param
+				inputDir:          $inputDir;
+				checkpointDir:     $checkpointDir;
+				invalidFilesDir:   $invalidFilesDir;
+				duplicateFilesDir: $duplicateFilesDir;
+				peNameDirScan:     $peNameDirScan;
+				peNameSplit:       $peNameSplit;
+				peExLocationLabel: $peExLocationLabel;
+		}
+
+		@spl_category(name="common")
+		(stream<IN> FilesToProcess00 as OUT) as GroupIdSetter = Custom(EnhancedFilesToProcess as IN) {
+			logic
+			onTuple IN : {
+				IN.groupId = "00"; // no group splitting
+				submit(IN, OUT);
+			}
+			config
+				placement	: 
+					partitionColocation($peNameSplit);
+		}
+
+	<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+		// split is performed internally with user-defined parallelism feature
+	<%} else {%>
+		// ------------------------------------------------------
+		<%if (0 == $roundRobinSplitDisabled) {%>
+		// [SPLIT] on chainID (chainId)
+		@spl_category(name="common")
+		(<%=join(";\n\t\t",map { 'stream<TypesCommon.FileIngestSchema> ChainSplitFilesToProcess_'.l0($_); }(0..$numChains-1))%>
+		) = RoundRobin(FilesToProcess00) {
+			config
+				placement	: 
+					partitionColocation($peNameSplit);
+		}
+		<%for (my $i2=0; $i2 < $numChains; $i2++) {
+			print "\@spl_category(name=\"common\")\n";
+			print "(stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_", l0($i2); 
+			print ")= Functor(ChainSplitFilesToProcess_", l0($i2)," as FileIn";
+			print") {output ChainFilesToProcess_", l0($i2)," : chainId = \"", l0($i2),"\"; config threadedPort : queue(FileIn, Sys.Wait, ",$QUEUE_SIZE_FILES_PER_CHAIN,"); placement: partitionColocation(\$peNameSplit);}\n\t\t";
+		}%>
+		<%} else {%>
+		// ------------------------------------------------------
+		// queue the filenames in order to unblock the DirScan
+		@spl_category(name="common")
+		(stream<TypesCommon.FileIngestSchema> QueuedFilesToProcess
+		) as Queue = com.teracloud.streams.teda.internal.ingestion::PrioritizedQueue(FilesToProcess00) {
+			param
+				urgentAttr: urgent;
+				peName:   $peNameSplit;
+		}
+
+		// [SPLIT] on chainID (chainId)
+		@spl_category(name="common")
+		(<%=join(";\n\t\t",map { 'stream<TypesCommon.FileIngestSchema> ChainSplitFilesToProcess_'.l0($_); }(0..$numChains-1))%>
+		) = ThreadedSplit(QueuedFilesToProcess) {
+			param
+				bufferSize : 1u ;
+			config
+				placement	: 
+					partitionColocation($peNameSplit);
+		}
+		
+		<% if (1 == $INGEST_CUSTOMFILECONTROL) { %>
+		// enable custom file control composite to process chain acks and receive files to process. queue filenames, to not block the dirscan
+		@spl_category(name="common")
+		stream<I> QueuedFilesToProcess00 = com.teracloud.streams.teda.internal::ObservableQueue(FilesToProcess00 as I) {
+			config placement: partitionColocation($peNameSplit);
+		}		
+		
+		stream<I> ChainAckControlledSingle = FileControl(<%=join(",", map { 'ChainAck_' . l0($_) } (0..$numChains-1))%> as I; QueuedFilesToProcess00)
+		{
+			param numberOfChains : <%=$numChains%> ;
+			config placement : partitionColocation($peNameSplit);
+		}
+
+		@spl_category(name="common")
+		(<%=join(";\n\t\t\t", map { 'stream<I> ChainAckControlled_' . l0($_) } (0..$numChains-1))%>
+		) = Split(ChainAckControlledSingle as I)
+		{
+			param index: strtoll(I.chainId,10);
+			config placement : partitionColocation($peNameSplit);
+		}
+		<%}%>
+		
+		<%for (my $i2=0; $i2 < $numChains; $i2++) {
+			print "\@spl_category(name=\"common\")\n";
+			print "(stream<TypesCommon.FileIngestSchema> ChainGateFilesToProcess_", l0($i2); 
+			print ")= Functor(ChainSplitFilesToProcess_", l0($i2); 
+			print") {output ChainGateFilesToProcess_", l0($i2)," : chainId = \"", l0($i2),"\"; config placement: partitionColocation(\$peNameSplit);}\n\t\t";
+			
+			print "\@spl_category(name=\"common\")\n";
+			print "(stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_", l0($i2);
+			
+ 			# use controlled ack stream if customfilecontrol is enabled
+			if (1 == $INGEST_CUSTOMFILECONTROL) {
+				print ")= Gate(ChainGateFilesToProcess_", l0($i2), ";ChainAckControlled_", l0($i2);
+			} else {
+				print ")= Gate(ChainGateFilesToProcess_", l0($i2), ";ChainAck_", l0($i2);
+			}
+			print"){param maxUnackedTupleCount : 1u ; config placement : partitionColocation(\$peNameSplit);}\n\t\t";
+		}%>
+		<%}%>
+	<%} #endif parallelism%>
+}
+<% } else {%>
+/**
+ * FileIngest - level1 and level2 split
+ * 
+ * @input  InControlStream the start command to start the directory scan
+ * @input  InCleanupTriggerStream the trigger for file dedup store clean up
+ * @input  FileAck Acknowledge for filename checkpointing
+ * @output DroppedFilesStat filenames of dropped duplicates files to be logged in statistic file
+ * @output ChainFilesToProcess_00_00 filenames split to chain
+ * @output CleanupTriggerAckStream This stream emits a tuple when the cleanup has finished
+ * 
+ * @param inputDir Single input directory or directory-list-file
+ * @param checkpointDir Directory for checkpoint files
+ * @param invalidFilesDir Target directory for invalid files
+ * @param duplicateFilesDir Target directory for duplicate files
+ * @param peNameDirScan Name for partitionColocation of directory scan operators from FileIngestion
+ * @param peNameSplit Name for partitionColocation of directory scan operators from FileIngestion
+ * @param peExLocationLabel label used for partitionExlocation placement
+ */
+public composite FileIngestC (
+	input 
+		InControlStream,
+		InCleanupTriggerStream,
+		FileAck<%if (0 == $roundRobinSplitDisabled) {%>;<%}else{ if (defined $chainAckPortBundle) {%>,
+		<%=$chainAckBundle%><%}%>;<%}%>
+	output
+		DroppedFilesStat,
+		<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+		<%=join(",\n\t\t",map { 'GroupFilesToProcess_'.l0($_); }(0..$numLevel1Ids-1))%>
+		<%} else {%>
+		<%=$chainFilesBundle%>
+		<%}#endif PARALLELISM_FEATURE_ENABLED%>
+		, CleanupTriggerAckStream
+) {
+	param
+		expression<rstring> $inputDir;
+		expression<rstring> $checkpointDir;
+		expression<rstring> $invalidFilesDir;
+		expression<rstring> $duplicateFilesDir;
+		expression<rstring> $peNameDirScan;
+		expression<rstring> $peNameSplit;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		// ------------------------------------------------------
+		// [FILE INGESTION]
+		@spl_category(name="common")
+		(stream<TypesCommon.FileIngestSchema> EnhancedFilesToProcess;
+		stream<TypesCommon.FileStatistics> DroppedFilesStat;
+		stream<InCleanupTriggerStream> CleanupTriggerAckStream
+		)= FileIngestionCore(InControlStream; InCleanupTriggerStream; FileAck) {
+			param
+				inputDir:           $inputDir;
+				checkpointDir:      $checkpointDir;
+				invalidFilesDir:    $invalidFilesDir;
+				duplicateFilesDir:  $duplicateFilesDir;
+				peNameDirScan:      $peNameDirScan;
+				peNameSplit:        $peNameSplit;
+				peExLocationLabel:  $peExLocationLabel;
+		}
+
+		// ------------------------------------------------------
+
+		// [SPLIT] on groupId
+		@spl_category(name="common")
+		(<%=join(";\n\t\t",map { 'stream<TypesCommon.FileIngestSchema> GroupFilesToProcess_'.l0($_); }(0..$numLevel1Ids-1))%>	
+		) = Split (EnhancedFilesToProcess) {
+			param index : (int32)groupId;
+			config
+				placement	: 
+					partitionColocation($peNameSplit);
+		}
+
+		// ------------------------------------------------------
+	<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+		// level 2 split is performed internally with user-defined parallelism feature
+	<%} else {%>
+		// ------------------------------------------------------
+	 <%if (0 == $roundRobinSplitDisabled) {%>
+		// [SPLIT] on chainID (chainId)
+		<%for (my $i1=0; $i1 < $numLevel1Ids; $i1++) { my $numParallelChains = getNumChainsByLevel1Number(l0($i1));%>
+		@spl_category(name="common")
+		(<%=join(";\n\t\t",map { 'stream<TypesCommon.FileIngestSchema> ChainSplitFilesToProcess_'.l0($i1).'_'.l0($_); }(0..$numParallelChains-1))%>
+		) = RoundRobin(GroupFilesToProcess_<%=l0($i1)%>) {
+			config
+				placement	: 
+					partitionColocation($peNameSplit);
+		}
+		<%for (my $i2=0; $i2 < $numParallelChains; $i2++) {
+			print "\@spl_category(name=\"common\")\n";
+			print "(stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_", l0($i1),"_", l0($i2); 
+			print ")= Functor(ChainSplitFilesToProcess_", l0($i1),"_", l0($i2)," as FileIn";
+			print") {output ChainFilesToProcess_", l0($i1),"_", l0($i2)," : chainId = \"", l0($i2),"\"; config threadedPort : queue(FileIn, Sys.Wait, ",$QUEUE_SIZE_FILES_PER_CHAIN,"); placement: partitionColocation(\$peNameSplit);}\n\t\t";
+		  }
+		}%>
+	 <%} else {%>
+	 	// queue the files in order to unblock the Split
+		<%for (my $i1=0; $i1 < $numLevel1Ids; $i1++) { %>
+		@spl_category(name="common")
+		(stream<TypesCommon.FileIngestSchema> QueuedGroupFilesToProcess_<%=l0($i1)%>
+		) as Queue<%=l0($i1)%> = com.teracloud.streams.teda.internal.ingestion::PrioritizedQueue(GroupFilesToProcess_<%=l0($i1)%>) {
+			param
+				urgentAttr: urgent;
+				peName:   $peNameSplit;
+		}
+		<%}%>
+	 
+		// [SPLIT] on chainID (chainId)
+		<%for (my $i1=0; $i1 < $numLevel1Ids; $i1++) { my $numParallelChains = getNumChainsByLevel1Number(l0($i1));%>
+		<%if ($numParallelChains>0) {%>
+		@spl_category(name="common")
+		(<%=join(";\n\t\t",map { 'stream<TypesCommon.FileIngestSchema> ChainSplitFilesToProcess_'.l0($i1).'_'.l0($_); }(0..$numParallelChains-1))%>
+		) = ThreadedSplit(QueuedGroupFilesToProcess_<%=l0($i1)%>) {
+			param
+				bufferSize : 1u ;
+			config
+				placement	: 
+					partitionColocation($peNameSplit);
+		}
+		<%} #endif ($numParallelChains>0)%>
+		<%for (my $i2=0; $i2 < $numParallelChains; $i2++) {
+			if ($numParallelChains>0) {
+				print "\@spl_category(name=\"common\")\n";
+				print "(stream<TypesCommon.FileIngestSchema> ChainGateFilesToProcess_", l0($i1),"_", l0($i2); 
+				print ")= Functor(ChainSplitFilesToProcess_", l0($i1),"_", l0($i2); 
+				print") {output ChainGateFilesToProcess_", l0($i1),"_", l0($i2)," : chainId = \"", l0($i2),"\"; config placement: partitionColocation(\$peNameSplit);}\n\t\t";
+
+				print "\@spl_category(name=\"common\")\n";
+				print "(stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_", l0($i1),"_", l0($i2);
+				print ")= Gate(ChainGateFilesToProcess_", l0($i1),"_", l0($i2), ";ChainAck_", l0($i1),"_", l0($i2);
+				print"){param maxUnackedTupleCount : 1u ; config placement : partitionColocation(\$peNameSplit);}\n\t\t";
+			}
+			else {
+				print "\@spl_category(name=\"common\")\n";
+				print "(stream<TypesCommon.FileIngestSchema> ChainFilesToProcess_", l0($i1),"_", l0($i2);
+				print ")= Functor(QueuedGroupFilesToProcess_", l0($i1);
+				print") {output ChainFilesToProcess_", l0($i1),"_", l0($i2)," : chainId = \"", l0($i2),"\"; config placement: partitionColocation(\$peNameSplit);}\n\t\t";
+			}
+		  }
+		}%>
+	 <%}%>
+	<%} #endif parallelism%>
+}
+<% } #endif%>
+
+<% # VARIANT A only
+if ($VARIANT_A) {
+	if (1 == $PARALLELISM_FEATURE_ENABLED) {
+%>
+/**
+ * ChainC is composed of ChainProcessor and ChainSink
+ *
+ * @input  InChainFilesToProcess Filenames for ChainprocessorReader
+ * @input  InAppCtrl Start/Stop for ChainControl
+ * @output OutChainFinalFileStat final statistic tuple
+ * @output OutAppCtrlResponse ChainControl response tuples
+ * 
+ * @param groupId Name of groupID
+ * @param chainId Name of chainID
+ * @param applControlDir Control directory
+ * @param reprocessDir Target directory for files to be reprocessed
+ * @param peNameSplit label used for partitionColocation placement of split operators
+ * @param peNameChain label used for partitionColocation placement of chain operators
+ * @param disableLookup Lookup code is not called - no access to shared memory.
+ * @param iteJobName job name used as chain status file prefix
+ * @param peExLocationLabel label used for partitionExlocation placement
+ */
+public composite ChainC (
+	input 
+		InChainFilesToProcess,
+		InAppCtrl;
+	output
+		OutChainFinalFileStat,
+		OutAppCtrlResponse<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>,
+		OutForBundle<%}%>
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $applControlDir;
+		expression<rstring> $reprocessDir;
+		expression<rstring> $archiveDir;
+		expression<rstring> $duplicateFilesDir;
+		expression<rstring> $failedFilesDir;
+		expression<rstring> $invalidFilesDir;
+		expression<rstring> $tableWriterOutputDir;
+		expression<rstring> $dbLoaderInputDir;
+		expression<rstring> $checkpointDir;
+		expression<rstring> $rejectedRecordsDir;
+		expression<rstring> $peNameSplit;
+		expression<rstring> $peNameChain;
+		expression<boolean> $disableLookup;
+		expression<rstring> $iteJobName;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		<%my $inputChainProcessor="InChainFilesToProcess";%>
+		<%if (1 == $roundRobinSplitDisabled) {%>
+			<%$inputChainProcessor="ChainFilesToProcess";%>
+		@spl_category(name="common")
+		(stream<IN> ChainFilesToProcess)= Gate(InChainFilesToProcess as IN; ChainFileAck){
+			param maxUnackedTupleCount: 1u;
+			config placement: partitionColocation($peNameSplit);
+		}
+		<%}%>
+
+		@spl_category(name="common")
+		(
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> ChainRecords;
+		stream<TypesCommon.FileStatistics> StatStream;
+		stream<TypesCommon.RejectedDataStreamType> RejChainProcessor;
+		stream<TypesCommon.ApplicationCtrl> ChainStatus;
+		stream<TypesCommon.ApplicationCtrl> OutAppCtrlResponse<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> OutForBundle<%}%>
+		) as ChainProcessor = ChainProcessorC (<%=$inputChainProcessor%>;ChainFileAck;InAppCtrl) {
+			param
+				groupId:           $groupId;
+				chainId:           $chainId;
+				applControlDir:    $applControlDir; // chain status file
+				reprocessDir:      $reprocessDir;
+				peNameChain:       $peNameChain;
+				disableLookup:     $disableLookup;
+				iteJobName:        $iteJobName;
+				peExLocationLabel: $peExLocationLabel;
+		}
+
+		// ------------------------------------------------------
+		// [CHAIN SINK]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.AcknowledgedFilesType> ChainFileAck;
+		stream<TypesCommon.FileStatistics> OutChainFinalFileStat
+		) as ChainSink = ChainSinkCore (ChainRecords; StatStream; RejChainProcessor; ChainStatus) {
+			param
+				groupId:               $groupId;
+				chainId:               $chainId;
+				archiveDir:            $archiveDir;
+				duplicateFilesDir:     $duplicateFilesDir;
+				failedFilesDir:        $failedFilesDir;
+				invalidFilesDir:       $invalidFilesDir;
+				tableWriterOutputDir:  $tableWriterOutputDir;
+				dbLoaderInputDir:      $dbLoaderInputDir;
+				checkpointDir:         $checkpointDir;
+				rejectedRecordsDir:    $rejectedRecordsDir;
+				reprocessDir:          $reprocessDir;
+				peExLocationLabel:     $peExLocationLabel;				
+		}
+}
+	<%}#endif PARALLELISM_FEATURE_ENABLED%>
+<%}#endif ChainC for Variant A%>
+
+<% # VARIANT C or B
+if (($VARIANT_C) || ($VARIANT_B)) {
+	if (1 == $PARALLELISM_FEATURE_ENABLED) {
+%>
+/**
+ * ChainC is composed of ChainProcessor and ChainSink
+ *
+ * @input  InChainFilesToProcess Filenames for ChainprocessorReader
+ * @input  InAppCtrl Start/Stop for ChainControl
+ * @input  InContextRecordStream tuples from ContextCore
+ * @output OutChainFinalFileStat final statistic tuple
+ * @output OutChainRecordsToContext tuple to be dedupped
+ * @output OutAppCtrlResponse ChainControl response tuples
+ * 
+ * @param groupId Name of groupID
+ * @param chainId Name of chainID
+ * @param applControlDir Control directory
+ * @param reprocessDir Target directory for files to be reprocessed
+ * @param peNameSplit label used for partitionColocation placement of split operators
+ * @param peNameChain label used for partitionColocation placement of chain operators
+ * @param disableLookup Lookup code is not called - no access to shared memory.
+ * @param iteJobName job name used as chain status file prefix
+ * @param peExLocationLabel label used for partitionExlocation placement
+ */
+public composite ChainC (
+	input 
+		InChainFilesToProcess,
+		InAppCtrl,
+		InContextRecordStream;
+	output
+		OutChainFinalFileStat,
+		<%if ($VARIANT_C) {%>
+		OutChainRecordsToContext,
+		<%}%>
+		<%if ($VARIANT_B) {%>
+		// one output for each groupId (parallel worker chains)
+		<%=join(",\n\t\t",map { 'OutChainRecordsToContext_'.l0($_); }(0..$numLevel1Ids-1))%>,
+		<%}%>
+		OutAppCtrlResponse<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>,
+		OutForBundle<%}%><%print "," if ((1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE) && (0 == $contextDisabled));%>
+		<%print "OutTap" if ((1 == $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE) && (0 == $contextDisabled));%>
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $applControlDir;
+		expression<rstring> $reprocessDir;
+		expression<rstring> $archiveDir;
+		expression<rstring> $duplicateFilesDir;
+		expression<rstring> $failedFilesDir;
+		expression<rstring> $invalidFilesDir;
+		expression<rstring> $tableWriterOutputDir;
+		expression<rstring> $dbLoaderInputDir;
+		expression<rstring> $checkpointDir;
+		expression<rstring> $rejectedRecordsDir;
+		expression<rstring> $peNameSplit;
+		expression<rstring> $peNameChain;
+		expression<boolean> $disableLookup;
+		expression<rstring> $iteJobName;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		<%my $inputChainProcessor="InChainFilesToProcess";%>
+		<%if (1 == $roundRobinSplitDisabled) {%>
+			<%$inputChainProcessor="ChainFilesToProcess";%>
+		@spl_category(name="common")
+		(stream<IN> ChainFilesToProcess)= Gate(InChainFilesToProcess as IN; ChainFileAck){
+			param maxUnackedTupleCount: 1u;
+			config placement: partitionColocation($peNameSplit);
+		}
+		<%}%>
+
+		@spl_category(name="common")
+		(
+		<%if ($VARIANT_C) {%>
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> OutChainRecordsToContext;
+		<%}%>
+		<%if ($VARIANT_B) {%>
+		<%=join(";\n\t\t",map { 'stream<'.$TRANSFORMER_RECORD_OUT_TYPE.'> OutChainRecordsToContext_'.l0($_); }(0..$numLevel1Ids-1))%>;
+		<%}%>
+		stream<TypesCommon.FileStatistics> StatStream;
+		stream<TypesCommon.RejectedDataStreamType> RejChainProcessor;
+		stream<TypesCommon.ApplicationCtrl> ChainStatus;
+		stream<TypesCommon.ApplicationCtrl> OutAppCtrlResponse<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> OutForBundle<%}%>
+		) as ChainProcessor = ChainProcessorC (<%=$inputChainProcessor%>;ChainFileAck;InAppCtrl) {
+			param
+				groupId:           $groupId;
+				chainId:           $chainId;
+				applControlDir:    $applControlDir; // chain status file
+				reprocessDir:      $reprocessDir;
+				peNameChain:       $peNameChain;
+				disableLookup:     $disableLookup;
+				iteJobName:        $iteJobName;
+				peExLocationLabel: $peExLocationLabel;
+		}
+
+		@spl_category(name="common")
+		(
+		stream<IN> ContextRecordStream
+		) as PunctConverter = Custom(InContextRecordStream as IN) {
+			logic
+			onTuple IN: {
+				if(chainPunct){
+					submit(Sys.WindowMarker, ContextRecordStream);
+				}
+				else {
+					submit(IN, ContextRecordStream);
+				}
+			}
+		}
+
+		// ------------------------------------------------------
+		// [CHAIN SINK]
+		// ------------------------------------------------------
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.AcknowledgedFilesType> ChainFileAck;
+		stream<TypesCommon.FileStatistics> OutChainFinalFileStat<%print ";" if (defined $postContextTapOutput);%>
+		<%print "stream<".$postContextTapOutputSchema."> OutTap" if (defined $postContextTapOutput);%>
+		) as ChainSink = ChainSinkCore (ContextRecordStream; StatStream; RejChainProcessor; ChainStatus) {
+			param
+				groupId:               $groupId;
+				chainId:               $chainId;
+				archiveDir:            $archiveDir;
+				duplicateFilesDir:     $duplicateFilesDir;
+				failedFilesDir:        $failedFilesDir;
+				invalidFilesDir:       $invalidFilesDir;
+				tableWriterOutputDir:  $tableWriterOutputDir;
+				dbLoaderInputDir:      $dbLoaderInputDir;
+				checkpointDir:         $checkpointDir;
+				rejectedRecordsDir:    $rejectedRecordsDir;
+				reprocessDir:          $reprocessDir;
+				peExLocationLabel:     $peExLocationLabel;
+		}
+}
+	<%}#endif PARALLELISM_FEATURE_ENABLED%>
+<%}#endif ChainC for Variant A or B%>
+
+/**
+ * ChainProcessor is composed of ChainprocessorReaderCore and ChainprocessorTransformerCore
+ *
+ * @input  InChainFilesToProcess Filenames for ChainprocessorReader
+ * @input  InChainAck Ack for ChainControl to proceed with next file
+ * @input  InAppCtrl Start/Stop for ChainControl
+<%
+	if (1 == $TRANSFORMER_LEVEL1_SPLIT)
+	{
+		print join("\n",map { ' * @output OutRecordsToContext_' . l0($_) . ' Transformed Record tuples' } (0..$numLevel1Ids-1));
+	}
+	else
+	{
+		print ' * @output OutRecords Transformed Record tuples';
+	}
+%>
+ * @output OutStatStream Statistic tuples
+ * @output OutRej rejected records
+ * @output OutChainStatus emits a tuple when the chain status changes.
+ * @output OutAppCtrlResponse
+ * <%=(1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE ? '@output OutForBundle\n *' : '')%>
+ * @param groupId Name of groupID
+ * @param chainId Name of chainID
+ * @param applControlDir Control directory
+ * @param reprocessDir Target directory for files to be reprocessed
+ * @param peNameSplit label used for partitionColocation placement of split operators
+ * @param peNameChain label used for partitionColocation placement of chain operators
+ * @param disableLookup Lookup code is not called - no access to shared memory.
+ * @param iteJobName job name used as chain status file prefix
+ * @param peExLocationLabel label used for partitionExlocation placement
+ */
+public composite ChainProcessorC (
+	input 
+		InChainFilesToProcess,
+		InChainAck,
+		InAppCtrl;
+	output
+		<%if (1 == $TRANSFORMER_LEVEL1_SPLIT) {%>
+		// one output for each groupId (parallel worker chains)
+		<%=join(",\n\t\t",map { 'OutRecordsToContext_'.l0($_); }(0..$numLevel1Ids-1))%>,
+		<% } else {%>
+		OutRecords,
+		<% } #endif%>
+		OutStatStream,
+		OutRej,
+		OutChainStatus,
+		OutAppCtrlResponse<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>,
+		OutForBundle<%}%>
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $applControlDir;
+		expression<rstring> $reprocessDir;
+		expression<rstring> $peNameChain;
+		expression<boolean> $disableLookup;
+		expression<rstring> $iteJobName;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		<%my $inputChainprocessorReaderCore = "InChainFilesToProcess";%>
+		<%if (1 == $PARALLELISM_FEATURE_ENABLED) {%>
+			<%$inputChainprocessorReaderCore = "ChainFilesToProcess";%>
+		@spl_category(name="common")
+		(stream<IN> ChainFilesToProcess as OUT) as ChainIdSetter = Custom(InChainFilesToProcess as IN) {
+			logic
+			onTuple IN : {
+				IN.chainId = $chainId;
+				submit(IN, OUT);
+			}
+		}
+		<%}%>
+
+		// ########################################################
+		// CHAIN PROCESSOR
+		// read the records and validate the records
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ReaderOutStreamType> ReaderRecords;
+		stream<TypesCommon.FileStatistics> ReaderStatistics;
+		stream<TypesCommon.RejectedDataStreamType> RejReader;
+		stream<TypesCommon.ApplicationCtrl> OutChainStatus;
+		stream<TypesCommon.ApplicationCtrl> OutAppCtrlResponse
+		) = ChainprocessorReaderCore(<%=$inputChainprocessorReaderCore%>;InChainAck;InAppCtrl) {
+			param
+				groupId:           $groupId;
+				chainId:           $chainId;
+				applControlDir:    $applControlDir;
+				peNameChain:       $peNameChain;
+				iteJobName:        $iteJobName;
+				peExLocationLabel: $peExLocationLabel;
+		}
+
+		// Transformer Logic
+		@spl_category(name="common")
+		(
+		<%if (1 == $TRANSFORMER_LEVEL1_SPLIT) {%>
+		// one output for each groupId (parallel worker chains)
+		<%=join(";\n\t\t",map { 'stream<'.$TRANSFORMER_RECORD_OUT_TYPE.'> OutRecordsToContext_'.l0($_); }(0..$numLevel1Ids-1))%>;
+		<% } else {%>
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> OutRecords;
+		<% } #endif%>
+		stream<TypesCommon.FileStatistics> OutStatStream;
+		stream<TypesCommon.RejectedDataStreamType> RejTransformer<% if (1 == $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE) {%>;
+		stream<TypesCommon.BundledTransformerOutputStreamType> OutForBundle<%}%>
+		) = ChainprocessorTransformerCore(ReaderRecords; ReaderStatistics) {
+			param
+				groupId:       $groupId;
+				chainId:       $chainId;
+				reprocessDir:  $reprocessDir;
+				disableLookup: $disableLookup;
+				applControlDir: $applControlDir;
+		}
+
+		// common output for reject stream
+		@spl_category(name="common")
+		(stream<RejStream> OutRej
+		)= Functor(RejReader,RejTransformer as RejStream) {}
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			((0==$ITE_FUSE_CHAIN_OPERATORS) && (0==$ITE_FUSE_GROUPWITHCHAIN_OPERATORS)
+				? "partitionExlocation(\"${PE_EXLOCATION_LABEL}\")"
+				: undef)
+		]
+	})};
+%>
+}
+
+<% # VARIANT B only
+if (($VARIANT_B) && (1 == $PARALLELISM_FEATURE_ENABLED)) {
+%>
+/**
+ * ContextC groups all ContextCore composites
+ *
+ * @input  ContextCtrlStream Command stream to control the ContextCore
+ * @input  InChainRecordsToContext_00 for each chain (records with hash codes)
+ * @output OutContextRecordStream_00 for each chain (records with duplicate flag)
+ * @output OutContextReady end of training phase
+ * 
+ * @param checkpointDir Base directory for hash code files
+ * @param statisticsDir Output directory for statistic files
+ * @param statisticsArchiveDir Target directory for archived statistic files
+ * @param outputDir Output directory for custom context files
+ * @param iteJobName job name given at job submission time
+ * @param peExLocationLabel label used for partitionExlocation placement
+ */
+public composite ContextC (
+	input
+		ContextCtrlStream,
+		<%=join(",\n\t\t",map { 'InChainRecordsToContext_'.l0($_) }(0..$numLevel1Ids-1))%>
+<%
+	if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED)
+	{
+		for (my $id = 0; $id < $numLevel1Ids; $id++)
+		{
+			print "\t\t, stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor_" . l0($id) . "\n";
+			print "\t\t, stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor_" . l0($id) . "\n";
+		}
+	}
+%>
+		;
+	output
+		<%=join(",\n\t\t",map { 'OutContextRecordStream_'.l0($_) }(0..$numLevel1Ids-1))%>,
+		<%=join(",\n\t\t",map { 'OutContextReady_'.l0($_) }(0..$numLevel1Ids-1))%>
+<%
+	if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED)
+	{
+		for (my $id = 0; $id < $numLevel1Ids; $id++)
+		{
+			print "\t\t, stream<TypesCommon.TransformerOutType> DataForContextDataProcessor_" . l0($id) . "\n";
+			print "\t\t, stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor_" . l0($id) . "\n";
+			print "\t\t, stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor_" . l0($id) . "\n";
+		}
+	}
+%>
+) {
+	param
+		expression<rstring> $checkpointDir;
+		expression<rstring> $statisticsDir;
+		expression<rstring> $statisticsArchiveDir;
+		expression<rstring> $outputDir;
+		expression<rstring> $iteJobName;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		<%	for (my $i1 = 0; $i1 < $numLevel1Ids; $i1++) {
+				my $bloomN=getLevel1IdBloomN(l0($i1));%>
+		@spl_category(name="common")
+		(
+			stream<<%=$CONTEXT_DATA_OUT_TYPE%>> OutContextRecordStream_<%=l0($i1)%>;
+			stream<TypesCommon.ContextReadyType> OutContextReady_<%=l0($i1)%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  stream<TypesCommon.TransformerOutType> DataForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor_<%=l0($i1)%>
+		;  stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		) as Context<%=l0($i1)%> = ContextCore
+		(
+			ContextCtrlStream;
+			InChainRecordsToContext_<%=l0($i1)%>
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  CommandResponsesFromContextDataProcessor_<%=l0($i1)%>
+		;  RecoveryResponsesFromContextDataProcessor_<%=l0($i1)%>
+<% } %>
+		)
+		{
+			param
+				groupId:              "<%=l0($i1)%>";
+				iteJobName:           $iteJobName;<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>
+				peName:               "<%=$PE_NAME_CONTEXT%>";<%} else {%>
+				peName:               "<%=$PE_NAME_CONTEXT%>_<%=l0($i1)%>";<%}%>
+				peExLocationLabel:    $peExLocationLabel;				
+				checkpointDir:        $checkpointDir;<% if (0 == $dedupDisabled) {%>
+				bloomN:               <%=$bloomN%>ul;
+				bloomProbability:     <%=$bloomPDefault%>;<%}%>
+				statisticsDir:        $statisticsDir;
+				statisticsArchiveDir: $statisticsArchiveDir;
+				outputDir:            $outputDir;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($ITE_FUSE_GROUP_OPERATORS || $ITE_FUSE_GROUPWITHCHAIN_OPERATORS
+				? sprintf("partitionColocation(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS 
+					? sprintf("\"%s\"", $PE_NAME_CONTEXT)
+					: sprintf("\"%s_%s\"", $PE_NAME_CONTEXT, l0($i1))
+					))
+				: undef),
+			($multiHost ? sprintf("host(%s)", ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS ? "ChainPool" : sprintf("ContextPool%s", $i1))) : undef)
+		]
+	})};
+%>
+		}
+		<%	} # end level01 loop%>
+
+}
+<%} else { #endif ContextC for Variant B and PARALLELISM_FEATURE_ENABLED%>
+
+<%if (0 == $contextDisabled) {%>
+<%	if ((defined $chainsPerLevel1IdDisabled) && (1 == $TRANSFORMER_LEVEL1_SPLIT)) {%>
+// Context composite (parallel worker chains only)
+
+/**
+ * Context is composed of merge all chains, ContextCore and split to chains
+ *
+ * @input  ContextCtrlStream Command stream to control the ContextCore
+ * @input  MergedRecordStream Data tuples from ChainProcessorTransformer
+ * @output OutContextRecordStream_00 for each chain (records with duplicate flag)
+ * @output OutContextReady end of training phase
+ * 
+ * @param groupId Name of groupID
+ * @param checkpointDir Base directory for hash code files<% if (0 == $dedupDisabled) {%>
+ * @param bloomN Parameter for BloomFilter configuration
+ * @param bloomProbability Parameter for BloomFilter configuration<%}%>
+ * @param statisticsDir Output directory for statistic files
+ * @param statisticsArchiveDir Target directory for archived statistic files
+ * @param outputDir Output directory for custom context files
+ * @param iteJobName job name given at job submission time
+ * @param peName label used for partitionColocation placement
+ * @param peExLocationLabel label used for partitionExlocation placement
+ */
+public composite ContextC (
+	input
+		ContextCtrlStream,
+		MergedRecordStream
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		, stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor
+		, stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor
+<% } %>
+		;
+	output
+		<%=join(",\n\t\t",map { 'OutContextRecordStream_'.l0($_) }(0..$numChains-1))%>,
+		OutContextReady
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		, stream<TypesCommon.TransformerOutType> DataForContextDataProcessor
+		, stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor
+		, stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor
+<% } %>
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $checkpointDir;<% if (0 == $dedupDisabled) {%>
+		expression<uint64>  $bloomN;
+		expression<float64> $bloomProbability;<%}%>
+		expression<rstring> $statisticsDir;
+		expression<rstring> $statisticsArchiveDir;
+		expression<rstring> $outputDir;
+		expression<rstring> $iteJobName;
+		expression<rstring> $peName;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		// ########################################################
+		// CONTEXT
+		// --------------------------------------------------------
+		@spl_category(name="common")
+		(
+			stream<<%=$CONTEXT_DATA_OUT_TYPE%>> ContextRecordGroupStream;
+			stream<TypesCommon.ContextReadyType> OutContextReady
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  stream<TypesCommon.TransformerOutType> DataForContextDataProcessor
+		;  stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor
+		;  stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor
+<% } %>
+		) = ContextCore
+		(
+			ContextCtrlStream;
+			MergedRecordStream
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  CommandResponsesFromContextDataProcessor
+		;  RecoveryResponsesFromContextDataProcessor
+<% } %>
+		)
+		{
+			param
+				groupId:              $groupId;
+				iteJobName:           $iteJobName;
+				peName:               $peName;
+				peExLocationLabel:    $peExLocationLabel;				
+				checkpointDir:        $checkpointDir;<% if (0 == $dedupDisabled) {%>
+				bloomN:               $bloomN;
+				bloomProbability:     $bloomProbability;<%}%>
+				statisticsDir:        $statisticsDir;
+				statisticsArchiveDir: $statisticsArchiveDir;
+				outputDir:            $outputDir;
+		}
+
+		// split deduped table row tuples and convert punct
+		@spl_category(name="common")
+		(
+		<%=join(";",map { 'stream<'.$CONTEXT_DATA_OUT_TYPE.'> OutContextRecordStream_'.l0($_); }(0..$numChains-1))%>
+		) = Custom(ContextRecordGroupStream) {
+			logic
+				onTuple
+					ContextRecordGroupStream: {
+			<%
+			my $first = 1;
+			for (my $i2 = 0; $i2 < $numChains; $i2++) {
+				print "\t\t\t\t\t\t";
+				if($first==0) { 
+					print q"} else "; 
+				} else {
+					$first=0;
+				}
+				print 'if( chainId=="',l0($i2),'" ) {';
+				print "\n\t\t\t\t\t\t\tif(chainPunct)", ' {';
+				print "\n\t\t\t\t\t\t\t\tsubmit(Sys.WindowMarker, OutContextRecordStream_", l0($i2);
+				print ");\n\t\t\t\t\t\t\t", '} else {';
+				print "\n\t\t\t\t\t\t\t\tsubmit(ContextRecordGroupStream, OutContextRecordStream_", l0($i2),");\n";
+				print "\t\t\t\t\t\t\t", '}', "\n";
+			
+				if(($i2 == $numChains-1)) {
+					print "\t\t\t\t\t\t", q"} else {", "\n";
+					print "\t\t\t\t\t\t\t", "appTrc(Trace.error, \"*** unknown ID (missconfiguration?):\" + (rstring)ContextRecordGroupStream);\n";
+					print "\t\t\t\t\t\t\tshutdownPE();\n";
+					print "\t\t\t\t\t\t", q"}", "\n";
+				}			
+			}
+			%>		
+					}
+		}
+}
+<%	}%>
+<%} #endif 0==contextDisabled%>
+<%} #end ContextC for Variant B and PARALLELISM_FEATURE_ENABLED%>
+
+
+<%if (($VARIANT_C) && (0 == $PARALLELISM_FEATURE_ENABLED)) {%>
+// Context composite (level1 and level2 split)
+// Different number of output ports per Context possible
+<%		for (my $i1 = 0; $i1 < $groupId_last; $i1++) { my $chainId_last = getNumChainsByLevel1Number(l0($i1)); %>
+/**
+ * Context<%=l0($i1)%> is composed of merge all chains, ContextCore and split to chains
+ *
+ * @input  ContextCtrlStream Command stream to control the ContextCore
+ * @input  InChainRecordsToContext Data tuples from ChainProcessorTransformer
+ * @output OutContextRecordStream_<%=l0($i1)%>_<%=l0($_)%> for each chain (records with duplicate flag)
+ * @output OutContextReady end of training phase
+ * 
+ * @param groupId Name of groupID
+ * @param checkpointDir Base directory for hash code files<% if (0 == $dedupDisabled) {%>
+ * @param bloomN Parameter for BloomFilter configuration
+ * @param bloomProbability Parameter for BloomFilter configuration<%}%>
+ * @param statisticsDir Output directory for statistic files
+ * @param statisticsArchiveDir Target directory for archived statistic files
+ * @param outputDir Output directory for custom context files
+ * @param iteJobName job name given at job submission time
+ * @param peName label used for partitionColocation placement
+ * @param peExLocationLabel label used for partitionExlocation placement
+ */
+public composite ContextC<%=l0($i1)%> (
+	input
+		ContextCtrlStream,
+		InChainRecordsToContext
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		, stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor
+		, stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor
+<% } %>
+		;
+	output
+		<%=join(",\n\t\t",map { 'OutContextRecordStream_'.l0($i1)."_".l0($_); }(0..$chainId_last-1))%>,
+		OutContextReady
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		, stream<TypesCommon.TransformerOutType> DataForContextDataProcessor
+		, stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor
+		, stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor
+<% } %>
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $checkpointDir;<% if (0 == $dedupDisabled) {%>
+		expression<uint64>  $bloomN;
+		expression<float64> $bloomProbability;<%}%>
+		expression<rstring> $statisticsDir;
+		expression<rstring> $statisticsArchiveDir;
+		expression<rstring> $outputDir;
+		expression<rstring> $iteJobName;
+		expression<rstring> $peName;
+		expression<rstring> $peExLocationLabel;
+
+	graph
+
+		// ########################################################
+		// CONTEXT
+		// --------------------------------------------------------
+		@spl_category(name="common")
+		(
+			stream<<%=$CONTEXT_DATA_OUT_TYPE%>> ContextRecordGroupStream;
+			stream<TypesCommon.ContextReadyType> OutContextReady
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  stream<TypesCommon.TransformerOutType> DataForContextDataProcessor
+		;  stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor
+		;  stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor
+<% } %>
+		) = ContextCore
+		(
+			ContextCtrlStream;
+			InChainRecordsToContext
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		;  CommandResponsesFromContextDataProcessor
+		;  RecoveryResponsesFromContextDataProcessor
+<% } %>
+		)
+		{
+			param
+				groupId:              $groupId;
+				iteJobName:           $iteJobName;
+				peName:               $peName;
+				peExLocationLabel:    $peExLocationLabel;				
+				checkpointDir:        $checkpointDir;<% if (0 == $dedupDisabled) {%>
+				bloomN:               $bloomN;
+				bloomProbability:     $bloomProbability;<%}%>
+				statisticsDir:        $statisticsDir;
+				statisticsArchiveDir: $statisticsArchiveDir;
+				outputDir:            $outputDir;
+		}
+
+		// split deduped tuples
+		@spl_category(name="common")
+		(<%=join(";",map { 'stream<'.$CONTEXT_DATA_OUT_TYPE.'> OutContextRecordStream_'.l0($i1)."_".l0($_); }(0..$chainId_last-1))%>
+		) = Custom(ContextRecordGroupStream) {
+			logic
+				onTuple
+					ContextRecordGroupStream: {
+			<%
+			my $first = 1;
+			for (my $i2 = 0; $i2 < $chainId_last; $i2++) {
+				print "\t\t\t\t\t\t";
+				if($first==0) { 
+					print q"} else ";
+				} else {
+					$first=0;
+				}
+				print 'if( groupId=="',l0($i1),'" && chainId=="',l0($i2),'" ) {';
+				print "\n\t\t\t\t\t\t\tif(chainPunct)", ' {';
+				print "\n\t\t\t\t\t\t\t\tsubmit(Sys.WindowMarker, OutContextRecordStream_", l0($i1), "_", l0($i2);
+				print ");\n\t\t\t\t\t\t\t", '} else {';
+				print "\n\t\t\t\t\t\t\t\tsubmit(ContextRecordGroupStream, OutContextRecordStream_", l0($i1), "_", l0($i2),");\n";
+				print "\t\t\t\t\t\t\t", '}', "\n";
+			
+				if(($i2 == $chainId_last-1)) {
+					print "\t\t\t\t\t\t", q"} else {", "\n";
+					print "\t\t\t\t\t\t\t", "appTrc(Trace.error, \"*** unknown ID (missconfiguration?):\" + (rstring)ContextRecordGroupStream);\n";
+					print "\t\t\t\t\t\t\tshutdownPE();\n";
+					print "\t\t\t\t\t\t", q"}", "\n";
+				}
+			}
+			%>
+					}
+		}
+}
+<%		} #end for%>
+<%} #endif%>
+

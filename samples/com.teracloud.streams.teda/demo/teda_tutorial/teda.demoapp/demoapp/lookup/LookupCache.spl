@@ -1,0 +1,267 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace demoapp.lookup;
+
+use com.teracloud.streams.teda.internal.shm::*;
+use com.teracloud.streams.teda.utility::getSegmentPrefix;
+/**
+ * The metrics of the operator.
+ * @return true
+ */
+stateful boolean _initializeLookupCacheMetrics()
+{
+	createCustomMetric("nHits", "number of cache hits", Sys.Counter, 0l);
+	createCustomMetric("nMisses", "number of cache misses", Sys.Counter, 0l);
+	return true;
+}
+
+/**
+ * The lookup cache performs a lookup using a primitive type key (rstring or
+ * integral) and returning a set of values as result.
+ * The input stream must already contain the output attributes.
+ * 
+ * @param disableLookup
+ * Lookup code is not called - no access to shared memory.
+ * 
+ * @param segmentName
+ * Name of the shared memory segment.
+ * 
+ * @param containerName
+ * Name of the map container.
+ * 
+ * @param mutexName
+ * Name of the mutex, which controls the access to the map container.
+ * 
+ * @param useMutex
+ * Using a pre-filled shared memory, which never changes during
+ * runtime, does not need a mutex controlled access to the map
+ * container. Default: true
+ * 
+ * @param releaseOnPunct
+ * Release the used repository resources when window punct is received.
+ * May be necessary in applications which need a kind of control
+ * and which may delete and recreate such resources.
+ * This is needed by the Telecommunications Event Data Analytics framework
+ * Default: true
+ *
+ * @param lookupFilter
+ * A filter expression that is evaluated before performing the lookup.
+ * If evaluated to false the lookup is not performed. The found attribute 
+ * is set to false in this case.
+ * 
+ * @param key
+ * The attribute, which contains the key.
+ * 
+ * @param found
+ * Boolean attribute, which holds the search result (true: found,
+ * false: not found), after the lookup.
+ * 
+ * @param keyType
+ * The type of the key attribute.
+ * 
+ * @param valueType
+ * The type of the result values. The SPL function assignFrom()
+ * is used to assign the result values to the output tuple i.e.
+ * only result values, for which an attribute of same name and
+ * type exists, are assigned to the output tuple.
+ * 
+ * @input LookupPort
+ * The input data to be enriched by the operator.
+ * 
+ * @output ResultPort
+ * The result data.
+ */
+public composite LookupCache(input LookupPort; output ResultPort)
+{
+	param
+		expression<boolean> $disableLookup;
+		expression<rstring> $segmentName;
+		expression<rstring> $containerName;
+		expression<rstring> $applControlDir;
+		expression<rstring> $mutexName;
+		expression<boolean> $useMutex : true;
+		expression<boolean> $releaseOnPunct : true;
+		expression<boolean> $lookupFilter : true;		
+		attribute $key;
+		attribute $found;
+		type $keyType;
+		type $valueType;
+	graph
+
+		/**
+		 * The operator opens an existing repository segment.
+		 * It performs a lookup operation into the repository container.
+		 * If the key is found, then the values are assigned to the output.
+		 */
+		@spl_category(name="common") 
+		(
+			stream<I> ResultPort as O
+		) as Lookup = Custom(LookupPort as I)
+		{
+			logic
+			state:
+			{
+				// segment opening result
+				mutable boolean isSegmentOpen = false;
+				// handle of the MAP container
+				mutable uint64 handleContainer = 0l;
+				// handle of the segment
+				mutable uint64 handleMutex = 0l;
+				// In case of submission-time values, get them once.
+				boolean _useMutex = $useMutex;
+				boolean _releaseOnPunct = $releaseOnPunct;
+				// Declare variables holding the key and value.
+				mutable $keyType key;
+				mutable $valueType value;
+				// Found or not found
+				mutable boolean _found = false;
+				// Metrics
+				boolean initializedMetrics = _initializeLookupCacheMetrics();
+				// Number of cache hits
+				mutable int64 _hits = 0l;
+				// Number of cache misses.
+				mutable int64 _misses = 0l;
+				mutable boolean _firstTuple = true;
+				mutable boolean lookupDisabled = $disableLookup;
+				mutable rstring realSegmentName = "";
+			}
+			onPunct I:
+			{
+			
+				if (isTraceable(Trace.debug)) {
+					appTrc(Trace.debug, "Lookup::onPunct(" + (rstring)currentPunct() + ")");
+				}
+				if (!lookupDisabled) {
+					if ("" == realSegmentName) {
+						realSegmentName = getSegmentPrefix($applControlDir) + $segmentName;
+					}
+					// On WindowPunct the segment and the container are closed.
+					// This may be needed by special punctuation based application logic
+					// when someone other controlls content and existence of segment and containers.
+					if ((Sys.WindowMarker == currentPunct()) && _releaseOnPunct)
+					{
+						// next tuple will open the segment and container again
+						_firstTuple = true;
+	
+						if (0ul != handleMutex)
+						{
+							shmObjectRelease(handleMutex);
+							handleMutex = 0ul;
+						}
+						if (0ul != handleContainer)
+						{
+							shmObjectRelease(handleContainer);
+							handleContainer = 0ul;
+						}
+						shmSegmentRelease(realSegmentName);
+					}
+					// The final marker triggers the release of all repository resources.
+					if (Sys.FinalMarker == currentPunct())
+					{
+						if (0ul != handleMutex)
+						{
+							shmObjectRelease(handleMutex);
+							handleMutex = 0ul;
+						}
+						if (0ul != handleContainer)
+						{
+							shmObjectRelease(handleContainer);
+							handleContainer = 0ul;
+						}
+						shmSegmentRelease(realSegmentName);
+					}
+				} // endif !lookupDisabled
+				// Forward the punctuation.
+				submit(currentPunct(), O);
+				realSegmentName="";
+			}
+			onTuple I:
+			{
+				if (isTraceable(Trace.debug)) {
+					appTrc(Trace.debug, "Lookup.onTuple(" + (rstring)I + ")");
+				}
+
+				if (!lookupDisabled && ($lookupFilter)) {
+					// Open segment and Map container only on first tuple
+					// there may application logic exist which assures valid
+					// segments only when tuples are flowing but not
+					// at initialization time.
+					if (_firstTuple)
+					{
+						realSegmentName = getSegmentPrefix($applControlDir) + $segmentName;
+						_firstTuple = false;
+						// The repository segment must already exist. Throw an
+						// exception if something failed.
+						// --- ATTENTION --- BEGIN
+						// The segment must be opened in r/w mode although the container
+						// is accessed in read only mode because the mutex wants to
+						// write.
+						// --- ATTENTION --- END
+						isSegmentOpen = shmSegmentOpen(realSegmentName, ($useMutex ? readWrite : readOnly));
+						// The container within the repository segment must
+						// already exist. Throw an exception if something failed.
+						handleContainer = shmMapOpen($containerName, realSegmentName, key, value);
+						// The mutex, which is stored within the repository segment,
+						// must already exist. Throw an exception if something failed.
+						handleMutex = ($useMutex ? shmMutexOpen($mutexName, realSegmentName, sharableMutex) : 0ul);
+					}
+	
+					// BLOCK BEGIN ------------------------------------------------
+					if (_useMutex) { shmMutexLockSharable(handleMutex); }
+					_found = shmMapFind(handleContainer, $key, value);
+					if (_useMutex) { shmMutexUnlockSharable(handleMutex); }
+					// BLOCK END --------------------------------------------------
+					
+				}
+				else
+				{
+					_found = false;
+				}
+				
+				if (_found)
+				{
+					if (isTraceable(Trace.info)) {
+						appTrc(Trace.info, "Lookup.find(" + (rstring)$key + ") --> " + (rstring) value);
+					}
+					setCustomMetricValue("nHits", ++_hits);
+					assignFrom(I, value);
+					$found = _found;
+					submit(I, O);
+				}
+				else
+				{
+					if (isTraceable(Trace.info)) {
+						appTrc(Trace.info, "Lookup.find(" + (rstring)$key + ") --> not found");
+					}
+					setCustomMetricValue("nMisses", ++_misses);
+					$found = _found;
+					submit(I, O);
+				}
+			}
+		}
+		
+}

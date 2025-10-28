@@ -1,0 +1,159 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $useSampleCode = $configurator->isOn(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+	my $useCustomPostProcessing = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_POSTPROCESSING_CUSTOM());
+%>
+namespace demoapp.chainsink.sample;
+
+<%if (($useSampleCode) && ($useCustomPostProcessing)) {%>
+use demoapp.streams::*;
+use demoapp.functions::*;
+use com.teracloud.streams.teda.utility::BloomFilterTypes;
+
+/**
+ * PostContextDataProcessor
+ * Rejects duplicates (OutRej), updates Statistics and forwards it (OutStat)
+ *
+ * @input  InRec Record tuples
+ * @input  InStat Statistic tuples
+ *
+ * @output OutRec Record tuples
+ * @output OutStat Statistic tuples
+ * @output OutRej Rejected duplicates
+ * @output OutTap tap stream
+ * 
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ * 
+ * @param reprocessDir
+ * Target directory for files to be reprocessed
+ */
+public composite PostContextDataProcessor (
+	input
+		stream<TypesCommon.TransformerOutType> InRec,
+		stream<TypesCommon.FileStatistics> InStat;
+	
+	output
+		stream<TypesCommon.ChainSinkStreamType> OutRec,
+		stream<TypesCommon.FileStatistics> OutStat,
+		stream<TypesCommon.RejectedDataStreamType> OutRej,
+		stream<TypesCommon.BundledPostContextOutputStreamType> OutTap // connected only if ite.businessLogic.group.tap=on
+) {
+
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $reprocessDir;
+
+	graph
+
+		@spl_category(name="sample")
+		(
+		stream<TypesCommon.ChainSinkStreamType> OutRec as OutStream;
+		stream<InStat> OutStat;
+		stream<TypesCommon.RejectedDataStreamType> OutRej;
+		stream<TypesCommon.BundledPostContextOutputStreamType> OutTap as TapStream // use only if ite.businessLogic.group.tap=on
+		) as DedupedRecord = Custom(InRec; InStat) {
+			logic state: {
+					mutable int64 detectedRecordDuplicates = 0l;
+					mutable int64 detectedOutdatedRecords = 0l;
+				}
+				onTuple InRec: {
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+					<%if (0 == $dedupDisabled) {
+					%>if (BloomFilterTypes.duplicate == bloomFilterResult) {
+						// check if duplicate, to increase statistics counter
+						detectedRecordDuplicates++;
+					} else if (BloomFilterTypes.unknown == bloomFilterResult) {
+						// check if tuple outdated, to increase statistics counter
+						detectedOutdatedRecords++;
+					} else {<%}# end of 'if (0 == $dedupDisabled)'%>
+						mutable OutRec otuple = {};
+						assignFrom(otuple, InRec);
+						submit(otuple,OutStream);<%
+					if (0 == $dedupDisabled) {%>
+					} // end of 'else bloomFilterResult
+					<%}# end of 'else (0 == $dedupDisabled)'%>
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+				}
+				onTuple InStat: {
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+					<%if (0 == $dedupDisabled) {%>				
+					// update statistics with detected duplicates
+					InStat.recordDuplicates=detectedRecordDuplicates;
+					InStat.outdatedRecords=detectedOutdatedRecords;<%
+					}%>
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+					// forward statistic tuple
+					submit(InStat,OutStat);
+					// reset member
+					detectedRecordDuplicates = 0l;
+					detectedOutdatedRecords = 0l;
+				}
+				onPunct InRec: {
+					if (currentPunct() == Sys.WindowMarker) {
+						// send punctuation
+						submit(Sys.WindowMarker, OutStream);
+						submit(Sys.WindowMarker, OutRej);
+						submit(Sys.WindowMarker, TapStream);
+					}
+				}
+		}
+}
+<%} #endif enabled%>

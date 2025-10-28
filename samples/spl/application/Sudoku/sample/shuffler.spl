@@ -1,0 +1,212 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2011     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample;
+use sample.sudoku::*; // Native function for sudoku solver
+
+// generate a random sudoku
+stateful rstring sudokuRandom()
+{
+    mutable list<list<int32>> board = [];
+    sudokuSetup(board);
+    return sudokuString(board);
+} 
+
+stateful void sudokuSetup(mutable list<list<int32>> board)
+{
+    sudokuInit(board);
+    sudokuShuffle(board);
+    while(sudokuHide(board)>=32) {
+        sudokuInit(board);
+        sudokuShuffle(board);
+    }
+}
+
+void sudokuInit(mutable list<list<int32>> board)
+{
+    int32 n = 3, n2 = 9;
+    mutable int32 i=-1;
+    clearM(board);
+    while(++i<n2) {
+        appendM(board, (list<int32>)[]);
+        mutable int32 j=-1;
+        while(++j<n2) 
+            appendM(board[i], (i*n + i/n +j) % n2 + 1);
+    }
+    /*
+    1 2 3 |4 5 6 | 7 8 9 
+    4 5 6 |7 8 9 | 1 2 3 
+    7 8 9 |1 2 3 | 4 5 6 
+    ------+------+------
+    2 3 4 |5 6 7 | 8 9 1 
+    5 6 7 |8 9 1 | 2 3 4 
+    8 9 1 |2 3 4 | 5 6 7 
+    ------+------+------
+    3 4 5 |6 7 8 | 9 1 2 
+    6 7 8 |9 1 2 | 3 4 5 
+    9 1 2 |3 4 5 | 6 7 8  
+    */
+}
+
+
+stateful int32 sudokuHide(mutable list<list<int32>> board)
+{
+    int32 hints = 15; // start with 15 visible, go until a board with a unique
+                      // solution is found
+    mutable list<list<int32>> tempBoard = board;
+    mutable int32 i=-1;
+    while(++i<9) {
+        mutable int32 j=-1;
+        while(++j<9) 
+            tempBoard[i][j] = 0; // hidden
+    }
+    mutable list<int32> positions = makeSequence(0, 81);
+    mutable int32 nhidden = 81, nshown = 0; 
+    mutable int32 k = -1;
+    mutable boolean unique = false;
+    while(++k<hints || !unique) {
+        int32 pos = (float64) nshown + random() * (float64) nhidden;
+        int32 showpos = positions[pos];
+        swap(positions, nshown, pos);
+        nshown++; nhidden--;
+        int32 showpos_i = showpos / 9;
+        int32 showpos_j = showpos % 9;
+        tempBoard[showpos_i][showpos_j] = board[showpos_i][showpos_j];
+        if(k>=20) {
+            mutable int32 error = 0;
+            solve(sudokuString(tempBoard), error);
+            unique = (error==0);
+        }
+    }
+    board = tempBoard;
+    return nshown;
+}
+
+rstring sudokuString(list<list<int32>> board)
+{
+    mutable rstring result = "";
+    for(list<int32> row in board) {
+        for(int32 cell in row) {
+            if(cell==0)
+                result += ".";
+            else
+                result += (rstring) cell;
+        }
+    }
+    return result;
+}
+
+stateful void sudokuShuffle(mutable list<list<int32>> board)
+{
+    srand((int32)getNanoseconds(getTimestamp()));
+    mutable int32 i = 50;
+    while(i-- > 0) {
+        int32 c = random()*4.0;
+        if(c==0)
+            colShuffle(board);
+        else if(c==1)
+            rowShuffle(board);
+        else if(c==2)
+            colBlockShuffle(board);
+        else
+            rowBlockShuffle(board);
+    }
+}
+
+stateful void colShuffle(mutable list<list<int32>> board)
+{
+    mutable int32 i=0, j=0;
+    randLines(i, j);
+    colSwap(board, i, j);
+}
+
+stateful void rowShuffle(mutable list<list<int32>> board)
+{
+    mutable int32 i=0, j=0;
+    randLines(i, j);
+    rowSwap(board, i, j);
+
+}
+
+stateful void colBlockShuffle(mutable list<list<int32>> board)
+{
+    mutable int32 i=0, j=0;
+    randBlocks(i, j);
+    mutable int32 k = -1;
+    while(++k<3)
+        colSwap(board, 3*i+k, 3*j+k);
+}
+
+stateful void rowBlockShuffle(mutable list<list<int32>> board)
+{
+    mutable int32 i=0, j=0;
+    randBlocks(i, j);
+    mutable int32 k = -1;
+    while(++k<3)
+        rowSwap(board, 3*i+k, 3*j+k);
+}
+
+void colSwap(mutable list<list<int32>> board, int32 i, int32 j)
+{
+    mutable int32 k = -1;
+    while (++k<9) 
+        swap(board[k], i, j);
+}
+
+void rowSwap(mutable list<list<int32>> board, int32 i, int32 j)
+{
+    mutable int32 k = -1;
+    while (++k<9) {
+        int32 t = board[i][k];
+        board[i][k] = board[j][k];
+        board[j][k] = t;
+    }
+}
+
+// pick two line numbers from the same block, i.e., 
+// 2 from [0, 1, 2] or from [3, 4, 5] or from [6, 7, 8]
+stateful void randLines(mutable int32 i, mutable int32 j)
+{
+    int32 block = random()*3.0; 
+    randBlocks(i, j);
+    i = 3 * block + i;
+    j = 3 * block + j;
+}
+
+// pick a random block number, i.e., 2 numbers out of the list [0, 1, 2]
+stateful void randBlocks(mutable int32 i, mutable int32 j)
+{
+    int32 fr = random()*3.0;
+    int32 sr = 1.0 + random()*2.0;
+    i = fr;
+    j = (i + sr) % 3;
+}
+
+void swap(mutable list<int32> arr, int32 i, int32 j)
+{
+    int32 t = arr[i];
+    arr[i] = arr[j];
+    arr[j] = t;
+}

@@ -1,0 +1,17 @@
+Overview: RegularExpression will reformat date/time text using regular expressions. 
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+Notes: 
+  - The input file is 'data/SourceData.txt'.   
+  - The transformation maps numeric months to their alphabetic version.
+  - The sample shows the same algorithm implemented with ustring (unicode) 
+    and rstring (raw).
+  - The resulting outputs (from each implementation) are written to
+    'data/SinkDataU.txt' and 'data/SinkDataR.txt'. The two output files should
+    be identical.
+ 

@@ -1,0 +1,335 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $mappingDocument = (0 == $ENABLE_CUSTOM_CODE ? "etc/sample/csv_mapping.xml" : "etc/custom_csv_mapping.xml");
+
+	my ($n, $v) = $configurator->getEnumList(Configurator::ITE_INGEST_READER_ENCODING());
+	my %hash = map { $_ => undef } @{$v};
+	my $READER_ENCODING_ENABLED = (exists $hash{FileReaderCSV});
+
+	my ($n, $v) = $configurator->getEnumList(Configurator::ITE_INGEST_READER_COMPRESSION());
+	my %hash = map { $_ => undef } @{$v};
+	my $READER_FILE_COMPRESSION = (exists $hash{FileReaderCSV});
+
+%>
+
+
+namespace demoapp.chainprocessor.reader;
+
+use demoapp.streams::*;
+use demoapp.functions::*;
+use com.teracloud.streams.teda.parser.text::*;
+
+/**
+ * FileReaderCSV
+ * CSV file parser to read a file line by line.
+ * Sends punctuation at end of file
+ * Sends statistic tuple containing some file parser metrics after file reading
+ *
+ * @input  FileIn tuple containing name of file to be parsed
+ *
+ * @output OutRec Record tuples
+ * @output OutStat Statistic tuples
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ *
+ * @param encoding
+ * FileSource encoding scheme
+ * The configuration parameter ite.ingest.reader.encoding must be set to FileReaderCSV to enable this parameter
+ *
+ * @param eolMarker
+ * End of line marker
+ *
+ * @param separator
+ * Separator character for the csv format
+ *
+ * @param mappingDocument
+ * The mapping document parameter of CSVParse operator
+ *
+ * @param parserRecordOutputType
+ * The CSVParser operator record stream output type.
+ * 
+ * @param RecordConverterOperator
+ * This operator converts the decoded records to the required flat structure
+ * *Default is the dummy operator:* [DefaultRecordConverter]
+ *
+ * @param compression
+ * The compression parameter of the FileSource operator 
+ * *Default is gzip*
+ * Enabled only if configuration parameter ite.ingest.reader.compression contains this composite name
+ * 
+ * @param ignoreHeaderLines
+ * The ignoreHeaderLines parameter of the CSVParse operator
+ * If set to true, the first tuple received after each punctuation is dropped. Default=false
+ * 
+ * @param $ignoreEmptyLines
+ * The ignoreEmptyLines parameter of the CSVParse operator
+ * If set to true, lines with length 0 are dropped. Default=true
+ * 
+ * @param $quoted
+ * The quoted parameter of the CSVParse operator
+ * If set to "on", quoting is handled according to RFC4180. If set to "off" quote characters are treated 
+ * like normal characters. Default=on
+ * 
+ */
+public composite FileReaderCSV (
+	input 
+		FileIn;
+	output
+		OutRec,
+		OutStats
+) {
+	
+	param
+		/**
+		 * The groupId of this channel.
+		 */
+		expression<rstring> $groupId;
+		/**
+		 * The groupId of this channel.
+		 */
+		expression<rstring> $chainId;
+		/**
+		 * FileSource encoding parameter
+		 */
+		expression<rstring> $encoding: "ASCII";
+		/**
+		 * End of line marker
+		 */
+		expression<rstring> $eolMarker: "\n";
+		/**
+		 * Separator character for the csv format
+		 */
+		expression<rstring> $separator: ",";
+		/**
+		 * The mapping document parameter of CSVParse operator
+		 */
+		expression<rstring> $mappingDocument: "<%=$mappingDocument%>";
+		/**
+		 * The CSVParser operator record stream output type.
+		 */
+		type $parserRecordOutputType: TypesCommon.ParserCustomStreamType;
+		/**
+		 * The operator thats converts the decoded record tuples.
+		 */
+		operator $RecordConverterOperator: DefaultRecordConverter;
+		/**
+		 * The FileSource compression parameter
+		 */
+		expression<FileSource.CompressionAlg> $compression: FileSource.gzip;
+		/**
+		 * The ignoreHeaderLines parameter of the CSVParse operator
+		 */
+		expression<boolean> $ignoreHeaderLines: false;
+		/**
+		 * The ignoreEmptyLines parameter of the CSVParse operator
+		 */
+		expression<boolean> $ignoreEmptyLines: true;
+		/**
+		 * The quoted parameter of the CSVParse operator
+		 */
+		expression $quoted : CSVParse.on;
+
+	type
+		static ParserMetricBaseType = tuple<
+			uint64 sentRecords,
+			uint64 nLinesDroppedCSV,
+			map<rstring, map<rstring , uint64 >> recordStatsCSV
+		>;
+
+		Metric = tuple
+		<
+			ParserMetricBaseType
+		>;
+
+	graph
+
+		/**
+		 * Bypass the FileInfo attributes to be merged after FileSource.
+		 * FileSource is not supporting to forward any input stream attributes.
+		 */
+		@spl_category(name="common")
+		(
+		stream<rstring filename> FileNameS;
+		stream<TypesCommon.FileInfo> FileInfoS;
+		stream<TypesCommon.ParserStatisticsStream> FileStatS
+		) = Custom(FileIn as IN) {
+			logic
+			onTuple IN: {
+				// send file info attributes to be added to record stream
+				mutable FileInfoS otuple1 = {};
+				assignFrom(otuple1, IN);
+				otuple1.filename = com.teracloud.streams.teda.file.path::filename(otuple1.filename);
+				submit(otuple1, FileInfoS);
+				// send file info attributes to be added to statistic stream
+				mutable FileStatS otuple2 = {};
+				assignFrom(otuple2, IN);
+				submit(otuple2, FileStatS);
+				// forward input tuple to FileSource
+				submit({filename=IN.filename}, FileNameS);
+			}
+		}
+
+		/**
+		 * Read each file in line mode.
+		 */
+		@spl_category(name="common")
+		(
+		stream<rstring payload> DataLines
+		) as FileSourceLineMode = FileSource(FileNameS) {
+			param
+				format: line;
+				eolMarker: $eolMarker;<%if (1 == $READER_FILE_COMPRESSION) {%> 
+				compression: $compression;<%}%><%if (1 == $READER_ENCODING_ENABLED) {%> 
+				encoding: $encoding;<%}%>
+		}
+
+		/**
+		 * Extend the schema with FileInfo attributes
+		 * since FileSource is not supporting to forward any input stream attributes
+		 */
+		@spl_category(name="common")
+		(
+		stream<IN,TypesCommon.FileInfo> ExtDataLines as O
+		) = Custom(DataLines as IN; FileInfoS) {
+			logic
+			state : {
+				// extended record stream tuple type
+				mutable O otuple = {};
+			}
+			onTuple IN: {
+				swap(IN.payload,otuple.payload);
+				otuple.readerLinenumber++;
+				submit(otuple, O);
+			}
+			onTuple FileInfoS: {
+				// received before FileSource reads the file
+				// info attributes that needs to attached to each record tuple
+				assignFrom(otuple, FileInfoS);
+			}
+			onPunct IN: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(currentPunct(), O);
+					otuple.readerLinenumber = 0u;
+				}
+			}
+		}
+
+		/**
+		 * Parse line and assign output attributes according to the configured mapping
+		 */
+		@spl_category(name="common")
+		(
+		stream<$parserRecordOutputType, TypesCommon.ParserCommonStreamType> Records as O;
+		stream<I> ErroneousContent as E;
+		stream<Metric> Metrics as M
+		) as ParsedLines = CSVParse(ExtDataLines as I) {
+			param
+				mappingDocument: $mappingDocument;
+				separator: $separator;
+				quoted: $quoted;
+				payloadAttribute: payload;
+				metricsMode: punctuation;
+				ignoreEmptyLines : $ignoreEmptyLines;
+				ignoreHeaderLines : $ignoreHeaderLines;
+			output
+				M:
+					sentRecords = nTuplesSent(),
+					nLinesDroppedCSV = nTuplesDropped(),
+					recordStatsCSV = getRecordStats();
+				E:
+					readerInvalidMessage = Message();
+		}
+
+		/**
+		 * Optional custom schema conversions
+		 */ 
+		<%if (0 == $ENABLE_CUSTOM_CODE) {%>@spl_category(name="sample")<%}%>
+		(
+		stream<TypesCommon.ReaderOutStreamType> RecordsConverted
+		) as RecordConverter = $RecordConverterOperator(Records as IN) {}
+
+		/**
+		 * Merge parser statistics and file statistics
+		 */
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRec;
+		stream<TypesCommon.ParserStatisticsStream> OutStats
+		) = Custom(Metrics as M; FileStatS as Stat; RecordsConverted as R; ErroneousContent as E) {
+			logic
+			state : {
+				mutable Stat fileStat = {};
+			}
+			onTuple M: {
+				// do not forward statistic tuple if shutdown is requested
+				if (false == isShutdown()) {
+					assignFrom(fileStat, M);
+					submit(fileStat, OutStats);
+				}
+			}
+			onTuple Stat: {
+				fileStat = Stat;
+			}
+			onTuple E: {
+				mutable OutRec errRec = {};
+				assignFrom(errRec, E);
+				// mark tuple as invalid to be rejected at Validator composite
+				errRec.readerInvalidLineInd = true;
+				errRec.readerInvalidPayload = E.payload;
+				submit(errRec, OutRec);
+			}
+			onTuple R: {
+				submit(R, OutRec);
+			}
+			onPunct R: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(Sys.WindowMarker, OutRec);
+				}
+			}
+		}
+}

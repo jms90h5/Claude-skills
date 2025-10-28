@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                -->
+<!-- TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    -->
+<!-- EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   -->
+<!-- COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       -->
+<!-- AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   -->
+<!-- OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE -->
+<!-- RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  -->
+<!-- OF THIS SAMPLE CODE.                                             -->
+<!--                                                                  -->
+<!-- LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   -->
+<!-- PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   -->
+<!-- DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    -->
+<!-- THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  -->
+<!-- PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   -->
+<!-- ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                -->
+<!--                                                                  -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     -->
+<!-- All Rights reserved.                                             -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<mappings xmlns="http://www.ibm.com/software/data/infosphere/streams/csvparser">
+
+	<!-- this mapping is applied if the first CSV field contains the string "voice", the CSV line must have at least 5 fields -->
+	<mapping name="voice" filterIndex="0" filterValue="voice" itemCountMin="5" itemCountMax="5">
+		<!-- the SPL attributes cdrType,callingNumber,calledNumber,releaseCause,callDuration are assigned the values from CSV fields 0,1,2,3,4 -->
+		<assign attribute="cdrType" index="0"/>
+		<assign attribute="callingNumber"/>
+		<assign attribute="calledNumber"/>		
+		<assign attribute="releaseCause"/>
+		<assign attribute="callDuration"/>		
+	</mapping>
+	
+	<!-- this mapping is applied if the first CSV field contains the string "message", the CSV line must have at least 5 fields -->
+	<mapping name="message" filterIndex="0" filterValue="message" itemCountMin="5"  itemCountMax="5">
+		<!-- the SPL attributes cdrType,callingNumber,calledNumber,smsCenter,smsType are assigned the values from CSV fields 0,1,2,3,4 -->
+		<assign attribute="cdrType" index="0"/>
+		<assign attribute="callingNumber"/>
+		<assign attribute="calledNumber"/>		
+		<assign attribute="smsCenter"/>
+		<assign attribute="smsType"/>		
+	</mapping>
+
+</mappings>
+

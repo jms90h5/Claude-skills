@@ -1,0 +1,751 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace demoapp.context.custom;
+
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+use demoapp.functions::*;
+use com.teracloud.streams.teda.utility::BloomFilterTypes;
+/**
+ * getDateStringFromDay - converts the day which is days since 01/01/1970 to time string of format dd.mm.yyCC
+ * @param day day since 01/01/1970
+ * @return the date string of format dd.mm.yyCC
+ */
+rstring getDateStringFromDay(uint32 day) {
+	timestamp ts = createTimestamp((int64) day * 24l*60l*60l, 0u);
+	mutable Sys.tm tm = {sec=0, min=0, hour=0, mday=0, mon=0, year=0, wday=0,
+						 yday=0, isdst=0, gmtoff=0, zone=""};
+
+	time(ts, "UTC", tm);
+	return(strftime(tm, "%d.%m.%C%y"));
+}
+
+/**
+ * callReferenceTimeToTimestamp - converts the time string to timestamp
+ * @param callReferenceTime input time in format YYCC-MM-DD hh:mm:ss
+ * @return the timestamp
+ */
+timestamp callReferenceTimeToTimestamp(rstring callReferenceTime) {
+	mutable Sys.tm tm = {sec=0, min=0, hour=0, mday=0, mon=0, year=0, wday=0, yday=0, isdst=0, gmtoff=0, zone=""};
+	mutable uint32 numCharsProcessed = 0u;
+	strptime(callReferenceTime, "%C%y-%m-%d %H:%M:%S", tm, numCharsProcessed);
+	return toTimestamp(tm);
+}
+
+/**
+ * Implements a processing that is applied on a group of tuples. The group
+ * tuples can belong to multiple input files. Typically, one or more operators
+ * of this composite operator are stateful. For example, you can aggregate
+ * tuples.
+ * 
+ * Turn the **ite.businessLogic.group.custom** parameter on to activate this
+ * composite operator.
+ * 
+ * Do not throw any exceptions here.
+ * Window punctuation must be forwarded from third input port to second output port. 
+ * 
+ * Adapt the code blocks that are marked with "custom code begin" and "custom
+ * code end".
+ * 
+ * @input  InDataStream
+ * Data tuples from chains. It is not required to forward the tuples.
+ * Window punctuation from each chain is received as data tuples
+ * with the chainPunct attribute set to true.
+ * Use this punctuation indicator tuple for example to update your metrics. 
+ * 
+ * @input  InCommandStream
+ * Command stream with checkpoint commands.
+ * The command attribute is having the the values clear, read and write.
+ * On clear command your logic as the chance to reset your aggregated data, for example a subscriber map.
+ * During graceful shutdown of the application a write command is received.
+ * On the write command your logic needs to save the operator state, for example a subscriber map,
+ * into the checkpointFile. On next job start you will receive the read command and
+ * your logic needs to restore the operator state from the checkpointFile.
+ * If no checkpointFile is detected on job startup then you will not receive the read command.      
+ * 
+ * @input  InRecoveryStream
+ * Recovery stream with data saved in checkpoint files.
+ * Specify the attributes that you need to implement the custom group logic, in the
+ * TypesCustom.ContextCheckpointStreamType type.
+ * For every processed file the TypesCustom.ContextCheckpointStreamType type is used 
+ * to write the tuples into a checkpoint file per input file.
+ * The content of these files is read on startup only, if no checkpointFile,
+ * specified with the checkpointFile parameter, is found.
+ * Turn the **ite.businessLogic.group.custom.checkpointing** parameter on to 
+ * activate this feature.
+ * 
+ * @output OutCommandRespStream
+ * Tuples received on InCommandStream port must be forwarded as command responses.
+ * Set the success attribute to true if your code as processed the command
+ * successfully otherwise set it to false.
+ * 
+ * @output OutRecoveryRespStream
+ * On the recovery response stream you need to submit the window punctuation
+ * from the InRecoveryStream port.
+ *
+ * @param groupId
+ * The group identifier
+ * 
+ * @param checkpointFile
+ * The absolute path of the checkpoint file name. Use this parameter
+ * to save your operator state when receiving the write command on the InCommandStream port.
+ * Read the checkpointFile on received read command to restore your operator state.
+ * 
+ * @param outputDir
+ * The absolute path of the output directory. Use this parameter
+ * to create files in the output directory.
+ */
+public composite ContextDataProcessor
+(
+	input
+		InDataStream,
+		stream<TypesCommon.ContextCommandType> InCommandStream,
+		stream<TypesCommon.ContextCheckpointStreamType> InRecoveryStream;
+	output
+		OutCommandRespStream,
+		OutRecoveryRespStream
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $checkpointFile;
+		expression<rstring> $outputDir;
+
+		/**
+		 * parameters for campaign
+		 */
+		expression<uint32> $interval : 5u;								// interval in days 
+		expression<uint32> $durationPerDayThreshold1 : 15u*60u;			// 15min / day
+		expression<uint32> $durationPerDayThreshold2 : 30u*60u;			// 30min / day
+		expression<uint32> $droppedCallsThreshold : 5u;					// 5 or more
+		expression<rstring> $threshold1FileName : "Threshold1";
+		expression<rstring> $threshold2FileName : "Threshold2";
+		expression<rstring> $droppedCallsFileName : "DroppedCalls";
+
+	type
+		/**
+		 * record to aggregate and hold status information for one day
+		 */
+		DayAggregateType = tuple <
+			uint32 daySince1970,
+			uint32 callDurationPerDay,
+			uint32 droppedCallsPerDay
+		>;
+
+		/**
+		 * record to hold subscriber data
+		 */
+		SubscriberDataType = tuple <
+			list<DayAggregateType> intervalDays
+		>;
+
+		/**
+		 * campaign metrics data send to MetricsSink operator
+		 */
+		CampaignMetricsType = tuple<
+			int64 totalCDRs,
+			int64 smsCDRs,
+			int64 failedCDRs,
+			int64 duplicateCDRs,
+			int64 ignoredCDRs,
+			int64 sizeofSubscriberMap,
+			int64 totalNumberOfDays
+		>;
+
+	graph
+
+		/**
+		 * CustomContextDataStreamFilter
+		 * Filter operator that receives processing context specific data tuples and filters them by record type
+		 * (cdrRecordType == 1 = voice record) and call type.
+		 *
+		 * @input  InDataStream In data data stream of this composite coming from ChainProcessor
+		 * @output FilteredInDataStream Data tuples from in data stream matching filter criteria mentioned in the operator description
+		 * @output RemovedInDataStream Data tuples from in data stream not matching filter criteria mentioned in the operator description
+		 */
+		(
+			stream<data> FilteredInDataStream;
+			stream<data> RemovedInDataStream
+		) as CustomContextDataStreamFilter = Filter(InDataStream as data) {
+			param
+				filter :
+					(true == data.chainPunct) ||
+					((cdrRecordType == 1ub) &&
+					((1ub <= cdrCallType && cdrCallType <= 4ub) || cdrCallType == 6ub));
+		}		
+
+		/**
+		 * CustomContextLogic
+		 *
+		 * @input  FilteredInDataStream Data tuples from in data stream of this composite filtered by CustomContextDataStreamFilter operator 
+		 * @input  RemovedInDataStream Data tuples from in data stream of this composite filtered by CustomContextDataStreamFilter operator 
+		 * @input  InCommandStream In command stream of this composite. See composite input section for details
+		 * @input  InRecoveryStream In recovery stream of this composite. See composite input section for details
+		 *
+		 * @output OutCommandRespStream Out command responses stream of this composite. See composite output section for details
+		 * @output OutRecoveryRespStream Out recovery response stream of this composite. See composite output section for details
+		 * 
+		 * @output Threshold1EventStream Stream of events if voice minutes per day threshold 1 is hit or crossed for a subscriber 
+		 * @output Threshold2EventStream Stream of events if voice minutes per day threshold 2 is hit or crossed for a subscriber
+		 * @output DroppedCallsEventStream Stream of events if dropped calls per day threshold is hit for a subscriber
+		 */
+		(
+			stream<TypesCommon.ContextCommandRespType> OutCommandRespStream;
+			stream<TypesCommon.ContextCheckpointStreamType> OutRecoveryRespStream;
+			stream<rstring imsi, rstring day, uint32 duration> Threshold1EventStream;
+			stream<rstring imsi, rstring day, uint32 duration> Threshold2EventStream;
+			stream<rstring imsi, rstring day, uint32 droppedCalls> DroppedCallsEventStream;
+			stream<CampaignMetricsType> CampaignMetricsStream
+		) as CustomContextLogic = Custom(
+			FilteredInDataStream as Data;
+			RemovedInDataStream as Removed;
+			InCommandStream as Cmd;
+			InRecoveryStream as Recovery
+		) {
+			logic
+				state : {
+					/**
+					 * operator metrics
+					 */
+					mutable CampaignMetricsType metrics = {};
+
+					/**
+					 * "empty" instances of data types used for initializations below 
+					 */
+					DayAggregateType dayAggregateEMPTY = {daySince1970=0u, callDurationPerDay=0u, droppedCallsPerDay=0u};
+					SubscriberDataType subscriberDataEMPTY = {intervalDays = (list<DayAggregateType>) []};
+
+					/**
+					 * subscriber map to remember subscriber information in the interval
+					 */
+					mutable map<rstring, SubscriberDataType> subscriberMap;
+
+					/**
+					 * checkpoint file written when write cmd is received
+					 * contains the serialized subscriberMap
+					 */
+					rstring checkpointFile=$checkpointFile;
+					rstring metricsFile = checkpointFile+".meta";
+				}
+
+				onTuple Data : {
+					if (true == Data.chainPunct) {
+						// ------------------------------------------------
+						// custom code begin
+						// ------------------------------------------------
+						/**
+						 * send campaign metrics data to CampaignMetricsSink 
+						 */
+						submit(metrics, CampaignMetricsStream);
+						// ------------------------------------------------
+						// custom code end
+						// ------------------------------------------------
+					} else {
+						// ------------------------------------------------
+						// custom code begin
+						// ------------------------------------------------
+
+						metrics.totalCDRs++;
+						/**
+						 * process only if not a duplicate
+						 */
+						if(BloomFilterTypes.unique == bloomFilterResult) {
+
+							/**
+							 * declare and initialize local variable
+							 */
+							uint32 callReferenceDaySince1970 = daysSince1970(callReferenceTimeToTimestamp(cdrCallReferenceTime));
+							uint64 causeForTermination = strtoull(cdrCauseForTermination, 16);
+							mutable uint32 lastCallDurationPerDay;
+							mutable uint32 lastDroppedCallsPerDay;
+							mutable rstring imsi;
+							mutable int32 sizeOfList;
+							mutable boolean dayInList;
+							mutable int32 idx;
+	
+							/**
+							 * evaluate imsi depending on call type
+							 */
+							if(cdrCallType == 3ub)
+								imsi = cdrCallingImsi;
+							else
+								imsi = cdrCalledImsi;
+	
+							/**
+							 * add subscriber to hash map if not already in
+							 */
+							if(!(imsi in subscriberMap)) {
+								subscriberMap[imsi] = subscriberDataEMPTY;
+								metrics.sizeofSubscriberMap = (int64) size(subscriberMap);
+							}
+		
+							/**
+							 * check if the incoming data is in the interval and so valid to be processed 
+							 */
+							sizeOfList = size(subscriberMap[imsi].intervalDays);
+							if((0 == sizeOfList) ||
+							   (subscriberMap[imsi].intervalDays[sizeOfList-1].daySince1970 < callReferenceDaySince1970+$interval)) {
+		
+								/**
+								 * check if we have expired data (data out of interval) in the list and if so remove them
+								 */
+								while((0 < size(subscriberMap[imsi].intervalDays)) &&
+									  ((subscriberMap[imsi].intervalDays[0].daySince1970+$interval) < (callReferenceDaySince1970+1u))) {
+									removeM(subscriberMap[imsi].intervalDays, 0);
+									metrics.totalNumberOfDays--;
+								}
+		
+								/**
+								 * check if the reference day is in the list or if not insert into list (list is ascending by daySince1970)
+								 * set idx to index of data in the list.
+								 */
+								dayInList = false;
+								idx = 0;
+								while(idx <= size(subscriberMap[imsi].intervalDays) && !dayInList) {
+		
+									/**
+									 * if we are behind the last element in the list append to list. this covers also empty list in the beginning
+									 */
+									if(idx == size(subscriberMap[imsi].intervalDays)) {
+										appendM(subscriberMap[imsi].intervalDays, dayAggregateEMPTY);
+										subscriberMap[imsi].intervalDays[idx].daySince1970 = callReferenceDaySince1970;
+										dayInList = true;
+										metrics.totalNumberOfDays++;
+									}
+		
+									/**
+									 * else if the reference day is lower than day in the list insert the day before
+									 */
+									else if(callReferenceDaySince1970 < subscriberMap[imsi].intervalDays[idx].daySince1970) {
+										insertM(subscriberMap[imsi].intervalDays, dayAggregateEMPTY, idx);
+										subscriberMap[imsi].intervalDays[idx].daySince1970 = callReferenceDaySince1970;
+										dayInList = true;
+										metrics.totalNumberOfDays++;
+									}
+		
+									/**
+									 * else if the reference day is equal to the day in the list we found it
+									 */
+									else if(subscriberMap[imsi].intervalDays[idx].daySince1970 == callReferenceDaySince1970) {
+										dayInList = true;
+									}
+		
+									/**
+									 * go to next element in the list
+									 */
+									else {
+										idx++;
+									}
+								}
+	
+								/**
+								 * aggregate call time per day for outgoing calls (cdrCallType == 3)
+								 */
+								lastCallDurationPerDay = subscriberMap[imsi].intervalDays[idx].callDurationPerDay;
+								if(cdrCallType == 3ub)
+									subscriberMap[imsi].intervalDays[idx].callDurationPerDay += (uint32) cdrSamMczDuration;
+		 
+								/**
+								 * aggregate dropped calls per day. cause for termination 16 and 31 are normal terminations
+								 */
+								lastDroppedCallsPerDay = subscriberMap[imsi].intervalDays[idx].droppedCallsPerDay;
+								if((causeForTermination != 16ul) && (causeForTermination != 31ul)) {
+									subscriberMap[imsi].intervalDays[idx].droppedCallsPerDay++;
+									metrics.failedCDRs++;
+								}
+		
+								/**
+								 * check if threshold 1 limit is crossed and if so submit event
+								 */
+								if((lastCallDurationPerDay < $durationPerDayThreshold1) &&
+								   ($durationPerDayThreshold1 <= subscriberMap[imsi].intervalDays[idx].callDurationPerDay)) {
+									submit({imsi=imsi,
+											day=getDateStringFromDay(subscriberMap[imsi].intervalDays[idx].daySince1970),
+											duration=subscriberMap[imsi].intervalDays[idx].callDurationPerDay},
+											Threshold1EventStream);
+								}
+		
+								/**
+								 * check if threshold 2 limit is crossed and if so submit event
+								 */
+								if((lastCallDurationPerDay < $durationPerDayThreshold2) &&
+								   ($durationPerDayThreshold2 <= subscriberMap[imsi].intervalDays[idx].callDurationPerDay)) {
+									submit({imsi=imsi,
+									        day=getDateStringFromDay(subscriberMap[imsi].intervalDays[idx].daySince1970),
+											duration=subscriberMap[imsi].intervalDays[idx].callDurationPerDay},
+								        	Threshold2EventStream);
+								}
+		
+								/**
+								 * check if dropped calls limit is hit and if so submit event
+								 */
+								if((lastDroppedCallsPerDay < $droppedCallsThreshold) &&
+								   ($droppedCallsThreshold == subscriberMap[imsi].intervalDays[idx].droppedCallsPerDay)) {
+									submit({imsi=imsi,
+									        day=getDateStringFromDay(subscriberMap[imsi].intervalDays[idx].daySince1970),
+									        droppedCalls=subscriberMap[imsi].intervalDays[idx].droppedCallsPerDay},
+							    		    DroppedCallsEventStream);
+								}
+							}
+		
+							/**
+							 * the incoming data is not in the interval and so not valid to be processed 
+							 */
+							else {
+								metrics.ignoredCDRs++;
+							}
+						}
+
+						/**
+						 * the incoming data is tagged as duplicate so just count it
+						 */
+						else {
+							metrics.duplicateCDRs++;
+						}
+
+						// ------------------------------------------------
+						// custom code end
+						// ------------------------------------------------
+					}
+				}
+				onTuple Removed : {
+					metrics.totalCDRs++;
+					if(cdrRecordType == 2ub) {
+						metrics.smsCDRs++;
+					}
+
+					if(BloomFilterTypes.duplicate == bloomFilterResult) {
+						metrics.duplicateCDRs++;
+					}
+				}
+				onTuple Cmd : {
+					Cmd.success = true;
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+					if ("clear" == Cmd.command) {
+						//Clear command is ignored since expired data is cleaned when receiving data tuples
+						appTrc(Trace.info, "Clear command received. Nothing cleaned here.", "CustomContext");
+					}
+					if ("write" == Cmd.command) {
+						mutable int32 ferror = -1;
+						mutable uint64 fileWriteH = 0; //the write file handle for the checkpoint file
+						fileWriteH = spl.file::fopen(checkpointFile, "w", ferror);
+						if (0!=ferror) {
+							appTrc(Trace.error, "Can not open checkpointFile="+checkpointFile+" ferror="+strerror(ferror), "CustomContext");
+							Cmd.success =false;
+						} else {
+							appTrc(Trace.info, "Open file success checkpointFile="+checkpointFile, "CustomContext");
+							spl.file::fwriteBin (subscriberMap, fileWriteH, ferror);
+							if (0!=ferror) {
+								appTrc(Trace.error, "Can not write checkpointFile="+checkpointFile+" ferror="+strerror(ferror), "CustomContext");
+								Cmd.success =false;
+							} else {
+								if (0!=spl.file::fclose(fileWriteH, ferror)) {
+									appTrc(Trace.error, "On fclose file: " + checkpointFile + " ferror="+strerror(ferror), "CustomContext");
+								}
+								else {
+									argument = checkpointFile; // for statistic log file only to indicate that file was written
+
+									// save metrics
+									fileWriteH = spl.file::fopen(metricsFile, "w", ferror);
+									if (0!=ferror) {
+										appTrc(Trace.error, "Can not open metricsFile="+metricsFile+" ferror="+strerror(ferror), "CustomContext");
+										Cmd.success =false;
+									} else {
+										appTrc(Trace.info, "Open file success metricsFile="+metricsFile, "CustomContext");
+										spl.file::fwriteBin (metrics, fileWriteH, ferror);
+										if (0!=ferror) {
+											appTrc(Trace.error, "Can not write metricsFile="+metricsFile+" ferror="+strerror(ferror), "CustomContext");
+											Cmd.success =false;
+										} else {
+											if (0!=spl.file::fclose(fileWriteH, ferror)) {
+												appTrc(Trace.error, "On fclose file: " + metricsFile + " ferror="+strerror(ferror), "CustomContext");
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					if ("read" == Cmd.command) {
+						mutable int32 ferror = -1;
+						mutable uint64 fileReadH = 0; //the read file handle for the checkpoint file
+						fileReadH = spl.file::fopen(checkpointFile, "r", ferror);
+						if (0!=ferror) {
+							appTrc(Trace.error, "Can not open checkpointFile="+checkpointFile+" ferror="+strerror(ferror), "CustomContext");
+							Cmd.success =false;
+						} else {
+							appTrc(Trace.info, "Open file success checkpointFile="+checkpointFile, "CustomContext");
+							spl.file::freadBin (subscriberMap, fileReadH, ferror);
+							if (0!=ferror) {
+								appTrc(Trace.error, "Can not read checkpointFile="+checkpointFile+" ferror="+strerror(ferror), "CustomContext");
+								Cmd.success =false;
+							} else {
+								if (0!=spl.file::fclose(fileReadH, ferror)) {
+									appTrc(Trace.error, "On fclose file: " + checkpointFile + " ferror="+strerror(ferror), "CustomContext");
+								}
+								else {
+									argument = checkpointFile; // for statistic log file only to indicate that file was written
+
+									// restore metrics
+									fileReadH = spl.file::fopen(metricsFile, "r", ferror);
+									if (0!=ferror) {
+										appTrc(Trace.error, "Can not open metricsFile="+metricsFile+" ferror="+strerror(ferror), "CustomContext");
+										Cmd.success =false;
+									} else {
+										appTrc(Trace.info, "Open file success metricsFile="+metricsFile, "CustomContext");
+										spl.file::freadBin (metrics, fileReadH, ferror);
+										if (0!=ferror) {
+											appTrc(Trace.error, "Can not read metricsFile="+metricsFile+" ferror="+strerror(ferror), "CustomContext");
+											Cmd.success =false;
+										} else {
+											if (0!=spl.file::fclose(fileReadH, ferror)) {
+												appTrc(Trace.error, "On fclose file: " + metricsFile + " ferror="+strerror(ferror), "CustomContext");
+											} else {
+												submit(metrics, CampaignMetricsStream);
+												spl.file::remove(metricsFile, ferror);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+					submit(Cmd, OutCommandRespStream);
+				}
+				onTuple Recovery : {
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+					metrics.totalCDRs++;
+					if(cdrRecordType == 2ub) {
+						metrics.smsCDRs++;
+					}
+					if((cdrRecordType == 1ub) && ((1ub <= cdrCallType && cdrCallType <= 4ub) || cdrCallType == 6ub)) {
+						/**
+						 * declare and initialize local variable
+						 */
+						uint32 callReferenceDaySince1970 = daysSince1970(callReferenceTimeToTimestamp(cdrCallReferenceTime));
+						uint64 causeForTermination = strtoull(cdrCauseForTermination, 16);
+						mutable rstring imsi;
+						mutable int32 sizeOfList;
+						mutable boolean dayInList;
+						mutable int32 idx;
+
+						/**
+						 * evaluate imsi depending on call type
+						 */
+						if(cdrCallType == 3ub)
+							imsi = cdrCallingImsi;
+						else
+							imsi = cdrCalledImsi;
+
+						/**
+						 * add subscriber to hash map if not already in
+						 */
+						if(!(imsi in subscriberMap)) {
+							subscriberMap[imsi] = subscriberDataEMPTY;
+							metrics.sizeofSubscriberMap = (int64) size(subscriberMap);
+						}
+
+						/**
+						 * check if the incoming data is in the interval and so valid to be processed 
+						 */
+						sizeOfList = size(subscriberMap[imsi].intervalDays);
+						if((0 == sizeOfList) ||
+						   (subscriberMap[imsi].intervalDays[sizeOfList-1].daySince1970 < callReferenceDaySince1970+$interval)) {
+
+							/**
+							 * check if we have expired data (data out of interval) in the list and if so remove them
+							 */
+							while((0 < size(subscriberMap[imsi].intervalDays)) &&
+								  ((subscriberMap[imsi].intervalDays[0].daySince1970+$interval) < (callReferenceDaySince1970+1u))) {
+								removeM(subscriberMap[imsi].intervalDays, 0);
+								metrics.totalNumberOfDays--;
+							}
+
+							/**
+							 * check if the reference day is in the list or if not insert into list (list is ascending by daySince1970)
+							 * set idx to index of data in the list.
+							 */
+							dayInList = false;
+							idx = 0;
+							while(idx <= size(subscriberMap[imsi].intervalDays) && !dayInList) {
+
+								/**
+								 * if we are behind the last element in the list append to list. this covers also empty list in the beginning
+								 */
+								if(idx == size(subscriberMap[imsi].intervalDays)) {
+									appendM(subscriberMap[imsi].intervalDays, dayAggregateEMPTY);
+									subscriberMap[imsi].intervalDays[idx].daySince1970 = callReferenceDaySince1970;
+									dayInList = true;
+									metrics.totalNumberOfDays++;
+								}
+
+								/**
+								 * else if the reference day is lower than day in the list insert the day before
+								 */
+								else if(callReferenceDaySince1970 < subscriberMap[imsi].intervalDays[idx].daySince1970) {
+									insertM(subscriberMap[imsi].intervalDays, dayAggregateEMPTY, idx);
+									subscriberMap[imsi].intervalDays[idx].daySince1970 = callReferenceDaySince1970;
+									dayInList = true;
+									metrics.totalNumberOfDays++;
+								}
+
+								/**
+								 * else if the reference day is equal to the day in the list we found it
+								 */
+								else if(subscriberMap[imsi].intervalDays[idx].daySince1970 == callReferenceDaySince1970) {
+									dayInList = true;
+								}
+
+								/**
+								 * go to next element in the list
+								 */
+								else {
+									idx++;
+								}
+							}
+
+							/**
+							 * aggregate call time per day for outgoing calls (cdrCallType == 3)
+							 */
+							if(cdrCallType == 3ub)
+								subscriberMap[imsi].intervalDays[idx].callDurationPerDay += (uint32) cdrSamMczDuration;
+	 
+							/**
+							 * aggregate dropped calls per day. cause for termination 16 and 31 are normal terminations
+							 */
+							if((causeForTermination != 16ul) && (causeForTermination != 31ul)) {
+								subscriberMap[imsi].intervalDays[idx].droppedCallsPerDay++;
+								metrics.failedCDRs++;
+							}
+						}
+						/**
+						 * the incoming data is not in the interval and so not valid to be processed 
+						 */
+						else {
+							metrics.ignoredCDRs++;
+						}
+					}
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------
+				}
+				onPunct Recovery : {
+					if (currentPunct() == Sys.WindowMarker) { // end of training phase
+						// ------------------------------------------------
+						// custom code begin
+						// ------------------------------------------------
+						// update metrics
+						submit(metrics, CampaignMetricsStream);
+						// ------------------------------------------------
+						// custom code end
+						// ------------------------------------------------
+						submit(Sys.WindowMarker, OutRecoveryRespStream);
+					}
+				}
+		}
+
+		/**
+		 * EventThreshold1
+		 * FileSink operator that receives threshold1 event stream data tuples and writes them into the threshold1 csv file.
+		 * @input  Threshold1EventStream data stream with threshold1 events
+		 */
+		() as EventThreshold1 = FileSink(Threshold1EventStream) {
+			logic
+				state : {
+					rstring dir = $outputDir; // prevents submission code to be called when using directory param
+					boolean dirOk = com.teracloud.streams.teda.internal.fileutils::createDir(dir);
+				}		
+			param
+				file : $outputDir + "/" + $threshold1FileName + "_CDR-" + $groupId + ".csv";
+				format : csv;
+				flush : 1u;
+		}
+
+		/**
+		 * EventThreshold2
+		 * FileSink operator that receives threshold event stream data tuples and writes them into the threshold2 csv file.
+		 * @input  Threshold1EventStream data stream with threshold2 events
+		 */
+		() as EventThreshold2 = FileSink(Threshold2EventStream) {
+			logic
+				state : {
+					rstring dir = $outputDir; // prevents submission code to be called when using directory param
+					boolean dirOk = com.teracloud.streams.teda.internal.fileutils::createDir(dir);
+				}		
+			param
+				file : $outputDir + "/" + $threshold2FileName + "_CDR-" + $groupId + ".csv";
+				format : csv;
+				flush : 1u;
+		}
+
+		/**
+		 * EventDroppedCalls
+		 * FileSink operator that receives dropped calls event stream data tuples and writes them into the dropped calls csv file.
+		 * @input  DroppedCallsEventStream data stream with dropped calls events
+		 */
+		() as EventDroppedCalls = FileSink(DroppedCallsEventStream) {
+			logic
+				state : {
+					rstring dir = $outputDir; // prevents submission code to be called when using directory param
+					boolean dirOk = com.teracloud.streams.teda.internal.fileutils::createDir(dir);
+				}		
+			param
+				file : $outputDir + "/" + $droppedCallsFileName + "_CDR-" + $groupId + ".csv";
+				format : csv;
+				flush : 1u;
+		}
+
+		/**
+		 * CampaignMetricsSink
+		 * MetricsSink operator that receives campaign metrics stream data tuples and provides them as metrics 
+		 * @input  CampaignMetricsStream data stream with campaign metrics
+		 */
+		() as CampaignMetricsSink = MetricsSink(CampaignMetricsStream) {
+			param
+				metrics :
+					totalCDRs,
+					((totalCDRs>0l) ? (100l * smsCDRs / totalCDRs):0l),
+					((totalCDRs>0l) ? (100l * failedCDRs / totalCDRs):0l),
+					duplicateCDRs,
+					ignoredCDRs,
+					sizeofSubscriberMap,
+					totalNumberOfDays;
+
+				names :
+					"CDRs",
+					"SmsPercentage",
+					"FailedPercentage",
+					"DuplicateCDRs",
+					"IgnoredCDRs",
+					"SizeOfSubscriberMap",
+					"TotalNumberOfDays";
+
+				descriptions :
+					"number of processed CDRs",
+					"percentage of SMS",
+					"percentage of failed",
+					"number of duplicate CDRs",
+					"number of ignored CDRs",
+					"size of subscriber map",
+					"total number of days";
+
+		}
+
+}

@@ -1,0 +1,105 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.tap.custom;
+
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+
+/**
+ * Implements features that do not alter the data that is stored in the files
+ * by the main business logic. For example, the tap logic filters for tuples
+ * and sends an event to another application or another system if the filter
+ * condition is met. The spl.adapter::Export operator or any sink operator
+ * like the spl.adapter::TCPSink operator might be used with the tap data
+ * tuples.
+ * 
+ * Turn the **ite.businessLogic.group.tap** parameter on to activate this
+ * composite operator.
+ * 
+ * Specify the attributes that you need to implement the tap logic, in the
+ * BundledPostContextOutputStreamType type in the type section. Set the specified
+ * attributes in the <namespace>.chainsink.custom::PostContextDataProcessor
+ * composite operator.
+ * 
+ * Since the singleton instance of the PostContextDataProcessorTap composite
+ * operator gets the bundled outputs of all PostContextDataProcessor instances
+ * that means one per chain, the singleton instance can become a bottleneck. It
+ * is recommended that the logic that is implemented in the PostContextDataProcessorTap
+ * composite operator is cheap with respect to performance and does not slow
+ * down the normal file and tuple processing. Typically, the first operator
+ * is a spl.utility::Filter operator that drops 90% or more of the incoming
+ * tuples.
+ *
+ * Adapt the code blocks that are marked with "custom code begin" and "custom
+ * code end".
+ *
+ * @input InData
+ * The bundled output streams of the
+ * <namespace>.chainsink.custom::PostContextDataProcessor
+ * composite operator instances of all chains.
+ *
+ * @param outDir
+ * The absolute path of the output directory. Use this parameter
+ * to create files in the output directory.
+ */
+public composite PostContextDataProcessorTap (input InData)
+{
+	param
+		expression<rstring> $outDir;
+
+	type
+		/**
+		 * Specify the attributes that you need to implement the tap logic and set
+		 * them in the <namespace>.chainsink.custom::PostContextDataProcessor
+		 * composite operator.
+		 */
+		static BundledPostContextOutputStreamType = tuple<
+			// ------------------------------------------------
+			// custom code begin
+			// ------------------------------------------------
+			rstring filename
+			// ------------------------------------------------
+			// custom code end
+			// ------------------------------------------------
+		>;
+
+	graph
+
+		// ------------------------------------------------
+		// custom code begin
+		// ------------------------------------------------
+		() as CustomPostContextTap = Custom(InData as I) {
+			logic
+				onTuple I : {
+				}
+		}
+		// ------------------------------------------------
+		// custom code end
+		// ------------------------------------------------
+
+}

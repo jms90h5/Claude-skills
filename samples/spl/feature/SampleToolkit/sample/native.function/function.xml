@@ -1,0 +1,62 @@
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                -->
+<!-- TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    -->
+<!-- EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   -->
+<!-- COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       -->
+<!-- AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   -->
+<!-- OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE -->
+<!-- RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  -->
+<!-- OF THIS SAMPLE CODE.                                             -->
+<!--                                                                  -->
+<!-- LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   -->
+<!-- PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   -->
+<!-- DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    -->
+<!-- THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  -->
+<!-- PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   -->
+<!-- ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                -->
+<!--                                                                  -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2009, 2011     -->
+<!-- All Rights reserved.                                             -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<functionModel
+   xmlns="http://www.ibm.com/xmlns/prod/streams/spl/function"
+   xmlns:cmn="http://www.ibm.com/xmlns/prod/streams/spl/common"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.ibm.com/xmlns/prod/streams/spl/function functionModel.xsd">
+  <functionSet>
+    <!-- header file to include from within C++ code -->
+    <headerFileName>Sample.h</headerFileName>
+    <!-- functions lists the SPL prototypes of the functions implemented in this library -->
+    <functions>
+      <function>
+        <!-- use of CDATA allows easy use of <> in the prototypes -->
+        <prototype><![CDATA[ public void incrementBy(mutable list<int32> l, int32 incr) ]]></prototype>
+      </function>
+      <function>
+        <prototype><![CDATA[ public list<int32> joinLists(list<int32> a, list<int32> b) ]]></prototype>
+      </function>
+    </functions>
+    <dependencies>
+      <!-- This library can have several dependencies. We only use one here -->
+      <library>
+        <!-- A description for this library -->
+        <cmn:description>Sample-Functions</cmn:description>
+        <cmn:managedLibrary>
+          <!-- the name of the library for linking.  Will be used as -lSample -->
+          <cmn:lib>Sample</cmn:lib>
+          <!-- Where to find the library.  Relative to the current directory.
+               Will be used as -L<dir>/lib -->
+          <cmn:libPath>lib</cmn:libPath>
+          <!-- Where to find the include file.  Relative to the current directory.
+               Will be used as -I<dir> -->
+          <cmn:includePath>./</cmn:includePath>
+        </cmn:managedLibrary>
+      </library>
+    </dependencies>
+  </functionSet>
+</functionModel>

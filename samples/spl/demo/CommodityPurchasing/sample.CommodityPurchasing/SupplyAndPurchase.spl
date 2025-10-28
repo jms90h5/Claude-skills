@@ -1,0 +1,295 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2014     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace sample.CommodityPurchasing;
+
+use com.teracloud.streams.inet::InetSource;
+
+/**
+ * The `SupplyAndPurchase` application maintains a count of the number of bushels of our commodity we have in stock.
+ * It monitors feeds that represent "purchase" commands and "consume" commands.  Additions to stock occur when 
+ * the commodity is purchased from one of our suppliers (either automatically or user-initiated).  Depletions 
+ * occur as the commodity is used in our manufacturing process --  there is a "consumption sensor feed" that 
+ * simulates periodic withdrawals from stock as it is delivered to manufacturing.  Each time stock is increased 
+ * or decreased, the application streams out the value of what we now have in stock, along with a timestamp. 
+ *
+ * When a "purchase" command arrives, the application generates a purchase transaction based on the supplier
+ * that currently has the highest ranking.  The transaction record includes the supplier ID, the amount of purchase,
+ * and a timestamp for when the purchase occurred.
+ *
+ * **Imported Streams**
+ *  
+ * * `TopSupplier` - The top-ranked supplier, used to create the purchase transaction record for a given purchase.
+ * * `AutomatedPurchases` - A notification that our stock has decreased to the point that the system should
+ * automatically initiate a purchase.
+ * 
+ * **Exported Streams**
+ *  
+ * * `PurchaseTransactions` - the transaction record including supplied ID, amount of purchase, and time.  This is fed to
+ * the supplier ranking application so it can take into account recent purchases from a given supplier.
+ * * `CurrentStock` - the amount of commodity we currently have in stock.  This is fed to the automated purchasing
+ * application so it can determine whether stock has depleted to the point where an automatic purchase must
+ * be made from the currently top-ranked supplier.
+ */
+composite SupplyAndPurchase 
+{
+
+graph
+
+
+  //
+  // Imported Streams
+  //
+
+  // Import the optimal supplier stream from the TopSupplier application
+  stream <OptimalSupplierSchema> TopSupplier = Import() 
+  {
+    param applicationName : "sample.CommodityPurchasing::TopSupplier";
+          streamId : "OptimalSupplier";
+  }
+
+  // Import the automated purchases stream from the AutomatedBuyer application
+  stream <SupplyChangeSchema> AutomatedPurchases = Import() 
+  {
+    param applicationName : "sample.CommodityPurchasing::AutomatedBuyer";
+          streamId : "AutomatedPurchases";
+  }
+
+  /*************************************************************************************
+  # Purpose:        Monitor the file that contains records of user-initiated purchases.
+  #  
+  # Input Streams:  None  
+  #
+  # Output Streams: A stream of strings representing purchases
+  ************************************************************************************/
+  stream <rstring inputStr> PurchaseSensorFeed = InetSource() 
+  {
+    param 
+      URIList : ["file:///../../user_interface/purchase_history"];
+      incrementalFetch : true;
+      doNotStreamInitialFetch : true;
+      fetchInterval: 1.0l;
+      initDelay: 5.0l;
+
+  }
+
+
+  /*************************************************************************************
+  # Purpose:        Decode the raw output of the user-initiated purchase file monitor.
+  #  
+  # Input Streams:  User-initiated purchase strings
+  #
+  # Output Streams: A stream of tuples representing user-initiated purchases
+  ************************************************************************************/
+  stream <SupplyChangeSchema> Purchases = Functor(PurchaseSensorFeed) 
+  {
+    logic  state: { mutable int32 sdelta = 0;
+                    mutable int64 tstamp = 0; }	
+           onTuple PurchaseSensorFeed: {
+             list<rstring> matches = regexMatch(inputStr, "([0-9]*) bushels purchased at: ([0-9]*).*" );
+	     if (size(matches) > 0) {
+	       sdelta = (int32) (matches[1]);
+	       tstamp = (int64) (matches[2]); }
+	     else {
+	       sdelta = 0;
+	       tstamp = 0l; }
+           }
+
+    output Purchases : stockDelta = sdelta,
+                       timeSeconds = tstamp;
+  }
+
+
+  /*************************************************************************************
+  # Purpose:        Join together records of automated and user-initated purchases, with 
+  #                 the supplier that is currently top-ranked.
+  #  
+  # Input Streams:  There are two input streams 1) a stream of user-initiated purchases,
+  #                 and 2) a stream of automated purchases.
+  #
+  # Output Streams: Purchase tuples joined with the optimal supplier to form a purchase
+  #                 transaction.
+  ************************************************************************************/
+  stream <PurchaseTransactionSchema> PurchaseTransactions = Join(Purchases, AutomatedPurchases as L; TopSupplier as R) 
+  {
+    window
+      L : sliding, count(0);
+      R : sliding, count(1);
+
+    output PurchaseTransactions : amountPurchased = stockDelta,
+                                  city = city,
+                                  weatherScoreAtPurchase = weatherScore;
+  }  
+
+
+  /*************************************************************************************
+  # Purpose:        Export the purchase transaction stream.
+  #  
+  # Input Streams:  The stream of purchase tranactions.
+  #
+  # Output Streams: An exported purchase transaction stream.
+  ************************************************************************************/  
+  () as PurchaseExport = Export(PurchaseTransactions)
+  {
+    param streamId : "PurchaseTransactions";
+  }
+
+
+  /*************************************************************************************
+  # Purpose:        Track the average score of suppliers we have purchased from.
+  #  
+  # Input Streams:  The stream of purchase transactions.
+  #
+  # Output Streams: A stream containing the average weather score across all the purchases
+  #                 that have been made.
+  ************************************************************************************/
+  stream <float32 avgScore, int64 timeSeconds> AveragePurchaseWeatherScore = Functor(PurchaseTransactions) 
+  {
+    logic  state : {mutable int32 totalAmountPurchased = 0;
+                    mutable int32 totalUnitScores = 0;
+                   }
+           onTuple PurchaseTransactions: {
+             totalAmountPurchased += amountPurchased;
+             totalUnitScores += amountPurchased*weatherScoreAtPurchase;
+           }
+    output AveragePurchaseWeatherScore : avgScore = (float32) totalUnitScores / 
+                                                        (float32) totalAmountPurchased;
+  }
+     
+  //
+  // Operators for monitoring the supply level
+  //
+
+  /*************************************************************************************
+  # Purpose:        This stream represents periodic notifications from a sensor on the 
+  #                 manufacturing line, that is recording each bushel of our commodity
+  #                 as it is consumed by the manufacturing process.  Here, we are 
+  #                 simulating a consumption of 40 bushels every 5 minutes.
+  #  
+  # Input Streams:  None
+  #
+  # Output Streams: A stream containing tuples representing a decrease in stock.
+  ************************************************************************************/
+  stream <SupplyChangeSchema> ConsumptionSensorFeed = Beacon()
+  {
+    param
+      period : 300.0;
+      initDelay : 5.0;
+    output
+      ConsumptionSensorFeed : stockDelta = -40,
+                              timeSeconds =  getSeconds(getTimestamp());
+  }
+
+
+  /*************************************************************************************
+  # Purpose:        This functor keeps track of the amount we currently have in stock.
+  #                 It adds incoming purchase and consumption data to the current stock 
+  #                 value and streams out the new stock value.
+  #  
+  # Input Streams:  There are three input streams that all affect the supply level: 
+  #                 1)  notifications from the consumption sensor, 2) user-initiated
+  #                 purchases, and 3) automated purchases.
+  #
+  # Output Streams: A stream containing tuples representing the current supply level.
+  ************************************************************************************/
+  stream <SupplySchema> CurrentStock = Functor(ConsumptionSensorFeed, Purchases, AutomatedPurchases as StockChanges)
+  {
+    logic  state : { mutable int32 stock = 15080;
+                   }
+           onTuple StockChanges: {
+	     stock += stockDelta;
+           }
+    output CurrentStock : stockAmount = stock,
+                          tStamp = getSeconds(getTimestamp());
+  }
+
+  () as SupplyExport = Export(CurrentStock) 
+  {
+    param streamId: "CurrentStock";
+  }
+
+
+
+  //
+  // Data Sinks (to support the application user interface)
+  //
+
+
+  /*************************************************************************************
+  # Purpose:        Write the average purchase score to an external sink.  In this case,
+  #                 the sink is a file that will be used as data for the application 
+  #                 user interface. 
+  #  
+  # Input Streams:  The average purchase score stream.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as PurchaseAverage = FileSink(AveragePurchaseWeatherScore) 
+  {
+    param
+      file: "PurchaseScoreAvg.result";
+      format: csv;
+      flush: 1u;
+  }
+
+
+  /*************************************************************************************
+  # Purpose:        Write the purchase transactions to an external sink.  In this case,
+  #                 the sink is a file that will be used as data for the application 
+  #                 user interface. 
+  #  
+  # Input Streams:  The purchase transactions stream.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as AllPurchases = FileSink(PurchaseTransactions) 
+  {
+  param
+    file: "PurchaseTransactions.result";
+    format: csv;
+    flush: 1u;
+  }
+
+
+  /*************************************************************************************
+  # Purpose:        Write the current supply level to an external sink.  In this case,
+  #                 the sink is a file that will be used as data for the application 
+  #                 user interface. 
+  #  
+  # Input Streams:  The current stock stream.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as Stock = FileSink(CurrentStock)
+  {
+  param
+    file: "CurrentStock.result";
+    format: csv;
+    flush: 1u;
+  }
+
+config placement : partitionColocation("same"); // place all operators into one PE
+}

@@ -1,0 +1,337 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<%
+	my $namespace = "sample";
+	# --------------------------------------------------------------------------
+	# The ContextContainer evaluates configuration parameters. Therefore, the
+	# Perl modules, which are used to access the configuration parameters, must
+	# be loaded. The Perl modules are located in the <project>/scripts folder.
+	# --------------------------------------------------------------------------
+	use Data::Dumper;
+	use Cwd qw(abs_path);
+	use File::Basename qw(dirname);
+	use File::Spec::Functions qw(catdir);
+	my $projectDirectory = abs_path(catdir(dirname(__FILE__), ("..") x ($namespace eq "custom" ? 1 : 3)));
+	unshift @INC, catdir($projectDirectory,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projectDirectory", selector => Configurator::ParameterSet::ITE());
+
+	# -------------------------------------------------------------------------
+	# Determine if the composite is enabled.
+	# -------------------------------------------------------------------------
+	my $isEnabled = ((($configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP())) && ($configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM())) &&($configurator->isOn(Configurator::ITE_EMBEDDEDSAMPLECODE()))) ? 1 : 0);
+
+	# -------------------------------------------------------------------------
+	# Determine the context (aka group) ids.
+	# -------------------------------------------------------------------------
+	my $configurationFile = catdir($projectDirectory, $configurator->getString(Configurator::ITE_INGEST_LOADDISTRIBUTION_GROUPCONFIGFILE()));
+	my %groupConfiguration;
+	my %bloomFilterConfiguration; # temporary and unused variable
+	if ($isEnabled)
+	{
+		CodeGenFrw::getChainMapping($configurationFile, \%groupConfiguration, \%bloomFilterConfiguration);
+	}
+	my @contextIds = sort(keys %groupConfiguration);
+
+	# -------------------------------------------------------------------------
+	# Determine whether the ContextDataProcessor instances must be fused or
+	# assigned to specific hosts because they run in a multi-host environment.
+	# -------------------------------------------------------------------------
+	my $variantB = ((($configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP())) && ($configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TUPLEGROUPSPLIT())) && ($configurator->isOff(Configurator::ITE_INGEST_FILEGROUPSPLIT()))) ? 1 : 0);
+	print "\n// Variant ". ($variantB ? "B" : "C") ."\n" if ($isEnabled);
+	my $isMultiHostEnvironment = $configurator->isOn(Configurator::GLOBAL_MULTIHOST());
+	my $fuseGroup = $configurator->isOn(Configurator::ITE_FUSE_GROUP_OPERATORS());
+	my $fuseChainsAndGroup = $configurator->isOn(Configurator::ITE_FUSE_GROUPWITHCHAIN_OPERATORS());
+	my $partitionLabel = (($fuseChainsAndGroup) ? "FILE_PROCESSOR" : "CONTEXT");
+
+	# -------------------------------------------------------------------------
+	# Build the port declarations and SPLDOC.
+	# -------------------------------------------------------------------------
+	my @inputPortDeclarations;
+	my @outputPortDeclarations;
+	my @portSPLDOC;
+	foreach my $contextId (@contextIds)
+	{
+		# input ports
+		push @inputPortDeclarations, sprintf("DataForContextDataProcessor_%s", $contextId);
+		push @inputPortDeclarations, sprintf("stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor_%s", $contextId);
+		push @inputPortDeclarations, sprintf("stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor_%s", $contextId);
+
+		# output ports
+		push @outputPortDeclarations, sprintf("stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor_%s", $contextId);
+		push @outputPortDeclarations, sprintf("stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor_%s", $contextId);
+
+		# SPLDOC
+		push @portSPLDOC, sprintf('@input DataForContextDataProcessor_%s', $contextId);
+		if ("00" eq $contextId) {
+			push @portSPLDOC, sprintf('This input port receives data tuples. The context with id %s processes', $contextId);
+			push @portSPLDOC, sprintf('these data tuples. The default implementation of this composite sends');
+			push @portSPLDOC, sprintf('the tuples to the demoapp.context.%s::ContextDataProcessor', $namespace);
+			push @portSPLDOC, sprintf('composite operator.');
+			push @portSPLDOC, sprintf('This input port does not receive WindowMarkers. Instead, if the end of a file');
+			push @portSPLDOC, sprintf('is reached, a tuple with the chainPunct attribute that is set to `true`, is received.');
+		} else {
+			push @portSPLDOC, sprintf('See description of port DataForContextDataProcessor_00.');
+		}
+		push @portSPLDOC, "";
+		push @portSPLDOC, sprintf('@input CommandsForContextDataProcessor_%s', $contextId);
+		if ("00" eq $contextId) {
+			push @portSPLDOC, sprintf('This input port receives checkpoint commands in the `command` attribute. The context');
+			push @portSPLDOC, sprintf('with id %s must handle the commands on this port. Valid commands are `read`, `write`,', $contextId); 
+			push @portSPLDOC, sprintf('and `clear`. As soon as the command is processed, a response must be sent to the');
+			push @portSPLDOC, sprintf('CommandResponsesFromContextDataProcessor_%s output port. The success attribute must be', $contextId);
+			push @portSPLDOC, sprintf('set to `true` in case of success, or `false` in case of failure. If checkpointing is not');
+			push @portSPLDOC, sprintf('used, command tuples must still be acknowledged with the success attribute set to `true`');
+			push @portSPLDOC, sprintf('The default implementation of this composite sends the tuples to the');
+			push @portSPLDOC, sprintf('demoapp.context.%s::ContextDataProcessor', $namespace);
+			push @portSPLDOC, sprintf('composite operator, which handles the commands and sends appropriate responses.');
+			push @portSPLDOC, sprintf('This input port does not receive WindowMarkers.');
+		} else {
+			push @portSPLDOC, sprintf('See description of port CommandsForContextDataProcessor_00.');
+		}
+		push @portSPLDOC, "";
+		push @portSPLDOC, sprintf('@input RecoveryDataForContextDataProcessor_%s', $contextId);
+		if ("00" eq $contextId) {
+			push @portSPLDOC, sprintf('This input port receives the checkpointed data tuples during the recovery phase.');
+			push @portSPLDOC, sprintf('The context with id %s must process or, if checkpointing is not used, drop this', $contextId);
+			push @portSPLDOC, sprintf('recovery data. The end of the recovery data is marked with a WindowMarker.'); 
+			push @portSPLDOC, sprintf('If the WindowMarker is received and all recovery data is processed or dropped,');
+			push @portSPLDOC, sprintf('a WindowMarker must be send to the RecoveryResponsesFromContextDataProcessor_%s output', $contextId);
+			push @portSPLDOC, sprintf('port. The default implementation of this composite sends the tuples to the');
+			push @portSPLDOC, sprintf('demoapp.context.%s::ContextDataProcessor composite operator,', $namespace);
+			push @portSPLDOC, sprintf('which processes or drops the recovery data and sends the response WindowMarker.');
+		} else {
+			push @portSPLDOC, sprintf('See description of port RecoveryDataForContextDataProcessor_00.');
+		}		
+		push @portSPLDOC, "";
+		push @portSPLDOC, sprintf('@output CommandResponsesFromContextDataProcessor_%s', $contextId);
+		if ("00" eq $contextId) {
+			push @portSPLDOC, sprintf('Each command that is received on the CommandsForContextDataProcessor_%s', $contextId);
+			push @portSPLDOC, sprintf('input port, must be acknowledged. If the command succeeded, the success attribute');
+			push @portSPLDOC, sprintf('is set to `true`. If the command failed, the success attribute is set to `false`.');
+			push @portSPLDOC, sprintf('The command must be finished before the acknowledge response is sent.The default');
+			push @portSPLDOC, sprintf('implementation of this composite forwards the command responses that are received');
+			push @portSPLDOC, sprintf('from the demoapp.context.%s::ContextDataProcessor composite operator.', $namespace);
+		} else {
+			push @portSPLDOC, sprintf('See description of port CommandResponsesFromContextDataProcessor_00.');
+		}		
+		push @portSPLDOC, "";
+		push @portSPLDOC, sprintf('@output RecoveryResponsesFromContextDataProcessor_%s', $contextId);
+		if ("00" eq $contextId) {
+			push @portSPLDOC, sprintf('Send a WindowMarker on this output port as soon as a WindowMarker is received');
+			push @portSPLDOC, sprintf('on the RecoveryDataForContextDataProcessor_%s input port and the recovery data', $contextId);
+			push @portSPLDOC, sprintf('is either processed, or, if the checkpointing is not used, dropped. The default');
+			push @portSPLDOC, sprintf('implementation of this composite forwards the recovery responses that are received');
+			push @portSPLDOC, sprintf('from the demoapp.context.%s::ContextDataProcessor composite operator.', $namespace);
+		} else {
+			push @portSPLDOC, sprintf('See description of port RecoveryResponsesFromContextDataProcessor_00.');
+		}
+		push @portSPLDOC, "";
+	}
+
+%>
+
+namespace demoapp.context.<%=$namespace%>;
+
+<%if ($isEnabled) {%>
+use demoapp.streams::TypesCommon;
+
+/**
+ * The customizable contexts, which are enabled only if the
+ * ite.businessLogic.group.custom parameter is switched on,
+ * consist of two composite operators:
+ * 
+ * 1. demoapp.context.<%=$namespace%>::ContextContainer
+ * 2. demoapp.context.<%=$namespace%>::ContextDataProcessor
+ * 
+ * The ContextContainer contains, in its default implementation, all
+ * ContextDataProcessor instances. For each instance, the ContextContainer
+ * has three input and two output ports. Each set of input/output ports is
+ * connected to one ContextDataProcessor instance. The ContextDataProcessor
+ * instances run independently from each other. All customization work is
+ * done in the ContextDataProcessor only.
+ * 
+ * Use the default implementation of the ContextContainer if your
+ * application can group tuples upstream and if this grouping does
+ * not change anymore. For example, you use phone numbers and cell
+ * ids to build the groups and inside each ContextDataProcessor you
+ * aggregate the number of dropped calls per each phone number per
+ * cell id. Phone number A and cell id X are assigned to context
+ * instance 01, phone number B and cell id X to context instance 02.
+ * 
+ * You want to change the default implementation of the ContextContainer
+ * if the ContextDataProcessor instances need to interact with each
+ * other. For example, you aggregate values for the group that was built
+ * upstream (phone numbers and cell ids). But, after this aggregation you
+ * want to perform another aggregation that needs data from different groups.
+ * For example, you want to aggregate the aggregated numbers (grouped by
+ * phone numbers and cell ids) per cell id. Using the above example,
+ * cell id X was aggregated in context instances 01 and 02. Your second
+ * aggregation needs, therefore, the aggregate results from both context
+ * instances.
+ * 
+ * In such cases, you must customize the ContextContainer instead of the
+ * ContextDataProcessor. The ContextDataProcessor can be deleted.
+ * 
+ * If you change the default implementation, you must be aware of the following
+ * configuration parameters.
+ * 
+ * * global.multiHost
+ * * ite.fuse.group.operators
+ * * ite.fuse.groupWithChain.operators
+ * 
+ * See the parameter reference in the toolkit documentation for more details.
+ * 
+ * If any of the configuration parameters is switched on, a `placement`
+ * statement might be required.
+ * 
+ * See the following table for allowed combinations. 
+ * 
+ * |:--------------------------------------+:--------------------------------------:|:------------------------------------------:|
+ * | Configuration Parameters              + Variant B                              | Variant C                                  |
+ * |:======================================+:======================================:|:==========================================:|
+ * | ite.fuse.groupWithChain.operators=on  + partitionColocation("FILE_PROCESSOR")  | partitionColocation("FILE_PROCESSOR_[id]") |
+ * | ite.fuse.group.operators=on           +                                        |                                            | 
+ * | global.multiHost=off                  +                                        |                                            | 
+ * |---------------------------------------+----------------------------------------|--------------------------------------------|
+ * | ite.fuse.groupWithChain.operators=off + partitionColocation("CONTEXT_[id]")    | partitionColocation("CONTEXT_[id]")        |
+ * | ite.fuse.group.operators=on           +                                        |                                            |
+ * | global.multiHost=off                  +                                        |                                            |
+ * |---------------------------------------+----------------------------------------|--------------------------------------------|
+ * | ite.fuse.groupWithChain.operators=on  + partitionColocation("FILE_PROCESSOR")  | partitionColocation("FILE_PROCESSOR_[id]") |
+ * | ite.fuse.group.operators=on           +                                        |                                            |
+ * | global.multiHost=on                   + host(ChainPool)                        | host(ContextPool[x])                       |
+ * |---------------------------------------+----------------------------------------|--------------------------------------------|
+ * | ite.fuse.groupWithChain.operators=off + partitionColocation("CONTEXT_[id]")    | partitionColocation("CONTEXT_[id]")        |
+ * | ite.fuse.group.operators=on           +                                        |                                            |
+ * | global.multiHost=on                   + host(ContextPool[x])                   | host(ContextPool[x])                       |
+ * |---------------------------------------+----------------------------------------|--------------------------------------------|
+ * | ite.fuse.groupWithChain.operators=off +                                        |                                            |
+ * | ite.fuse.group.operators=off          +                                        |                                            |
+ * | global.multiHost=on                   + host(ChainPool)                        | host(ContextPool[x])                       |
+ * |---------------------------------------+----------------------------------------|--------------------------------------------|
+ * | ite.fuse.groupWithChain.operators=off +                                        |                                            |
+ * | ite.fuse.group.operators=off          +                                        |                                            |
+ * | global.multiHost=off                  +                                        |                                            |
+ * -------------------------------------------------------------------------------------------------------------------------------
+ * 
+ * The [id] is the identifier of the context instance, for example, 01, 02, or 99.
+ * The [x] is the index of the context instance, for example, 1, 2, or 99.
+ * 
+ * Typically, if you customize the ContextContainer composite operator,
+ * you apply the partitionColocation options to a subset of your operators
+ * only because you typically do not want to fuse the operators that get
+ * data from many context instances with the operators that are bound to
+ * a single context instance.
+ * 
+ * @param checkpointDirectory
+ * The absolute path of the directory, which gets the checkpoint files.
+ * 
+ * @param checkpointFile
+ * The file name for the checkpoint files.
+ * 
+ * @param outputDirectory
+ * The absolute path of the output directory.
+ *
+ * @param applControlDir
+ * The LookupCache operator requires this parameter that provides the path to the control directory.
+ * This directory provides the information about the name of the Lookup Manager job that 
+ * the LookupCache operator needs to specify the shared memory segment name 
+ 
+ * <%=join("\n * ", @portSPLDOC)%> 
+ */
+public composite ContextContainer
+(
+	input
+		<%=join(",\n\t\t", @inputPortDeclarations)%>
+		;
+	output
+		<%=join(",\n\t\t", @outputPortDeclarations)%>
+)
+{
+	param
+
+		/**
+		 * The absolute path of the directory, which gets the checkpoint files.
+		 */
+		expression<rstring> $checkpointDirectory;
+
+		/**
+		 * The file name for the checkpoint files.
+		 */
+		expression<rstring> $checkpointFile;
+
+		/**
+		 * The absolute path of the output directory.
+		 */
+		expression<rstring> $outputDirectory;
+		
+		/**
+		 * The path of the control directory
+		 */
+		expression<rstring> $applControlDir;
+
+	graph
+<%
+	foreach my $id (@contextIds)
+	{
+%>
+		@spl_category(name="sample")
+		(
+			stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor_<%=$id%>;
+			stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor_<%=$id%>
+		) as CustomContext_<%=$id%> = ContextDataProcessor
+		(
+			DataForContextDataProcessor_<%=$id%>;
+			CommandsForContextDataProcessor_<%=$id%>;
+			RecoveryDataForContextDataProcessor_<%=$id%>
+		)
+		{
+			param
+				groupId: "<%=$id%>";
+				checkpointFile: $checkpointDirectory + "/<%=$id%>/" + $checkpointFile;
+				outputDir: $outputDirectory;
+<%
+	print ${\CodeGenFrw::buildConfigClauseCodeSnippet
+	({
+		placement =>
+		[
+			($fuseGroup || $fuseChainsAndGroup
+				? (($fuseChainsAndGroup && $variantB) ? sprintf("partitionColocation(\"%s\")", $partitionLabel) : sprintf("partitionColocation(\"%s_%s\")", $partitionLabel, $id))
+				: undef),
+			($isMultiHostEnvironment ? (($fuseChainsAndGroup && $variantB) ? "host(ChainPool)" : sprintf("host(ContextPool%s)", CodeGenFrw::triml0($id)) ) : undef)
+		]
+	})};
+%>
+		}
+<%
+	} # end: foreach (@contextIds)
+%>
+}
+
+<%} #endif enabled%>

@@ -1,0 +1,113 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2016     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample;
+
+stateful tuple<float64 x, float64 y> randomPosition() {
+  float64 x = random();
+  float64 y = random();
+  return { x = x, y = y };
+}
+
+composite SensorQuery
+{
+  type
+    Position = float64 x, float64 y;
+    Reading = int32 sensorId, Position position, float64 value;
+    Query = int32 queryId, Position position, float64 distance;
+    Match = int32 queryId, int32 sensorId, float64 value;
+
+  graph
+
+   (stream<Reading> Readings;
+    stream<Query> Queries) = Custom()
+    {
+	  logic onProcess : {
+	  	mutable int32 count = 0;
+	    while(count < 10000) {
+	    	int32 sId = (int32) (100.0 * random());
+	    	tuple<float64 x, float64 y> pos = randomPosition();
+	    	float64 val = 1000.0 * random();
+	        submit ({sensorId = sId, 
+	        		 position = pos,
+	        		 value = val
+	        		}, Readings);
+
+                submit ({queryId = count, 
+                                 position = randomPosition(),
+                                 distance = 0.1
+                                }, Queries);
+	        count++;
+	    }
+	  }
+    }
+
+    (stream<Match> Matches1; stream<Reading> PopReadings1)
+        = FindReadings(Readings as R; Queries as Q)
+    {
+        param 
+          size : 100u;
+          threshold : 2u;
+    }
+
+    () as WriterR1 = FileSink(Matches1)
+    {
+        param file : "Results1.txt";
+              format : txt;
+    }
+
+    () as WriterP1 = FileSink(PopReadings1)
+    {
+        param file : "PopularReadings1.txt";
+              format : txt;
+    }
+
+    (stream<Match> Matches2; stream<Reading> PopReadings2)
+        = TableMatch(Readings as R; Queries as Q)
+    {
+        window
+          R : sliding, count(100);
+        param 
+          match : sqrt(
+            pow(R.position.x - Q.position.x, 2.0) +
+            pow(R.position.y - Q.position.y, 2.0)) < Q.distance; 
+          threshold : 2u;
+    }
+
+    () as WriterR2 = FileSink(Matches2)
+    {
+        param file : "Results2.txt";
+              format : txt;
+    }
+
+    () as WriterP2 = FileSink(PopReadings2)
+    {
+        param file : "PopularReadings2.txt";
+              format : txt;
+    }
+
+}
+
+

@@ -1,0 +1,557 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+	my $curDir = $projDir;
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_INGEST_DEBUG());
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $numOfChars = 2;
+	sub l0($) {
+		my $string = shift;
+		while (length($string)<$numOfChars) {
+			$string = "0${string}";
+		}
+		return $string;
+	}
+
+	my $filenameDedupEnabled = $configurator->isOn(Configurator::ITE_INGEST_DEDUPLICATION());
+	print "//filenameDedupEnabled=$filenameDedupEnabled\n";
+		
+	my $processFilePat = $configurator->getRegularExpression(Configurator::ITE_INGEST_DIRECTORYSCAN_PROCESSFILEPATTERN());
+	my $reprocessPat = $configurator->getRegularExpression(Configurator::ITE_INGEST_DEDUPLICATION_REPROCESSFILEPATTERN());
+	print "//processFilePat=$processFilePat reprocessPat=$reprocessPat\n";
+
+	my $groupConfigFile = $curDir."/".$configurator->getString(Configurator::ITE_INGEST_LOADDISTRIBUTION_GROUPCONFIGFILE());
+	my $level1SplitDisabled = $configurator->isOff(Configurator::ITE_INGEST_FILEGROUPSPLIT());
+
+	my $FILEINGESTION_LEVEL1_ID_EXTRACTION_PATT = ($level1SplitDisabled ? undef : $configurator->getRegularExpression(Configurator::ITE_INGEST_FILEGROUPSPLIT_PATTERN()));
+
+	my $FILEINGESTION_FILEDATE_IN_FILENAME_PAT_DEFINED = $configurator->isOn(Configurator::ITE_INGEST_DIRECTORYSCAN_SPECIALFILETIME());
+	my $FILEINGESTION_FILEDATE_IN_FILENAME_PAT = $configurator->getRegularExpressionList(Configurator::ITE_INGEST_DIRECTORYSCAN_SPECIALFILETIME_REGEXP()) if ($FILEINGESTION_FILEDATE_IN_FILENAME_PAT_DEFINED);
+	my $FILEINGESTION_FILEDATE_ORDER = $configurator->getEnumList(Configurator::ITE_INGEST_DIRECTORYSCAN_SPECIALFILETIME_FORMAT()) if ($FILEINGESTION_FILEDATE_IN_FILENAME_PAT_DEFINED);
+	my $FILEINGESTION_FILEDATE_IN_FILENAME_PAT_COUNT = $FILEINGESTION_FILEDATE_IN_FILENAME_PAT_DEFINED ? scalar(@{$FILEINGESTION_FILEDATE_IN_FILENAME_PAT}) : 0;
+	for (my $x = 0; $x < $FILEINGESTION_FILEDATE_IN_FILENAME_PAT_COUNT; ++$x)
+	{
+		print "// [$x] pattern=" , $FILEINGESTION_FILEDATE_IN_FILENAME_PAT->[$x], " format=", $FILEINGESTION_FILEDATE_ORDER->[$x] , "\n";
+	}
+
+	my $scanSleepTime = $configurator->getFloat(Configurator::ITE_INGEST_DIRECTORYSCAN_SLEEPTIME());
+	
+	my $ITE_INGEST_ARCHIVEMODE = $configurator->getEnum(Configurator::ITE_INGEST_ARCHIVEMODE());
+	
+	my $ITE_INGEST_DEDUPLICATION_TIMETOKEEP = $configurator->getTimeToKeepSeconds(Configurator::ITE_INGEST_DEDUPLICATION_TIMETOKEEP());
+	# -------------------------------------------------------------------------
+	# Sorting
+	#
+	# Enable sorting via ite.ingest.directoryScan.sort
+	# with valid values: off(0), asc(1), ascending(1), desc(2), descending(2), custom(3) 
+	#
+	# Choose sort attribute via ite.ingest.directoryScan.sort.attribute
+	# with valid values: off(0), time(1), name(2), size(3)
+	# 
+	# Enable special file time processing via ite.ingest.directoryScan.specialFileTime
+	# with valid values: off(0), on(1)
+	# 
+	# 
+	# -------------------------------------------------------------------------
+	my $getSortAttributeOperator = "";
+	my $sortInfoType = "";
+	my $sortVal = $configurator->getEnum(Configurator::ITE_INGEST_DIRECTORYSCAN_SORT());
+	my $sortAttributeVal = $configurator->getEnum(Configurator::ITE_INGEST_DIRECTORYSCAN_SORT_ATTRIBUTE());
+	my $specialFileTimeVal = $configurator->getEnum(Configurator::ITE_INGEST_DIRECTORYSCAN_SPECIALFILETIME());
+	
+	if (3 == $sortVal)
+	{
+		$getSortAttributeOperator = "demoapp".'.fileingestion.custom::GetSortAttribute';
+		$sortInfoType = "demoapp".'.fileingestion.custom::GetSortAttribute.SortFileInfo';
+	}
+	else
+	{
+		if (!defined $sortAttributeVal)
+		{
+			$getSortAttributeOperator = "GetNoSortAttribute";
+			$sortInfoType = 'GetNoSortAttribute.SortFileInfo';
+		}
+		elsif (0 == $sortAttributeVal)
+		{
+			$getSortAttributeOperator = "GetNoSortAttribute";
+			$sortInfoType = 'GetNoSortAttribute.SortFileInfo';
+		}
+		elsif (1 == $sortAttributeVal)
+		{
+			if (!defined $specialFileTimeVal)
+			{
+				$getSortAttributeOperator = "GetTimeSortAttribute";
+				$sortInfoType = 'GetTimeSortAttribute.SortFileInfo';
+			}
+			elsif (0 == $specialFileTimeVal)
+			{
+				$getSortAttributeOperator = "GetTimeSortAttribute";
+				$sortInfoType = 'GetTimeSortAttribute.SortFileInfo';
+			}
+			elsif (1 == $specialFileTimeVal)
+			{
+				$getSortAttributeOperator = "GetTimeSortAttributeFromName";
+				$sortInfoType = 'GetTimeSortAttributeFromName.SortFileInfo';
+			}
+		}
+		elsif (2 == $sortAttributeVal)
+		{
+			$getSortAttributeOperator = "GetNameSortAttribute";
+			$sortInfoType = 'GetNameSortAttribute.SortFileInfo';
+		}
+		elsif (3 == $sortAttributeVal)
+		{
+			$getSortAttributeOperator = "GetSizeSortAttribute";
+			$sortInfoType = 'GetSizeSortAttribute.SortFileInfo';
+		}
+		else
+		{
+			print STDERR "Invalid value ite.ingest.directoryScan.sort.attribute: $sortAttributeVal\n";
+			exit 1;
+		}
+	}
+	
+	
+	my $sortOperator = "";
+	{
+		if (!defined $sortVal) {
+			$sortOperator = "NoSort";
+		} elsif (0 == $sortVal) {
+			$sortOperator = "NoSort";
+		} elsif (1 == $sortVal) {
+			$sortOperator = "SortAscending";
+		} elsif (2 == $sortVal) {
+			$sortOperator = "SortDescending";
+		} elsif (3 == $sortVal) {
+			$sortOperator = "FileSort";
+		} else {
+			print STDERR "Invalid value ite.ingest.directoryScan.sort: $sortVal\n";
+			exit 1;
+		}
+	}
+	if ( ("" eq $sortOperator) || ("NoSort" eq $sortOperator)) {
+		if (("" ne $getSortAttributeOperator) && ("GetNoSortAttribute" ne $getSortAttributeOperator)) {
+			$sortOperator = "NoSortEx";
+			print "//work with NoSortEx sortOperator with schema shrinking when no sorting is requested but a sort attribute is generated\n";
+		}
+	}
+	
+	my $FILEINGESTION_FILE_TYPE_VALIDATOR_COMPOSITE_ENABLED = $configurator->isOn(Configurator::ITE_INGEST_CUSTOMFILETYPEVALIDATOR());
+	
+	my $dirScanGetNanoseconds = ($configurator->isOn(Configurator::ITE_INGEST_DIRECTORYSCAN_NANOSECONDSPRECISION()) ? "true" : "false");
+	print "// use nanoseconds precision: $dirScanGetNanoseconds\n";
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+
+	if (0 == $ENABLE_CUSTOM_CODE) {
+		$FILEINGESTION_FILE_TYPE_VALIDATOR_COMPOSITE_ENABLED = 1;
+	}
+
+	print "//\$getSortAttributeOperator: $getSortAttributeOperator\n";
+	print "//\$sortInfoType: $sortInfoType\n";
+	print "//\$sortOperator: $sortOperator\n";
+%>
+namespace demoapp.fileingestion;
+
+<%if (1 == $ENABLE_CUSTOM_CODE) {%>
+	<% if(1 == $FILEINGESTION_FILE_TYPE_VALIDATOR_COMPOSITE_ENABLED) {%>
+use demoapp.fileingestion.custom::FileTypeValidator;
+	<%}%>
+	<% if($getSortAttributeOperator =~ /.*GetSortAttribute$/ ) {%>
+use demoapp.fileingestion.custom::GetSortAttribute;
+	<%}%>
+	<% if("FileSort" eq $sortOperator) {%>
+use demoapp.fileingestion.custom::FileSort;
+	<%}%>
+<%} else {%>
+	<% if(1 == $FILEINGESTION_FILE_TYPE_VALIDATOR_COMPOSITE_ENABLED) {%>
+use demoapp.fileingestion.sample::FileTypeValidator;
+	<%}%>
+	<% if("FileSort" eq $sortOperator) {%>
+use demoapp.fileingestion.sample::FileSort;
+	<%}%>
+<%}%>
+use demoapp.streams::*;
+use demoapp.functions::*;
+use com.teracloud.streams.teda.internal::Functor2;
+use com.teracloud.streams.teda.internal.ingestion::*;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+
+/**
+ * FileIngestionCore
+ * This composite uses the DeduppedDirScan toolkit for file name scanning.
+ * Performs the groupID preparation if groupID split is configured.
+ *
+ * @input  InControlStream Tuples to be control the DeduppedDirScan
+ * @input  InCleanupTriggerStream Tuples containing cleanup command for DeduppedDirScan
+ * @input  InAcknowledgedFiles Acknowledged file names for DeduppedDirScan
+ *
+ * @output OutFilesToProcess File name tuples
+ * @output OutDroppedFilesStatistics Statistic tuple for dropped file names
+ * @output CleanupTriggerAckStream This stream emits a tuple when the cleanup has finished
+ *
+ * @param inputDir
+ * Directory parameter passed to DeduppedDirScan
+ *
+ * @param checkpointDir
+ * Directory parameter passed to DeduppedDirScan
+ *
+ * @param invalidFilesDir
+ * Directory parameter passed to DeduppedDirScan
+ * 
+ * @param duplicateFilesDir
+ * Directory parameter passed to DeduppedDirScan<%if (0 == $level1SplitDisabled) {%>
+ *
+ * @param groupExtractionPatt
+ * Configured pattern to extract groupId from filename<%}%>
+ * 
+ * @param peNameDirScan
+ * Name for partitionColocation of DeduppedDirScan
+ *
+ * @param peNameSplit
+ * Name for partitionColocation of Split (preparation) operator(s)
+ * 
+ * @param peExLocationLabel
+ * Label used for partitionExlocation placement
+ */
+public composite FileIngestionCore (
+	input 
+		InControlStream,
+		InCleanupTriggerStream,
+		InAcknowledgedFiles;
+	output
+		OutFilesToProcess,
+		OutDroppedFilesStatistics,
+		CleanupTriggerAckStream
+) {
+	param
+		expression<rstring> $inputDir;
+		expression<rstring> $checkpointDir;
+		expression<rstring> $invalidFilesDir;
+		expression<rstring> $duplicateFilesDir;
+		<% 	if (0 == $level1SplitDisabled) { %>
+		expression<rstring> $groupExtractionPatt : "<%=$FILEINGESTION_LEVEL1_ID_EXTRACTION_PATT%>";
+		<%	}%>
+		expression<rstring> $peNameDirScan;
+		expression<rstring> $peNameSplit;
+		expression<rstring> $peExLocationLabel;		
+
+	graph
+
+		<% if($tapEnabled) {%>
+		// printout filename output 
+		@spl_category(name="debug")
+		() as AcknowledgedFilesSink = FileSink(InAcknowledgedFiles) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param
+				file	: "./debug/FILEINGESTION_IN_ACK_FILES.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as FileIngestionControlFilesSink = FileSink(InControlStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param
+				file	: "./debug/FILEINGESTION_IN_CTRL.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+		/*SINGLE_PE_JOB
+		@spl_category(name="common")
+		(stream<IN> InControlStreamThread as OUT) = Custom(InControlStream as IN) {
+			logic  onTuple IN : { submit(IN, OUT); }
+			config threadedPort: queue(IN, Sys.Wait, 100); placement: partitionColocation($peNameDirScan);
+		}
+		@spl_category(name="common")
+		(stream<IN> InCleanupTriggerStreamThread as OUT) = Custom(InCleanupTriggerStream as IN) {
+			logic onTuple IN : { submit(IN, OUT); }
+			config threadedPort: queue(IN, Sys.Wait, 100); placement: partitionColocation($peNameDirScan);
+		}
+		@spl_category(name="common")
+		(stream<IN> InAcknowledgedFilesThread as OUT) = Custom(InAcknowledgedFiles as IN) {
+			logic onTuple IN : { submit(IN, OUT); }
+			config threadedPort: queue(IN, Sys.Wait, 100); placement: partitionColocation($peNameDirScan);
+		}
+		*/
+
+		@spl_category(name="common")
+		(stream<ProcessFileInfo> FilesToProcess; stream<ProcessFileInfo> DroppedFiles; stream<InCleanupTriggerStream> CleanupTriggerAckStream)
+		as DirScanner = DeduppedDirScan(InControlStream; InCleanupTriggerStream; InAcknowledgedFiles) {
+			param
+				<%if ($filenameDedupEnabled) {%>
+				secondsToKeep		: <%=$ITE_INGEST_DEDUPLICATION_TIMETOKEEP%>l;
+				dedupEnabled		: true;
+				<%} else {%>
+				secondsToKeep		: 0l; // parameter is mandatory 
+				dedupEnabled		: false;
+				<%}%>
+				directory			: $inputDir;
+				duplicateFileTarget	: $duplicateFilesDir;
+				<%if ($FILEINGESTION_FILEDATE_IN_FILENAME_PAT_DEFINED) {%>
+				filedateInFilenamePat :
+				<%
+					print "\t\t[";
+					print join(","  , map { sprintf ("\"%s\"",$_) } @{$FILEINGESTION_FILEDATE_IN_FILENAME_PAT} ) ; 
+					print "];";
+				%>
+				filedateOrder :
+				<%
+					print "\t\t[";
+					print join(",", map { sprintf ("\"%s\"",$_) }  @{$FILEINGESTION_FILEDATE_ORDER} ) ; 
+					print "];";
+				%>
+				<%}%>
+				invalidFileTarget		: $invalidFilesDir;
+				processFilePat	: "<%=$processFilePat%>";
+				passThroughFilePat : "<%=$reprocessPat%>";
+				<%if($scanSleepTime) {%>scanSleepTime : <%=$scanSleepTime%>; <%}%>
+				scanInitDelay			: 0.0;
+				fileDedupCheckpointDir	: $checkpointDir;
+				<%if ($sortInfoType) {%>sortInfoType : <%=$sortInfoType%>;<%}%>
+				<%if ($getSortAttributeOperator) {%>getSortAttribute : <%=$getSortAttributeOperator%>;<%}%>
+				<%if ($sortOperator) {%>sortOperator : <%=$sortOperator%>;<%}%>
+				<%if(1 == $FILEINGESTION_FILE_TYPE_VALIDATOR_COMPOSITE_ENABLED) {%>FileTypeValidatorOperator : FileTypeValidator;<%}%>
+				<%if ($dirScanGetNanoseconds) {%> dirScanGetNanoseconds : <%=$dirScanGetNanoseconds%>; <%}%>
+				<% if($tapEnabled) {%>
+				tapdir: dataDirectory() + "/debug";
+				tapOn : true;
+				<%}%>
+				<%if (1 == $ITE_INGEST_ARCHIVEMODE) {%>singleInputBaseDir: false;<%}%>
+
+			config
+				placement	: partitionColocation($peNameDirScan);
+		}
+	
+		<% if($tapEnabled) {%>
+		@spl_category(name="common")
+		() as SinkFilesToProcess = FileSink (FilesToProcess) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	
+				file	: "./debug/FILEINGESTION_FILES.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="common")
+		() as SinkDroppedFiles = FileSink (DroppedFiles) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	
+				file	: "./debug/FILEINGESTION_DROPPED_FILES.txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+		//prepare statistic tuple for dropped files
+		@spl_category(name="common")
+		stream <TypesCommon.FileStatistics> OutDroppedStat = Functor2(DroppedFiles as IN) {
+			config
+				placement	: partitionColocation($peNameDirScan);
+		}
+		@spl_category(name="common")
+		stream<IN> OutDroppedFilesStatistics = Custom(OutDroppedStat as IN) {
+			logic onTuple IN : {
+				IN.startTimestamp = getTimestamp();
+				IN.processingStartedAt = getCCYYMMDDhhmmssDB2Format(IN.startTimestamp);
+				IN.processingStoppedAt = IN.processingStartedAt;
+				submit(IN, OutDroppedFilesStatistics);
+			}
+			config
+				placement	: partitionColocation($peNameDirScan);
+		}
+
+		//adapt schema
+		@spl_category(name="common")
+		stream <TypesCommon.FileIngestSchema> FilesToProcessExp as OUT = Functor2(FilesToProcess as IN) {
+			config
+				placement	: partitionColocation($peNameDirScan), partitionExlocation($peExLocationLabel);
+		}
+
+<%	if (0 == $level1SplitDisabled) {%>
+		//supress punct & group id mapping
+		@spl_category(name="common")
+		stream<TypesCommon.FileIngestSchema> OutFilesToProcess = FilenameSplitPrepStatic(FilesToProcessExp) {
+			param
+				groupExtractionPatt : $groupExtractionPatt;//"^([A-Z]{2,})_";
+			config
+				placement	: partitionColocation($peNameSplit), partitionExlocation($peExLocationLabel);
+		}
+<%	} else { %>
+		//supress punct
+		@spl_category(name="common")
+		stream<TypesCommon.FileIngestSchema> OutFilesToProcess = Custom(FilesToProcessExp) {
+			logic onTuple FilesToProcessExp : submit(FilesToProcessExp, OutFilesToProcess);
+			config
+				placement	: partitionColocation($peNameSplit), partitionExlocation($peExLocationLabel);
+		}
+<%	} %>
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as SinkEnhancedFilename = FileSink (OutFilesToProcess) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	
+				file	: "./debug/FILEINGESTION_OUT_FILES.txt";
+				format	: csv;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+}
+
+
+<%	if (0 == $level1SplitDisabled) {%>
+rstring l0(int32 number, int32 numOfDigits) {
+	mutable rstring result = (rstring)number;
+	while(length(result)<numOfDigits) {
+		result = "0" + result;
+	}
+	return result;
+}
+
+rstring extractGroupId(rstring source, rstring patt) {
+	if (isTraceable(Trace.trace)) {
+		appTrc(Trace.trace, "extractGroupId source="+source+" pattern="+patt);
+	}
+	list<rstring> result = regexMatch(source,patt);
+	int32 sz = spl.collection::size(result);
+	if (isTraceable(Trace.debug)) {
+		appTrc(Trace.debug, "extractGroupId result="+(rstring)result+" size(result)="+(rstring)sz);
+	}
+	if(sz!=2) {
+		appTrc(Trace.error, "Matching pattern '"+patt+"' on string '"+source+"' found other than two matches: " + (rstring)result);
+		return ""; //nothing found
+	} else {
+		return result[1];
+	}
+}
+
+<%  
+	my $defaultPort;
+	my $chains;
+	my $numGroups;	
+	$defaultPort = CodeGenFrw::getChainSplit($groupConfigFile,(\%{$chains}));
+	foreach my $chId (keys (%{$chains}))
+	{
+		++$numGroups;
+	}
+%>
+//requires equal schema in In and Out
+public composite FilenameSplitPrepStatic(input In; output Out) {
+	param
+		expression<rstring> $groupExtractionPatt;//	: "^([A-Z]{2,})_";
+
+	type		
+		GroupInfo = tuple<
+			int32 level1Index,
+			int32 chainCount
+		>;
+		
+	graph
+		
+		@spl_category(name="common")
+		(stream<In> Out) as SplitPrepare = Custom(In) {
+			logic
+				state: {
+					rstring groupExtractionPatt = $groupExtractionPatt;
+					map<rstring, GroupInfo> groupConfig = 
+					{
+						// chainCount can be ignored - not used in this operator
+						//	mapping is generated like this: "AP": { level1Index=0, chainCount=1 },
+						<% my $i=0; my $needComma=0;
+						foreach my $chId (keys (%{$chains}))
+						{
+							print("\n") if ($i < 1);
+							$i++;
+							next if ($chains->{$chId} == $defaultPort);
+							print(",") if ($needComma);
+							print("\t\t\t\t\t\t$chId:{level1Index=$chains->{$chId},chainCount=1}");
+							print("\n");
+							$needComma=1;
+						}
+						%>
+					};
+				}
+			onTuple
+				In: {
+					if (isTraceable(Trace.trace)) {
+						appTrc(Trace.trace,"Received tuple: " + (rstring)In);
+					}
+					rstring filename = com.teracloud.streams.teda.file.path::filename(In.filename);
+					rstring groupIdentifier = extractGroupId(filename, groupExtractionPatt);
+					if(groupIdentifier in groupConfig) {
+						GroupInfo info = groupConfig[groupIdentifier];
+						if (isTraceable(Trace.trace)) {
+							appTrc(Trace.trace,"GroupInfo: " + (rstring)info);
+						}
+						In.groupId = l0(info.level1Index,2);
+						In.chainId = "00";
+						if (isTraceable(Trace.trace)) {
+							appTrc(Trace.trace,"Submitting tuple: " + (rstring)In);
+						}
+						submit(In, Out);
+					} else {
+						<% 	if ((defined $defaultPort) && ($defaultPort >= 0)) {%>
+						// non matching groupIdentifier is routed to default port
+						In.groupId = "<%=l0($defaultPort)%>";
+						In.chainId = "00";
+						if (isTraceable(Trace.trace)) {
+							appTrc(Trace.trace,"Submitting tuple (prepared for default port): " + (rstring)In);
+						}
+						submit(In, Out);
+						<%} else {
+							print STDERR "ERROR: There must be defined a default group in file: $groupConfigFile\n";
+							exit 101;
+						} %>
+					}
+				}
+		}
+}
+<%} #endif 0==$level1SplitDisabled%>

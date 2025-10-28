@@ -1,0 +1,136 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.StructureParse.Variables;
+
+use com.teracloud.streams.teda.parser.binary::StructureParse;
+
+/** Sample application to demonstrate the usage of variables in the StructureParse operator
+
+	This sample demonstrates how to use variables to control the processing of records, based on the content
+	of other records received earlier. For that purpose we configure a variable named threshold in the parser, which
+	will store a value extracted from a record of a certain type (field messageType=1). Subsequent records of another type
+	(messageType=2) will be either submitted or ignored, based on a comparison of their messageContent field against
+	the current threshold value from the parser variable.
+
+*/
+composite Main
+{
+	type
+
+		// this type contains the message record
+		// the messageType can contain the value 1 or 2. The meaning of the values is:
+		// 1 - Set the threshold variable. The value from the messageContent field is stored in the threshold
+		//	   variable (see structure.xml)
+		// 2 - Compare the content. The value from the messageContent field is compared against the current threshold.
+		//     If the content is greater or equal the threshold, the record will be submitted, otherwise it is ignored.
+		Messages = tuple
+		<
+			uint8 messageType,
+			uint8 messageContent
+		>;		
+
+		// the metrics we want to get from the parser, and write to the metrics.txt file
+		Metric = tuple
+		<
+			uint64 nTuplesReceived,
+			uint64 nTuplesSent,
+			uint64 nBytesReceived,
+			uint64 nBytesDropped
+		>;
+	graph
+
+		/**
+		 * Generate records
+		 */
+		stream<blob payload> SourceData as O = Custom()
+		{
+			logic
+				onProcess :
+				{
+					// initially the parser variable threshold will be set to 0, so the next two records
+					// will be emitted by the parser (12,13 are greater than 0)
+					submit( { payload = (blob)[ 2ub, 12ub ] }, O);
+					submit( { payload = (blob)[ 2ub, 13ub ] }, O);
+					
+					// now we set the threshold to 100, so the same records (like above) send again will be ignored
+					submit( { payload = (blob)[ 1ub, 100ub ] }, O);
+					submit( { payload = (blob)[ 2ub, 12ub ] }, O);
+					submit( { payload = (blob)[ 2ub, 13ub ] }, O);
+
+					// these two will be emitted, since 112,113 are grater than 100
+					submit( { payload = (blob)[ 2ub, 112ub ] }, O);
+					submit( { payload = (blob)[ 2ub, 113ub ] }, O);
+					
+					// after setting the threshold back to 5, the records with values 12 and 13 will pass again
+					submit( { payload = (blob)[ 1ub, 5ub  ] }, O);
+					submit( { payload = (blob)[ 2ub, 12ub ] }, O);
+					submit( { payload = (blob)[ 2ub, 13ub ] }, O);
+					
+					// check the output in data/output.txt to validate the results				
+				}
+		}
+
+		/**
+		 * Decode the binary records according to the configured mapping
+		 */
+		(stream<Messages> Output as O; stream<Metric> Metrics as M) as Parse = StructureParse(SourceData as I)
+		{
+			param
+				payloadAttribute : payload;
+				structureDocument : "etc/structure.xml";
+				mappingDocument : "etc/mapping.xml";
+			output M:
+				nTuplesReceived = nTuplesReceived(),
+				nTuplesSent = nTuplesSent(),
+				nBytesReceived = nBytesReceived(),
+				nBytesDropped = nBytesDropped()
+				;
+		}
+
+		/**
+		 * Write decoded records to a text file
+		 */
+		() as Sink = FileSink(Output as I)
+		{
+			param
+				file: "output.txt";
+			 	format: txt;
+			 	flush: 1u;
+		}
+		
+		/**
+		 * Write metrics to text file.
+		 */
+		() as MetricsSink = FileSink(Metrics as I)
+		{
+			param
+				file: "metrics.txt";
+				format: txt;
+				flush: 1u;
+				writePunctuations: true;
+		}
+
+}

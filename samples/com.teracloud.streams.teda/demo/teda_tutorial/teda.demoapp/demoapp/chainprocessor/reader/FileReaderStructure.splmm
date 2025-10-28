@@ -1,0 +1,279 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $mappingDocument = (0 == $ENABLE_CUSTOM_CODE ? "etc/sample/bin_mapping.xml" : "etc/custom_bin_mapping.xml");
+	my $structureDocument = (0 == $ENABLE_CUSTOM_CODE ? "etc/sample/bin_structure.xml" : "etc/custom_bin_structure.xml");
+	
+	my ($n, $v) = $configurator->getEnumList(Configurator::ITE_INGEST_READER_COMPRESSION());
+	my %hash = map { $_ => undef } @{$v};
+	my $READER_FILE_COMPRESSION = (exists $hash{FileReaderStructure});
+	
+%>
+namespace demoapp.chainprocessor.reader;
+
+use demoapp.streams::*;
+use demoapp.functions::*;
+use com.teracloud.streams.teda.parser.binary::*;
+
+/**
+ * FileReaderStructure
+ * Custom composites to read/parse files.
+ * Sends punctuation at end of file
+ * Sends statistic tuple containing some file parser metrics after file reading
+ *
+ * @input  FileIn tuple containing name of file to be parsed
+ *
+ * @output OutRec Record tuples
+ * @output OutStat Statistic tuples
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ *
+ * @param blockSize
+ * The size of the blocks provided by the FileSource operator.
+ * 
+ * @param structureDocument
+ * The structure document parameter of StructureParse operator
+ *
+ * @param mappingDocument
+ * The mapping document parameter of StructureParse operator
+ *
+ * @param parserRecordOutputType
+ * The StructureParse operator record stream output type.
+ * 
+ * @param RecordConverterOperator
+ * This operator converts the decoded records to the required flat structure
+ * *Default is the dummy operator:* [DefaultRecordConverter]
+ * 
+ * @param compression
+ * The compression parameter of the FileSource operator 
+ * *Default is gzip*
+ * Enabled only if configuration parameter ite.ingest.reader.compression contains this composite name
+ */
+public composite FileReaderStructure (
+	input 
+		FileIn;
+	output
+		OutRecord,
+		OutStats
+) {
+
+	param
+		/**
+		 * The groupId of this channel.
+		 */
+		expression<rstring> $groupId;
+		/**
+		 * The groupId of this channel.
+		 */
+		expression<rstring> $chainId;
+		/**
+		 * The size of the blocks provided by the FileSource operator.
+		 */
+		expression<uint32> $blockSize : 8u * 1024u;
+		/**
+		 * The structure document parameter of StructureParse operator
+		 */
+		expression<rstring> $structureDocument: "<%=$structureDocument%>";
+		/**
+		 * The mapping document parameter of StructureParse operator
+		 */
+		expression<rstring> $mappingDocument: "<%=$mappingDocument%>";
+		/**
+		 * The StructureParse operator record stream output type.
+		 */
+		type $parserRecordOutputType: TypesCommon.ParserCustomStreamType;
+		/**
+		 * The operator thats converts the decoded record tuples.
+		 */
+		operator $RecordConverterOperator: DefaultRecordConverter;
+		/**
+		 * The FileSource compression parameter
+		 */
+		expression<FileSource.CompressionAlg> $compression: FileSource.gzip;
+
+	type
+		static ParserMetricBaseType = tuple<
+			uint64 sentRecords,
+			uint64 nBytesReceivedBIN,
+			uint64 nBytesDroppedBIN,
+			// this one counts the number of records received for each record type (structure) since the last punctuation
+			map<rstring,uint64> recordCountsBIN,
+			// this one counts the number of bytes received for each record type (structure) since the last punctuation			
+			map<rstring,uint64> byteCountsBIN,
+			map<rstring,map<rstring,uint64>> recordStatsBIN
+		>;
+
+		Metric = tuple
+		<
+			ParserMetricBaseType
+		>;
+
+	graph
+
+		/**
+		 * Bypass the FileInfo attributes to be merged after FileSource.
+		 * FileSource is not supporting to forward any input stream attributes.
+		 */
+		@spl_category(name="common")
+		(
+		stream<rstring filename> FileNameS;
+		stream<TypesCommon.FileInfo> FileInfoS;
+		stream<TypesCommon.ParserStatisticsStream> FileStatS
+		) = Custom(FileIn as IN) {
+			logic
+			onTuple IN: {
+				// send file info attributes to be added to record stream
+				mutable FileInfoS otuple1 = {};
+				assignFrom(otuple1, IN);
+				otuple1.filename = com.teracloud.streams.teda.file.path::filename(otuple1.filename);
+				submit(otuple1, FileInfoS);
+				// send file info attributes to be added to statistic stream
+				mutable FileStatS otuple2 = {};
+				assignFrom(otuple2, IN);
+				submit(otuple2, FileStatS);
+				// forward input tuple to FileSource
+				submit({filename=IN.filename}, FileNameS);
+			}
+		}
+
+		/**
+		 * Read each file in chunks of several kBytes.
+		 */
+		@spl_category(name="common")
+		(
+		stream<blob payload> DataBlocks
+		) as FileBlockReader = FileSource(FileNameS)
+		{
+			param
+				format: block;
+				blockSize: $blockSize;<%if (1 == $READER_FILE_COMPRESSION) {%> 
+				compression: $compression;<%}%>
+		}
+
+		/**
+		 * Extend the schema with FileInfo attributes
+		 * since FileSource is not supporting to forward any input stream attributes
+		 */
+		@spl_category(name="common")
+		(
+		stream<IN,TypesCommon.FileInfo> ExtDataBlocks as O
+		) = Custom(DataBlocks as IN; FileInfoS) {
+			logic
+			state : {
+				// extended record stream tuple type
+				mutable O otuple = {};
+			}
+			onTuple IN: {
+				swap(IN.payload,otuple.payload);
+				submit(otuple, O);
+			}
+			onTuple FileInfoS: {
+				// received before FileSource reads the file
+				// info attributes that needs to attached to each record tuple
+				assignFrom(otuple, FileInfoS);
+			}
+			onPunct IN: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(currentPunct(), O);
+				}
+			}
+		}
+
+		/**
+		 * Decode the binary records according to the configured mapping
+		 */
+		@spl_category(name="common")
+		(
+		stream<$parserRecordOutputType, TypesCommon.ParserCommonStreamType> Records as O;
+		stream<Metric> Metrics as M
+		) as ParsedRecords = StructureParse(ExtDataBlocks as I)
+		{
+			param
+				payloadAttribute : payload;
+				structureDocument : $structureDocument;
+				mappingDocument : $mappingDocument;
+			output M:
+				nBytesReceivedBIN = nBytesReceived(),
+				sentRecords = nTuplesSent(),
+				nBytesDroppedBIN = nBytesDropped(),
+				recordCountsBIN = getRecordCounts(),
+				byteCountsBIN = getRecordByteCounts(),
+				recordStatsBIN = getRecordStats();
+		}
+
+		/**
+		 * Optional custom schema conversions
+		 */ 
+		<%if (0 == $ENABLE_CUSTOM_CODE) {%>@spl_category(name="sample")<%}%>
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRecord
+		) as RecordConverter = $RecordConverterOperator(Records as IN) {}
+
+		/**
+		 * Merge parser statistics and file statistics
+		 */
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ParserStatisticsStream> OutStats
+		) = Custom(Metrics as M; FileStatS as Stat) {
+			logic
+			state : {
+				mutable Stat fileStat = {};
+			}
+			onTuple M: {
+				// do not forward statistic tuple if shutdown is requested
+				if (false == isShutdown()) {
+					assignFrom(fileStat, M);
+					submit(fileStat, OutStats);
+				}
+			}
+			onTuple Stat: {
+				fileStat = Stat;
+			}
+		}
+
+}

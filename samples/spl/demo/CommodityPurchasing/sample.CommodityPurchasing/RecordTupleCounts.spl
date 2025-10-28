@@ -1,0 +1,93 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+
+namespace sample.CommodityPurchasing;
+
+
+/**
+ * `RecordTupleCounts` is a composite operator that calculates and
+ * stores some basic tuple metrics for any stream.  The resulting
+ * metrics are stored in sink files that are passed in as parameters.
+ *
+ * Two kinds of metrics are calculated: `tuples-per-minute` and 
+ * `total-tuples`. Each metric is reported with a `timestamp` indicating
+ * the time it was calculated.
+ *
+ * **Outputs**
+ *
+ * The outputs of this operator are the two sink files with the metrics
+ * information. Both are written in csv format in the form:
+ *
+ *     tuplecount, timestamp
+ *
+ * The `timestamp` is the unix-style timestamp in seconds.
+ * 
+ * @input InputStream The name of the stream to calculate the metrics for.
+ *
+ * @param minuteSink String identifying the file name to store the per-minute metrics in.
+ * @param totalSink String identifying the file name to store the total metrics in. 
+ */
+composite RecordTupleCounts(input InputStream) {
+
+param expression<rstring> $minuteSink;
+      expression<rstring> $totalSink;
+
+graph 
+
+  stream <int32 tupleCount, int64 timeSeconds> PerMinute = Aggregate(InputStream) 
+  {
+    window
+      InputStream: tumbling, time(60u); 
+    output PerMinute: tupleCount = Count(),
+                      timeSeconds = getSeconds(getTimestamp());
+  }
+
+  stream <uint64 tupleCount, int64 timeSeconds> Total = Functor(PerMinute) 
+  {
+    logic  state : { mutable uint64 total = 0; }
+           onTuple PerMinute: {
+                     total += (uint64) tupleCount;
+                   }
+    output Total: tupleCount = total,
+                  timeSeconds = getSeconds(getTimestamp());      
+  }
+
+ () as PerMinuteSink = FileSink(PerMinute) {
+    param
+      file : $minuteSink;
+      format : csv;
+      flush: 1u;
+  }
+
+  () as TotalSink = FileSink(Total) {
+    param
+      file : $totalSink;
+      format : csv;
+      flush: 1u;
+  }
+
+}

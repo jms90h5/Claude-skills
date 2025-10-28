@@ -1,0 +1,21 @@
+MyModule DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN
+
+Company ::= SEQUENCE
+{
+	name IA5String,
+	headquarter IA5String OPTIONAL,
+	tickerSymbol IA5String OPTIONAL,
+	employees SEQUENCE OF Employee,
+	...
+}
+
+Employee ::= SEQUENCE
+{
+	id INTEGER,
+	firstName IA5String,
+	lastName IA5String,
+	...
+}
+
+END

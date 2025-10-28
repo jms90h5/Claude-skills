@@ -1,0 +1,104 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2014, 2014     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample;
+
+// This example illustrates the use of the @consistent annotation
+// in an application with multiple source operators. This example
+// has a single consistent region.
+composite MultipleSources {
+  graph
+    // Instantiation of the JobControlPlane operator. This operator
+    // hosts the ConsistentRegionMXBean responsible for managing
+    // a consistent region.
+    () as JCP = JobControlPlane() {}
+
+    // Using the @consistent annotation at the start operator of
+    // the region. With this configuration, the region will be
+    // drained at every three seconds. 
+    // If the start operators of the region are 
+    // encapsulated in a composite operator, the annotation can be placed
+    // at the composite operator instance.
+    @consistent(trigger=periodic, period=3.0, drainTimeout=30.0, resetTimeout=30.0) 
+    stream<uint64 itCount> BeatOne = Beacon() {
+      param
+        period: 0.2;
+      // IterationCount() establishes a unique ID for each tuple
+      output BeatOne: itCount = IterationCount();
+    }
+
+    stream<uint64 itCount> Even = Functor(BeatOne) {
+      param
+        filter: itCount % 2lu == 0lu;
+    }
+
+    // This annotation defines the start of another consistent
+    // region. As the reachability graph of BeatTwo intersects
+    // with the reachability graph of the BeatOne operator, 
+    // they form a single consistent region.
+    @consistent(trigger=periodic, period=3.0, drainTimeout=30.0, resetTimeout=30.0) 
+    stream<uint64 itCount> BeatTwo = Beacon() {
+      param
+        period: 0.5;
+      output BeatTwo: itCount = IterationCount();
+    }
+
+    stream<uint64 itCount> Odd = Functor(BeatTwo) {
+      param
+        filter: itCount % 2lu == 1lu;
+    }
+
+    // Custom operator is the intersection of both regions. It outputs even tuples
+    // with a beatId of 0, and odd tuples with a beatId of 1 
+    stream<int32 beatId, uint64 itCount> OddAndEven = Custom(Even; Odd) {
+      logic
+        onTuple Even: {
+          submit({beatId=0, itCount=itCount}, 0u);
+        }
+        onTuple Odd: {
+          submit({beatId=1, itCount=itCount}, 0u);
+        }
+    }
+
+    // FileSink operator is configured to write all StateHandler callbacks.
+    // If the ConsistentRegionMXBean detects a failure, a reset will occur
+    // after the region is detected as healthy. This results in a truncation  
+    // of the output file. 
+    // This FileSink also has the parameter truncateOnReset set to true.
+    // When resetting, the FileSink truncates its output file to the position 
+    // of the last successful drain. As a result, the output file will have
+    // only one entry for each tuple submitted by the Beacon operators. 
+    () as RegionSink = FileSink(OddAndEven) {
+      param
+        file: "multipleSources.dat";
+        writePunctuations: true;
+        writeStateHandlerCallbacks: true;
+        truncateOnReset: true;
+    }
+
+  config
+    restartable: true;
+    tracing: trace; 
+}

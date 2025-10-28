@@ -1,0 +1,51 @@
+/* begin_generated_IBM_copyright_prolog                             */
+/*                                                                  */
+/* This is an automatically generated copyright prolog.             */
+/* After initializing,  DO NOT MODIFY OR MOVE                       */
+/* **************************************************************** */
+/* Licensed Materials - Property of IBM                             */
+/* 5724-Y95                                                         */
+/* (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      */
+/* US Government Users Restricted Rights - Use, duplication or      */
+/* disclosure restricted by GSA ADP Schedule Contract with          */
+/* IBM Corp.                                                        */
+/*                                                                  */
+/* end_generated_IBM_copyright_prolog                               */
+<%    
+   use PunctMergerCommon;
+   PunctMergerCommon::verify($model);
+   my $numInputPorts = $model->getNumberOfInputPorts(); 
+%>
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+MY_OPERATOR::MY_OPERATOR()
+: MY_BASE_OPERATOR(), _nReadyPorts(0), _nPunctsReceived(<%=$numInputPorts%>, 0)
+{
+}
+
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port) 
+{
+   submit (tuple, 0);
+}
+
+void MY_OPERATOR::process(Punctuation const & punct, uint32_t port) 
+{
+	if (punct == Punctuation::WindowMarker) {
+	    AutoMutex am(_mutex);
+	    if (_nPunctsReceived[port]++ == 0) {
+	        ++_nReadyPorts;
+	    }
+
+	    if (_nReadyPorts == <%=$numInputPorts%>) {
+	        submit (Punctuation::WindowMarker, 0);
+	        for (uint32_t i=0; i < <%=$numInputPorts%>; ++i) {
+	            if (--_nPunctsReceived[i] == 0) {
+	                --_nReadyPorts;
+	            }
+	        }
+	    }
+	}
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

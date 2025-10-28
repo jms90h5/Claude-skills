@@ -1,0 +1,14 @@
+Overview: Compress will perform file compression on the specified input file.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone in=$PWD/Makefile out=$PWD/Makefile.gz
+
+Notes: 
+  - The command line parameter 'in' specifies the input file to be
+    compressed. 
+  - The 'out' parameter specifies the output file. 
+  - Relative paths are rooted at the 'data' directory.
+

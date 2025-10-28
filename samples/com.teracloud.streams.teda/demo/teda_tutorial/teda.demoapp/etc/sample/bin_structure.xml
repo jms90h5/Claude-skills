@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_copyright_prolog                             -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- 5724-Y95                                                         -->
+<!-- (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_copyright_prolog                               -->
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<structures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.ibm.com/software/data/infosphere/streams/parser StructureParserStructure.xsd"
+                    xmlns="http://www.ibm.com/software/data/infosphere/streams/parser">
+
+	<variable name="dummy" type="uint16" value="1"/>
+
+	<structure name="binaryRecord">
+	
+		<!--  as we only have one structure (record type), the condition evaluates always to true -->
+		<condition>
+			<cmp op="equal">
+				<variable name="dummy"/>
+				<value>1</value>
+			</cmp>
+		</condition>
+
+		<field name="intval0" type="int32"/>
+		<field name="intval1" type="int32"/>
+		<field name="intval2" type="int32"/>
+		<field name="intval3" type="int32"/>
+		<field name="intval4" type="int32"/>
+		<field name="intval5" type="int32"/>
+		<field name="intval6" type="int32"/>
+		<field name="intval7" type="int32"/>
+		<field name="intval8" type="int32"/>
+		<field name="intval9" type="int32"/>
+		<field name="floatval10" type="float32"/>
+		<field name="intval11" type="int32"/>
+		<field name="intval12" type="int32"/>
+		<field name="intval13" type="int32"/>
+		<field name="intval14" type="int32"/>
+		<field name="intval15" type="int32"/>
+		<field name="intval16" type="int32"/>
+		<field name="intval17" type="int32"/>
+		<field name="intval18" type="int32"/>
+		<field name="stringval19" type="rstring" size="10"/>
+		<field name="intval20" type="int32"/>
+		<field name="intval21" type="int32"/>
+		<field name="intval22" type="int32"/>
+		<field name="intval23" type="int32"/>
+		<field name="intval24" type="int32"/>
+		<field name="intval25" type="int32"/>
+		<field name="intval26" type="int32"/>
+		<field name="intval27" type="int32"/>
+		<field name="intval28" type="int32"/>
+		<field name="intval29" type="int32"/>
+	</structure>
+
+</structures>

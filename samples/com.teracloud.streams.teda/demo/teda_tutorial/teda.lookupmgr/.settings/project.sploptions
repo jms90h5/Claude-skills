@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>SPL Build Options for Project</comment>
+<entry key="com.ibm.streams.studio.splproject:EXT_FULL_BUILD_CMD">make all</entry>
+<entry key="com.ibm.streams.studio.splproject:EXT_CLEAN_BUILD_CMD">make clean</entry>
+<entry key="com.ibm.streams.studio.splproject:DATA_DIR">data</entry>
+<entry key="com.ibm.streams.studio.splproject:EXT_BUILD_OUTPUT">T</entry>
+<entry key="com.ibm.streams.studio.splproject:OUTPUT_DIR">output</entry>
+<entry key="com.ibm.streams.studio.splproject:DERIVED_OUTPUT_DIR">T</entry>
+<entry key="com.ibm.streams.studio.splproject:EXT_INCR_BUILD_CMD">make</entry>
+<entry key="com.ibm.streams.studio.splproject:BUILDER_TYPE">1</entry>
+</properties>

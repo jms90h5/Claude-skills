@@ -1,0 +1,135 @@
+/* begin_generated_IBM_copyright_prolog                             */
+/*                                                                  */
+/* This is an automatically generated copyright prolog.             */
+/* After initializing,  DO NOT MODIFY OR MOVE                       */
+/* **************************************************************** */
+/* Licensed Materials - Property of IBM                             */
+/* 5724-Y95                                                         */
+/* (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      */
+/* US Government Users Restricted Rights - Use, duplication or      */
+/* disclosure restricted by GSA ADP Schedule Contract with          */
+/* IBM Corp.                                                        */
+/*                                                                  */
+/* end_generated_IBM_copyright_prolog                               */
+<%
+use MultiLookupCache qw(
+			&intro
+			$inputPort $inTupleName $inTupleType
+			$outputPort $outTupleType
+			$releaseMode $useThreads $disableLookup
+			$numberOfStores $numberOfSegments
+			%uniqueStores @storeVector @storeSegmentIndexVector
+			%uniqueSegments @segmentVector @segmentUseCountVector
+			@keyTypeVector @valueTypeVector @containerTypeVector
+			$numberOfOutputAttributes
+			@outputAssignementFunctionNameVector @outputAssignementIsFindFunctionVector @outputAssignementIsAssignFunctionVector @outputAssignementAttributeNameVector @outputAssignementStoreIndexVector
+			@outputAssignementParamKeyVector @outputAssignementParamDefaultVector @outputAssignementParamFilterVector @outputAssignementHasAttributeNameVector @outputAssignementParamValueVector
+
+		);
+
+intro($model);
+%>
+/* Additional includes go here */
+//boost shm includes
+#include <boost/interprocess/managed_shared_memory.hpp>
+#include <shm.h>
+#include <UTILS/CV.h>
+#include <UTILS/Mutex.h>
+#include <SPL/Runtime/Common/Metric.h>
+
+
+<%SPL::CodeGen::headerPrologue($model);%>
+
+class MY_OPERATOR : public MY_BASE_OPERATOR 
+{
+public:
+	// Constructor
+	MY_OPERATOR();
+
+	// Destructor
+	virtual ~MY_OPERATOR(); 
+
+	// Notify port readiness
+	void allPortsReady(); 
+
+	// Notify pending shutdown
+	void prepareToShutdown(); 
+
+	// Tuple processing for mutating ports 
+	void process(Tuple & tuple, uint32_t port);
+
+	// Punctuation processing
+	void process(Punctuation const & punct, uint32_t port);
+
+protected:
+	void releaseAllShm();
+	//Member variables
+	Metric & nHits;
+	Metric & nMisses;
+<%if ($disableLookup) {%>
+	bool enableLookup;
+<%}%>
+	SPL::rstring segmentNames[<%=$numberOfSegments%>];
+	boost::interprocess::managed_shared_memory* shmp[<%=$numberOfSegments%>];
+<%
+#for (my $i=0; $i<$numberOfStores; $i++) {
+#	if ($containerTypeVector[$i] ne '') {
+#		print "\tContainerClass<$keyTypeVector[$i], $valueTypeVector[$i]> * container_$i;\t//Store '$storeVector[$i]'\n";
+#	} else {
+#		SPL::CodeGen::errorln("Store $storeVector[$i] has no assignment");
+#	}
+#}
+#typedef for shm container for each store
+for (my $i=0; $i<$numberOfStores; $i++) {
+	if ($containerTypeVector[$i] ne '') {
+		print "\ttypedef $containerTypeVector[$i] ContainerT_$i;\t//Store '$storeVector[$i]'\n";
+	} else {
+		SPL::CodeGen::errorln("Store $storeVector[$i] has no assignment");
+	}
+}
+#shm container pointer structure  for each store
+for (my $i=0; $i<$numberOfStores; $i++) {
+	if ($containerTypeVector[$i] ne '') {
+#		print "\tstd::pair<const ContainerClass_${i}::ShmContainer *, std::size_t> container_$i;\t//Store '$storeVector[$i]'\n";
+		print "\tstd::pair<const ContainerT_${i}::ShmContainer *, std::size_t> container_$i;\t//Store '$storeVector[$i]'\n";
+	}
+}
+#shm assignment operators  for each store
+for (my $i=0; $i<$numberOfStores; $i++) {
+	print "\tcom::ibm::streams::teda::internal::shm::ValueAssign<$keyTypeVector[$i]> * valueAssign_$i;\t//Store '$storeVector[$i]'\n";
+}
+#key for each find function
+for (my $i=0; $i<$numberOfOutputAttributes; $i++) {
+	if ($useThreads eq "true") {
+		my $theStoreIndex = $outputAssignementStoreIndexVector[$i];
+		if (($outputAssignementIsFindFunctionVector[$i]) && ($theStoreIndex > -1)) {
+			print "\t$keyTypeVector[$theStoreIndex] const & key_$i;\t//Attribute assignment '$outputAssignementAttributeNameVector[$i]'\n";
+		}
+	}
+}
+#value for each find function
+for (my $i=0; $i<$numberOfOutputAttributes; $i++) {
+	if ($useThreads eq 'true') {
+		my $theStoreIndex = $outputAssignementStoreIndexVector[$i];
+		if ($outputAssignementIsFindFunctionVector[$i] && ($theStoreIndex > -1)) {
+			print "\t$valueTypeVector[$theStoreIndex] value_$i;\t//Attribute assignment '$outputAssignementAttributeNameVector[$i]'\n";
+		}
+	}
+}
+#the found variable for each find function
+for (my $i=0; $i<$numberOfOutputAttributes; $i++) {
+	my $theStoreIndex = $outputAssignementStoreIndexVector[$i];
+	if (($outputAssignementIsFindFunctionVector[$i]) && ($theStoreIndex > -1)) {
+		print "\tbool found_$i;\t//Attribute assignment '$outputAssignementAttributeNameVector[$i]'    Foud attribute '$outputAssignementHasAttributeNameVector[$i]'\n";
+	}
+}
+if ($useThreads eq "true") {%>
+	// variables to synchronize access to the queue
+	SPL::Mutex mutex;
+	Distillery::CV cv;
+<%}%>
+	bool initializationRequired;
+};
+
+<%SPL::CodeGen::headerEpilogue($model);%>
+

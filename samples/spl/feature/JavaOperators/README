@@ -1,0 +1,11 @@
+Overview: JavaOperators demonstrates using of operators implemented in Java using the JavaOp operator and as Java primitive operators.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+Notes: 
+   - The application creates a stream corresponding to Java system properties and then performs some simple operations on it before dumping the resultant output to data/properties.txt
+   - More Java samples with source are in the $STREAMS_INSTALL/lib/com.ibm.streams.operator.samples.jar file.

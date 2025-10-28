@@ -1,0 +1,191 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainprocessor.reader.custom;
+
+use demoapp.streams::*;
+
+/**
+ * Implements a custom file reader and parser.
+ * Sends punctuation at end of file.
+ * Sends statistic tuple containing some file parser metrics after file reading.
+ * Use this operator in the 
+ * demoapp.chainprocessor.reader.custom::FileReaderCustom operator.
+ *
+ * @input  FileIn
+ * Tuple containing name of file to be parsed.
+ * Add your custom file reading and parsing logic.
+ *
+ * @output OutRec Record tuples
+ * It is required to send a window punctuation at end of file
+ * 
+ * @output OutStat
+ * It is required to send a statistic tuples at end of file
+ * containing some file parser metrics after file reading.
+ *
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ * 
+ * @param eolMarker
+ * The File Source parameter for end of line detection.
+ * 
+ * @param separator
+ * Separator for attributes per line
+ */
+public composite CustomReaderTemplate (
+	input 
+		stream<TypesCommon.FileIngestSchema> FileIn;
+	output
+		stream<TypesCommon.ReaderOutStreamType> OutRecord,
+		stream<TypesCommon.ParserStatisticsStream> OutStats
+) {
+
+	param
+		/**
+		 * The groupId of this channel.
+		 */
+		expression<rstring> $groupId;
+		/**
+		 * The groupId of this channel.
+		 */
+		expression<rstring> $chainId;
+		/**
+		 * The File Source parameter for end of line detection.
+		 */
+		expression<rstring> $eolMarker : "\n";
+		/**
+		 * Separator for attributes per line
+		 */
+		expression<rstring> $separator : ",";
+
+	type
+		static ParserMetricBaseType = tuple<
+			uint64 nTuplesSent
+		>;
+
+	graph
+
+		/**
+		 * Bypass the FileInfo attributes to be merged after FileSource.
+		 * FileSource is not supporting to forward any input stream attributes.
+		 */
+		(
+		stream<rstring filename> FileNameS;
+		stream<TypesCommon.FileInfo> FileInfoS;
+		stream<TypesCommon.ParserStatisticsStream> FileStatS
+		) = Custom(FileIn as IN) {
+			logic
+			onTuple IN: {
+				// send file info attributes to be added to record stream
+				mutable FileInfoS otuple1 = {};
+				assignFrom(otuple1, IN);
+				otuple1.filename = com.teracloud.streams.teda.file.path::filename(otuple1.filename);
+				submit(otuple1, FileInfoS);
+				// send file info attributes to be added to statistic stream
+				mutable FileStatS otuple2 = {};
+				assignFrom(otuple2, IN);
+				submit(otuple2, FileStatS);
+				// forward input tuple to FileSource
+				submit({filename=IN.filename}, FileNameS);
+			}
+		}
+
+		/**
+		 * Read each file line by line.
+		 */
+		(
+		stream<rstring lineStr> DataLines
+		) as FileReader = FileSource(FileNameS)
+		{
+			param
+				format: line;
+				eolMarker: $eolMarker;
+		}
+
+		/**
+		 * Custom parser
+		 * Extend the record schema with FileInfo attributes
+		 * Sends statistic tuple at end of file processing
+		 */
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRecord as O;
+		stream<TypesCommon.ParserStatisticsStream> OutStats
+		) = Custom(DataLines as IN; FileInfoS; FileStatS) {
+			logic
+			state : {
+				// extended record stream tuple type
+				mutable O otuple = {};
+				// statistic tuple
+				mutable OutStats fileStat = {};
+				// parser statistics
+				mutable uint64 nTuplesSent = 0ul;
+				// tokens from the line string
+				mutable list<rstring> attrList;
+			}
+			onTuple IN: {
+				// increment line number attribute
+				otuple.readerLinenumber++;
+				// --- parser code begin ------------------------------------
+				//attrList = tokenize(lineStr, $separator, false);
+				//if (2 == size(attrList)) {
+				//	otuple.attr0 = attrList[0];
+				//	otuple.attr1 = attrList[1];
+				//	submit(otuple, O);
+				//	nTuplesSent++;
+				//}
+				// --- parser code end   ------------------------------------
+			}
+			onTuple FileInfoS: {
+				// received before FileSource reads the file
+				// info attributes that needs to attached to each record tuple
+				assignFrom(otuple, FileInfoS);
+			}
+			onPunct IN: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(currentPunct(), O);
+					// do not forward statistic tuple if shutdown is requested
+					if (false == isShutdown()) {
+						// update statistic attributes
+						fileStat.nTuplesSent=nTuplesSent;
+						submit(fileStat, OutStats);
+					}
+					// reset for next file
+					nTuplesSent = 0ul;
+					otuple.readerLinenumber=0u;
+				}
+			}
+			onTuple FileStatS: {
+				fileStat = FileStatS;
+			}
+		}
+
+
+}
+

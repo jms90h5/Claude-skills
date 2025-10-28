@@ -1,0 +1,14 @@
+Overview: VwapEventTime is a stock trading program that calculates the 
+Volume Weighted Average Price (VWAP) over event-time intervals and identifies
+the quotes for which the ask price is lower than the current VWAP. For those
+cases it computes a Bargain Index and reports the event in the output file.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone 
+
+Notes: 
+  - This application reads its input from data/TradesAndQuotes.csv.gz and
+    writes its output to data/out.

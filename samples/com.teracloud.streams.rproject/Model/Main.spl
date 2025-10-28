@@ -1,0 +1,77 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2013, 2017     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+use com.teracloud.streams.rproject::* ;
+/* This sample will use an initialization script to create a linear regression model 
+ * then pass individual tuples with sample data to be scored against that model.
+ * The particular model is generated from data that represents the results of plant growth 
+ * based on amount of fertilizer given.
+ * The rscript that does the prediction expects an id and amount of fertilizer, 
+ * and produces a prediction of growth.
+ *     
+ */
+composite Main
+{
+	param
+		expression $rCommand : getSubmissionTimeValue("rCommand",
+			"/usr/bin/R --vanilla") ;
+	graph
+	// generate some numbers
+		stream<int32 id, float32 fertilizer> inStream = Beacon()
+		{
+			param
+				iterations : 10u ; // iterate 10 times
+
+			output
+				inStream : id =(int32) IterationCount(), fertilizer =(float32)
+					IterationCount() * 2fw ;
+		}
+
+		// call the r script that will create the prediction
+		stream<int32 id, float32 fertilizer, float32 growth> analyzedStream =
+			RScript(inStream)
+		{
+			param
+				rCommand : $rCommand;
+				initializationScriptFileName : "etc/initialize.r" ;
+				rScriptFileName :  "etc/process.r" ;
+				streamAttributes : id, fertilizer ;
+				rObjects : "plantID", "fertilizer" ; // these are the variable names the R script expects
+
+			output
+				analyzedStream : growth = fromR("prediction") ; // prediction is the variable name the r script produces
+
+		}
+
+		// send the results to a file
+		() as dbg = FileSink(analyzedStream)
+		{
+			param
+				format : txt ;
+				file : "result.txt" ;
+		}
+
+}
+

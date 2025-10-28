@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+   <user name="user1" password="passwd1" groups="group1" />
+   <user name="user2" password="passwd2" groups="group1,group2" />
+   <user name="user3" password="passwd3" groups="group1,group2,group3" />
+   <user name="user4" password="passwd4" groups="" />
+</users>

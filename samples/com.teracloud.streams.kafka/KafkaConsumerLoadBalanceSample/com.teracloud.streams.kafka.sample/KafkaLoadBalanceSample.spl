@@ -1,0 +1,49 @@
+namespace com.teracloud.streams.kafka.sample;
+
+use com.teracloud.streams.kafka::KafkaConsumer;
+use com.teracloud.streams.kafka::KafkaProducer;
+
+/*
+ * This sample demonstrates how to configure KafkaConsumers in a UDP region
+ * to load balance the messages being consumed. The key here is that the 
+ * 'etc/consumer.properties' file specifies the `group.id` property, which is 
+ * used by all of the consumers. This means that each consumer will be placed
+ * in the same group, resulting in Kafka sending each message to only one consumer. 
+ * 
+ * The producer operator will generate 10 tuples/sec. Each consumer should be
+ * receiving and submitting approximately 3 tuples/sec.
+ */
+public composite KafkaConsumerLoadSample {
+
+    type
+        Message = rstring key, rstring message;
+    graph
+        @parallel(width = (int32)getSubmissionTimeValue("num.kafka.consumers", "3"))
+        stream<Message> KafkaMessages = KafkaConsumer() {
+            param
+                topic: "test";
+                propertiesFile: "etc/consumer.properties";
+        }
+
+        () as PrintOut = Custom(KafkaMessages) {
+            logic
+                onTuple KafkaMessages: {
+                    println(KafkaMessages);
+                }
+        }
+
+
+        stream<Message> Messages = Beacon() {
+            param
+                period: 0.1;
+            output
+                Messages: key = "key_" + (rstring) IterationCount(),
+                          message = "msg_" + (rstring) IterationCount();
+        }
+
+        () as KafkaSink = KafkaProducer(Messages) {
+            param
+                topic: "test";
+                propertiesFile: "etc/producer.properties";
+        }
+}

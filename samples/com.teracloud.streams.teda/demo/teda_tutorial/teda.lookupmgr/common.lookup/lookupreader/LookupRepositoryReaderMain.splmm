@@ -1,0 +1,326 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use Data::Dumper;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $customizingXmlFile="$ENV{LOOKUP_CUSTOM_XML}";
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::LookupManager());
+
+	# Prepare directory settings
+	# Convert relative path to absolut path as needed
+	
+	### Repository segments - begin
+	my @sumRepositoryList;
+	if (-e ".mkrun") { # checks if makefile was called
+		@sumRepositoryList = CodeGenFrw::getSegmentStreamList($customizingXmlFile);
+	}	
+	@sumRepositoryList = sort (@sumRepositoryList);
+	### Repository segments - end
+	my $dummySubmissionDefault="dummy_" . time();
+
+	my @lookupFileSinkBundle;
+	my $shortHostName = `hostname -s`;
+	chomp($shortHostName);
+%>
+namespace common.lookup.lookupreader;
+
+
+<% if (-e ".mkrun") { # checks if makefile was called%>
+use com.teracloud.streams.teda.internal.shm::*;
+use com.teracloud.streams.teda.internal.fileutils::*;
+use com.teracloud.streams.teda.internal.utility::*;
+use com.teracloud.streams.teda.utility::getSegmentPrefix;
+use com.teracloud.streams.teda.utility::getOSuid;
+
+/*
+ *********************************************************************************
+ * Source: Read data from repository
+ * Sink: Write data to file in csv format
+ ********************************************************************************* 
+ */
+/**
+The **Lookup Repository Reader** composite is an easy stand-alone job reading the content of repository segments. 
+The results are collected repository entries stores in the csv-files, e.g.: LookupMgrRead_<%=$shortHostName%>_<segment-name>_<storename>_id<id>.csv
+The Lookup Manager and the ITE applications must not be submitted during the run of Repository Reader.
+@param outDir Name of output directory relative to ./data.
+ * Default: dump. 
+ * Submission name: **outDir**
+@param segmentName Name of the repository segment.
+* Default: 'empty' - means all. 
+* Submission name: **segment**
+@param repositoryName Name of the repository associated to repository segment. 
+ * Default: 'empty' - means all. 
+ * Submission name: **repository**
+@param storeName Name of store collected in a repository segment. 
+ * Default: 'empty' - means all. 
+ * Submission name: **store**
+@param startIndex The start index of resulting data to be read from segment. 
+ * Default 0. 
+ * Submission name: **index**
+@param maxCount The count of resulting data to be read from segment. 
+ * Default 0 - means all. 
+ * Submission name: **count**
+@param printConsole Flag defining the output in console, The value 'on' prints out. 
+ * Default: 'off'. 
+ * Submission name: **print**
+@param append This flag defines if the output should be appended to the existing file or overwrite the file. The value 'on' appends the content
+ * Default: 'off'. 
+ * Submission name: **append**
+@param hostname This is the composite parameter storing the name of processing host. The value will be set internally.
+
+ */
+@threading(model=manual)
+composite LookupRepositoryReaderMain{
+
+	param 
+		expression<rstring> $outDir: convertDataDir(getSubmissionTimeValue ("outDir", "./dump"));
+		expression<rstring> $segmentName: getSubmissionTimeValue ("segment", "");
+		expression<rstring> $repositoryName: getSubmissionTimeValue("repository", "");
+		expression<rstring> $storeName: getSubmissionTimeValue("store", "");
+		expression<uint64> $startIndex: (uint64) getSubmissionTimeValue ("index", "0");
+		expression<uint64> $maxCount: (uint64) getSubmissionTimeValue ("count", "0");
+		expression<boolean> $printConsole: convertOnOffValues(getSubmissionTimeValue("print", "off"),"print");
+		expression<boolean> $append: convertOnOffValues(getSubmissionTimeValue("append", "off"),"append");
+		expression<rstring> $hostname: getShortHostName();
+		expression<rstring> $domainId: getSubmissionTimeValue ("domain-id", "<%=$dummySubmissionDefault%>");
+		expression<rstring> $instanceId: getSubmissionTimeValue ("instance-id", "<%=$dummySubmissionDefault%>");
+		expression<rstring> $controlDirectory: convertDataDir(getSubmissionTimeValue(<%=$configurator->getSubmissionTimeValueArguments(Configurator::GLOBAL_APPLICATIONCONTROLDIRECTORY())%>));
+	
+	type<%my %definedTypes;
+		foreach my $repositoryShortName (@sumRepositoryList) {
+			my $segmentName = CodeGenFrw::getSegmentStreamName($customizingXmlFile,$repositoryShortName);
+			if (!$segmentName) {
+				print STDERR "Segment not defined for $repositoryShortName in $customizingXmlFile\n";
+				exit 10;
+			}
+			foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+				# check if store is defined twice for same segment
+				next unless (CodeGenFrw::verifyStoreName(\%definedTypes, $storeName, $segmentName));
+		%>
+		static ValueType_<%=$segmentName%>_<%=$storeName%>_t = tuple <
+<%				my @valueAssignments = CodeGenFrw::getStoreValueAssignmentsNames($customizingXmlFile,$repositoryShortName,$storeName);
+				my $assignmentCount = 0;
+				foreach my $storeValueAttr (@valueAssignments) {
+					my $separator = ",";
+					$assignmentCount++;
+					$separator = "" if (scalar(@valueAssignments) eq scalar($assignmentCount));
+		%>			<%=CodeGenFrw::getStoreValueAssignmentsType($customizingXmlFile,$repositoryShortName,$storeName,$storeValueAttr)%> <%=$storeValueAttr%><%=$separator%>
+<%				}
+%>		>;<%}
+		}#foreach%>
+<%my %definedTypes;
+		foreach my $repositoryShortName (@sumRepositoryList) {
+		my $segmentName = CodeGenFrw::getSegmentStreamName($customizingXmlFile,$repositoryShortName);
+		if (!$segmentName) {
+			print STDERR "Segment not defined for $repositoryShortName in $customizingXmlFile\n";
+			exit 10;
+		}
+		foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+			next unless (CodeGenFrw::verifyStoreName(\%definedTypes, $storeName, $segmentName));
+		%>
+		LookupMgrReadOutput_<%=$segmentName%>_<%=$storeName%> = tuple <
+			rstring segmentName,
+			rstring storeName,
+			uint64 index,
+			<%=CodeGenFrw::getStoreKeyType($customizingXmlFile,$repositoryShortName,$storeName)%> key,
+			ValueType_<%=$segmentName%>_<%=$storeName%>_t value
+		>;<%}
+	}%>
+
+	graph
+
+		// Internal generator to drive the state logic of the controller
+		stream < boolean go > Starter = Beacon () {
+			param	iterations : 1;
+					initDelay  : 1.0;
+			output	Starter : go = true;
+		}
+		
+		stream < boolean go, rstring segmentPrefix> Driver = Custom(Starter) {
+			logic 
+				state : {
+					boolean dirOk = createDir($outDir);
+				}
+				onTuple Starter:
+				{
+					printStringLn("Processing started on '" + $hostname + "' started at " + ctime(getTimestamp()) + " by user with id " + (rstring)getOSuid());
+					
+					mutable Driver otuple = {};
+					otuple.go = Starter.go;
+					mutable rstring domId=$domainId;
+					mutable rstring instId=$instanceId;
+					if ("<%=$dummySubmissionDefault%>" == $domainId) {
+						domId = getEnvironmentVariable("STREAMS_DOMAIN_ID");
+					}
+					if ("<%=$dummySubmissionDefault%>" == $instanceId) {
+						instId = getEnvironmentVariable("STREAMS_INSTANCE_ID");
+					}
+					if ("" == domId) {
+						log(Sys.error, "Cannot determine the domain ID" , "LookupMgrReader");
+						otuple.go = false;
+					}
+					if ("" == instId) {
+						log(Sys.error, "Cannot determine the instance ID" , "LookupMgrReader");
+						otuple.go = false;
+					}
+					if (otuple.go) {
+						printStringLn("\tfor domain '" + domId + "' and instance '" + instId + "'");
+						printStringLn("\tand the control directrory '" + $controlDirectory + "'");
+						otuple.segmentPrefix = getSegmentPrefix($controlDirectory);
+						submit(otuple, Driver);
+					}
+				}
+		}
+		// Repository reader
+		<%my %definedTypes;
+		foreach my $repositoryShortName (@sumRepositoryList){
+			my $segmentName = CodeGenFrw::getSegmentStreamName($customizingXmlFile,$repositoryShortName);
+			
+		%>
+		(<%my $cc = 0;
+			my $operatorStore = undef;
+			foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+				next unless (CodeGenFrw::verifyStoreName(\%definedTypes, $storeName, $segmentName));
+				$operatorStore = $storeName;
+				if ($cc > 0) {
+					print ";";
+				}
+			%>stream <LookupMgrReadOutput_<%=$segmentName%>_<%=$operatorStore%>> ReadSegement_<%=$segmentName%>_<%=$operatorStore%><%
+				$cc++;
+		}%>)  = Custom(Driver)
+		{
+			logic
+			state : {
+				boolean getAllSegs = ($repositoryName == "") && ($segmentName == "");
+				boolean getAllStores = $storeName == "";
+				mutable rstring realSegmentName = "";
+			}
+			onTuple Driver:
+			{
+				if ("" == realSegmentName) {
+					realSegmentName = segmentPrefix + "<%=$segmentName%>";
+				}
+				if (getAllSegs || ($repositoryName == "<%=$repositoryShortName%>") || ($segmentName == realSegmentName)) {
+					log(Sys.trace, "Reading :<%=$repositoryShortName%>", "LookupMgrReader");
+					// open segment and stores
+					if (shmSegmentOpen(realSegmentName, readOnly, noThrow)) {
+					
+						<%my %definedTypes;
+						foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+							next unless (CodeGenFrw::verifyStoreName(\%definedTypes, $storeName, $segmentName));
+							$operatorStore = $storeName;
+						%>// read store content
+						// Repository: $repositoryShortName, Segment: <%=$segmentName%>, Store: <%=$operatorStore%>,MAP, Key type: $keyType, Value type: ValueType<%=$operatorStore%>_t
+						if (getAllStores || ($storeName == "<%=$operatorStore%>")) {
+							mutable ReadSegement_<%=$segmentName%>_<%=$operatorStore%> otuple = {};
+							uint64 handle = shmMapOpen("<%=$operatorStore%>", realSegmentName, otuple.key, otuple.value, noThrow);
+							if (handle != 0ul) {
+								mutable list< <%=CodeGenFrw::getStoreKeyType($customizingXmlFile,$repositoryShortName,$operatorStore)%> > keyList = [];
+								mutable list< ValueType_<%=$segmentName%>_<%=$operatorStore%>_t > valueList = [];
+								uint64 no = shmMapGetAll(handle, $startIndex, $maxCount, keyList, valueList);
+								mutable uint64 x = 0ul;
+								mutable uint64 mapIndex = $startIndex;
+								while (x < no) {
+									otuple.segmentName = realSegmentName;
+									otuple.storeName = "<%=$operatorStore%>";
+									otuple.index = mapIndex;
+									otuple.key = keyList[x];
+									otuple.value = valueList[x];
+									if ($printConsole) {
+										printStringLn("Segment=" + realSegmentName + ";Store=<%=$operatorStore%>;Type=MAP;index="+(rstring)mapIndex+";Key="+(rstring)otuple.key+";Value="+(rstring)otuple.value);
+									}
+									x++; mapIndex++;
+									submit(otuple, ReadSegement_<%=$segmentName%>_<%=$operatorStore%>);
+								}
+								submit(Sys.WindowMarker, ReadSegement_<%=$segmentName%>_<%=$operatorStore%>);
+							} //end if (handle != 0)
+						}
+						<%} # end of 'foreach store of $repositoryShortName'
+						%>shmSegmentRelease(realSegmentName);
+					} // end if shmSegmentOpen..
+				} // end if
+			}
+
+		}
+		<%}#foreach%>
+		
+		//the filewriter section
+		<%my %definedTypes;
+		foreach my $repositoryShortName (@sumRepositoryList){
+			my $segmentName = CodeGenFrw::getSegmentStreamName($customizingXmlFile,$repositoryShortName);;
+			foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+				next unless (CodeGenFrw::verifyStoreName(\%definedTypes, $storeName, $segmentName));
+				my $fileSinkOutput = "FileSink".$segmentName.$storeName;
+				push(@lookupFileSinkBundle,$fileSinkOutput);%>
+		stream <rstring filename> <%=$fileSinkOutput%> = FileSink(ReadSegement_<%=$segmentName%>_<%=$storeName%>) {
+			param	file	: $outDir + "/LookupMgrRead_" + $hostname + "_" + segmentName + "_" + storeName + ".csv";
+					format	: csv;
+					quoteStrings : true;
+					append	: $append;
+					closeMode: dynamic;
+		}	<%}
+		}%>
+		() as FinalPrinter = Custom(<%
+		for (my $i=0; $i < @lookupFileSinkBundle; $i++) {%>
+		<%=$lookupFileSinkBundle[$i]%><%if ($i < @lookupFileSinkBundle-1) {%>,<%}}%>
+		as FinishedSegments
+		) {
+			logic state: {
+				mutable int32 segmentsCounter= <%=scalar @lookupFileSinkBundle%>;
+				}
+				onTuple FinishedSegments: {
+					segmentsCounter--;
+					log(Sys.trace, "Processed: " + filename + "("+ (rstring)segmentsCounter + ")", "LookupMgrReader");
+					if (0 == segmentsCounter) {
+						printStringLn("Processing finished successful.");
+					}
+				}
+		}
+	config
+		placement : partitionColocation("REPOSITORY_READER");
+}
+
+
+
+<%} # endif mkrun%>
+
+
+

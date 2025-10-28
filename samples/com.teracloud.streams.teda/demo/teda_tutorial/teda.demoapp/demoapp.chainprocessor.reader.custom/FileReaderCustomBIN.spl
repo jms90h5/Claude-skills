@@ -1,0 +1,129 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace demoapp.chainprocessor.reader.custom;
+
+use demoapp.chainprocessor.reader::FileReaderASN1;
+use demoapp.chainprocessor.reader::FileReaderCSV;
+use demoapp.chainprocessor.reader::FileReaderStructure;
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+
+/**
+ * Integrates a parser operator that is a built-in parser but requires a
+ * different configuration than the already prepared configurations or that
+ * is not available as built-in parser at all.
+ *
+ * The FileReaderASN1, FileReaderCSV, and FileReaderStructure composite
+ * operators in the <namespace>.chainprocessor.reader namespace integrate
+ * the com.teracloud.streams.teda.parser.binary::ASN1Parse,
+ * com.teracloud.streams.teda.parser.text::CSVParse and
+ * com.teracloud.streams.teda.parser.binary::StructureParse parser operators.
+ * The composite operators support a fixed set of parameters that you should
+ * investigate if you plan to use them. If other parameter settings are
+ * required, use the <namespace>.chainprocessor.reader.custom::FileReaderCustom
+ * to integrate the parser operators with the required settings.
+ *
+ * Use the <namespace>.chainprocessor.reader .custom::CustomParserTemplate
+ * template composite operator to implement and integrate your own parser.
+ * The template provides a skeleton that already takes care of reading a file
+ * with a spl.adapter::FileSource operator and forwarding all relevant SPL
+ * attributes to the output port. For more information, see the composite
+ * code comments. Typically, you create a copy of the template file.
+ *
+ * Call your customized parser composite operator from within the
+ * <namespace>.chainprocessor.reader.custom::FileReaderCustom composite
+ * operator.
+ *
+ * Configure the **ite.ingest.reader.parserList** parameter to activate this
+ * composite, for example, `ite.ingest.reader.parserList=\*|FileReaderCustom`
+ *
+ * If more than one new parser is required, create a copy of this composite
+ * and adapt and activate it.
+ *
+ * @input  FileIn
+ * Tuple containing name of file to be parsed.
+ *
+ * @output OutRec
+ * Tuples read from the input file.
+ * It is required to send a window punctuation at end of file
+ * 
+ * @output OutStat
+ * Statistic tuple containing some file parser metrics after file reading.
+ *
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ */
+ public composite FileReaderCustomBIN (
+	input 
+		stream<TypesCommon.FileIngestSchema> FileIn;
+	output
+		stream<TypesCommon.ReaderOutStreamType> ReaderRec,
+		stream<TypesCommon.ParserStatisticsStream> ReaderStat
+) {
+
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+
+		(
+		stream<TypesCommon.ReaderOutStreamType> ReaderRec;
+		stream<TypesCommon.ParserStatisticsStream> ReaderStat
+		) = 
+			// ------------------------------------------------
+			// custom code begin
+			// ------------------------------------------------
+			// Select the file reader operator
+			// a) FileReaderCSV or
+			// b) FileReaderASN1 or
+			// c) FileReaderStructure or
+			// d) Create your own parsers based on CustomParserTemplate
+			FileReaderStructure
+			// ------------------------------------------------
+			// custom code end
+			// ------------------------------------------------
+			(FileIn as IN) {
+			param
+				groupId : $groupId;
+				chainId : $chainId;
+				// ------------------------------------------------
+				// custom code begin
+				// ------------------------------------------------
+				// enable parameters below to customize the Parsers
+
+				/**
+				 * FileReaderCSV/FileReaderStructure/FileReaderASN1: operator record stream output type.
+				 */
+				parserRecordOutputType: ReaderRecordType;
+
+				/**
+				 * FileReaderStructure: The structure document parameter
+				 */
+				structureDocument: "etc/structure.xml";
+
+				/**
+				 * FileReaderStructure: The mapping document parameter
+				 */
+				mappingDocument: "etc/mapping.xml";
+
+				// ------------------------------------------------
+				// custom code end
+				// ------------------------------------------------
+		}
+}

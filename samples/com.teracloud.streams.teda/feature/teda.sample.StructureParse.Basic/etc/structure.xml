@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                -->
+<!-- TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    -->
+<!-- EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   -->
+<!-- COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       -->
+<!-- AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   -->
+<!-- OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE -->
+<!-- RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  -->
+<!-- OF THIS SAMPLE CODE.                                             -->
+<!--                                                                  -->
+<!-- LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   -->
+<!-- PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   -->
+<!-- DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    -->
+<!-- THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  -->
+<!-- PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   -->
+<!-- ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                -->
+<!--                                                                  -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     -->
+<!-- All Rights reserved.                                             -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<structures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.ibm.com/software/data/infosphere/streams/parser StructureParserStructure.xsd"
+                    xmlns="http://www.ibm.com/software/data/infosphere/streams/parser">
+
+	<variable name="dummy" type="uint16" value="1"/>
+
+	<structure name="binaryRecord">
+	
+		<!--  as we only have one structure (record type), the condition evaluates always to true -->
+		<condition>
+			<cmp op="equal">
+				<variable name="dummy"/>
+				<value>1</value>
+			</cmp>
+		</condition>
+
+		<!-- Some hints :
+		 - the binary file conforming to this format specification is located in the data directory (input.bin)
+		 - it contains 3 records, each of size 58 bytes
+		 - if you want to display the file content, you can use this command : "od -t x1 -A d -w58 input.bin" 
+		 - if you want to create input files, you can use the perl pack function with this format : "CSIQcsiqnNfda10"
+		 -->
+
+		<!--  integral types with little-endian (this is the default) -->
+		<field name="uintval8" type="uint8"/>
+		<field name="uintval16" type="uint16"/>
+		<field name="uintval32" type="uint32"/>
+		<field name="uintval64" type="uint64"/>
+
+		<field name="intval8" type="int8"/>
+		<field name="intval16" type="int16"/>
+		<field name="intval32" type="int32"/>
+		<field name="intval64" type="int64"/>
+ 			
+		<!-- some integrals with big-endian -->
+		<field name="uintval16_be" type="uint16" endianness="big"/>
+		<field name="uintval32_be" type="uint32" endianness="big"/>
+			
+		<!-- some floats -->
+		<field name="floatval32" type="float32"/>
+		<field name="floatval64" type="float64"/>
+		
+		<!-- a string -->
+		<field name="stringval1" type="rstring" size="10"/>		
+
+	</structure>
+
+</structures>

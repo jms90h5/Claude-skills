@@ -1,0 +1,58 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace demoapp.chainprocessor.reader;
+
+/**
+ * The DefaultRecordConverter forwards tuples and punctuations from the
+ * input to the output. In general, the purpose of the record converter
+ * is to rearrange values, for example, save the first item of a list in
+ * a separate SPL attribute, or to derive values from the parsed input.
+ * If the record converter requires a customization, use the
+ * demoapp.chainprocessor.reader.custom::RecordConverter
+ * composite operator.
+ * 
+ * @input I
+ * Receives the input tuples from the parser.
+ * 
+ * @output O
+ * Sends the unmodified input tuples and punctuations.
+ */
+public composite DefaultRecordConverter(input I; output O)
+{
+
+	graph
+
+		/**
+		 * The Filter operator forwards input tuples to the output port
+		 * without creating a copy of the tuples.
+		 */
+		@spl_category(name="common")
+		stream<I> O = Filter(I)
+		{
+		}
+
+}

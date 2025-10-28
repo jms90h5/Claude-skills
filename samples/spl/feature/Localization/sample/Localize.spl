@@ -1,0 +1,82 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2012, 2018     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+/** 
+The Localize composite demonstrates the use of the SPL facility that enables toolkits to
+provide translatable, localizable, string resources. 
+
+More specifically, this enables strings to be provided in various languages.  The 
+strings may contain "substitution variables" that are replaced at format time 
+with real values. The strings may be formatted so that, for example, numeric 
+values are appropriately represented for the execution locale.
+
+The interesting aspects of this sample lie in the implementation of the 
+`MyOperator` operator.  This operator demonstrates how to load and format
+a string resource at both compile-time, as part of the generation of the operator's 
+C++ code, and at run-time.
+
+This sample demonstrates the various toolkit artifacts that are used to create and 
+use string resources. You are encouraged to:
+* Add additional resources to the XLIFF files that define the available resources.
+* Experiment with different substitution variable format specifiers and observe the results when run in different locales.
+* Add a new translation for the existing string resources and observe the language availability when run in different locales.
+  Refer to the SPL Toolkit Developer's Reference for a description of how to incorporate resource bundles into toolkits.
+
+The `spl.utility::Beacon` and `spl.adapter::FileSink` operators are part of 
+the SPL Standard Toolkit. The `MyOperator` operator is a custom primitive operator 
+that uses the SPL resource facilities to load and format strings at compile-time and 
+at run-time. 
+
+In this sample the `Beacon` operator sends a single tuple to the `MyOperator` 
+operator.  This triggers the `MyOperator` operator to load a resource string and 
+format it, giving it the integer value provided by the i attribute.  The formatted 
+string is subsequently submitted to the `FileSink` to be written to a file.
+ */
+
+namespace sample;
+
+use operators::*;
+
+composite Localize() {
+  graph
+    // The spl.utility::Beacon operator produces a stream of one tuple containing a single attribute named i with a value of 101.
+    stream<int32 i> Beat = Beacon() {
+      param iterations : 1;
+      output Beat : i = 101;
+    }
+
+    // The operators::MyOperator operator emits a message at compile time saying "English: A message emitted at compile time.".
+    // It also loads a string and formats it with the value from attribute i formatted as a currency value.  If you execute the
+    // standalone executable in a local where currency is in Euros, for example, it should be formatted with the symbol for the Euro.
+    stream<rstring s> M = MyOperator(Beat) {
+    }
+
+    // The spl.adapter::FileSink operator writes the single tuple received from stream M to file "Results.txt".
+    () as Out = FileSink(M) {
+      param file : "Results.txt";
+    }
+}
+

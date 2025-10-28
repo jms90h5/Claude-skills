@@ -1,0 +1,13 @@
+Overview: LoopBack will compute the factorals of numbers from 1 to 9, by using
+an operator to perform each step of the factorial for a given number. Sucessive
+steps are performed by cycling the partial result through the operator using a
+feedback loop.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+Notes: 
+  - The resulting output is written to the file 'data/Results.txt'.

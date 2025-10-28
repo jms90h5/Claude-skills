@@ -1,0 +1,138 @@
+/*
+** Copyright (C) 2018  International Business Machines Corporation
+** All Rights Reserved
+*/
+namespace com.teracloud.streams.objectstorage.sample;
+
+use com.teracloud.streams.objectstorage::*;
+
+/**
+ * The sample demonstrates object creation, scanning and reading.
+ * 
+ * Additional purpose of the sample is to demonstrate how to configure the operators and functions with basic (HMAC) authentication.
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param objectStorageURI 
+ * Set a bucket name and protocol in URI in 'cos://bucket/' or 's3a://bucket/' format
+ *
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ *
+ */
+public composite SinkScanSourceSample {
+
+	param
+		expression<rstring> $accessKeyID : getSubmissionTimeValue("os-access-key-id");
+		expression<rstring> $secretAccessKey : getSubmissionTimeValue("os-secret-access-key");
+		expression<rstring> $endpoint : getSubmissionTimeValue("os-endpoint", "s3.us.cloud-object-storage.appdomain.cloud");
+		expression<rstring> $objectStorageURI: getSubmissionTimeValue("os-uri");
+		expression<boolean> $sslEnabled: (boolean) getSubmissionTimeValue("sslEnabled", "true");
+
+	graph
+
+		stream<rstring result> SampleRes = SinkScanSourceSampleBasic() {
+			param
+				accessKeyID: $accessKeyID;
+				secretAccessKey: $secretAccessKey;
+				objectStorageURI: $objectStorageURI;
+				endpoint: $endpoint;
+				sslEnabled: $sslEnabled;
+		}	
+}
+
+/**
+ * Composite used by SinkScanSourceSample main composite and test application
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param objectStorageURI 
+ * Set a bucket name and protocol in URI in 'cos://bucket/' or 's3a://bucket/' format
+ * 
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ *
+ * @output SampleResult
+ * This stream is evaluated by the tester.
+ */
+public composite SinkScanSourceSampleBasic (output SampleResult) {
+	param
+		expression<rstring> $accessKeyID;
+		expression<rstring> $secretAccessKey;
+		expression<rstring> $objectStorageURI;
+		expression<rstring> $endpoint: "s3.us.cloud-object-storage.appdomain.cloud";
+		expression<boolean> $sslEnabled: true;
+	
+	graph
+	
+		stream<rstring line> Data = Beacon() {
+			param
+				iterations: 10000;
+				period: 0.005;
+			output
+				Data : line  = "Line " +(rstring) IterationCount() + " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+		}
+				
+		stream<rstring objectname, uint64 size> ObjectMetaData = ObjectStorageSink(Data) {
+			param
+				objectStorageURI : $objectStorageURI;
+				objectStorageUser : $accessKeyID;
+				objectStoragePassword : $secretAccessKey;
+				endpoint : $endpoint;
+				objectName : "SAMPLE_%OBJECTNUM.ascii.text";
+				bytesPerObject: 204800l;
+				sslEnabled: $sslEnabled;
+  		}
+		
+		() as objectMetadataSink = Custom(ObjectMetaData) {
+			logic
+			onTuple ObjectMetaData: {
+				printStringLn("Object with name '" + objectname + "' of size '" + (rstring)size + "' has been created.");		                    
+			}
+		}
+
+		stream<rstring objectname> ObjectNames = ObjectStorageScan() {
+			param
+				objectStorageURI : $objectStorageURI;
+				objectStorageUser : $accessKeyID;
+				objectStoragePassword : $secretAccessKey;
+				endpoint : $endpoint;
+				pattern: "SAMPLE_[0-9]*\\.ascii\\.text$";
+				directory: "/";
+				sslEnabled: $sslEnabled;
+  		}
+		
+		stream<rstring data> ObjectData = ObjectStorageSource(ObjectNames) {
+			param
+				objectStorageURI : $objectStorageURI;
+				objectStorageUser : $accessKeyID;
+				objectStoragePassword : $secretAccessKey;
+				endpoint : $endpoint;
+				sslEnabled: $sslEnabled;
+		}
+		
+		stream<rstring result> SampleResult = Custom(ObjectData) {
+			logic
+			onTuple ObjectData: {
+				printStringLn("read: "+data);
+				submit ({result="ok"}, SampleResult);
+			}
+		}
+
+}

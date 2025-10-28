@@ -1,0 +1,92 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $isEnabled = $configurator->isOn(Configurator::ITE_STORAGE_AUDITOUTPUTS());
+%>
+namespace demoapp.chainsink.sample;
+
+<%if (1 == $isEnabled) {%>
+use demoapp.streams::*;
+
+/**
+ * AuditTableWriter
+ * Custom audit table writer implements custom sink code.
+ *
+ * @input  InStat Statistic tuple
+ *
+ * @output OutStat Statistic tuple
+ *
+ * @param outputDir
+ * Directory of output files to be written
+ *
+ * @param commitDir
+ * Output directory of committed table files
+ */
+public composite AuditTableWriter ( 
+	input 
+		stream<TypesCommon.FileStatistics> InStat;
+	output
+		stream<TypesCommon.FileStatistics> OutStat
+)
+{
+	param
+		expression<rstring> $outputDir;
+		expression<rstring> $commitDir;
+
+	graph
+
+		// Audit Table Mapping
+		@spl_category(name="sample")
+		(stream<InStat> OutStat
+		) as AuditTableMapper = Custom(InStat) {
+			logic
+				onTuple InStat : {
+					// forward statistic tuple
+					submit(InStat,OutStat);
+				}
+		}
+
+}
+<%} #endif enabled%>

@@ -1,0 +1,138 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+
+namespace demoapp.housekeeping.context.custom;
+
+use demoapp.streams::TypesCommon;
+
+/**
+ * Determine from the provided list of existing files those, which are too old
+ * or invalid and delete them. Send the input tuples for files that are still
+ * valid, to the output port.
+ * 
+ * The provide algorithm is:
+ * A file is too old and gets removed if the file modification date/time is
+ * older than the current time minus the value of the secondsToKeep parameter.
+ * 
+ * @param secondsToKeep
+ * The value is specified with the ite.businessLogic.group.custom.timeToKeep
+ * parameter.
+ * 
+ * @param groupId
+ * The index of the group. It can be used for debugging or to implement
+ * a group-specific removal of checkpoint files.
+ * 
+ * @input ExistingFiles
+ * The CheckpointFileRemover composite operator has a single input port.
+ * The punctuation mode of the input port is Expecting.
+ * The input port gets a stream of file information (name, size, file
+ * modification time) for existing files.
+ * 
+ * @output KeptFiles
+ * The CheckpointFileRemover composite operator has a single output port.
+ * The punctuation mode of the output port is Preserving.
+ * The output port gets those input tuples, for which the corresponding
+ * file is determined to be still valid.
+ */
+public composite CheckpointFileRemover(input stream<TypesCommon.CheckpointFileRemoverStreamType> ExistingFiles; output stream<TypesCommon.CheckpointFileRemoverStreamType> KeptFiles)
+{
+	param
+
+		/**
+		 * See parameter description in the composite description.
+		 */
+		expression<int64> $secondsToKeep; // unused in this customized implementation
+
+		/**
+		 * The index of the group. It can be used for debugging or to implement
+		 * a group-specific removal of checkpoint files.
+		 */
+		expression<rstring> $groupId;
+
+	graph
+
+		/**
+		 * The first file that arrives, triggers the calculation of "now".
+		 * Take this time information to split the stream into good and
+		 * too old files.
+		 */
+		(
+			stream<I> KeptFilesStream as G;
+			stream<I> TooOld as B
+		) as Splitter = Filter(ExistingFiles as I) {
+			logic
+				state: {
+					int64 secondsToKeep = $secondsToKeep;
+					mutable boolean needsNewestTimeInformation = true;
+					mutable int64 newestTimeInformation = 0l;
+				}
+				onTuple I: {
+					if (needsNewestTimeInformation)	{
+						needsNewestTimeInformation = false;
+						newestTimeInformation = getSeconds(getTimestamp());
+					}
+					appTrc(Trace.trace, (rstring)I + "---" + (rstring)newestTimeInformation + "---" + (rstring)(newestTimeInformation - I.fileModificationTime_secs) + "---" + (rstring)secondsToKeep);
+				}
+				onPunct I: {
+					needsNewestTimeInformation = true;
+				}
+			param 
+				filter: (newestTimeInformation - I.fileModificationTime_secs) < secondsToKeep;
+		}
+
+		/**
+		 * Remove too old files.
+		 */
+		() as Remover = Custom(TooOld as I)
+		{
+			logic
+				state: {
+					mutable int32 removeResult = 0;
+				}
+				onTuple I: {
+					spl.file::remove (I.filePath, removeResult);
+					if (0 != removeResult) {
+						appTrc(Trace.error, "cannot remove file: " + (rstring)I + ", reason: " + strerror(removeResult));
+					}
+					else {
+						appTrc(Trace.trace, "removed file: " + (rstring)I);
+					}
+				}
+		}
+
+		/**
+		 * Filenames are forwarded only on startup
+		 */
+		(stream<I> KeptFiles as O) as KeptFilesFilter = Custom(KeptFilesStream as I)
+		{
+			logic
+				state: {
+					// Forward tuples only for the first batch, which ends with
+					// the first punctuation.
+					mutable boolean forwardTuples = true;
+				}
+				onTuple I: {
+					if (forwardTuples) {
+						submit (I, O);
+					}
+				}
+				onPunct I: {
+					if (currentPunct() == Sys.WindowMarker) {
+						forwardTuples = false;
+						submit(Sys.WindowMarker, O);
+					}				
+				}			
+		}
+}

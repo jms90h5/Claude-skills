@@ -1,0 +1,168 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.CSVParse.Assignments;
+use com.teracloud.streams.teda.parser.text::CSVParse;
+
+/**
+ * This sample demonstrates reading a fictive CDR data format that contains voice and sms records.
+ * Two mappings are configured to read the different CDR types. For each processed input file
+ * a statistic record is written to an output file. The 3 sample input files contain the following number of records,errors and dropped records:
+ * - input0.csv : 4 valid records
+ * - input1.csv : 2 valid records, 1 error (too many csv fields), 1 unknown record type that is dropped
+ * - input2.csv : 2 valid records, 1 error (conversion to integer not possible), and 2 empty lines which are dropped 
+ * after running the sample , these statistics can be found in the file data/fileStatistics.txt
+ * 
+ */
+composite Main
+{
+	type
+	
+		/**
+		 * A very simplistic schema for call data records (CDRs). It can hold general CDR data (calling/called numbers),
+		 * data specific to voice calls (duration, release cause) and data specific to SMS CDRs (SMS center id, SMS type).
+		 * for voice CDRs the SMS related fields will get their default values, vice versa for SMS CDRs.
+		 * 
+		 * Two additional attributes (inputFileName and lineNumber) will be filled by custom output functions, to identify the
+		 * source location of the CDR.
+		 */
+		CallDataRecord = tuple
+		<
+			rstring inputFilename,	
+			int64 lineNumber,
+			rstring cdrType,
+			rstring callingNumber,
+			rstring calledNumber,
+			uint8 releaseCause,
+			uint32 callDuration,
+			rstring smsCenter,
+			uint8 smsType
+		>;
+
+		/**
+		 * The type of the statistic tuple. For each processed file, the following information is sent:
+		 * - the filename
+		 * - the number of lines in the file
+		 * - the number of valid CDR records in this file
+		 * - the number of invalid records in this file
+		 * - the number of dropped records in this file
+		 * - the errors and records for each mapping type
+		 */
+		StatisticTuple = tuple
+		<
+			rstring inputFilename,	
+			uint64 lines,
+			uint64 validRecords,
+			uint64 errorRecords,
+			uint64 droppedRecords,
+			map<rstring, map<rstring , uint64 >> recordStats
+		>;
+
+	graph
+
+		/**
+		 * use a beacon to send the 3 input filenames to the filesource
+		 */
+		stream <rstring name> Filenames as O = Beacon()
+		{
+			logic
+				state: mutable int32 i = 0;
+			param
+				iterations: 3;
+			output
+				O: name = "input" + (rstring)(i++) + ".csv" ;
+		}
+
+		/**
+		 * Read the input csv file. Each line is submitted as an rstring. For later identification of the source file and line
+		 * of each submitted CDR line, we use output functions of the FileSource operator to assign additional attributes.
+		 */
+		stream<rstring csvline, rstring fileName, int64 lineNumber> CSVlines as O = FileSource(Filenames)
+		{
+			param
+				format: line;
+			output O:
+				fileName = FileName(),
+				lineNumber = TupleNumber();
+		}
+	
+		/**
+		 * Parse the lines from the FileSource. Valid records are mapped to the output tuple of type ValidCDRs.
+		 * To each valid record the filename and linenumber is added. For the statistics port we use several
+		 * output functions to assign the required values. For each input file processed, a statistic tuple is written.
+		 */
+		(
+			stream<CallDataRecord> ValidCDRs as O;
+			stream<I> ErrorCDRs as E;
+			stream<StatisticTuple> Statistics as S			
+		) as Parser = CSVParse(CSVlines as I)
+		{
+			param
+				mappingDocument: "etc/mapping.xml";
+				payloadAttribute: csvline;
+			output
+				O:
+					inputFilename = fromInput(fileName),
+					lineNumber = fromInput();
+				S:
+					inputFilename = fromInput(fileName),
+					lines = nTuplesReceived(),
+					validRecords = nTuplesSent(),
+					errorRecords = nTuplesFailed(),
+					droppedRecords = nTuplesDropped(),
+					recordStats = getRecordStats();
+		}
+
+		/**
+		 * Valid records are stored in the file data/validCDRs.txt in tuple format.
+		 */
+		() as OutSink = FileSink(ValidCDRs as I)
+		{
+	            param
+	                file : "validCDRs.txt";
+	                format : txt;
+	    }	
+
+		/**
+		 * Invalid records are stored in the file data/errorCDRs.txt in tuple format.
+		 */
+		() as ErrSink = FileSink(ErrorCDRs as I)
+		{
+	            param
+	                file : "errorCDRs.txt";
+	                format : txt;	                
+		}
+		
+		/**
+		 * statistic tuples are stored in the file data/fileStatistics.txt in tuple format.
+		 */	
+		() as StatSink = FileSink(Statistics as I)
+		{
+	            param
+	                file : "fileStatistics.txt";
+	                format : txt;	                
+		}
+
+}

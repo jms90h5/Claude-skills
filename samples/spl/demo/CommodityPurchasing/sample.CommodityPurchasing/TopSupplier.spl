@@ -1,0 +1,473 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace sample.CommodityPurchasing;
+
+/**
+ * The `TopSupplier` application calculates scores for each
+ * supplier location based upon the latest information.  The
+ * application calculates a weather score based upon weather
+ * data and an overall rating that considers the weather score 
+ * and other factors.
+ *
+ * **Imported Streams**
+ *
+ * * `WeatherSummary` - Summary of the weather attributes of a 
+ * supplier location that will be used in the scoring.
+ * * `PurchaseTransactions` - Stream of purchase transactions.  One
+ * aspect of the overall score is affected by when we last 
+ * bought from a supplier.
+ * * `CurrentAlerts` - Stream of weather watches and warnings
+ * information for the supplier locations.
+ * * `SupplierData` - Stream of supplier locations.
+ * 
+ * **Exported Streams**
+ *
+ * * `OptimalSupplier` - Identifies the top supplier at the current
+ * time.  The optimal supplier is the supplier with the highest
+ * overall score.
+ */
+composite TopSupplier
+{
+
+type
+
+  // 
+  // Stream Schemas
+  // 
+
+
+  // Schema that includes the weather score and attributes used in scoring
+  WeatherScoreSchema = rstring city,
+                       int32 weatherScore,
+                       rstring stationCode,
+                       float32 tempDelta,
+                       float32 runningAvgTemp,
+                       float32 relativeHumidity,
+                       int64 timeGenerated;
+
+graph
+
+  //
+  // Imported Streams
+  //
+
+  // Import weather summary stream from WeatherConditions application
+  stream <WeatherSummarySchema> WeatherSummary = Import() {
+    param applicationName : "sample.CommodityPurchasing::WeatherConditions";
+          streamId : "WeatherSummary";
+  }
+
+  // Import purchase transactions stream from SupplyAndPurchase application
+  stream <PurchaseTransactionSchema> PurchaseTransactions = Import() {
+    param applicationName : "sample.CommodityPurchasing::SupplyAndPurchase";
+          streamId : "PurchaseTransactions";
+  }
+  
+  // Import weather alert stream from WatchesWarnings application
+  stream <LocationAlertSchema> CurrentAlerts = Import() {
+    param applicationName : "sample.CommodityPurchasing::WatchesAndWarnings";
+          streamId : "CurrentAlerts";
+  }
+
+  // Import the supplier stream from the WeatherConditions application
+  stream<WeatherLocationSchema> SupplierData = Import()
+  {
+    param
+      applicationName : "sample.CommodityPurchasing::WeatherConditions";
+      streamId : "SupplierLocation";
+  }
+
+
+
+  // 
+  // Operators for Weather Scoring
+  // 
+
+
+  /************************************************************************************
+  # Purpose:        Reduce the imported stream down to only the attributes needed for
+  #                 scoring and rating.
+  #  
+  # Input Streams:  A weather summary stream, imported from another job, that includes
+  #                 supplier location information, current weather conditions, and 18
+  #                 hour temperature data. 
+  #
+  # Output Streams: A stream containing fewer attributes, as defined by the schema 
+  #                 below.
+  ************************************************************************************/
+  stream <rstring city, rstring stationCode, float32 tempInF, float32 relativeHumidity, float32 dewpoint, 
+          float32 runningAvgTemp, float32 tempDelta> WeatherScoringAttributes = Functor(WeatherSummary) 
+  {
+  }
+ 
+
+  /************************************************************************************
+  # Purpose:        Generate a weather score for a location, based on the most recent
+  #                 information.
+  #  
+  # Input Streams:  The stream of attributes that are used in computing the weather 
+  #                 score.  Each tuple represents the latest information for a 
+  #                 particular location.
+  #
+  # Output Streams: A stream containing the weather score for a location, along with
+  #                 some of the attributes that contributed to the score.
+  ************************************************************************************/
+  stream <WeatherScoreSchema> WeatherScore = Functor(WeatherScoringAttributes) 
+  {
+    logic  state: { 
+             // Temperature constants used in scoring
+             float32 TempTarget = 65.0;
+             float32 TempRange1 = 5.0;
+             float32 TempRange2 = 10.0;
+             float32 TempRange3 = 20.0;
+             float32 TempRange4 = 40.0;
+
+             // Relative humidity constants used in scoring
+             float32 RHumTarget = 0.45;
+             float32 RHumRange1 = 0.10;
+             float32 RHumRange2 = 0.20;
+             float32 RHumRange3 = 0.40;
+
+             // Variables
+             mutable float32 score = 0.0;
+           }
+
+           onTuple WeatherScoringAttributes: {
+             //Generate a timestamp for this score
+
+             //Scores start at 1000
+             score = 1000.0w;
+
+             // Stability of the temperature for the period just prior to harvest is the 
+             // most important factor.  The calculations below allow locations with very 
+             // small ranges to stay at a 1000 score.  Wider ranges will degrade the score.
+
+             mutable float32 tempDeltaFactor = tempDelta/7.5w;
+
+             // Make sure we avoid a divide by a very small number
+             if (tempDeltaFactor < 1.0w)
+               tempDeltaFactor = 1.0w;
+
+             // The score is set based upon the temperature delta.  It may still
+             // be increased later in this logic due to other factors.            
+             score = score/tempDeltaFactor;
+
+             // A good value for the current relative humidity can raise a score 
+             // by as many as 100 additional points
+             if ((RHumTarget - abs(relativeHumidity)) < RHumRange1)
+               score += 100.0w;
+             else 
+               if ((RHumTarget - abs(relativeHumidity)) < RHumRange2)
+                    score += 50.0w;
+               else 
+                 if ((RHumTarget - abs(relativeHumidity)) < RHumRange3)
+                   score += 25.0w;
+             
+             // A good value for the 18 hour average temperature can raise a score
+             // by as many as 50 additional points
+             if (abs(TempTarget - runningAvgTemp) < TempRange1)
+               score += 50.0w;
+             else 
+               if (abs(TempTarget - runningAvgTemp) < TempRange2)
+                 score += 25.0w;
+               else 
+                 if (abs(TempTarget - runningAvgTemp) < TempRange3) 
+                   score +=12.0w;
+                 else 
+                   if (abs(TempTarget - runningAvgTemp) < TempRange4) 
+                     score += 6.0w;
+           }
+ 
+  output WeatherScore : weatherScore = (int32) score,
+                        timeGenerated = getSeconds(getTimestamp());
+  }
+
+
+  /************************************************************************************
+  # Purpose:        Initialization stream of dummy purchase transactions needed to 
+  #                 populate windows for a downstream Join operation that produces the 
+  #                 WeatherScoreAndPurchases stream.  These dummy transactions are 
+  #                 needed to establish a history of the last purchase for each 
+  #                 supplier.
+  #  
+  # Input Streams:  Imported stream of suppliers
+  #
+  # Output Streams: A stream containing one tuple per location, with a purchase of zero
+  #                 bushels and a timestamp of zero.  In the initial case where there 
+  #                 is no history of purchase transactions, this allows the downstream
+  #                 join to think that the last purchase from a supplier occurred more
+  #                 than 24 hours ago.
+  ************************************************************************************/
+  stream <PurchaseTransactionSchema> InitialValuesForPurchaseHistory = Custom(SupplierData) 
+  { 
+    logic onTuple SupplierData : submit ({ amountPurchased=0, city=city, weatherScoreAtPurchase=0, timeSeconds=0l }, 
+                                          InitialValuesForPurchaseHistory ) ; 
+  }
+
+
+  /************************************************************************************
+  # Purpose:        Pair up the latest weather score stream for a location with the 
+  #                 last purchase transaction from the supplier at that location.  Both
+  #                 the weather score and the last purchase time will be used 
+  #                 downstream in the determination of the optimal supplier., 
+  #  
+  # Input Streams:  On one side of the join is the stream of weather scores.  On the 
+  #                 other side of the join there is an initialization stream of purchase
+  #                 transactions and the stream of actual purchase transactions.
+  #
+  # Output Streams: A stream containing the weather score information along with data 
+  #                 about the last purchase from a location.
+  ************************************************************************************/
+  stream <WeatherScoreSchema, PurchaseTransactionSchema> WeatherScoreAndPurchases = Join (WeatherScore as L; InitialValuesForPurchaseHistory, PurchaseTransactions as R) 
+  {
+    window
+      L : sliding, count(1), partitioned;
+      R : sliding, count(1), partitioned;
+    param
+      partitionByLHS: L.city;
+      partitionByRHS: R.city;
+      match: L.city == R.city;
+
+    output WeatherScoreAndPurchases : city = L.city;
+  }
+
+ 
+  /************************************************************************************
+  # Purpose:        Pair up the information about severe weather watches and warnings 
+  #                 with the previously declared stream.  This produces tuples that 
+  #                 contain weather score, purchase, and severe weather information.  
+  #                 This information is used downstream to determine the optimal 
+  #                 supplier.
+  #  
+  # Input Streams:  There are two input streams:  1)  The joined stream of weather 
+  #                 paired with the latest purchase transaction.  2)  The stream of 
+  #                 current weather watches and warnings for a location.
+  #
+  # Output Streams: A stream containing the weather score information, last purchase
+  #                 information, and the number of severe weather alerts for a 
+  #                 particular location.
+  ************************************************************************************/           
+  stream <WeatherScoreSchema, PurchaseTransactionSchema, tuple<int16 severeWeatherAlerts>>  WeatherScoreAndPurchasesPlusSevereWeatherAlerts = Join(WeatherScoreAndPurchases as L; CurrentAlerts as R) 
+  {
+    window
+      L : sliding, count(1), partitioned;
+      R : sliding, count(1), partitioned;
+    param
+      partitionByLHS: L.city;
+      partitionByRHS: R.city;
+      match: L.city == R.city;
+    output  WeatherScoreAndPurchasesPlusSevereWeatherAlerts : severeWeatherAlerts = (int16) alertCount;
+  }
+
+
+
+  // 
+  // Operators for determining optimal supplier
+  // 
+
+
+  /************************************************************************************
+  # Purpose:        Compute the overall rating for a supplier and then determine which
+  #                 of the suppliers has the highest overall rating.  The rating is 
+  #                 based upon the weather score, last purchase transaction, and 
+  #                 weather alert information for a supplier.  If the last purchase 
+  #                 from a supplier occurred within the last 12 hours, the overall 
+  #                 rating will be set to a low, non-zero value, regardless of the 
+  #                 weather score.  If the location currently has severe weather
+  #                 watches or warnings, the overall rating is set to zero.
+  #  
+  # Input Streams:  A stream of tuples containing the the weather score, last purchase 
+  #                 information and severe weather information for a location.
+  #
+  # Output Streams: A stream of rating information.  Each tuple contains a weather 
+  #                 score for a single location with additional attributes affecting 
+  #                 the location's overall rating and attributes to identify which
+  #                 location now has the highest overall rating.
+  ************************************************************************************/
+  stream<WeatherScoreSchema, tuple<int32 overallRating, int16 severeWeatherAlerts, rstring topCity, int32 topRating>> OverallRating = Functor(WeatherScoreAndPurchasesPlusSevereWeatherAlerts) {
+    logic  state: {           
+             // Time constants
+             int64 SecondsIn12Hours = 43200;
+
+             // Variables
+             mutable map<rstring, int32> ratingsMap;
+             mutable int32 high = 0;
+             mutable rstring topLocation = "";
+             mutable int32 localRating = 0;   
+           }    
+           onTuple WeatherScoreAndPurchasesPlusSevereWeatherAlerts: {
+             // Set the local rating variable to start at the value of the weather score for the location that we are processing
+             localRating = weatherScore;
+
+             // Now, check to see if the overall rating needs to be altered due to some disqualifying condition
+
+             // Check to see if we have purchased from that location in the last 12 hours.  If so, that disqualifies the location 
+             // from consideration in most cases.  Thus we will set its rating to 25.  Allowing for purchases only in cases where 
+             // all other locations have a rating of 0.
+             int64 currentTimeSeconds = getSeconds(getTimestamp());
+             int64 timeDifference = currentTimeSeconds - timeSeconds;
+
+             if (timeDifference < SecondsIn12Hours)
+               localRating = 25;
+        
+
+             // Now check if there are any severe weather alerts for 
+             // the location.  If there are, the rating must be set to 0.
+             if (severeWeatherAlerts > 0h) 
+               localRating = 0;
+
+             // Now store the rating 
+             high = 0;
+             topLocation = "";
+
+             // Check to see if the location is in our map
+             if (city in ratingsMap) {
+               // The location is already in the map, so we only need to update its ratings value.
+               ratingsMap[city] = localRating;
+             }
+             else
+               // This location is not in the map, so we must add it
+               insertM(ratingsMap, city, localRating);
+
+             // Find the location with the highest rating.    
+             high = 0;
+             for (rstring loc in ratingsMap) {
+               if (ratingsMap[loc] > high) {
+                 high = ratingsMap[loc];
+                 topLocation = loc;
+               }
+             }
+           }
+  output OverallRating: overallRating = localRating, 
+                        topCity = topLocation, 
+                        topRating = high;
+  }
+
+
+
+  /************************************************************************************
+  # Purpose:        Reduce the stream down to only the attributes for export identifying
+  #                 the optimal supplier at the current point in time.
+  #  
+  # Input Streams:  The stream containing the latest overall rating for a location and 
+  #                 the location with the highest rating.
+  #
+  # Output Streams: A stream identifying the optimal supplier, along with its rating
+  #                 information.
+  ************************************************************************************/
+  stream <OptimalSupplierSchema> OptimalSupplier = Functor(OverallRating) 
+  {
+    output OptimalSupplier : city = topCity, 
+                             overallRating = topRating, 
+                             weatherScore = topRating;
+  }
+
+  () as OptimalExport = Export(OptimalSupplier) 
+  {
+    param streamId : "OptimalSupplier";
+  }
+
+
+
+  /************************************************************************************
+  # Purpose:        Produce a stream that can be used as a record of each overall 
+  #                 rating that was generated.  The information is ultimately used by
+  #                 the application user interface.
+  #  
+  # Input Streams:  The stream containing the latest overall rating for a location and 
+  #                 the location with the highest rating.
+  #
+  # Output Streams: A stream containing the current overall rating and weather score 
+  #                 for a particular location, along with the attributes that
+  #                 contributed to those ratings.
+  ************************************************************************************/
+  stream <rstring city, int32 overallRating, int32 weatherScore, int16 severeWeatherAlerts, rstring stationCode,
+          float32 tempDelta, float32 runningAvgTemp, float32 relativeHumidity> SupplierRanking = Functor(OverallRating) 
+  {
+  }
+
+
+  // 
+  // Data Sinks (to support the application user interface)
+  // 
+
+
+  /************************************************************************************
+  # Purpose:        Write information about each weather score to an external sink.  
+  #                 The sink is a file that will be used as data for the application 
+  #                 user interface.  
+  #  
+  # Input Streams:  The stream of location weather scores.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as RatingHistorySink = FileSink(WeatherScore) 
+  {
+    param
+      file: "RatingHistory.result";
+      format: csv;
+      flush: 1u;
+  }
+
+
+
+  /************************************************************************************
+  # Purpose:        Write information about the overall ratings to an external sink.  
+  #                 The sink is a file that will be used as data for the application 
+  #                 user interface.  
+  #  
+  # Input Streams:  The stream of overall location ratings.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as RankingsSink = FileSink(SupplierRanking) 
+  {
+    param
+      file: "Rankings.result";
+      format: csv;
+      flush: 1u;
+  }
+
+
+  /************************************************************************************
+  # Purpose:        The composite operator used below will calculate per minute and total 
+  #                 tuple counts for the input stream and record them in sinks used by 
+  #                 the metrics portion of the application user interface.
+  #                 stream.  
+  #  
+  # Input Streams:  The stream of weather scores.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as ScoreCounts = RecordTupleCounts(WeatherScore) 
+  {
+    param minuteSink: "ScoresPerMinute.result";
+          totalSink:  "TotalWeatherScores.result";
+  }
+
+config placement : partitionColocation("same"); // place all operators into one PE
+}

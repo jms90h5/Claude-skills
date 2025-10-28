@@ -1,0 +1,58 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2010, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+<%
+    use TableMatchCommon;
+    TableMatchCommon::verify($model);
+    my $inputPortLHS = $model->getInputPortAt(0);
+    my $windowLHS = $inputPortLHS->getWindow();
+    my $windowCppType = SPL::CodeGen::getWindowCppType($windowLHS, "IPort0Type*");
+    my $windowEventType = SPL::CodeGen::getWindowEventCppType($windowLHS, "IPort0Type*");
+%>
+
+<%SPL::CodeGen::headerPrologue($model);%>
+
+class MY_OPERATOR : public MY_BASE_OPERATOR
+{
+public:
+    typedef <%=$windowCppType%> WindowType;
+    typedef <%=$windowEventType%> WindowEventType;
+
+    struct WindowHandler : WindowEventType 
+    {
+      WindowHandler(MY_OPERATOR & op) : op_(op) {}
+      void beforeTupleEvictionEvent (WindowType & window, 
+                                     TupleType & tuple,
+                                     PartitionType const &)
+      { 
+          op_.evict(*tuple); 
+      }
+      MY_OPERATOR & op_;
+    };
+
+    MY_OPERATOR();
+    virtual ~MY_OPERATOR();
+    void process(Tuple const & tuple, uint32_t port);
+    void evict(IPort0Type & tuple);
+
+private:
+    Mutex mutex_;
+    WindowType windowOfReadings_;
+    WindowHandler windowHandler_;
+    map<uintptr_t,uint32> matchedReadings_;
+}; 
+
+<%SPL::CodeGen::headerEpilogue($model);%>
+

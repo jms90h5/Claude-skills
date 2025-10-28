@@ -1,0 +1,14 @@
+Overview: WordCount will count the number of lines, word, and characters in a
+text file.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone file=../Makefile
+
+Notes: 
+  - The command line parameter 'file' specifies the path of the input file to
+    analyze. 
+  - Relative paths are rooted at the 'data' directory.
+

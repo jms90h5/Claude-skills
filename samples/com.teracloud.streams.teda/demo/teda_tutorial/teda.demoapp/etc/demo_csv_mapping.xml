@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<mappings xmlns="http://www.ibm.com/software/data/infosphere/streams/csvparser">
+
+	<!-- this mapping is applied if the first CSV field contains the string "1", the CSV line must have at least 20 fields -->
+	<mapping name="voice" filterIndex="0" filterValue="1" itemCountMin="20">
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+		<assign/>
+	</mapping>
+	
+	<!-- this mapping is applied if the first CSV field contains the string "2", the CSV line must have at least 15 fields -->
+	<mapping name="sms" filterIndex="0" filterValue="2" itemCountMin="15">
+		<assign attribute="cdrRecordType" index="0"/>
+		<assign attribute="cdrRecordNumber" index="1"/>
+		<assign attribute="cdrCallReference" index="2"/>
+		<assign attribute="cdrCallingImsi" index="3"/>
+		<assign attribute="cdrCallingImei" index="4"/>
+		<assign attribute="cdrCallingNumber" index="5"/>
+		<assign attribute="cdrCalledNumberTon" index="6"/>
+		<assign attribute="cdrCalledNumberNpi" index="7"/>
+		<assign attribute="cdrCalledNumber" index="8"/>
+		<assign attribute="cdrCallingSubsFirstCi" index="9"/>
+		<assign attribute="cdrCauseForTermination" index="10"/>
+		<assign attribute="cdrCallType" index="11"/>
+		<assign attribute="cdrCallingNumberTon" index="12"/>
+		<assign attribute="cdrCallingNumberNpi" index="13"/>
+		<assign attribute="cdrCallReferenceTime" index="14"/>
+	</mapping>
+
+</mappings>
+

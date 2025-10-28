@@ -1,0 +1,7 @@
+Overview: SampleToolkit illustrates the toolkit layout for a simple toolkit that
+contains primitive operators and native functions.
+
+1. To index the sample toolkit:
+   spl-make-toolkit
+
+Note: This sample is compile-only.

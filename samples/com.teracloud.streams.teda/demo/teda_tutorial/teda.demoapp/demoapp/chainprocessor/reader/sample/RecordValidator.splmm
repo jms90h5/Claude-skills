@@ -1,0 +1,135 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=4;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $useSampleCode = $configurator->isOn(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $useCustomRejectWriter = $configurator->isOn(Configurator::ITE_STORAGE_REJECTWRITER_CUSTOM());
+%>
+namespace demoapp.chainprocessor.reader.sample;
+
+<%if ($useSampleCode) {%>
+use demoapp.streams::*;
+use demoapp.streams.sample::*;
+
+/**
+ * RecordValidator
+ * Record validation checks are performed and invalid tuples are rejected.
+ * Sets the attribute rejectedInvalids in Statistic tuple.
+ *
+ * @input  RecordIn Tuples to be validated
+ * @input  StatIn Statistic tuple to be updated
+ *
+ * @output OutRecord Record tuples
+ * @output OutStat Statistic tuples
+ * @output OutRej Rejected tuples
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ */
+public composite RecordValidator (
+	input 
+		stream<TypesCommon.ReaderOutStreamType> RecordIn,
+		stream<TypesCommon.FileStatistics> StatIn;
+	output
+		stream<TypesCommon.ReaderOutStreamType> OutRecord,
+		stream<TypesCommon.FileStatistics> OutStat,
+		stream<TypesCommon.RejectedDataStreamType> OutRej
+) {
+	
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+		@spl_category(name="sample")
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRecord;
+		stream<TypesCommon.FileStatistics> OutStat;
+		stream<TypesCommon.RejectedDataStreamType> OutRej
+		) as Validator = Custom(RecordIn; StatIn) {
+			logic
+			state : {
+				mutable int64 numRejectedInvalids = 0l;
+			}
+			onTuple RecordIn: {
+				if (readerInvalidLineInd) {
+					mutable OutRej rejInvalid = {};
+					rejInvalid.filename = RecordIn.filename;
+					rejInvalid.readerLinenumber = RecordIn.readerLinenumber;
+					rejInvalid.rejectreason = (uint32)TypesCustom.rrInvalidLine;
+					rejInvalid.rejectinfo = RecordIn.readerInvalidMessage;<%if ($useCustomRejectWriter) {%>
+					rejInvalid.invalidPayload = RecordIn.readerInvalidPayload;
+					// no need to assign rejInvalid.readerOutput from RecordIn since attributes are not filled in error case<%}%>
+					submit(rejInvalid,OutRej);
+					numRejectedInvalids++;
+				}
+				else if (""==attr1) {
+					mutable OutRej rejInvalid = {};
+					rejInvalid.filename = RecordIn.filename;
+					rejInvalid.readerLinenumber = RecordIn.readerLinenumber;
+					rejInvalid.rejectreason = (uint32)TypesCustom.rrInvalidAttribute;
+					rejInvalid.rejectinfo = "attr1 is empty";<%if ($useCustomRejectWriter) {%>
+					assignFrom(rejInvalid.readerOutput, RecordIn);<%}%>
+					submit(rejInvalid,OutRej);
+				}
+				else {
+					submit(RecordIn,OutRecord);
+				}
+			}
+			onTuple StatIn: { // update attribute rejectedInvalids on statistics tuple
+				StatIn.rejectedInvalids = numRejectedInvalids;
+				submit(StatIn,OutStat);
+				numRejectedInvalids = 0l;
+			}
+			onPunct RecordIn: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(Sys.WindowMarker, OutRecord);
+					submit(Sys.WindowMarker, OutRej);
+				}
+			}
+		}
+
+}
+<%} #endif enabled%>

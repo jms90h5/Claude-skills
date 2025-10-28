@@ -1,0 +1,92 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainsink.custom;
+
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+
+/**
+ * Implements a processing for file statistics that you can use to write the
+ * statistics to a database or export the statistics to another application.
+ * The input stream must be forwarded to the output port.
+ *
+ * Turn the **ite.storage.auditOutputs** parameter on to activate this
+ * composite operator.
+ *
+ * Adapt the code blocks that are marked with "custom code begin" and "custom
+ * code end".
+ * 
+ * Do not throw any exceptions here.
+ * 
+ * @input  InStat
+ * Statistic tuple received at end of file
+ *
+ * @output AuditStat
+ * The tuple received InStat port must be forwarded on this port.
+ *
+ * @param outputDir
+ * The absolute path of the output directory. Use this parameter
+ * to create files in the output directory.
+ *
+ * @param $commitDir
+ * The absolute path of the commit directory. Use this parameter
+ * to create or moves files in the commit directory.
+ * For example move your table files to be loaded to database to this directory.
+ */
+public composite AuditTableWriter ( 
+	input 
+		stream<TypesCommon.FileStatistics> InStat;
+	output
+		stream<TypesCommon.FileStatistics> AuditStat
+)
+{
+	param
+		expression<rstring> $outputDir;
+		expression<rstring> $commitDir;
+
+	graph
+
+
+		// Audit Table Mapping
+		(stream<InStat> AuditStat
+		) as AuditTableMapper = Custom(InStat) {
+			logic
+				onTuple InStat : {
+					// ------------------------------------------------
+					// custom code begin
+					// ------------------------------------------------
+
+					// ------------------------------------------------
+					// custom code end
+					// ------------------------------------------------				
+					// forward statistic tuple
+					submit(InStat, AuditStat);
+				}
+		}
+
+}

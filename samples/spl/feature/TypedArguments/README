@@ -1,0 +1,15 @@
+Overview: TypedArguments will echo values from command line parameters that are
+specified as strings containing SPL literals.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./test.sh
+
+Notes: 
+  - The command line argument 'strlist' expects a string list literal and
+    'strmap' expects a map literal that maps from a string to another. 
+  - The 'test.sh' script calls the standalone SPL application with sample
+    command line parameters.
+    

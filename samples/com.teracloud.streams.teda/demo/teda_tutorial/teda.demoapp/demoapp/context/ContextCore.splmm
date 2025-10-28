@@ -1,0 +1,641 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEBUG());
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+	
+	my $CONTEXT_CUSTOM_COMPOSITE_ENABLED = ! $contextDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM());
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	
+	my $hashFileWriterEnabled = ! $dedupDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_CHECKPOINTING());	
+	my $custContextFileWriterEnabled = $CONTEXT_CUSTOM_COMPOSITE_ENABLED && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM_CHECKPOINTING());
+	my $secondsToKeep = $configurator->getTimeToKeepSeconds(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM_TIMETOKEEP());
+	#if ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_CHECKPOINTING is off then set -1 to mark time to keep as disabled for the CheckpointFileRemover composite 
+	$secondsToKeep = "-1" unless ($secondsToKeep); 
+	print "// secondsToKeep=$secondsToKeep (${\Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM_TIMETOKEEP()})\n";
+
+	my $noDataFile = 0;
+	my $noSyncRequired = 0;
+	my $CHAIN_SINK_TYPE = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	my $noDataFile = 1 if (3==$CHAIN_SINK_TYPE);
+	# Optimization: If no writer in ChainSink then no additional tuple is sent from ContextCore to PostContextSynchronizerCore
+	$noSyncRequired = 1 if ((0 == $custContextFileWriterEnabled) && (0 == $hashFileWriterEnabled) && (1 == $noDataFile));
+	my $ITE_FUSE_GROUPWITHCHAIN_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_GROUPWITHCHAIN_OPERATORS());
+	my $ITE_FUSE_GROUP_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_GROUP_OPERATORS());
+%>
+namespace demoapp.context;
+
+<%if (0 == $contextDisabled) {%>
+
+use demoapp.streams::*;
+<% if ((1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) && (1 == $ENABLE_CUSTOM_CODE)){%>
+use demoapp.context.custom::*;
+<% } %>
+use demoapp.functions::getCCYYMMDDhhmmssDB2Format;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+use com.teracloud.streams.teda.internal.fileutils::getDir;
+use com.teracloud.streams.teda.internal.logfilewriter::LogFileWriter;
+<% if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) {%>
+<% 	if (1 == $ENABLE_CUSTOM_CODE){%>
+use demoapp.housekeeping.context.custom::CheckpointFileRemover;
+<% 	} else { %>
+use demoapp.housekeeping.context.sample::CheckpointFileRemover;
+<% 	}%>
+<% } %>
+
+/**
+ * ContextCore
+ * Processing context
+ *
+ * @input  InCommandStream Commands for reload and shutdown (Bloom training and checkpointing)
+ * @input  InDataStream Record tuples or table tuples for deduplication
+ * 
+ * @output OutDataStream Stream with duplicate flags set
+ * @output OutCommandRespStream Command response sent to Controller
+ * 
+ * @param groupId
+ * Level1Id to identify the ContextCore
+ *
+ * @param checkpointDir
+ * Base directory of checkpoint files
+ *
+ * @param bloomN
+ * BloomFilter parameter N
+ *
+ * @param bloomProbability
+ * BloomFilter parameter probability
+ *
+ * @param statisticsDir
+ * Directory parameter for statistic output files
+ *
+ * @param statisticsArchiveDir
+ * Directory parameter for archiving the statistic files
+ * 
+ * @param outputDir
+ * The output directory passed to the CustomContext composite
+ * 
+ * @param iteJobName
+ * the name of the ite job, used in the statistics log filename
+ *
+ * @param peName
+ * label used for partitionColocation placement
+ * 
+ * @param peExLocationLabel
+ * label used for partitionExlocation placement
+ */
+public composite ContextCore (
+	input 
+		InCommandStream,
+		InDataStream
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		, stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor
+		, stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor
+<% } %>
+		;
+	output
+		OutDataStream,
+		OutCommandRespStream
+<% if ($CONTEXT_CUSTOM_COMPOSITE_ENABLED) { %>
+		, stream<TypesCommon.TransformerOutType> DataForContextDataProcessor
+		, stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor
+		, stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor
+<% } %>
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $checkpointDir;<% if (0 == $dedupDisabled) {%>
+		expression<uint64>  $bloomN;
+		expression<float64> $bloomProbability;<%}%>
+		expression<rstring> $statisticsDir;
+		expression<rstring> $statisticsArchiveDir;
+		expression<rstring> $outputDir;
+		expression<rstring> $iteJobName;
+		expression<rstring> $peName;
+		expression<rstring> $peExLocationLabel;		
+
+	graph
+
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as SinkContextCmdTap = FileSink (InCommandStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CONTEXT_CMD_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as SinkContextDataInTap = FileSink (InDataStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CONTEXT_DATA_IN_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+		
+		<%my $InDataStream = "InDataStream";%>
+		<% if (($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) && (0 == $dedupDisabled)) {%><%$InDataStream = "ThreadedDataStream";%>
+		@spl_category(name="common")
+		(
+		stream<I> ThreadedDataStream as O
+		) as ContextThreadEntry = Custom(InDataStream as I) {
+			logic
+				onTuple I : {
+					submit (I, O);
+				}
+			config
+				threadedPort: queue(I, Sys.Wait, 100);				
+		}		
+		<% } %>
+
+		<% if (0 == $dedupDisabled) {
+			my $dedupCoreOutputStream = "DataStream";
+			$dedupCoreOutputStream = "OutDataStream" if (0 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED);
+			$dedupCoreOutputStream = "NotConnectedStream" if ((1 == $noSyncRequired) && (0 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED));
+		%>
+		@spl_category(name="common")
+		(
+		stream<I> <%=$dedupCoreOutputStream%>;
+		stream<TypesCommon.ContextReadyType> DedupCommandRespStream;
+		stream<TypesCommon.ContextLogType> DedupStatistics
+		) as Dedup = DedupCore (InCommandStream; <%=$InDataStream%> as I) {
+			param
+				groupId:				$groupId;
+				bloomHashFilesDir: 		$checkpointDir;
+				bloomN : 				$bloomN;
+				bloomProbability : 		$bloomProbability;
+				statisticsDir: 			$statisticsDir;
+				statisticsArchiveDir: 	$statisticsDir+"/archive";
+		}
+		<% } %>
+		
+		<% if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) {
+			my $inputStream = "DataStream";
+			$inputStream = "InDataStream"  if (1 == $dedupDisabled);
+		%>
+		@spl_category(name="common")
+		(
+		stream<I> DataForContextDataProcessor;
+		stream<I> OutDataStream as O
+		) as TupleSequencer = Custom(<%=$inputStream%> as I) {
+			logic
+				onTuple I : {
+					submit (I, DataForContextDataProcessor);<%if (0 == $noSyncRequired) {%>
+					submit (I, O);<%}%>
+				}<%if ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>
+			config
+				threadedPort: queue(I, Sys.Wait, 100);<%}%>
+		}
+		<% } # endif custom context enabled %>
+		<% if ((0 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) && (1 == $noSyncRequired)) {%>
+		@spl_category(name="common")
+		(
+		stream<I> OutDataStream as O
+		) as TupleDiscarder = Custom(NotConnectedStream as I) {
+			logic
+				onTuple I : {
+				}
+		}
+		<% } # endif custom context disabled %>		
+		
+		<% if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) {
+		%>
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ContextCommandRespType> CommandResponsesFromCustomContextCore;
+		stream<TypesCommon.ContextLogType> CustomContextStatistics;
+		stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor;
+		stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor
+		) as CustomContext = CustomContextCore (InCommandStream; CommandResponsesFromContextDataProcessor; RecoveryResponsesFromContextDataProcessor) {
+			param
+				groupId:		$groupId;
+				checkpointDir:	$checkpointDir+"/custom";
+				outputDir:	 	$outputDir;
+		}
+		<% } %>
+		
+		<% if (((0 == $dedupDisabled) && (0 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED)) || ((1 == $dedupDisabled) && (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED))) {%>
+		<% 	 my $inStreamName = "DedupCommandRespStream";
+			 $inStreamName = "CommandResponsesFromCustomContextCore" if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED);
+		%>
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ContextReadyType> OutCommandRespStream
+		) as CmdRespHandler = Custom(<%=$inStreamName%> as I) {
+			logic
+				onTuple I : {
+					submit (I, OutCommandRespStream);
+				}<%if (($ITE_FUSE_GROUP_OPERATORS) || ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS)) {%>
+			config placement: <%if (0==$ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>partitionExlocation($peExLocationLabel),<%}%> partitionColocation($peName);<%}%>
+		}
+		<% } else { # both enabled%>
+		// Collect both cmd response tuple	
+		// a) from dedup
+		// b) from custom context
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ContextReadyType> OutCommandRespStream
+		) as CmdRespHandler = Custom(DedupCommandRespStream as DedupResp; CommandResponsesFromCustomContextCore as CstmCntxResp) {
+			logic
+				state : {
+					mutable boolean dedupRespReceived = false;
+					mutable boolean cstmCntxRespReceived = false;
+					mutable CstmCntxResp cTuple = {};
+					mutable DedupResp dTuple = {};
+				}
+				onTuple DedupResp : {
+					appTrc (Trace.trace, "DedupResp received", "ctxc");
+					dedupRespReceived = true;
+					if (cstmCntxRespReceived) {
+						DedupResp.success = ((cTuple.success && DedupResp.success) ? true : false);
+						appTrc (Trace.trace, "submit DedupResp", "ctxc");
+						submit (DedupResp, OutCommandRespStream);
+						// reset flags
+						dedupRespReceived = false;
+						cstmCntxRespReceived = false;
+					}
+					else {
+						dTuple = DedupResp;
+					}
+				}
+				onTuple CstmCntxResp : {
+					appTrc (Trace.trace, "CstmCntxResp received", "ctxc");
+					cstmCntxRespReceived = true;
+					if (dedupRespReceived) {
+						CstmCntxResp.success = ((dTuple.success && CstmCntxResp.success) ? true : false);
+						appTrc (Trace.trace, "submit CstmCntxResp", "ctxc");
+						submit (CstmCntxResp, OutCommandRespStream);
+						// reset flags
+						dedupRespReceived = false;
+						cstmCntxRespReceived = false;
+					}
+					else {
+						cTuple = CstmCntxResp;
+					}					
+				}<%if (($ITE_FUSE_GROUP_OPERATORS) || ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS)) {%>
+			config placement: <%if (0==$ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>partitionExlocation($peExLocationLabel),<%}%> partitionColocation($peName);<%}%>
+		}
+		<%}%>	
+
+		// Context cmd log writer
+		@spl_category(name="common")
+		() as ContextLogWriter  = LogFileWriter(<% if (0 == $dedupDisabled) {%>DedupStatistics<%}%><%if ((0 == $dedupDisabled) && (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED)) {%>,<%}%><% if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) {%>CustomContextStatistics<%}%>) {
+			param
+				logFileName : $iteJobName + "_Context_"+$groupId+"_Statistics.txt";
+				logDir : $statisticsDir;
+				logArchiveDir : $statisticsArchiveDir; // move to archive dir on new day
+				logFileSink: com.teracloud.streams.teda.internal.logfilewriter::TxtFileSink; // write txt format
+		}
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as SinkContextDataOutTap = FileSink (OutDataStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CONTEXT_DATA_OUT_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as SinkContextCmdRespOutTap = FileSink (OutCommandRespStream) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CONTEXT_CMD_RESP_"+$groupId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+		
+	<%if ((0==$ITE_FUSE_GROUP_OPERATORS) && (0==$ITE_FUSE_GROUPWITHCHAIN_OPERATORS))  {%>
+	config placement: partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>");
+	<%}%>
+}
+<%} #endif context disabled%>
+
+<% if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) {%>
+public composite CustomContextCore (
+	input 
+		InCommandStream,
+		stream<TypesCommon.ContextCommandRespType> CommandResponsesFromContextDataProcessor,
+		stream<TypesCommon.ContextCheckpointStreamType> RecoveryResponsesFromContextDataProcessor;
+	output
+		OutCommandRespStream,
+		OutContextStatistics,
+		stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor,
+		stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor
+) {
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $checkpointDir;
+		expression<rstring> $outputDir;
+		expression<rstring> $checkpointFile : "custom.chk";
+
+	graph
+
+		// Command handler
+		// - Checks the command type
+		// - read command: Scans checkpoint dir, removes old files and send filename to FileSource
+		// - clear and write command: Sends command to custom context data processor
+		@spl_category(name="common") 
+		(
+		stream<TypesCommon.ContextCommandType> CommandsForContextDataProcessor;
+		stream<TypesCommon.ContextReadyType> ReadCommandRespStream;
+		stream<TypesCommon.CommandInfoType> CommandBeginInfoStream as Info;
+		stream<TypesCommon.CheckpointFileRemoverStreamType> FilesScanned as FileInfo
+		) as ContextCmdHandler = Custom(InCommandStream as I) {
+			logic
+				state : {
+					boolean dirOk = createDir($checkpointDir+"/"+$groupId+"/"+"<%=CodeGenFrw::getConstant('COMMIT_DIR')%>"); // create checkpoint dir
+					rstring checkpointFilesDir = $checkpointDir+"/"+$groupId+"/"+"<%=CodeGenFrw::getConstant('COMMIT_DIR')%>";
+					mutable list<rstring> nameList;
+					mutable list<int64> mtimeList;
+					mutable list<uint64> sizeList;
+					rstring checkpointFile = $checkpointDir+"/"+$groupId+"/"+$checkpointFile;
+				}
+				onTuple I : {
+					mutable Info infoTuple = {};
+					infoTuple.command = I.command;
+					infoTuple.chkState = 1l; // init state (start time measurement for log entry)
+					submit(infoTuple, Info); // for log entry
+
+					if ("read" == I.command) {
+						appTrc (Trace.trace, "read cmd received", "CustomContextCore");
+						// -----------------------------------------
+						mutable int32 ferror = -1;
+						// check if bloom checkpoint file is present
+						uint64 fileRH = spl.file::fopen(checkpointFile, "r", ferror);
+						if (0!=ferror) { 
+							// checkpoint file not present
+							// scan dir, delete old files and submit filenames to recover from
+							mutable FileInfo fTuple = {};
+							if (0 == getDir(checkpointFilesDir, true, nameList, mtimeList, sizeList)) {
+								mutable int32 idx = 0;
+								for (rstring fname in nameList) {
+									fTuple.filePath = checkpointFilesDir+"/"+fname;
+									fTuple.fileModificationTime_secs=mtimeList[idx];
+									fTuple.fileSize=sizeList[idx];
+									// submit to CheckpointFileRemover
+									submit(fTuple, FileInfo);
+									idx++;
+								}
+							}
+							// -----------------------------------------
+							// send cmd response tuple to be stored
+							mutable ReadCommandRespStream readyTuple = {};
+							readyTuple.command="read";
+							readyTuple.dedupLevel1Id=$groupId;
+							readyTuple.success = true;
+							appTrc (Trace.trace, "send readyTuple to ReadCommandRespStream (end of training)", "CustomContextCore");
+							submit(readyTuple, ReadCommandRespStream);
+							// -----------------------------------------
+							submit(Sys.WindowMarker, FileInfo);
+						} else {
+							// checkpoint file present
+							spl.file::fclose(fileRH, ferror);
+							// forward read command to custom context composite
+							submit (I, CommandsForContextDataProcessor);
+						}
+					}
+					else {
+						appTrc (Trace.trace, "forward cmd tuple", "CustomContextCore");
+						// forward clear and write command to custom context composite
+						submit (I, CommandsForContextDataProcessor);
+					}
+				}
+			config
+				threadedPort: queue(InCommandStream, Sys.Wait, 1);
+		}
+
+		<%if (0 == $ENABLE_CUSTOM_CODE){%>@spl_category(name="sample")<%}%>
+		(
+		stream <TypesCommon.CheckpointFileRemoverStreamType> FilesToKeepStream
+		) = CheckpointFileRemover(FilesScanned) {
+			param
+				groupId: $groupId;
+				// Set -1 to indicate that checkpointing is disabled.
+				// TODO: Review code to decide whether this composite should be skipped if checkpointing is disabled.
+				secondsToKeep: <%=$secondsToKeep%>l;
+		}
+
+		@spl_category(name="common")
+		(stream<rstring filename> FilesToReadStream;
+		stream<int64 filesSubmitted> ExpectedFiles
+		) as KeepFilesCounter = Custom(FilesToKeepStream as I) {
+			logic
+				state : {
+					mutable int64 filesSubmitted = 0l;
+				}
+				onTuple I : {
+					filesSubmitted++;
+					submit({filename=filePath}, FilesToReadStream);
+				}
+				onPunct I : {
+					if (currentPunct() == Sys.WindowMarker) {
+						appTrc (Trace.trace, "filesSubmitted (end of scan)"+(rstring)filesSubmitted, "CustomContextCore");
+						// send number of expected filesnames to operator behind FileSource
+						submit({filesSubmitted=filesSubmitted}, ExpectedFiles);
+						filesSubmitted=0l;
+					}
+				}
+		}
+		
+		@spl_category(name="common")
+		(
+		stream <TypesCommon.ContextCheckpointStreamType> RecoveryStream
+		) = FileSource(FilesToReadStream) {
+			param
+				format: bin;
+		}
+
+		// Emits punctuation when all files are processed
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ContextCheckpointStreamType> RecoveryDataForContextDataProcessor;
+		stream<TypesCommon.CommandInfoType> CommandEndInfoStream as Info
+		) as ContextFileReadHandler = Custom(RecoveryStream as I; ExpectedFiles) {
+			logic
+				state : {
+					mutable int64 filesProcessed = 0l;
+					mutable int64 filesExpected = 0l;
+					mutable uint64 entries = 0ul;
+				}
+				onTuple I: {
+					entries++;
+					submit (I, RecoveryDataForContextDataProcessor);
+				}
+				onPunct I: { 
+					if (currentPunct() == Sys.WindowMarker) {
+						// punct from FileSource at end of file
+						filesProcessed++;
+						if (filesExpected == filesProcessed) {
+							// send info tuple for statistic log
+							mutable Info infoTuple = {};
+							infoTuple.chkState = 2l; // end state
+							infoTuple.filesProcessed = filesProcessed;
+							submit(infoTuple, Info); // for log entry
+							// send punctuation to mark end of training phase
+							appTrc (Trace.trace, "send punct to RecoveryDataForContextDataProcessor (end of training)", "CustomContextCore");
+							submit(Sys.WindowMarker, RecoveryDataForContextDataProcessor);
+							// reset members
+							filesProcessed = 0l;
+							filesExpected = 0l;
+							entries = 0ul;
+						}
+					}
+				}
+				onTuple ExpectedFiles: {
+					appTrc (Trace.trace, "ExpectedFiles tuple received: "+(rstring) ExpectedFiles, "CustomContextCore");
+					filesExpected = ExpectedFiles.filesSubmitted;
+					if (filesExpected == filesProcessed) {
+						// send info tuple for statistic log
+						mutable Info infoTuple = {};
+						infoTuple.chkState = 2l; // end state
+						infoTuple.filesProcessed = filesProcessed;
+						infoTuple.entries = entries;
+						submit(infoTuple, Info); // for log entry
+						// send punctuation to mark end of training phase
+						appTrc (Trace.trace, "send punct to RecoveryDataForContextDataProcessor (end of training)", "CustomContextCore");
+						submit(Sys.WindowMarker, RecoveryDataForContextDataProcessor);
+						// reset members
+						filesProcessed = 0l;
+						filesExpected = 0l;
+						entries = 0ul;
+					}
+				}
+		}
+		
+		// sync cmd response with punct passed through CustomContext code
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ContextReadyType> OutCommandRespStream;
+		stream<TypesCommon.ContextLogType> OutContextStatistics as Stat
+		) as ContextCmdRespHandler = Custom(CommandBeginInfoStream, CommandEndInfoStream as Info; ReadCommandRespStream as I; RecoveryResponsesFromContextDataProcessor as RecoveryDataForContextDataProcessor; CommandResponsesFromContextDataProcessor) {
+			logic
+				state : {
+					mutable I respTuple = {};
+					mutable Stat statTuple = {};
+					mutable boolean isActiveReadCmd = false;
+					mutable timestamp startTimeTraining;
+					mutable timestamp endTimeTraining;
+					mutable rstring theID = "J["+(rstring)jobID()+"],P["+(rstring)PEID()+"]["+instanceID()+"][CUSTOM]";
+					mutable int32 ferror = -1;
+					rstring checkpointFile = $checkpointDir+"/"+$groupId+"/"+$checkpointFile;
+				}
+				onTuple Info: {
+					if (1l == Info.chkState) { // 1 = init state (start file scan and training)
+						startTimeTraining = getTimestamp();
+						statTuple.command = Info.command;
+						statTuple.id = theID;
+						statTuple.startTime = getCCYYMMDDhhmmssDB2Format(startTimeTraining);
+						// reset values
+						statTuple.filesProcessed = 0l;
+						statTuple.entries = 0ul;
+						statTuple.checkpointFile = "";
+					}
+					else if (2l == Info.chkState) { // 2 = end state (training finished)
+						statTuple.filesProcessed = Info.filesProcessed;
+						statTuple.entries = Info.entries;
+					}
+				}
+				onTuple I: {
+					appTrc (Trace.trace, "read cmd response tuple received", "CustomContextCore");
+					// save read command response and wait for punct
+					respTuple = I;
+					isActiveReadCmd = true;
+				}
+				onPunct RecoveryDataForContextDataProcessor : {
+					if (currentPunct() == Sys.WindowMarker) {
+						// for read command response					
+						if (isActiveReadCmd) {
+							// prepare statistic log
+							statTuple.success = respTuple.success;
+							endTimeTraining = getTimestamp();
+							statTuple.endTime = getCCYYMMDDhhmmssDB2Format(endTimeTraining);
+							statTuple.duration = diffAsSecs(endTimeTraining,startTimeTraining);
+							if (statTuple.duration < 0.01) {
+								statTuple.duration = 0.0;
+							}
+							// write statistic log
+							submit (statTuple, OutContextStatistics);
+							
+							appTrc (Trace.trace, "submit queued cmd response tuple", "CustomContextCore");
+							submit (respTuple, OutCommandRespStream);
+							isActiveReadCmd = false;
+						}
+						else {
+							appTrc (Trace.warn, "Unexpected punct received on RecoveryDataForContextDataProcessor", "CustomContextCore");
+						}
+					}
+				}
+				onTuple CommandResponsesFromContextDataProcessor: {
+					if ("read" == command) {
+						statTuple.filesProcessed = 1l;
+						// remove the checkpoint file
+						spl.file::remove(checkpointFile, ferror);
+					}
+					// prepare statistic log
+					statTuple.success = CommandResponsesFromContextDataProcessor.success;
+					statTuple.checkpointFile = CommandResponsesFromContextDataProcessor.argument;
+					endTimeTraining = getTimestamp();
+					statTuple.endTime = getCCYYMMDDhhmmssDB2Format(endTimeTraining);
+					statTuple.duration = diffAsSecs(endTimeTraining,startTimeTraining);
+					if (statTuple.duration < 0.01) {
+						statTuple.duration = 0.0;
+					}
+					// write statistic log
+					submit (statTuple, OutContextStatistics);				
+
+					appTrc (Trace.trace, "forward cmd response tuple", "CustomContextCore");
+					submit (respTuple, OutCommandRespStream);
+				}
+		}
+
+}
+<% } #endif custom context%>
+

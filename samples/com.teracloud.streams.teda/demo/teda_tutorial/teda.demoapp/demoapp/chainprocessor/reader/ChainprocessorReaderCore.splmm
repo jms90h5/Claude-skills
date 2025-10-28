@@ -1,0 +1,365 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_INGEST_READER_DEBUG());
+
+	my $isPreFileReaderEnabled = $configurator->isOn(Configurator::ITE_INGEST_READER_PREPROCESSING());
+	my $CHAIN_EXCEPTION_HANDLER_ENABLED = $configurator->isOn(Configurator::ITE_RESILIENCEOPTIMIZATION());
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $ITE_FUSE_GROUPWITHCHAIN_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_GROUPWITHCHAIN_OPERATORS());
+	my $ITE_FUSE_CHAIN_OPERATORS = $configurator->isOn(Configurator::ITE_FUSE_CHAIN_OPERATORS());
+	
+	my ($n, $v) = $configurator->getEnumList(Configurator::ITE_EXPORT_STREAMS());
+	my %hash = map { $_ => undef } @{$v};
+	my $exportEnabled = (exists $hash{reader});
+%>
+namespace demoapp.chainprocessor.reader;
+
+use demoapp.streams::*;
+<%if (1 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.chainprocessor.reader.custom::*;
+<%} else {%>
+use demoapp.chainprocessor.reader.sample::*;
+<%}%>
+use com.teracloud.streams.teda.internal::Functor2;<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>
+use com.teracloud.streams.teda.utility::ExceptionCatcher;<%}%>
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+
+/**
+ * ChainprocessorReaderCore
+ * Composite covers all chain processor reader operations.
+ * * Chain control
+ * * PreFile Reader
+ * * File Reader (parser)
+ * * Record Validator
+ *
+ * @input  FileIn Filename tuples to be processed
+ * @input  ChainAckIn Chain file ack to open gate in ChainControl for next file to be processed
+ * @input  AppCtrlIn Control tuple for ChainControl
+ *
+ * @output OutRecord Record tuples
+ * @output OutStat Statistic tuples
+ * @output OutRej Rejected tuples
+ * @output OutChainStatus emits a tuple when the chain status changes.
+ * @output OutAppCtrlResp Response for control tuple sent by ChainControl
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ * 
+ * @param applControlDir
+ * Directory for chain status files
+ *
+ * @param peNameChain
+ * Label used for partitionColocation placement
+ * 
+ * @param peExLocationLabel
+ * Label used for partitionExlocation placement
+ *
+ * @param iteJobName
+ * the name of the ITE job, this is used in the chain statusfile name
+ */
+public composite ChainprocessorReaderCore (
+	input 
+		FileIn,
+		ChainAckIn,
+		AppCtrlIn;
+	output
+		OutRecord,
+		OutStat,
+		OutRej,
+		OutChainStatus,
+		OutAppCtrlResp
+) {
+	
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $applControlDir;
+		expression<rstring> $peNameChain;
+		expression<rstring> $peExLocationLabel;		
+		expression<rstring> $iteJobName;
+
+	graph
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as ChainReaderInSink = FileSink (FileIn) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_FILES_IN_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainReaderInAckSink = FileSink (ChainAckIn) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_FILES_ACK_IN_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainReaderInAppCtrlSink = FileSink (AppCtrlIn) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_FILES_APP_CTRL_IN_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+		@spl_category(name="common")
+		(
+		stream<FileIn> ControlledFilesToRead;
+		stream<TypesCommon.ApplicationCtrl> OutChainStatus;
+		stream<TypesCommon.ApplicationCtrl> OutAppCtrlResp
+		) as CC = ChainControlCore(FileIn; AppCtrlIn; ChainAckIn) {
+			param
+				statusfile: 	$applControlDir + "/status_" + $iteJobName + "_" + $groupId + "_" + $chainId + ".txt";
+				groupId: 		$groupId;
+				chainId: 		$chainId;
+				peNameChain:	$peNameChain;
+		}
+
+		// Set Chain processing start timestamp
+		@spl_category(name="common")
+		(
+		stream<ControlledFilesToRead> FileInfoWithStartTime as OutFileInfo
+		) as FileInfoTsEnhancer = Custom(ControlledFilesToRead as InFileInfo) {
+			logic
+			onTuple InFileInfo: { 
+				InFileInfo.startTimestamp=getTimestamp();
+				submit(InFileInfo,OutFileInfo);
+			}<%if (($ITE_FUSE_CHAIN_OPERATORS) || ($ITE_FUSE_GROUPWITHCHAIN_OPERATORS)) {%>
+			config placement: <%if (0==$ITE_FUSE_GROUPWITHCHAIN_OPERATORS) {%>partitionExlocation($peExLocationLabel),<%}%> partitionColocation($peNameChain);<%}%>
+		}
+		<%
+		my $fileReaderInput = "FileInfoWithStartTime";
+		my $prefileReaderInput = "FileInfoWithStartTime";
+		%>
+
+		<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>
+			<%$fileReaderInput = "ControlledFiles";%>
+			<%$prefileReaderInput = "ControlledFiles";%>
+		// Catch exceptions and prevent PE crash
+		@spl_category(name="common")
+		(
+		stream<FileInfoWithStartTime> ControlledFiles;
+		stream<TypesCommon.FileName, TypesCommon.FileSize, TypesCommon.FileType, TypesCommon.FilePrio, TypesCommon.FileIngestAckInfo, TypesCommon.ChainTimestamp> ErrStream
+		) as ChainExceptionCatcher = ExceptionCatcher(FileInfoWithStartTime) {
+		}
+
+		// Error handling
+		// flush the chain with punct and statistic tuple if exception is occurred
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ReaderOutStreamType> ErrRecStream;
+		stream<TypesCommon.ParserStatisticsStream> ErrStatStream
+		) as ErrHandler = Custom(ErrStream as IN) {
+			logic
+			onTuple IN: {
+				// send punctuation on record stream
+				submit(Sys.WindowMarker, ErrRecStream);
+				// send statistic tuple with error indicator
+				mutable ErrStatStream otuple = {};
+				assignFrom(otuple, IN);
+				rstring errorText="FileProcessingError |PE="+(rstring)PEID()+"|JOB="+(rstring)jobID()+"|"+instanceID()+"|";
+				appendM(otuple.errors,errorText);
+				submit(otuple, ErrStatStream);
+			}
+		}
+		<%}%>
+
+		<%if (1 == $isPreFileReaderEnabled) {
+			$fileReaderInput = "FileInfosExtended";%>
+		<%if (0 == $ENABLE_CUSTOM_CODE) {%>@spl_category(name="sample")<%}%>
+		(
+		stream<FileInfoWithStartTime> FileInfosExtended
+		) as FileReaderPredecessor = PreFileReader(<%=$prefileReaderInput%>) {
+			param
+				groupId:			$groupId;
+				chainId: 			$chainId;
+		}
+		<%} #endif PreFileReaderEnabled%>
+
+		// One or multiple parsers (file readers)
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.ReaderOutStreamType> RawRecordStream;
+		stream<TypesCommon.ParserStatisticsStream> ParserStat
+		) = FileReaderCore(<%=$fileReaderInput%>) {
+			param
+				groupId:			$groupId;
+				chainId: 			$chainId;
+		}
+
+		// set chainPunct and increment tuple number in record stream
+		@spl_category(name="common")
+		(stream<InRec> RecordStream as OutRec
+		) = Custom(RawRecordStream<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>, ErrRecStream<%}%> as InRec) {
+			logic
+			state : {
+				mutable uint32 tupleNumber = 0u;
+			}
+			onTuple InRec: { 
+				InRec.chainPunct = false;
+				tupleNumber++;
+				if (0u == InRec.readerLinenumber) { // set only if not set by parser
+					InRec.readerLinenumber=tupleNumber;
+				}
+				submit(InRec,OutRec);
+			}
+			onPunct InRec: {
+				if (currentPunct() == Sys.WindowMarker) {
+					// forward punctuation
+					submit(Sys.WindowMarker, OutRec);
+					tupleNumber = 0u;
+				}
+			}
+		}
+
+		// set groupId and chainId in Statistics stream
+		@spl_category(name="common")
+		(stream<TypesCommon.FileStatistics> FileStat
+		) = Functor2(ParserStat<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>, ErrStatStream<%}%>) {
+			output FileStat:
+				groupId = $groupId,
+				chainId = $chainId;
+		}
+
+		<%my $validatorInput = "RecordStream";%>
+		<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>
+			<%$validatorInput = "ControlledRecords";%>
+		// Catch exceptions and prevent PE crash
+		@spl_category(name="common")
+		(
+		stream<I> <%=$validatorInput%>;
+		stream<I> RecordToReject as E
+		) as RecordExceptionCatcher = ExceptionCatcher(RecordStream as I) {
+			output E: readerInvalidLineInd = true;
+		}
+		<%}%>
+
+		// ----------------------------------
+		// validate record data
+		// ----------------------------------
+		<%if (0 == $ENABLE_CUSTOM_CODE) {%>@spl_category(name="sample")<%}%>
+		(
+		stream<TypesCommon.ReaderOutStreamType> OutRecord as ROok;
+		stream<TypesCommon.FileStatistics> ValStat;
+		stream<TypesCommon.RejectedDataStreamType> OutRej as ROnok
+		) as Validator = RecordValidator(<%=$validatorInput%><%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>,RecordToReject<%}%>; FileStat) {
+			param
+				groupId:			$groupId;
+				chainId: 			$chainId;
+		}
+		
+		<%if ($exportEnabled) {%>
+		@spl_category(name="common")
+		() as Exporter = Export(OutRecord) {
+			param
+				properties: { ite="demoapp.chainprocessor.reader_output_RecordValidator" };
+				allowFilter: true;
+				congestionPolicy: dropConnection; // prevents back-pressure from slow importer 
+		}
+		<%}%>
+
+		@spl_category(name="common")
+		(
+		stream<TypesCommon.FileStatistics> OutStat
+		) = Custom(ValStat as IN) {
+			logic
+			onTuple IN: {
+				// do not forward statistic tuple if shutdown is requested
+				if (false == isShutdown()) {
+					submit(IN, OutStat);
+				}
+			}
+		}
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as ChainReaderRecOutSink = FileSink (OutRecord) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_REC_OUT_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainReaderRejSink = FileSink (OutRej) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_REJ_OUT_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainReaderStatSink = FileSink (OutStat) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_STAT_OUT_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainReaderStatusSink = FileSink (OutChainStatus) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_STATUS_OUT_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainReaderAppCtrlRespSink = FileSink (OutAppCtrlResp) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_READER_APP_CTRL_RESP_OUT_"+$groupId+"_"+$chainId+".txt";
+				format	: txt;
+				flush : 1u;
+				writePunctuations: true;
+		}
+		<% } %>
+
+}

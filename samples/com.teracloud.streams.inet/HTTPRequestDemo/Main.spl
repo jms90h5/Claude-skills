@@ -1,0 +1,103 @@
+use com.teracloud.streams.inet.http::HTTPRequest;
+
+/**
+ * This sample demonstrates the use of the HTTPRequest operator.
+ * This sample executes a number of http requests and prints the result to the standard output.
+ * If you want to store the user credentials securely, you should consider to use a
+ * Streams Application Configuration Object. see the product documentation
+ * and fetch the values from the application property with spl function getApplicationConfigurationProperty.
+ * 
+ * @param   host       The hostname of the http server
+ * @param   schema     The schema of the uri
+ * @param   url        The url list for the http requests (location)
+ * @param   method     The method list for the http request
+ * @param   data       The message data used in method PUT
+ * @param   mess       Attribute to be used in method POST
+ * @param   contt      The Content-Type for methods POST ant PUT
+ * @param   bindata    The binary input data, used in POST and PUT with content type application/octet-stream
+ * @param   iterations The number of requests send
+ * @param   period     The period of the requests
+ */
+public composite Main {
+	param
+		expression<rstring>       $host       :                 getSubmissionTimeValue("host", "httpbin.org");
+		expression<rstring>       $schema     :                 getSubmissionTimeValue("schema", "http://");
+
+		expression<list<rstring>> $url :
+			["/get","/gzip","/redirect/3","/post","/post","/post","/put","/put","/delete","/basic-auth/user1/passwd1"];
+		expression<list<rstring>> $method :
+			["GET","GET","GET","POST","POST","POST","PUT","PUT","DELETE","GET"];
+		expression<list<rstring>> $data :
+			["","","","","","","text 1 (t1)","",""];
+		expression<list<rstring>> $mess :
+			["mess 1 (&m1)","mess 2 (&m2)","mess 3 (m3)","mess 4 (m&4)","mess 5 (m&5)","","","","","mess 6 (m&6)"];
+		expression<list<rstring>> $contt :
+			["","","","application/x-www-form-urlencoded","application/json","application/octet-stream","text/plain","application/octet-stream","",""];
+		expression<list<uint8>>   $bindata :
+			[0ub, 1ub, 2ub];
+
+		expression<int32>         $iterations : (int32)         getSubmissionTimeValue("iterations", "10");
+		expression<float64>       $period     : (float64)       getSubmissionTimeValue("period", "0.1");
+
+	graph
+		stream<uint64 id, rstring url, rstring method, rstring data, rstring mess, rstring contentType, blob binData> Trigger as O = Beacon() {
+			param 
+				iterations : $iterations;
+				period	 : $period;
+			output O:
+				id = IterationCount(),
+				url = $schema + $host + $url[(int32)IterationCount() % size($url)],
+				method = $method[(int32)IterationCount() % size($method)],
+				data = $data[(int32)IterationCount() % size($data)],
+				mess = $mess[(int32)IterationCount() % size($mess)],
+				contentType = $contt[(int32)IterationCount() % size($contt)],
+				binData = ((((int32)IterationCount() % size($contt)) == 5) || (((int32)IterationCount() % size($contt)) == 7)) ? (blob)$bindata : (blob)[];
+		}
+		
+		stream<uint64 id, rstring method, rstring url, rstring status, int32 stat, rstring contentEncoding, rstring contentType, list<rstring> responseHeader, rstring respData, rstring err> Response as O = HTTPRequest(Trigger as I) {
+			param
+				url: url;
+				method : method;
+				outputBody : "respData";
+				outputStatus : "status";
+				outputStatusCode : "stat";
+				outputContentEncoding : "contentEncoding";
+				outputContentType : "contentType";
+				outputHeader : "responseHeader";
+				errorDiagnostics : "err";
+				extraHeaders : "Myheader: aa(aa)", "Myheader2: bb&b";
+				contentType : contentType;
+				requestBodyAttribute : data;
+				requestBodyAttributeBin : binData;
+				requestAttributesAsUrlArguments: true;
+				//sslTrustStoreFile : "etc/cacert.jks";
+				//sslTrustStorePassword : "changeit";
+				//sslKeyStoreFile : "etc/clientkey.jks";
+				//sslKeyPassword : "changeit";
+				//sslAcceptAllCertificates : true;
+				authenticationType : "STANDARD";
+				authenticationFile : "etc/http_request_auth.properties";
+				//vmArg: "-Djavax.net.debug=ssl:handshake";
+		}
+		
+		() as Printer = Custom(Response as I) {
+			logic
+				onTuple I: {
+					printStringLn("******************************************");
+					printStringLn("id="+(rstring)id+"   method="+method+"	 url="+url);
+					printStringLn("status="+status+"	code="+(rstring)stat);
+					printStringLn("contentEncoding="+contentEncoding+"	   contentType="+contentType);
+					printStringLn("ResponseHeader");
+					printStringLn((rstring)responseHeader);
+					printStringLn("body");
+					printStringLn(respData);
+					printStringLn("errorDiagnostics");
+					printStringLn(err);
+					//printStringLn(getApplicationConfigurationProperty("myConfig", "myProp", "default"));
+				}
+				onPunct I: println(currentPunct());
+		}
+	
+	config
+		restartable : false;
+}

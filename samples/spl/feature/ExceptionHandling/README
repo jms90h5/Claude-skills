@@ -1,0 +1,14 @@
+Overview:
+
+ExceptionHandling shows an example of the @catch annotation. Use @catch when the PE
+must not crash when an operator throws an exception when processing a tuple.
+
+1. To build the same application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+3. The resulting output should have all tuples, except the invalid tuple that causes
+an exception to be thrown. The console should display information regarding the tuple
+causing an exception to be thrown.

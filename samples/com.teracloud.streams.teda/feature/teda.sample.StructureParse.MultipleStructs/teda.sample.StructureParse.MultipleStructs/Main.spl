@@ -1,0 +1,108 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.StructureParse.MultipleStructs;
+
+use com.teracloud.streams.teda.parser.binary::StructureParse;
+
+/** Sample application to demonstrate parsing multiple Structures with the StructureParse operator
+
+    This sample demonstrates how to process different structures (record types) in the same input stream.
+    Two simple structures are defined, containing information about employees (id,firstname,lastname). The 
+    second structure enhances the first one by an additional age field. The first byte in each record defines
+    the recordtype to distinguish both formats. In the structure.xml it is shown
+    how to define the second structure by inheriting all fields from the first structure, using the base element.
+*/
+composite Main
+{
+	type
+
+		// the parser result tuple will contain the values recordType,employeeId,firstName,lastName
+		// for all parsed records (recordType 1 and 2). For type 2 records it will also contain
+		// the age of the employee. For type 1 records, this field will contain the string "unknown"
+		EmployeeData = tuple
+		<
+			uint8 recordType,
+			uint16 employeeId,
+			rstring firstName,
+			rstring lastName,
+			rstring age
+		>;		
+	
+	graph
+
+		/**
+		 * Generate records of both types
+		 */
+		stream<blob payload> SourceData as O = Custom()
+		{
+			logic
+				onProcess :
+				{
+					// submit records of structure recordType1
+					// the first byte (1) signals the type
+
+					// content : 1,100,John,Doe
+					submit( { payload = convertToBlob("\u0001" + "\u0064" + "\u0000" + "John\u0000" + "Doe\u0000\u0000") }, O);
+					// content : 1,101,Jim,Smith
+					submit( { payload = convertToBlob("\u0001" + "\u0065" + "\u0000" + "Jim\u0000\u0000" + "Smith") }, O);
+					// content : 1,102,Peter,Pan
+					submit( { payload = convertToBlob("\u0001" + "\u0066" + "\u0000" + "Peter" + "Pan\u0000\u0000") }, O);
+
+					// submit records of structure recordType2
+					// the first byte (2) signals the type, the age parameter is added at the end
+
+					// content : 2,103,John,Doe,22
+					submit( { payload = convertToBlob("\u0002" + "\u0067" + "\u0000" + "John\u0000" + "Doe\u0000\u0000" + "\u0016") }, O);
+					// content : 2,104,Jim,Smith,33
+					submit( { payload = convertToBlob("\u0002" + "\u0068" + "\u0000" + "Jim\u0000\u0000" + "Smith" + "\u0021") }, O);
+					// content : 2,105,Peter,Pan,82
+					submit( { payload = convertToBlob("\u0002" + "\u0069" + "\u0000" + "Peter" + "Pan\u0000\u0000" + "\u0052") }, O);
+				}
+		}
+
+		/**
+		 * Decode the binary records according to the configured mapping
+		 */
+		stream<EmployeeData> Output as O = StructureParse(SourceData as I)
+		{
+			param
+				payloadAttribute : payload;
+				structureDocument : "etc/structure.xml";
+				mappingDocument : "etc/mapping.xml";
+		}
+
+		/**
+		 * Write decoded records to a text file
+		 */
+		() as Sink = FileSink(Output as I)
+		{
+			param
+				file: "output.txt";
+			 	format: txt;
+			 	flush: 1u;
+		}
+
+}

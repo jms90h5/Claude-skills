@@ -1,0 +1,32 @@
+namespace com.teracloud.streams.avro.sample;
+
+use com.teracloud.streams.avro::*;
+use com.teracloud.streams.json::*;
+
+/**
+ * Read a file in avro format, convert the content to JSON and dump it to the console output.
+ */
+public composite ReadAvroFileSample
+{
+	graph
+		// Read the entire .avro file
+		stream<blob avroBlob> ReadFile = FileSource()
+		{
+			param
+				file : getThisToolkitDir()+"/etc/twitter.avro";
+				format : block;
+				blockSize : 3000u;
+		}
+
+		// Convert the blob to JSON
+		stream<rstring jsonMessage> ConvertAvroToJson = AvroToJSON(ReadFile)
+		{
+		}
+
+		// Display the retrieved JSON message
+		() as DisplayJson = Custom(ConvertAvroToJson as I)
+		{
+			logic
+				onTuple I: println((rstring) I);
+		}
+}

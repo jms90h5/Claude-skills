@@ -1,0 +1,500 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+	my $isPartitioningEnabledForTupleDeduplication = !$dedupDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_PARTITIONING());	
+	my $TRANSFORMER_OUTPUT_TYPE = $configurator->getEnum(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_OUTPUTTYPE());
+
+	my $CHAIN_SINK_TYPE = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	my $chainSinkTableWriter= ($CHAIN_SINK_TYPE > 0) ? 0 : 1;
+
+	my $CHAIN_SINK_TABLE_FILES_OUTPUT = $configurator->getEnum(Configurator::ITE_STORAGE_OUTPUTDIRECTORYSTRUCTURE());
+	my $tableFilesInSubDir = ($CHAIN_SINK_TABLE_FILES_OUTPUT == 1 ? 1 : undef);
+
+	my $hasParserCustomStatistics = $configurator->isOn(Configurator::ITE_INGEST_READER_CUSTOMPARSERSTATISTICS());
+	my $hasCustomFileStatistics = $configurator->isOn(Configurator::ITE_INGEST_READER_CUSTOMFILESTATISTICS());
+
+	my $TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TAP());	
+	my $TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_TAP());
+
+	my $useLookupTypeExtension = $configurator->isOn(Configurator::ITE_INGEST_READER_SCHEMAEXTENSIONFORLOOKUP());
+
+	my $isPreFileReaderEnabled = $configurator->isOn(Configurator::ITE_INGEST_READER_PREPROCESSING());
+
+	my $CONTEXT_CUSTOM_COMPOSITE_ENABLED = ! $contextDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM());
+	
+	my $useCustomRejectWriter = $configurator->isOn(Configurator::ITE_STORAGE_REJECTWRITER_CUSTOM());
+%>
+namespace demoapp.streams;
+
+use demoapp.chainprocessor.reader::*;
+<%if (1 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.streams.custom::*;
+use demoapp.chainprocessor.reader.custom::PreFileReader;
+use demoapp.tap.custom::*;
+<%} else {%>
+use demoapp.streams.sample::*;
+use demoapp.chainprocessor.reader.sample::PreFileReader;
+use demoapp.tap.sample::*;
+<%}%>
+use com.teracloud.streams.teda.internal.ingestion::FileValidity;
+use com.teracloud.streams.teda.utility::BloomFilterTypes;
+/**
+ * TypesCommon
+ * This composite contains the common stream type definitions.
+ */
+public composite TypesCommon {
+
+type
+
+	static FileName = tuple<
+		rstring filename
+	>;
+
+	static FileSize = tuple<
+		uint64 filesize
+	>;
+
+	static FileSuccess = tuple<
+		boolean success
+	>;
+
+	static FileIngestAckInfo = tuple<
+		boolean reprocess,
+		int64 filetime	//the seconds part of file time
+	>;
+
+	static FileType = tuple<
+		rstring fileType
+	>;
+
+	static ChainTimestamp = tuple<
+		timestamp startTimestamp
+	>;
+
+	static ChainId = tuple<
+		rstring groupId,
+		rstring chainId
+	>;
+
+	static Punctuated = tuple<boolean chainPunct>;
+
+	// simple types
+	static RejectReason = tuple<
+		uint32 rejectreason,
+		rstring rejectinfo // tablename etc.
+	>;
+
+	// FileInfo schema
+	static FileInfoBasicType = tuple<
+		FileName,
+		FileType,
+		Punctuated, // chainPunct
+		ChainId,
+		InvalidLineIndicator,
+		LineNumber
+	>;
+
+	// FileInfo schema added to CDR Stream
+	static FileInfo = tuple<
+		FileInfoBasicType
+		<%if (1 == $isPreFileReaderEnabled) {%>
+		,PreFileReader.ExtendedFileInfo<%} #endif PreFileReaderEnabled%>
+	>;
+
+	static FilePrio = tuple<
+		boolean urgent
+	>;
+
+	// FileIngestSchema (output of FileIngestionCore and input of CdrReader)
+	static FileIngestSchema = tuple<
+		FileName,
+		FileType,
+		FileSize,
+		FilePrio,
+		FileIngestAckInfo,
+		ChainId,
+		ChainTimestamp // filled in ChainProcessorReader to indicate start of file processing
+		<%if (1 == $isPreFileReaderEnabled) {%>
+		,PreFileReader.ExtendedFileInfo  // filled in PreFileReader<%} #endif PreFileReaderEnabled%>
+	>;
+
+	// filemove schema
+	static FileMoveSchema = tuple<
+		rstring filename,
+		rstring destPath
+	>;
+
+	static TableFilesMoveStream = tuple<
+	<%	if (2==$CHAIN_SINK_TABLE_FILES_OUTPUT) { %>
+		list<rstring> filenameList,
+		rstring dateInfo
+	<%	} else { %>
+	<%		if ($tableFilesInSubDir) {%>
+		rstring sourcePath,
+		rstring destPath
+	<%		} else { %>
+		list<rstring> filenameList,
+		rstring destPath
+	<%		}%>
+	<%	}%>
+	>;
+
+	static FileStatisticsError = tuple<
+		list<rstring> warnings,
+		list<rstring> errors,
+		boolean duplicate,
+		FileValidity invalidFile
+	>;
+
+	static FileStatisticsTime = tuple<
+		rstring processingStartedAt, // set in CdrChainSink
+		rstring processingStoppedAt, // set in CdrChainSink
+		float64 duration, // set in CdrChainSink
+		timestamp startTimestamp // set in ChainprocessorReader
+	>;
+
+	static ParserStatisticsStream = tuple<
+		FileName,
+		FileType,
+		FileSize,
+		FilePrio,
+		FileIngestAckInfo,
+		FileStatisticsTime,
+		<%if (1 == $hasParserCustomStatistics) {%>
+		// custom statistics - start
+		TypesCustom.CustomParserStatisticsStreamType,
+		// custom statistics - end
+		<%} else {%>
+		demoapp.chainprocessor.reader::FileReaderASN1.ParserMetricBaseType,
+		demoapp.chainprocessor.reader::FileReaderStructure.ParserMetricBaseType,
+		demoapp.chainprocessor.reader::FileReaderCSV.ParserMetricBaseType,
+		<%}%>
+		FileStatisticsError
+	>;
+
+	static TableStatisticData = tuple <
+		int64 insertedRows,  // number of rows inserted per table
+		int64 updateRows,    // number of rows inserted per table with update flag
+		int64 duplicateRows  // number of duplicate rows per table
+	>;
+
+	static TableStatistics = tuple<
+		tuple <map<rstring, TableStatisticData> tableStats>, // key is tablename
+		tuple <list<rstring> tableFiles>
+	>;
+
+	static FileStatistics = tuple<
+		ParserStatisticsStream,
+		tuple <int64 rejectedInvalids>,
+		<%if (0 == $dedupDisabled) 
+		{%>tuple <int64 recordDuplicates>,
+		tuple <int64 outdatedRecords>,
+		<%}%><%if (1 == $hasCustomFileStatistics) 
+		{%>TypesCustom.CustomFileStatisticsStreamType,
+		<%} else 
+		{%>TableStatistics,
+		<%}%>tuple <int64 <%=CodeGenFrw::getConstant('STATISTIC_SEQUENCE_NUMBER')%>>,
+		ChainId
+	>;
+
+	static LineNumber = tuple<
+		uint32 readerLinenumber	
+	>;
+
+	static InvalidLineIndicator = tuple<
+		boolean readerInvalidLineInd,
+		rstring readerInvalidPayload,
+		rstring readerInvalidMessage
+	>;
+
+	// combined types
+	static AcknowledgedFilesType = tuple <
+		tuple <rstring filenameOnly>,
+		FileIngestAckInfo,
+		FileSuccess,
+		Punctuated, // chainPunct
+		ChainId
+	>;
+
+	static FileControlType = tuple <
+		boolean failedFile	// true if tuples send through context and errors detected
+	>;
+
+	static FileIngestControlType = tuple <
+		boolean start
+	>;
+
+	static CleanupTriggerType = tuple <
+		int32 count
+	>;
+
+	static ChainControlExec = tuple <
+		boolean start
+	>;
+
+	static ApplicationCtrl = tuple <
+		ChainControlExec,
+		Punctuated, // chainPunct
+		ChainId
+	>;
+
+	/**
+	 * During the recovery and the housekeeping phase, the ITE application sends the
+	 * following information to the CheckpointFileRemover composite operator, which
+	 * is responsible to remove obsolete files, for example, files that are too old,
+	 * from the file system.
+	 */
+	static CheckpointFileRemoverStreamType = tuple
+	<
+		/**
+		 * The absolute file path.
+		 */
+		rstring filePath,
+		/**
+		 * The file modification time in seconds since the Epoch (00:00:00 UTC,
+		 * January 1, 1970).
+		 */
+		int64 fileModificationTime_secs,
+		/**
+		 * The file size in bytes.
+		 */
+		uint64 fileSize
+	>;
+
+	static ContextCheckpointBaseStreamType = tuple<
+		rstring filename,
+		rstring groupId
+	>;
+
+	static ContextCheckpointFileStreamType = tuple<
+	<%if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) {%>
+		TypesCustom.ContextCheckpointStreamType,
+	<%}%>
+		ContextCheckpointBaseStreamType
+	>;
+
+	static ContextCheckpointStreamType = tuple<
+	<%if (1 == $CONTEXT_CUSTOM_COMPOSITE_ENABLED) {%>
+		TypesCustom.ContextCheckpointStreamType
+	<%} else {%>
+		DummyType
+	<%}%>
+	>;
+
+	// Command response from CustomContext
+	static ContextCommandRespType = tuple<
+		ContextCtrl
+	>;
+
+	// Type for CustomContext command input stream
+	static ContextCommandType = tuple<
+		ContextCtrl
+	>;
+
+	// Response Stream from ContextCore to ControllerCore
+	static ContextReadyType = tuple<
+		ContextCtrl
+	>;
+
+	// Command Stream from ControllerCore to ContextCore
+	static ContextCtrl = tuple <
+		rstring command, // BloomFilter command "read" / "write" / "clear"
+		rstring argument, // BloomFilter checkpoint filename
+		rstring dedupLevel1Id,
+		boolean success,
+		uint32 qid, // required by Bloomfilter
+		boolean failureOccurred // required by Bloomfilter
+	>;
+
+	// Custom output of Parser
+	static ParserCustomStreamType = tuple<
+		ReaderRecordType
+	>;
+
+	// Common output of Parser
+	static ParserCommonStreamType = tuple<
+		<% if ($useLookupTypeExtension){%>TypesCustom.LookupType,<%}%>
+		<%if ((2==$TRANSFORMER_OUTPUT_TYPE) && (0 == $dedupDisabled)) {%>
+		TypesCommon.DedupStreamType,
+		<%}%>
+		TypesCommon.FileInfo
+	>;
+
+	// Output of ChainprocessorReader
+	static ReaderOutStreamType = tuple<
+		ReaderRecordType,
+		<%if ($useLookupTypeExtension){%>TypesCustom.LookupType,<%}%>
+		<%if ((2==$TRANSFORMER_OUTPUT_TYPE) && (0 == $dedupDisabled)) {%>
+		TypesCommon.DedupStreamType,
+		<%}%>
+		TypesCommon.FileInfo
+	>;
+
+	static DummyType = tuple<
+		rstring dummy
+	>;
+	
+	static BundledTransformerOutputStreamType = tuple<
+		<%if (1==$TAP_TRANSFORMER_OUTPUT_FOR_BUNDLE){
+		%>TransformerTap.BundledTransformerOutputStreamType<%
+		} else {
+		%>DummyType<%}%>
+	>;
+
+	static BundledPostContextOutputStreamType = tuple<
+		<%if (1==$TAP_POST_CONTEXT_DATA_PROCESSOR_OUTPUT_FOR_BUNDLE){
+		%>PostContextDataProcessorTap.BundledPostContextOutputStreamType
+		<%} else 
+		{%>DummyType<%}%>
+	>;
+
+	static TableDataType = tuple<
+		rstring tablename,
+		rstring tablerow
+	>;
+
+	<%if ((0 == $TRANSFORMER_OUTPUT_TYPE) || (1 == $TRANSFORMER_OUTPUT_TYPE)) {%>
+	static TableStreamBasicType = tuple<
+		TableDataType,<%if (0 == $dedupDisabled) {%>
+		DedupStreamType,<%}%>
+		TypesCommon.FileInfoBasicType
+	>;
+
+	// output of ChainprocessorTransformer
+	static TableStreamType = tuple<
+		TableStreamBasicType<%if (1 == $TRANSFORMER_OUTPUT_TYPE) {%>,
+		TypesCustom.ExtendedTableStream
+		<%}%>
+	>;
+	<%} #endif TableType%>
+
+	static DedupStreamType = tuple<
+		tuple <rstring hashcode>,
+		tuple <BloomFilterTypes.Result bloomFilterResult>,
+		tuple <TypesCustom.PartitionIdType partitionId>
+	>;
+
+	<%if (2 == $TRANSFORMER_OUTPUT_TYPE) {%>
+	// output of ChainprocessorTransformer
+	static RecordStreamType = tuple<
+		TypesCustom.TransformedRecord,<%if (0 == $dedupDisabled) {%>
+		TypesCommon.DedupStreamType,<%}%>
+		TypesCommon.FileInfo
+	>;
+	<%} #endif RecordType%>
+
+	<%
+	my $outputType = $configurator->getEnum(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_OUTPUTTYPE());
+	my $TRANSFORMER_RECORD_OUT_TYPE = (2 == $outputType ? "TypesCommon.RecordStreamType" : "TypesCommon.TableStreamType");
+	%>
+	static TransformerOutType = tuple<
+		<%=$TRANSFORMER_RECORD_OUT_TYPE%>
+	>;
+
+	<%if (1 == $chainSinkTableWriter) {%>
+	// output of PostContextProcessor (input of Table/Record FileWriter)
+	static ChainSinkStreamType = tuple<
+		TableDataType,
+		TypesCommon.FileInfoBasicType
+	>;
+	<%} else {%>
+	// output of PostContextProcessor (input of Table/Record FileWriter)
+	static ChainSinkStreamType = tuple<
+		<%if (2!=$TRANSFORMER_OUTPUT_TYPE) {%>
+		tuple <rstring tablename>,
+		tuple <rstring tablerow>,
+		<%}else{%>
+		TypesCustom.ChainSinkType,
+		<%}%>
+		TypesCommon.FileInfoBasicType
+	>;
+	<%} #endif customChainSinkRecordWriter%>
+
+	static RejectedDataStreamType = tuple<
+		TypesCommon.RejectReason,
+		TypesCommon.LineNumber,
+		TypesCommon.FileName // part of rejectFilename only - not part of file content
+		<% if ($useCustomRejectWriter) {%>
+		,tuple<rstring invalidPayload>, // contains the line read by FileSource (filled in FileReaderCSV only)
+		tuple<ReaderRecordType readerOutput>
+		<% } %>
+	>;
+
+	static HashStreamType = tuple<
+		rstring hashcode,
+		rstring filename,
+		rstring groupId,
+		TypesCustom.PartitionIdType partitionId
+	>;
+
+	static TimerType = tuple <
+		boolean watch
+	>;
+	
+	static CommandInfoType = tuple< 
+		int64 filesProcessed,
+		int64 filesToRead,
+		int64 chkState,
+		uint64 entries,
+		rstring checkpointFile,
+		rstring command,
+		boolean success
+	>;
+
+	// Context cmd logs 
+	static ContextLogType = tuple<
+		rstring startTime,
+		rstring endTime,
+		float64 duration,
+		int64 filesProcessed,
+		uint64 entries,
+		rstring command,
+		rstring checkpointFile,
+		boolean success,
+		rstring id
+	>;
+
+}

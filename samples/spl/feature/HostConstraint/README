@@ -1,0 +1,10 @@
+Overview: HostConstraint illustrates how to use host placement constraints. 
+
+The constraints specified in the sample app leave it to the runtime to decide
+whether 'Man1' and 'Woman1' operators are to be placed on the same host as the
+'Sheep<n>' operators or the 'Wolf<n>' operators. 
+
+1. To build the sample application:
+   make
+
+Note: This sample is designed to be run on a Streams instance.

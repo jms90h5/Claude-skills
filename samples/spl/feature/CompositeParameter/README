@@ -1,0 +1,7 @@
+Overview: CompositeParameter illustrates how to write composite operators that
+take parameters, and how to invoke them with parameters. 
+
+1. To build the sample application:
+   make
+
+Note: This sample is compile-only.

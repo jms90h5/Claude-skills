@@ -1,0 +1,225 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2016, 2016     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+/**
+ * The sample demonstrates the usage of the DirectoryWatch operator.
+ * 
+ * To build the sample application open a console in the project's
+ * base directory, where the Makefile resides. To clean und rebuild
+ * the app use the commands 'make clean' and 'make all' respectively.
+ * 
+ * After you have started your Streams domain and instance you can
+ * use the shell script 'run.sh' to submit the job. This script
+ * expects that domain and instance IDs are set in your environment.
+ * If that is not the case you need to adapt the 'run.sh' script.
+ * 
+ * The script first removes CSV files from directories './data' and
+ * './data/control' and finally submits the sample application to the
+ * running Streams environment.
+ * 
+ * When the application runs, you can create, move, delete files
+ * in the './data/dir*' directories. Check the contents of the
+ * file './data/fileEvents.csv' for the output of the job. Every
+ * of your actions causes appropriate entries in this file.
+ *   
+ * To play with the command interface , you can use the example
+ * control files residing in './data/controlArchive'. Move or copy
+ * a single file into the './data/control' directory. The file
+ * './data/commands.csv' contains the recognized commands, which have
+ * been forwarded to the DirectoryWatch operator. The operator's
+ * responses are written to the file './data/cmdResponses.csv'.
+ * 
+ * Use 'streamtool lsjobs ...' to identify job IDs and 
+ * 'streamtool canceljob -j <jobID> ...' to stop the application.
+ * 
+ */
+namespace teda.sample.DirectoryWatch;
+
+
+use com.teracloud.streams.teda.adapter::DirectoryWatch;
+
+
+
+/****************************************************************************
+ * Tuple declarations
+ * 
+ * The CmdData tuple just contains the necessary attributes to sent commands
+ * to the DirectoryWatch operator. The FileNameData stream contains fields
+ * for the detected action, the file name, and the complete path to the file.
+ * You may also use metrics values, which have been commented here. The
+ * CmdResultData tuple carries information on the result of performing the
+ * command, the command itself, the directory it affected, and some
+ * message fields.
+ */
+type	CmdData			= tuple<DirectoryWatch.Command cmd, rstring dir>;
+type 	FileNameData	= tuple<rstring action, rstring filename, rstring path /*, uint64 requestedWatches, uint64 availableWatches */>;
+type	CmdResultData	= tuple<DirectoryWatch.CommandResult result, DirectoryWatch.Command cmd, rstring dir, rstring msgId, rstring msg>;
+
+
+
+composite Main
+{
+	param
+		// The control directory holding the command files.
+		expression<rstring> $controlDirectory : getSubmissionTimeValue("controlDirectory");
+		
+		// The output directory holding all generated files.
+		expression<rstring> $outputDirectory : getSubmissionTimeValue("outputDirectory");
+		
+	graph
+
+		/****************************************************************************
+		 * This operator regularly scans the control directory and reports filenames
+		 * downstream for files that have been created/modified and match the
+		 * given pattern.
+		 */
+		stream<rstring filename> ControlFile = DirectoryScan()
+		{
+			param
+				directory						: $controlDirectory;
+				pattern							: "control.*csv$";
+				initDelay						: 2.0;
+				sleepTime						: 1.0;
+				ignoreExistingFilesAtStartup	: true;
+		}
+
+
+		/****************************************************************************
+		 * This operator reads the contents of the reported files and
+		 * sends command tuples to the DirectoryWatch operator.
+		 */
+		stream<CmdData> Control = FileSource(ControlFile)
+		{
+			param
+				format				: csv;
+				ignoreOpenErrors	: true;
+				deleteFile			: true;
+		}
+
+
+		/****************************************************************************
+		 * The DirectoryWatch operator creates watches in an inotify instance for
+		 * the existing configured directories. It reacts to events of files with
+		 * the 'txt' extension. For each notification of an event the operator 
+		 * produces a tuple on its first output port. As we are using a control
+		 * port here, we are using the operator's optional second output port
+		 * to keep track of processed commands.
+		 */
+		(stream<FileNameData> InFile; stream<CmdResultData> Response) as DirWatch = DirectoryWatch(Control)
+ 		{
+			logic state :
+			{
+				rstring oDir = $outputDirectory;
+			}
+			
+			param
+				directories			: 	[	oDir + "/dir1",
+											oDir + "/dir2",
+											oDir + "/dir3",
+											oDir + "/nonExisting"
+										];
+
+				pattern				:	"(txt$)";
+				eventsToWatch		:	all;
+				runAtStart			:	true;
+				initDelay			:	1.0;
+				
+				commandAttribute	:	cmd;
+				pathAttribute		:	dir;
+				
+				
+			output
+				InFile				:	action = Event(),
+										filename = FileName(),
+										path=FilePath();
+//										requestedWatches=RequestedWatches(), 
+//										availableWatches=AvailableWatches();									
+
+				Response			:	result = Result(),
+										msgId = MessageId(),
+										msg	= Message();
+				
+		}
+		
+		
+
+		/****************************************************************************
+		 * This operator writes the commands forwarded to the DirectoryWatch
+		 * operator into a file. 
+		 */
+		() as CommandsSink = FileSink(Control)
+		{
+			param
+				file				: $outputDirectory + "/commands.csv";
+				append				: true;
+				format				: csv;
+				flush				: 1u;
+				writePunctuations	: true;
+				flushOnPunctuation	: true;
+		}
+		
+		
+
+		/****************************************************************************
+		 * This operator writes the file event data into a file. 
+		 */
+		() as FileEventSink = FileSink(InFile)
+		{
+			param
+				file				: $outputDirectory + "/fileEvents.csv";
+				append				: true;
+				format				: csv;
+				flush				: 1u;
+				writePunctuations	: true;
+				flushOnPunctuation	: true;
+		}
+		
+		
+
+		/****************************************************************************
+		 * This operator writes the result data for processed commands into a file.
+		 */
+		() as ResponseSink = FileSink(Response) {
+			param
+				file				: $outputDirectory + "/cmdResponses.csv";
+				append				: true;
+				format				: csv;
+				flush				: 1u;
+				writePunctuations	: true;
+				flushOnPunctuation	: true;
+		}
+
+
+
+	config
+	
+		tracing		:	trace;
+
+}
+
+
+
+
+

@@ -1,0 +1,210 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2015, 2021     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace com.teracloud.streams.geospatial.sample;
+
+
+use com.teracloud.streams.geospatial::SpatialRouter;
+use com.teracloud.streams.geospatial.ext::* ;
+
+/**
+ * Main composite to demonstrate using the SpatialRouter operator to divide
+ * a stream of data into multiple streams based on the geographical location
+ * of each tuple on the stream. Uses the MapViewer composite operator to visualize
+ * the results on a map. The SpatialRouter in this demo divides the stream into
+ * three streams and each downstream node is a simple Custom that tags the tuple
+ * with a marker id that indicates which stream the tuple was forwarded to.
+ * Markers in the visualization on the map will have a color matching the node
+ * that processed the tuple. That is, a red marker means the data was forwarded to
+ * the "Red" stream processed by the RedNode operator. To see this sample in action,
+ * compile and submit the application to a Streams instance. To compile the application,
+ * you need:
+ *
+ * In a browser, open the following URL:  http://<PEHost>:8080/map/map.html 
+ * To see popup on the map, open the following URL:  http://<PEHost>:8080/map/map.html?popup=true
+ * 
+ * If you use this sample on your local machine with your local Streams instance, you
+ * may as well use:
+ * http://localhost:8080/map/map.html
+ * and 
+ * http://localhost:8080/map/map.html?popup=true
+ */
+
+ /** Generate a random latitude value. 
+ * @param min must be greater than or equal to -90.0
+ * @param max must be less than or equal to 90.0
+ */
+public stateful float64 randomLatitude(float64 min, float64 max)
+{
+	float64 minLatitude = min ;
+	float64 range = max-min ;
+	float64 randomNum = random() ;
+	return minLatitude +(randomNum * range) ;
+}
+
+/** Generate a random longitude value. 
+ * @param min must be greater than or equal to -180.0
+ * @param max must be less than or equal to 180.0
+ */
+public stateful float64 randomLongitude(float64 min, float64 max)
+{
+	float64 minLongitude = min ;
+	float64 range = max-min ;
+	float64 randomNum = random() ;
+	return minLongitude +(randomNum * range) ;
+}
+
+/** Generate a random entity id 
+ * @param minId minimum value of the id to generatel
+ * @param numEntities possible number of entities
+ */
+public stateful rstring randomId(int32 minId, int32 numEntities)
+{
+	float64 randomNum = random() ;
+	int32 range = numEntities ;
+	
+	rstring id = (rstring)((int32)((float64)minId + (randomNum * (float64)range))) ;
+	return id;
+}
+
+composite SpatialRouterSample2 {
+
+    type
+        Point = rstring id, rstring wkt;
+        
+        
+    graph
+        stream<Point> PointsStream = Custom() {
+        
+            logic
+                onProcess: {
+                
+                    mutable int32 ctr = 0;
+                    
+                    while(! isShutdown()) {
+                    
+                        // This is a list of boundaries from which to generate points.
+                        // Each point is from a different region, such that a bounding box is formed by:
+                        // minLat[x], maxLat[x], minLon[x], maxLon[x], where x is between 0-2
+                        //
+                        // The coordinates are around Berlin, Germany
+                        
+                        list<float64> minLat = [ 51.4, 51.9, 52.4 ];
+                        list<float64> maxLat = [ 52.6, 53.1, 53.6 ];
+                        
+                        list<float64> minLon = [ 12.4, 12.9, 13.4 ];
+                        list<float64> maxLon = [ 13.6, 14.1, 14.6 ];
+                        
+                        
+                        mutable int32 index = ctr % 3;
+                        ctr++;
+                        
+                        
+                        // Randomly generate coordinates around Berlin
+                        float64 longitude   = randomLongitude(minLon[index], maxLon[index]);
+                        float64 latitude    = randomLatitude (minLat[index], maxLat[index]);
+                        
+                        
+                        rstring id = randomId(0, 100);
+                        
+                        
+                        // Convert coordinates into WKT string
+                        rstring wktGeometry = point(longitude, latitude);
+                        
+                        
+                        submit({ id = id, wkt = wktGeometry}, PointsStream);
+                        block(0.001);
+                    }
+                    
+                }
+                
+        }
+        
+        
+        
+        (   stream<Point> SpatialRouterToRedStream;
+            stream<Point> SpatialRouterToGreenStream;
+            stream<Point> SpatialRouterToYellowStream) as ThreeStreamsSpatialRouter = SpatialRouter(PointsStream) {
+            
+            
+            param
+                geohashBitDepth :   (uint32) getSubmissionTimeValue("bitDepth", "17");
+                precision       :   0.0;
+                geometry        :   wkt;
+        }
+        
+        
+        
+        // When submitting to MapViewer, set 'updateAction' to 1 to add the point to the map!
+        
+        
+        
+        stream<MapViewerT> RedNodeStream = Custom(SpatialRouterToRedStream as I) {
+            
+            logic
+                onTuple I : {
+                    submit({    id              = id,
+                                wkt             = wkt,
+                                updateAction    = 1u,
+                                note            = "Processed by node 1: " + wkt,
+                                markerType      = RED },
+                            RedNodeStream);
+                }
+        }
+        
+        
+        
+        stream<MapViewerT> GreenNodeStream = Custom(SpatialRouterToGreenStream as I) {
+            
+            logic
+                onTuple I : {
+                    submit({    id              = id,
+                                wkt             = wkt,
+                                updateAction    = 1u,
+                                note            = "Processed by node 2: " + wkt,
+                                markerType      = GREEN },
+                            GreenNodeStream);
+                }
+        }
+        
+        
+        
+        stream<MapViewerT> YellowNodeStream = Custom(SpatialRouterToYellowStream as I) {
+            
+            logic
+                onTuple I : {
+                    submit({    id              = id,
+                                wkt             = wkt,
+                                updateAction    = 1u,
+                                note            = "Processed by node 3: " + wkt,
+                                markerType      = YELLOW },
+                            YellowNodeStream);
+                }
+        }
+        
+        
+        
+        () as TheMapViewer = MapViewer(RedNodeStream, GreenNodeStream, YellowNodeStream) {}
+}

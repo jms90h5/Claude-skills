@@ -1,0 +1,263 @@
+#!/usr/bin/perl
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+$| = 1;
+
+################################################################################################################
+# This scripts has some helper functions for job state checks
+################################################################################################################
+
+use strict;
+use Getopt::Long;
+use File::Find;
+
+use File::Basename;
+use Cwd qw(abs_path cwd);
+my $dirname = dirname(abs_path($0));
+
+
+use constant false => 0;
+use constant true  => 1;
+
+# Who Am I ?
+my $this = `basename $0`;
+chomp($this);
+
+my $pid = $$;
+
+my @streamslogfiles;
+my $executeRC;
+my $writeToLogFile=false;
+my $logFile;
+
+my ($help, $man) = (0,0);
+my ($verbose_opt);
+my $iid_opt;
+my $did_opt;
+my $file_opt;
+my $streamsinstall_opt;
+my $jid_opt;
+my $zkconnect_opt;
+my $embeddedzk_opt;
+my $user_opt;
+
+###################################################################################################
+###																								###
+###											DEFINITIONS											###
+###																								###
+###################################################################################################
+sub help();
+sub usageMsg();
+
+# option handling
+exit(1) unless GetOptions(
+    'help|h|?'          => sub { help(); exit(0); },
+    'job|j=s'           => \$jid_opt,
+    'instance-id|i=s'   => \$iid_opt,
+    'domain-id|d=s'     => \$did_opt,
+    'streamsinstall=s'  => \$streamsinstall_opt,
+    'file=s'  		=> \$file_opt,
+    'zkconnect=s'       => \$zkconnect_opt,
+    'embeddedzk'        => \$embeddedzk_opt,
+    'User|U=s'          => \$user_opt
+);
+
+my $verbose = 1;
+
+
+my $STREAMS_INSTALL=$streamsinstall_opt;
+if (!defined $STREAMS_INSTALL) {
+	usageMsg();
+	exit (1);
+}
+my $STREAMS_BIN=$STREAMS_INSTALL."/bin";
+my $STREAMTOOL_CMD=$STREAMS_BIN."/streamtool";
+my $iid = $iid_opt;
+if (!defined $iid) {
+	usageMsg();
+	exit (1);
+}
+my $localDomainID = $did_opt;
+if (!defined $localDomainID) {
+	usageMsg();
+	exit (1);
+}
+my $jobID = $jid_opt;
+if (!defined $jobID) {
+	usageMsg();
+	exit (1);
+}
+my $file = $file_opt;
+if (!defined $file) {
+	usageMsg();
+	exit (1);
+}
+
+##############################################################################
+
+# Internal method to run a system command and capture the output
+sub _runCmdNoDieCapture($;$) { # logs starting and completion; returns exit code (processed $?)
+    my ($cmd, $captureStdErr) = @_;
+
+    $captureStdErr = 1 if !defined($captureStdErr);
+
+    my $ec;
+    my $output = $captureStdErr == 1 ? `$cmd 2>&1` : `$cmd`; # Redirect stderr to stdout so we can capture it
+    if ($? < 0) { # cmd didn't run
+        $ec = -1;
+    } else {
+        # return exit code... -1 if it died.
+        my $low = $? & 0xff; # non-0 if died
+        my $hi = $? >> 8; # exit code if exit() was called
+        $ec = $low ? -1 : $hi;
+    }
+
+    return ($ec, $output);
+}
+
+sub isJobHealthy() {
+	my $cmd = $STREAMTOOL_CMD." lsjobs";
+	$cmd = $cmd . " -d " . $localDomainID;
+	$cmd = $cmd . " --embeddedzk" if (defined $embeddedzk_opt);
+	$cmd = $cmd . " --zkconnect ".$zkconnect_opt if (defined $zkconnect_opt);
+	$cmd = $cmd . " --User ".$user_opt if (defined $user_opt);
+	$cmd = $cmd . " -i " . $iid . " --jobs " . $jobID . " --xheaders";
+	dlog("isJobHealthy:  $cmd");
+	my $res;my $rc;
+	($rc,$res) = _runCmdNoDieCapture($cmd,1);
+	dlog("rc: $rc");
+	dlog("res:\n$res");
+	my $healthy=`echo "$res" |awk '{print \$3}'`;
+	my $state=`echo "$res" |awk '{print \$2}'`;
+	chomp($healthy);$healthy =~ s/\r|\n//g;$healthy=uc($healthy);dlog("healthy:$healthy");
+	chomp($state);$state =~ s/\r|\n//g;$state=uc($state);dlog("state:$state");
+	
+	# check healthy and state columns
+	my $result = false;
+	$result = true if ($healthy eq "YES");
+	if (!$result) {
+		# check if not in canceling state
+		$result = true if (($state eq "CANCELLING") || ($state eq "CANCELING"));
+	}
+	# check PE states if job state is unhealthy
+	if (!$result) {
+		my $cmd = $STREAMTOOL_CMD." lspe";
+		$cmd = $cmd . " -d " . $localDomainID;
+		$cmd = $cmd . " --embeddedzk" if (defined $embeddedzk_opt);
+		$cmd = $cmd . " --zkconnect ".$zkconnect_opt if (defined $zkconnect_opt);
+		$cmd = $cmd . " --User ".$user_opt if (defined $user_opt);
+		$cmd = $cmd . " -i " . $iid . " --jobs " . $jobID . " --xheaders | awk '{print \$4}'";
+		dlog("isJobHealthy:  $cmd");
+		my $res;my $rc;
+		($rc,$res) = _runCmdNoDieCapture($cmd,1);
+		dlog("rc: $rc");
+		dlog("res:\n$res");
+		my $healthy=$res;
+		chomp($healthy);$healthy =~ s/\r|\n//g;$healthy=uc($healthy);dlog("healthy:$healthy");
+		if ($healthy =~ /NO/) {
+			dlog("Unhealthy PE detected");
+			$result = false;
+		} else {
+			$result = true;
+		}
+	}
+	return ($result);
+}
+
+
+sub healthCheck () {
+	my $response = "healthy";
+	$response = "restart [j=".$jobID."][d=".$localDomainID."][i=".$iid."]" if (!isJobHealthy());
+	open FH, ">$file" or die ("ERR_FILE_OPEN_ERROR",$file,$!);
+	print FH $response;
+	close(FH);
+}
+
+
+###################################################################################################
+#
+# MAIN
+#
+###################################################################################################
+healthCheck();
+
+###################################################################################################
+#
+# help functions....
+#
+###################################################################################################
+
+sub help()
+{
+	print <<EOF;
+Usage: $this [--streamsinstall <path>] [-d,--domain-id <did>] [-i,--instance-id <instance>] [-f,--file <file-name>] [-j,--job <job-id>] [-U,--User <user>] [-h,--help] [--zkconnect {<host>:<port>},... | --embeddedzk]
+
+	Shutdown one or more jobs identified by their job id.
+
+Options and arguments:
+ --streamsinstall:
+          The path to Streams installation directory.
+ -d,--domain-id:
+          The domain name.
+ -f,--file:
+          Output file containing the result of the health check
+ -i,--instance-id:
+          The instance name.
+ -j,--job:
+          job id.
+ -U,--User:
+          Specifies an Streams user ID that has authority to run the
+          command.
+ --zkconnect:
+          The name of one or more host and port pairs that specify the configured ZooKeeper servers.
+          If you do not specify this option, Streams tries to
+          use:
+              1. The --embeddedzk option
+              2. The value from the STREAMS_ZKCONNECT environment variable
+              3. A ZooKeeper connection string that is derived from cached information about the current domain.
+ --embeddedzk:
+          Specifies to use the embedded copy of ZooKeeper.
+          If you do not specify either this option or the --zkconnect option, Streams uses the
+          ZooKeeper connection that is associated with the active domain or the domain that is specified in the
+          --domain-id option. Streams determines which connection maps to the domain by using cached
+          information about the domains. In this scenario, if the domain identifier is not unique in the cache,
+          the command fails.
+EOF
+}
+
+sub usageMsg()
+{
+	print <<EOF;
+Usage: $this  [--streamsinstall <path>] [-d,--domain-id <did>] [-i,--instance-id <instance>] [-f,--file <file-name>] [-j,--job <job-id>] [-U,--User <user>] [-h,--help] [--zkconnect {<host>:<port>},... | --embeddedzk]
+EOF
+}
+
+###################################################################################################
+#
+#  FUNCTION:  printl(), tlog(), dlog(), ilog(), wlog(), elog()
+#  
+#  - Log functions for msg formating, trace, debug, info, warnings and errors
+#
+###################################################################################################
+sub printl {
+	my $m=$_[0];
+	#log on console
+	print $m."\n";
+}
+
+sub tlog { printl $_[0] if $verbose > 2; }
+sub dlog { printl $_[0] if $verbose > 1; }
+sub ilog { printl $_[0] if $verbose > 0; }
+sub wlog { printl $_[0] }
+sub elog { printl $_[0] }

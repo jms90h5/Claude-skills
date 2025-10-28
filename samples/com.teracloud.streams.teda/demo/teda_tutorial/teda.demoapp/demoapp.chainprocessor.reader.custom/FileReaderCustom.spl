@@ -1,0 +1,228 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainprocessor.reader.custom;
+
+use demoapp.chainprocessor.reader::FileReaderASN1;
+use demoapp.chainprocessor.reader::FileReaderCSV;
+use demoapp.chainprocessor.reader::FileReaderStructure;
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+use com.teracloud.streams.teda.parser.text::*;
+
+/**
+ * Integrates a parser operator that is a built-in parser but requires a
+ * different configuration than the already prepared configurations or that
+ * is not available as built-in parser at all.
+ *
+ * The FileReaderASN1, FileReaderCSV, and FileReaderStructure composite
+ * operators in the demoapp.chainprocessor.reader namespace integrate
+ * the com.teracloud.streams.teda.parser.binary::ASN1Parse,
+ * com.teracloud.streams.teda.parser.text::CSVParse and
+ * com.teracloud.streams.teda.parser.binary::StructureParse parser operators.
+ * The composite operators support a fixed set of parameters that you should
+ * investigate if you plan to use them. If other parameter settings are
+ * required, use the demoapp.chainprocessor.reader.custom::FileReaderCustom
+ * to integrate the parser operators with the required settings.
+ *
+ * Use the demoapp.chainprocessor.reader .custom::CustomParserTemplate
+ * template composite operator to implement and integrate your own parser.
+ * The template provides a skeleton that already takes care of reading a file
+ * with a spl.adapter::FileSource operator and forwarding all relevant SPL
+ * attributes to the output port. For more information, see the composite
+ * code comments. Typically, you create a copy of the template file.
+ *
+ * Call your customized parser composite operator from within the
+ * demoapp.chainprocessor.reader.custom::FileReaderCustom composite
+ * operator.
+ *
+ * Configure the **ite.ingest.reader.parserList** parameter to activate this
+ * composite, for example, `ite.ingest.reader.parserList=\*|FileReaderCustom`
+ *
+ * If more than one new parser is required, create a copy of this composite
+ * and adapt and activate it.
+ *
+ * @input  FileIn
+ * Tuple containing name of file to be parsed.
+ *
+ * @output OutRec
+ * Tuples read from the input file.
+ * It is required to send a window punctuation at end of file
+ * 
+ * @output OutStat
+ * Statistic tuple containing some file parser metrics after file reading.
+ *
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ */
+public composite FileReaderCustom (
+	input 
+		stream<TypesCommon.FileIngestSchema> FileIn;
+	output
+		stream<TypesCommon.ReaderOutStreamType> ReaderRec,
+		stream<TypesCommon.ParserStatisticsStream> ReaderStat
+) {
+
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+
+		(
+		stream<TypesCommon.ReaderOutStreamType> ReaderRec;
+		stream<TypesCommon.ParserStatisticsStream> ReaderStat
+		) = 
+			// ------------------------------------------------
+			// custom code begin
+			// ------------------------------------------------
+			// Select the file reader operator
+			// a) FileReaderCSV or
+			// b) FileReaderASN1 or
+			// c) FileReaderStructure or
+			// d) Create your own parsers based on CustomParserTemplate
+			FileReaderCSV
+			// ------------------------------------------------
+			// custom code end
+			// ------------------------------------------------
+			(FileIn as IN) {
+			param
+				groupId : $groupId;
+				chainId : $chainId;
+				// ------------------------------------------------
+				// custom code begin
+				// ------------------------------------------------
+				// enable parameters below to customize the Parsers
+
+				/**
+				 * FileReaderCSV/FileReaderStructure/FileReaderASN1: operator
+				 * record stream output type. If this schema is changed, you
+				 * must also provide a customized RecordConverter operator. See
+				 * the RecordConverterOperator parameter.
+				 */
+				//parserRecordOutputType: TypesCommon.ParserCustomStreamType; // or any other customer-specific type
+
+				/**
+				 * FileReaderCSV/FileReaderStructure/FileReaderASN1: The
+				 * operator thats converts the decoded record tuples. See
+				 * also the parserRecordOutputType parameter.
+				 */
+				//RecordConverterOperator: demoapp.chainprocessor.reader.custom::RecordConverter; // or any other operator that is based on the RecordConverter template
+
+				/**
+				 * FileReaderStructure/FileReaderASN1: The size of the blocks provided by the FileSource operator.
+				 */
+				//blockSize : 8u * 1024u;
+
+				/**
+				 * FileReaderASN1: The absolute filename of the ASN.1 grammar file.
+				 */
+				//grammarFile : "grammar.asn";
+
+				/**
+				 * FileReaderASN1: The name of the root PDU.
+				 */
+				//pdu : "NAME";
+
+				/**
+				 * FileReaderASN1: The list of triggers.
+				 */
+				//trigger : "/";
+
+				/**
+				 * FileReaderASN1: The value of the padding byte.
+				 */
+				//padding : 0ub;
+
+				/**
+				 * FileReaderASN1: Check ASN.1 constraints.
+				 */
+				//checkConstraints : true;
+
+				/**
+				 * FileReaderStructure: The structure document parameter
+				 */
+				//structureDocument: "etc/structure.xml";
+
+				/**
+				 * FileReaderStructure/FileReaderCSV: The mapping document parameter
+				 */
+				//mappingDocument: "etc/custom_csv_mapping.xml";
+
+				/**
+				 * FileReaderCSV: The CSV field separator
+				 */
+				//separator: ",";
+
+				/**
+				 * FileReaderCSV: The flag to ignore empty lines in the CSV input
+				 */
+				//ignoreEmptyLines: true;
+				
+				/**
+				 * FileReaderCSV: The flag to ignore header lines in the CSV input
+				 */
+				//ignoreHeaderLines: false;
+				
+				/**
+				 * FileReaderCSV: The quoting mode. 
+				 * If set to "CSVParse.on" quoting is handled according to RFC4180.
+				 * If set to "CSVParse.off" quote characters are treated like normal characters.
+				 * Default is on. Setting this to off may improve throughput of the parser two to three times.
+				 */
+				//quoted: CSVParse.off;
+
+				/**
+				 * FileReaderCSV: The end of line character. The default is "\n".
+				 * To use CRLF, uncomment the following line.
+				 */
+				//eolMarker: "\r\n";
+
+				/**
+				 * FileReaderCSV/FileReaderStructure/FileReaderASN1: 
+				 * Enables the compression parameter for the spl.adapter::FileSource operator.
+				 * The parameter ite.ingest.reader.compression must be set to
+				 * FileReaderCSV or FileReaderStructure or FileReaderASN1.
+				 */
+				//compression: FileSource.gzip;
+				
+				/**
+				 * FileReaderCSV: The file encoding. 
+				 * Enables the encoding parameter for the spl.adapter::FileSource operator.
+				 * The parameter ite.ingest.reader.encoding must be set to FileReaderCSV.
+				 */
+				//encoding: "ASCII";
+				
+				// ------------------------------------------------
+				// custom code end
+				// ------------------------------------------------
+		}
+}

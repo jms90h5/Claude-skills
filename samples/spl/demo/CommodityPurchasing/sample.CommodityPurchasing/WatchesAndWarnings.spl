@@ -1,0 +1,672 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2014     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace sample.CommodityPurchasing;
+
+use com.teracloud.streams.inet::InetSource;
+
+/**
+ * The `WatchesWarnings` application processes weather information
+ * from NOAA. More specifically, it processes watches and 
+ * warnings from NOAA. By processing the data we mean analyzing
+ * the current alerts from NOAA and determining if those alerts 
+ * affect any of our supplier locations. 
+ * 
+ * **Imported Streams**
+ * 
+ * * `SupplierData` - We tap the WeatherConditions supplier location stream.
+ *
+ * **Exported Streams**
+ * 
+ * * `CurrentAlerts` - Contains information about the current weather 
+ * alerts whereby each alert is affecting a location of interest. 
+ */
+composite WatchesAndWarnings {
+
+type  
+  SupplierDataT = WeatherLocationSchema;
+
+  ReplaceAT = rstring county, rstring stateAbbrev, rstring city, int32 alertCount;
+
+
+graph 
+    
+  /************************************************************************************
+  # Purpose:        This operator imports a stream that contains information  
+  #                 regarding our list of Supplier locations. Each tuple represents 
+  #                 one such location.
+  #  
+  # Input Streams:  We tap the WeatherConditions supplier location stream  
+  #
+  # Output Streams: The output stream is SupplierData and is unmodified from the 
+  #                 input stream.
+  ***********************************************************************************/
+  stream<WeatherLocationSchema> SupplierData = Import() 
+  {
+    param
+      applicationName : "sample.CommodityPurchasing::WeatherConditions";
+      streamId : "SupplierLocation";
+  }  
+
+
+  /********************************************************************************
+  # Purpose:        This operator digests Watches and Warnings from NOAA. This operator
+  #                 uses the InetSource operator. The operator is currently set to retrieve  
+  #                 the data roughly once every 10 minutes. 
+  #  
+  # Input Streams:  None  
+  #
+  # Output Streams: Tuples containing a list of strings. Each entry in the list   
+  #                 will consist of a line of data obtained from the URI. The data found
+  #                 at the URI is put into the list roughly once every 10 minutes.                                
+  ***********************************************************************************/
+  stream <list<rstring> lineList> WatchesWarningsSource = InetSource() 
+  {
+    param URIList : ["http://alerts.weather.gov/cap/us.atom"];
+          fetchInterval: 600.0l;  // Roughly every 10 minutes 
+          initDelay: 120.0l; 
+  }
+
+   
+  /********************************************************************************
+  # Purpose:        This operator takes the incoming data which is in raw 
+  #                 format , i.e the format that is found at the URI, and converts   
+  #                 the data into a series of alerts. Each alert is then stored as 
+  #                 an entry in a list of strings.
+  #
+  #                 This is accomplished by processing the incoming list and 
+  #                 breaking up the list using the tokenizer <id> . 
+  #
+  #                 We also insert delineator markers "RECYCLE" and "ENDCYCLE" 
+  #                 to signify the beginning and ending of the  data being
+  #                 processed. 
+  #  
+  # Input Streams:  A stream consisting of a list of strings that contains the raw   
+  #                 data at "http://www.weather.gov/alerts-beta/us.atom"
+  #
+  # Output Streams: Tuples containing a list of strings. Each entry in the list of strings  
+  #                 will consist of a weather alert.
+  **********************************************************************************/
+  stream< list<rstring> alert > CreateWatchesWarnings = Functor(WatchesWarningsSource) 
+  {  
+
+    logic  state:  {
+             mutable list<rstring> alerts;
+           }
+           onTuple WatchesWarningsSource : {
+             alerts = (list<rstring>)[];
+             appendM(alerts,"RECYCLE");  
+             mutable int32 loop = (size(lineList));
+             mutable int32 idx  = 1; 
+             mutable int32 start = 0; 
+             mutable rstring temp = "";
+             while ( idx < loop ) {     
+               rstring data = lineList[idx]; 
+               int32 found = findFirst(data,"<id>", start);  
+               if ( found != -1) {    
+                 if ( substring(temp,0,4) == "<id>" ) {
+                   appendM(alerts,temp);
+                 }
+                 temp = data;
+               } 
+               else { 
+                 temp += data;
+               }
+               idx = idx + 1;
+             }    
+
+             if ( substring(temp,0,4) == "<id>" ) {
+               appendM(alerts,temp);
+             } 
+
+             appendM(alerts,"ENDCYCLE");
+           }
+    output  CreateWatchesWarnings :  alert = alerts;
+   } 
+
+
+  /********************************************************************************
+  # Purpose         This operator is used to take the incoming alerts which  
+  #                 are stored within a StringList and send each element of the  
+  #                 list out as a tuple for downstream processing
+  #
+  #  
+  # Input Streams:  A stream consisting of a list of strings where each entry of   
+  #                 the list of strings is a weather alert  
+  #
+  # Output Streams: Tuples containing an alert.
+  **********************************************************************************/
+  stream< rstring alert > WatchesWarningsNormalized = Custom(CreateWatchesWarnings)
+    {  
+     logic onTuple CreateWatchesWarnings : {  
+       mutable int32 xx = 0; 
+       mutable int32 rr = (int32)(size(alert)); 
+   
+       while (xx < rr) {     
+         submit({alert = alert[xx]}, WatchesWarningsNormalized);
+         xx++;
+       }
+     }
+  }  
+  
+
+  /********************************************************************************
+  # Purpose         This operator is used to uppercase the location data. This is 
+  #                 done to speed up processing when alerts are searched/scanned
+  #                 to determine if the alert is associated with a geographical  
+  #                 area of interest.
+  #
+  # Input Streams:  A stream representing the supplier locations  
+  #
+  # Output Streams: a stream representing the supplier locations with the   
+  #                 attributes used for searching in upper case.
+  *******************************************************************************/
+  stream<SupplierDataT> SupplierDataUpper = Functor(SupplierData) 
+  {
+    output 
+      SupplierDataUpper : city = upper(city), 
+                          stateAbbrev = upper(stateAbbrev), 
+                          county = upper(county),
+                          latitude = latitude,
+                          longitude = longitude, 
+                          weatherStationCode = upper(weatherStationCode) ; 
+  }
+
+
+  /********************************************************************************
+  # Purpose         This operator is used to create a list of county:state  
+  #                 entries that will be needed to scan weather alerts  
+  #                 to determine if the alert is associated with a geographical  
+  #                 area of interest. 
+  #
+  # Input Streams:  A stream representing the supplier locations  
+  #
+  # Output Streams: a stream representing a list of counties:states that will be 
+  #                 used in scanning the alerts.
+  *******************************************************************************/
+  stream< list<rstring> countyState > CountyStateList  = Functor(SupplierDataUpper) 
+  { 
+    logic  state: mutable list<rstring> countyandstates;
+           onTuple SupplierDataUpper : 
+             appendM(countyandstates, county + ":" + stateAbbrev);
+    output CountyStateList : countyState = countyandstates; 
+  }
+
+
+  /********************************************************************************
+  # Purpose         This operator is used to join multiple streams together. Each
+  #                 weather alert is joined with a list of counties/states. The 
+  #                 data is joined so that each alert can later be scanned to determine  
+  #                 if an alert affects one of the geographical locations we are 
+  #                 monitoring.  
+  #
+  # Input Streams:  The first input stream is one that represents weather alerts. 
+  #                 The second stream contains information regarding the geographical
+  #                 locations we are monitoring. 
+  #
+  # Output Streams: Tuples containing combined data , i.e a weather alert along with 
+  #                  geographical information.
+  **********************************************************************************/
+  stream < rstring alert, int32 slSize , list<rstring> countyState >  WeatherAlertsAndCountyStateInfo = Join ( WatchesWarningsNormalized as A; CountyStateList as B )
+  {
+    window
+      A : sliding,count(0);
+      B : sliding, count(1);
+    output
+       WeatherAlertsAndCountyStateInfo : alert = A.alert, 
+                                         slSize = 1, 
+                                         countyState = B.countyState;
+  }  
+
+
+  /********************************************************************************
+  # Purpose         This operator searches a weather alert to determine if the 
+  #                 weather alert affects one of the geographical locations that we  
+  #                 are monitoring. If the alert does affect one of our locations  
+  #                 an entry is added to the outgoing tuple.
+  #
+  #                 The incoming stream also may contain the delineators used to mark 
+  #                 the beginning and ending of a set of streams. When this is the case
+  #                 the delineators are passed along. 
+  #  
+  # Input Streams:  The input stream consists of a weather alert and the geographical  
+  #                 locations we are monitoring  
+  #
+  # Output Streams: Tuples containing a series of list of strings. Where each entry of
+  #                 the list of strings represents a county affected by a weather alert,
+  #                 and the type of weather alert.
+  **********************************************************************************/
+  stream< list<rstring> countiesAffected , list<rstring> alertType, list<int32> alertSize, rstring slSize > SearchAlertForCounties  = Functor(WeatherAlertsAndCountyStateInfo) 
+  { 
+    logic state: {
+            mutable list<rstring> countiesAffected; 
+            mutable list<rstring> typeList; 
+            mutable list<int32>   alertSize;  
+          }
+    onTuple WeatherAlertsAndCountyStateInfo : {   
+      mutable int32 index = 0;  
+
+      countiesAffected = (list<rstring>)[];
+      typeList = (list<rstring>)[];
+      alertSize = (list<int32>)[];
+
+      mutable int32 listSize = size(countyState);
+
+      mutable rstring temp = "";
+      mutable rstring ualert = upper(alert);
+
+      while (index < listSize ) {   
+        temp = countyState[index];
+
+        list<rstring> tempCountyState = tokenize(temp,":",true);
+        rstring county = tempCountyState[0];
+        rstring stateAbbrev = tempCountyState[1];
+
+        list<rstring> qqq = regexMatch(ualert, "<CAP:AREADESC>.*\\b" + county + "\\b.*</CAP:AREADESC>");
+ 
+        if ( size(qqq) > 0 ) {
+          list<rstring> matches = regexMatch(alert,"x=([A-Z]{2})([0-9]*)([a-zA-Z]*)([0-9]*)");
+          if ( size(matches) > 0 ) {
+            rstring weatherType = matches[3]; 
+            rstring stateWarning = matches[1];
+            if  ( stateWarning == stateAbbrev ) { 
+              if (length(weatherType) > 3) { 
+                appendM(typeList,weatherType);
+                appendM(countiesAffected,temp);
+                appendM(alertSize, 1);
+              }
+            }
+          } 
+        }
+        index++;
+      }  
+
+
+      if ( alert == "RECYCLE" ) { 
+        countiesAffected = insert(countiesAffected,"RECYCLE", (int32)(size(countiesAffected))+1);
+        appendM(typeList,"--");
+        appendM(alertSize, 0);
+
+        listSize = size(countyState);   
+        index = 0;  
+        while (index < listSize ) {  
+          appendM(countiesAffected,countyState[index]);
+
+          appendM(typeList,"--");
+          appendM(alertSize, 0);
+          index++;
+        }
+      } 
+
+      if ( alert == "ENDCYCLE" ) {
+        appendM(countiesAffected,"ENDCYCLE");
+        appendM(typeList,"--");
+        appendM(alertSize, 0);
+      } 
+}
+    output SearchAlertForCounties  : countiesAffected = countiesAffected, alertType = typeList, alertSize = alertSize,  slSize = (rstring)(size(countiesAffected));
+  }
+  
+
+  /********************************************************************************
+  # Purpose         This operator takes an input stream of alerts that affected  
+  #                 one of our monitored locations. The affected alerts come     
+  #                 in as list of strings and we use the custom operator to turn the
+  #                 list of strings into a series of tuples. Where each tuple 
+  #                 represents an alert that has affected one of our suppliers 
+  #
+  # Input Streams:  The input stream consists of locations affected by a weather alert  
+  #
+  # Output Streams: Tuples representing a location that has been affected by a 
+  #                 weather alert. 
+  *********************************************************************************/
+  stream< rstring county, rstring  alertType, int32 alertSize, rstring slSize >  NormalizeSearchAlertForCounties = Custom(SearchAlertForCounties) 
+  {  
+    logic onTuple SearchAlertForCounties : {  
+      mutable int32 xx = 0; 
+      mutable int32 rr = (int32)(size(countiesAffected)); 
+   
+      while ( xx < rr ) {     
+        submit({ county = countiesAffected[xx], alertType = alertType[xx],
+                 alertSize =alertSize[xx], slSize = slSize},
+                 NormalizeSearchAlertForCounties) ;
+        xx++;
+      }
+    }
+  }
+
+
+  /********************************************************************************
+  # Purpose         This operator modifies a tuple by tokenizing the location
+  #                 into both county and state.
+  #
+  # Input Streams:  The input stream consists of a location that has been affected
+  #                  by a weather alert  
+  #
+  # Output Streams: Tuples representing a location that has been affected by a 
+  #                 weather alert where the location has been broken out into
+  #                 county and state.
+  *********************************************************************************/
+  stream< rstring county, rstring stateAbbrev, rstring alertType,  int32 alertSize, rstring slSize > ValidAlerts =   Functor( NormalizeSearchAlertForCounties )
+  {
+    logic  state: {
+             mutable  rstring tempCounty  = "";
+             mutable  rstring tempStateAbbrev  = "";  
+             mutable  rstring tempAlertType = "t";
+           }
+           onTuple NormalizeSearchAlertForCounties : {
+             list<rstring> countyState =  tokenize(county,":",true); 
+             if ( size(countyState) == 2 ) { 
+               tempCounty       = countyState[0];
+               tempStateAbbrev       = countyState[1];
+             } 
+             else { 
+               tempCounty = county;
+               tempStateAbbrev = "--";
+             }
+           } 
+    output ValidAlerts :  county = tempCounty, 
+                          stateAbbrev = tempStateAbbrev, 
+                          alertType = alertType,
+                          alertSize = alertSize, 
+                          slSize = slSize;  
+  }   
+
+
+  /********************************************************************************
+  # Purpose         This operator joins the stream representing alerts that affected 
+  #                 locations of interest, to data representing the monitored locations.
+  #                 This is done so we can add the longitude and latitude attributes
+  #                 to the stream representing a given alert. 
+  #
+  # Input Streams:  The first input stream represents a weather alert that affected a 
+  #                 geographical location of interest. The second stream represents 
+  #                 a list of monitored geographical locations containing the latitude and  
+  #                 longitude 
+  #
+  # Output Streams: Tuples representing a location that has been affected by a 
+  #                 weather alert . Each tuple contains the county, state, city, 
+  #                 alertType, longitude and latitude 
+  **********************************************************************************/
+  stream < rstring county, rstring stateAbbrev, int32 countSum, rstring alertType , rstring longitude, rstring latitude, rstring city >  FinalAlert = Join ( ValidAlerts as A; SupplierDataUpper as B )
+  {
+    window 
+      A : sliding,count(0);
+      B : sliding, count(999);
+    param
+      match :  A.county == B.county;
+      algorithm : leftOuter;
+    output FinalAlert : county = A.county, 
+                        stateAbbrev = A.stateAbbrev, 
+                        countSum = alertSize,
+                        alertType = A.alertType, 
+                        longitude = B.longitude, 
+                        latitude = B.latitude, 
+                        city = B.city;
+  }  
+
+
+  /********************************************************************************
+  # Purpose         This operator modifies the incoming alerts by setting some of
+  #                 the attributes of the stream for processing later down the road.
+  # 
+  #                 This operator also sets the deltac attribute. We always set 
+  #                 the deltac attribute to 0 except when we see the "ENDCYCLE" 
+  #                 delineator. In this case we set the deltac attribute to 2. This 
+  #                 attribute will be used later to produce punctuation.  
+  # 
+  #                 We also filter out any streams that do not have the county 
+  #                 field set. This occurs on weather alerts that did not affect 
+  #                 any of our monitored locations.
+  #
+  # Input Streams:  A stream representing an alert that has affected one of  
+  #                 our geographical locations of interest. 
+  #
+  # Output Streams: A modified version of the incoming stream where attributes 
+  #                 are set for future processing.
+  ****************************************************************************/
+  stream< rstring trunc, rstring county, rstring stateAbbrev, rstring alertType, int32 countSum, rstring longitude, rstring latitude, rstring city, int32 deltac >  FinalAlertForOutput = Functor(FinalAlert) 
+  { 
+   logic  state: {
+            mutable rstring tempTrunc = "N"; 
+            mutable int32 tempDelta = 0;
+          }
+          onTuple FinalAlert : {
+            tempTrunc = "N"; 
+            tempDelta = 0;
+
+            if (county == "RECYCLE" ) 
+              tempTrunc = "Y";
+            else if ( county == "ENDCYCLE" )
+              tempDelta  = 2;
+          }
+    output FinalAlertForOutput : trunc = tempTrunc, 
+                                 county = county, 
+                                 stateAbbrev = stateAbbrev, 
+                                 alertType = alertType, 
+                                 countSum = countSum, 
+                                 longitude = longitude, 
+                                 latitude = latitude, 
+                                 city = city, 
+                                 deltac = tempDelta;
+  } 
+
+
+  /********************************************************************************
+  # Purpose         This operator modifies the incoming alerts by adding punctuation
+  #                 to the stream when the deltac attribute = 2
+  #
+  # Input Streams:  A stream representing an alert that has affected one of  
+  #                 our geographical locations of interest. 
+  #
+  # Output Streams: A modified version of the incoming stream whereby punctuation  
+  #                 is added 
+  #                                
+  *********************************************************************************/
+  stream< rstring trunc, rstring county, rstring stateAbbrev, rstring alertType, int32 countSum, rstring longitude, rstring latitude, rstring city, int32 deltac > FinalAlertAddPunct = Punctor(FinalAlertForOutput)
+  {
+    param punctuate : deltac == 2 ; 
+    position : after ; 
+  }
+
+
+  /********************************************************************************
+  # Purpose         This operator modifies the incoming tuple by changing the 
+  #                 countSum attribute to a String. We also filter out the 
+  #                 streams that contain the ENDCYCLE delineator.  
+  #
+  # Input Streams:  A stream representing an alert that has affected one of  
+  #                 our geographical locations of interest.   
+  #
+  # Output Streams: A modified version of the incoming stream that changes the 
+  #                 countSum attribute type to String and removes the delta 
+  #                 attribute
+  #                                
+  *******************************************************************************/
+  stream<  rstring trunc, rstring county, rstring stateAbbrev, rstring alertType, rstring longitude, rstring latitude, rstring countSum, rstring city >  FinalAlertForOutputRemoveDelta = Functor(FinalAlertForOutput) 
+  { 
+    param filter : county != "ENDCYCLE";
+    output FinalAlertForOutputRemoveDelta : trunc = trunc, 
+                                            county = county, 
+                                            stateAbbrev = stateAbbrev, 
+                                            alertType = alertType,
+                                            longitude = longitude,
+                                            latitude = latitude, 
+                                            countSum = (rstring)(countSum), 
+                                            city = city;
+  }  
+
+
+  /********************************************************************************
+  # Purpose         This operator joins two streams. One is the stream containing   
+  #                 data representing an affected alert and the other stream 
+  #                 contains data representing the geographical locations we 
+  #                 are monitoring.
+  #
+  #                 This join is done to produce a stream where the 
+  #                 county, state , and city are in the same format found 
+  #                 in the source stream file. Our application upper cases 
+  #                 this data in up stream processing to make searching and scanning 
+  #                 of alerts quicker.
+  #
+  # Input Streams:  A stream representing an alert that has affected one of  
+  #                 our geographical locations of interest. 
+  #
+  # Output Streams: A modified version of the incoming stream that changes the 
+  #                 the county, state and city fields back to format (case ) 
+  #                 found in the source sink                                 
+  *******************************************************************************/
+  stream < rstring trunc, rstring county, rstring stateAbbrev, rstring alertType, rstring longitude, rstring latitude, rstring countSum, rstring city >  FinalAlertForOutputRemoveDeltaA = Join ( FinalAlertForOutputRemoveDelta as A; SupplierData as B )
+  {
+    window 
+      A : sliding,count(0);
+      B : sliding, count(999);
+    param
+      match :  A.county == upper(B.county);
+      algorithm : leftOuter;
+    output
+      FinalAlertForOutputRemoveDeltaA : trunc = A.trunc,
+                                        county = B.county, 
+                                        stateAbbrev = B.stateAbbrev, 
+                                        alertType = A.alertType, 
+                                        longitude = B.longitude, 
+                                        latitude = B.latitude, 
+                                        countSum = A.countSum, 
+                                        city = B.city;
+  }  
+
+
+  /********************************************************************************
+  # Purpose         This operator will cause aggregation to take place when   
+  #                 punctuation is received. Note the punctuation is added in 
+  #                 upstream processing.  Each time the punctuation is  
+  #                 received this means that we have processed the current 
+  #                 reading of weather alerts done by the InetSource operator.
+  #
+  #
+  # Input Streams:  Tuples representing alerts that affected one of 
+  #                 our geographical locations of interest. 
+  #
+  # Output Streams: An aggregation of the data such that each tuple represents  
+  #                 how many weather alerts are affected a given county/state 
+  #                                                 
+  *******************************************************************************/
+  stream< rstring county, rstring stateAbbrev, rstring city, int32 alertCount > ReplaceCurrentAlerts = Aggregate(FinalAlertAddPunct)  
+  { 
+    window 
+      FinalAlertAddPunct : tumbling,punct(), partitioned;
+    param 
+      partitionBy : county, stateAbbrev, city;
+    output ReplaceCurrentAlerts : 
+      county = Any(county), stateAbbrev = Any(stateAbbrev), city = Any(city), alertCount =  Sum(countSum);   
+  }   
+
+
+  /********************************************************************************
+  # Purpose         This operator joins two streams. One is the stream containing   
+  #                 data representing an aggregation of affected alerts and the other  
+  #                 stream contains data representing the geographical locations we 
+  #                 are monitoring.
+  #
+  #                 This join is done to produce a stream where the 
+  #                 county, state , and city are in the same format found 
+  #                 in the source stream file. Our application upper cases 
+  #                 this data in up stream processing to make searching and scanning 
+  #                 of alerts quicker.
+  #
+  # Input Streams:  A stream representing an alert that has affected one of  
+  #                 our geographical locations of interest. 
+  #
+  # Output Streams: A modified version of the incoming stream that changes the 
+  #                 the county, state and city fields back to the format (case ) 
+  #                 found in the source sink                                 
+  *******************************************************************************/
+  stream < rstring county, rstring stateAbbrev, rstring city, int32 alertCount >  ReplaceA = Join ( ReplaceCurrentAlerts as A; SupplierData as B )
+  {
+    window 
+      A : sliding,count(0);
+      B : sliding, count(999);
+    param
+      match :  A.county == upper(B.county);
+    output ReplaceA : county = B.county, 
+                      stateAbbrev = B.stateAbbrev, 
+                      city = B.city, 
+                      alertCount = A.alertCount;
+  }   
+
+
+  /********************************************************************************
+  # Purpose         This operator is used to filter out the delineator markers.
+  #                 After the delineator markers are filtered out this functor
+  #                 is used to export the tuples to another job within the 
+  #                 application.
+  #
+  # Input Streams:  A stream representing an alert that has affected one of  
+  #                 our geographical locations of interest. 
+  #
+  # Output Streams: a copy of the input stream, only the tuples containing  
+  #                 the delineator markers are filtered out. This stream is  
+  #                 also marked with the 'export' keyword.                                  
+  *****************************************************************************/
+  stream<LocationAlertSchema> CurrentAlerts =  Functor(ReplaceA) 
+  {
+    param filter : (( county != "RECYCLE") && (county != "ENDCYCLE"));
+    output CurrentAlerts : county = county, 
+                           stateAbbrev = stateAbbrev, 
+                           city = city, 
+                           alertCount = alertCount;
+  }   
+
+
+  //
+  // Export the stream of alerts 
+  //
+
+  () as ExportAlerts = Export(CurrentAlerts) 
+  {
+    param streamId: "CurrentAlerts";
+  } 
+
+
+  /************************************************************************************
+  # Purpose:        The composite operator used below will calculate per minute and total 
+  #                 tuple counts for the input stream and record them in sinks used by 
+  #                 the metrics portion of the application user interface.
+  #                 stream.  
+  #  
+  # Input Streams:  The normalized stream of weather alerts.
+  #
+  # Output Streams: None.
+  ************************************************************************************/
+  () as AlertCounts = RecordTupleCounts(WatchesWarningsNormalized) 
+  {
+    param minuteSink: "WatchesWarningsTimestampedReadingsPerMinute.result";
+          totalSink:  "TotalWatchesWarnings.result";
+  }
+
+config placement : partitionColocation("same"); // place all operators into one PE
+}
+

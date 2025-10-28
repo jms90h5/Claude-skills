@@ -1,0 +1,111 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2010, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+/* Additional includes go here */
+<%
+  use LinuxPipeCommon;
+  LinuxPipeCommon::verify($model);
+  my $command = $model->getParameterByName("command");
+  $command = $command->getValueAt(0)->getCppExpression();
+  my $hasErr = $model->getNumberOfOutputPorts() == 2;
+  my $inputPort = $model->getInputPortAt(0);
+  my $outputPort0 = $model->getOutputPortAt(0);
+  my $inAttrb = $inputPort->getAttributeAt(0)->getName();
+  my $outAttrb = $outputPort0->getAttributeAt(0)->getName();
+  my $errAttrb = undef;
+  if($hasErr) {
+      my $outputPort1 = $model->getOutputPortAt(1);
+      $errAttrb = $outputPort1->getAttributeAt(0)->getName();
+  }
+%>
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+using namespace std;
+using namespace Sample;
+
+MY_OPERATOR::MY_OPERATOR()
+    : drained_(false)
+{
+    try {
+        pipe_.setup(<%=$command%>);
+    } catch(LinuxPipeException const & e) {
+        SPLAPPTRC(L_ERROR, "Error during pipe setup: " << e.what(), "lpipe");
+        throw;
+    }
+}
+
+MY_OPERATOR::~MY_OPERATOR() {}
+
+void MY_OPERATOR::allPortsReady() 
+{
+    createThreads(1); 
+}
+ 
+void MY_OPERATOR::process(uint32_t idx)
+{
+    LinuxPipe::LineOutput res;
+    try {
+        while(!pipe_.readLine(res) && 
+              !getPE().getShutdownRequested()) {
+            if(res.hasStdOutLine()) {
+                otuple0_.get_<%=$outAttrb%>() = res.getStdOutLine();
+                submit(otuple0_, 0);
+            }
+            <%if($hasErr) {%>
+                if(res.hasStdErrLine()) {
+                    otuple1_.get_<%=$errAttrb%>() = res.getStdErrLine();
+                    submit(otuple1_, 1);
+                }
+            <%}%>
+        } 
+    } catch(LinuxPipeException const & e) {
+        SPLAPPTRC(L_ERROR, "Error during pipe read: " << e.what(), "lpipe");
+    }    
+    {
+        AutoMutex am(drainMutex_);
+        drainCV_.signal();
+        drained_ = true;
+    }
+}
+
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port)
+{
+    AutoPortMutex apm(mutex_, *this);
+    IPort0Type const & ituple = static_cast<IPort0Type const &>(tuple);
+    try {
+        pipe_.writeLine(ituple.get_<%=$inAttrb%>());
+    } catch(LinuxPipeException const & e) {
+        SPLAPPTRC(L_ERROR, "Error during pipe write: " << e.what(), "lpipe");
+    }         
+}
+
+void MY_OPERATOR::process(Punctuation const & punct, uint32_t port)
+{
+    AutoPortMutex apm(mutex_, *this);
+    if(punct==Punctuation::FinalMarker) {
+        pipe_.shutdown(false);
+        AutoMutex am(drainMutex_);
+        while(!drained_) 
+            drainCV_.wait(drainMutex_);
+    } 
+}
+
+void MY_OPERATOR::prepareToShutdown() 
+{
+    pipe_.shutdown(false);
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

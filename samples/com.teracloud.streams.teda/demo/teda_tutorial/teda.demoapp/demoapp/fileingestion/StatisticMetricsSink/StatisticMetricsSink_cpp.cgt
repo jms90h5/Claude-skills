@@ -1,0 +1,105 @@
+/* begin_generated_IBM_copyright_prolog                             */
+/*                                                                  */
+/* This is an automatically generated copyright prolog.             */
+/* After initializing,  DO NOT MODIFY OR MOVE                       */
+/* **************************************************************** */
+/* Licensed Materials - Property of IBM                             */
+/* 5724-Y95                                                         */
+/* (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      */
+/* US Government Users Restricted Rights - Use, duplication or      */
+/* disclosure restricted by GSA ADP Schedule Contract with          */
+/* IBM Corp.                                                        */
+/*                                                                  */
+/* end_generated_IBM_copyright_prolog                               */
+/* Additional includes go here */
+#include <SPL/Runtime/Operator/Operator.h>
+#include <SPL/Runtime/Operator/OperatorMetrics.h>
+
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+<%
+	my $numOfInputs	= $model->getNumberOfInputPorts();
+	my $inputPort	= $model->getInputPortAt(0);
+%>
+
+using namespace std;
+
+// Constructor
+MY_OPERATOR::MY_OPERATOR() :
+	_nFilesProcessed (getContext().getMetrics().getCustomMetricByName("nFilesProcessed")),
+	_nFilesDuplicate (getContext().getMetrics().getCustomMetricByName("nFilesDuplicate")),
+	_nFilesInvalid (getContext().getMetrics().getCustomMetricByName("nFilesInvalid")),
+	_nFilesFailed (getContext().getMetrics().getCustomMetricByName("nFilesFailed")),
+	_nRecordsProcessed (getContext().getMetrics().getCustomMetricByName("nRecordsProcessed")) {
+	
+	// create custom metrics
+	<%if($inputPort->getAttributeByName('recordDuplicates')) {%>
+	_nDuplicateRecords = & getContext().getMetrics().createCustomMetric("nDuplicateRecords", "Number of detected duplicate records", Metric::Counter);
+	<%}%>
+	<%if($inputPort->getAttributeByName('outdatedRecords')) {%>
+	_nOutdatedRecords = & getContext().getMetrics().createCustomMetric("nOutdatedRecords", "Number of outdated records", Metric::Counter);
+	<%}%>
+	
+}
+
+// Destructor
+MY_OPERATOR::~MY_OPERATOR() {
+}
+
+// Notify port readiness
+void MY_OPERATOR::allPortsReady() {
+}
+ 
+// Notify pending shutdown
+void MY_OPERATOR::prepareToShutdown()  {
+}
+
+// Tuple processing for mutating ports 
+void MY_OPERATOR::process(Tuple & tuple, uint32_t port) {
+}
+
+// Tuple processing for non-mutating ports
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port) {
+	IPort0Type const & ituple = static_cast<IPort0Type const &>(tuple);
+
+	// update metrics
+	_nFilesProcessed.incrementValueNoLock(1);
+
+	<%if($inputPort->getAttributeByName('sentRecords')) {%>
+	_nRecordsProcessed.incrementValueNoLock(ituple.get_sentRecords());
+	<%} elsif($inputPort->getAttributeByName('nTuplesSent')) {%>
+	_nRecordsProcessed.incrementValueNoLock(ituple.get_nTuplesSent());
+	<%}%>
+
+	<%if($inputPort->getAttributeByName('duplicate')) { %>
+	if (true == ituple.get_duplicate()) {
+		_nFilesDuplicate.incrementValueNoLock(1);
+	}
+	<%} %>
+
+	<%if($inputPort->getAttributeByName('invalidFile')) { %>
+	if (0 != ituple.get_invalidFile().getIndex()) {
+		_nFilesInvalid.incrementValueNoLock(1);
+	}
+	<%} %>
+
+	<%if($inputPort->getAttributeByName('errors')) { %>
+	if (0 != ituple.get_errors().size()) {
+		_nFilesFailed.incrementValueNoLock(1);
+	}
+	<%} %>
+
+	<%if($inputPort->getAttributeByName('recordDuplicates')) {%>
+	_nDuplicateRecords->incrementValueNoLock(ituple.get_recordDuplicates());
+	<%}%>
+	<%if($inputPort->getAttributeByName('outdatedRecords')) {%>
+	_nOutdatedRecords->incrementValueNoLock(ituple.get_outdatedRecords());
+	<%}%>
+}
+
+// Punctuation processing
+void MY_OPERATOR::process(Punctuation const & punct, uint32_t port) {
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

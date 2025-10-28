@@ -1,0 +1,153 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.StructureParse.Resync;
+
+use com.teracloud.streams.teda.parser.binary::StructureParse;
+
+/** Sample application to demonstrate the resync feature of the StructureParse operator
+
+    This sample shows how to resynchronize the parser upon detection of a certain bit pattern
+    in the input data stream. Each record contains an unit8 and a float value (for example some sensor id and
+    the temperature measured by the sensor). Only numbers up to 100 are considered valid sensor ids. If a number 
+    greater that that is received, the parser will not know what to do with it (as there is no structure defined
+    for it in the structure.xml) and treat the data as invalid. Without a resync feature, all data received after the faulty
+    record would be dropped until the next punctuation arrives (which might be never, in case of a TCP stream as input).
+    With a resync structure defined (see structure.xml) the parser will examine the data stream for that structure and 
+    resume normal work after receipt.
+*/
+composite Main
+{
+	type
+
+		// this type contains the record data
+		SensorData = tuple
+		<
+			uint8 sensorNumber,
+			float32 temperature
+		>;		
+
+		// thie metrics we want to get from the parser, and write to the metrics.txt file
+		Metric = tuple
+		<
+			uint64 nTuplesReceived,
+			uint64 nTuplesSent,
+			uint64 nBytesReceived,
+			uint64 nBytesDropped
+		>;
+	
+	graph
+
+		/**
+		 * Generate valid, invalid and sync records
+		 */
+		stream<blob payload> SourceData as O = Custom()
+		{
+			logic
+				state :
+				{
+					// this is a valid record : sensor=1,temperature=24.1
+					blob validSensorData = (blob)[ 1ub, 0xcdu, 0xccu, 0xc0u, 0x41u ];
+					
+					// the next one is invalid, because the first int is greater than 100
+					// so it is not recognized by the condition for this structure (see structure.xml)
+					blob invalidSensorData = (blob)[ 101ub, 0xcdu, 0xccu, 0xc0u, 0x41u ];
+					
+					// the sync pattern 0xAAAAAAAA (2863311530) , this is checked in the condition (see structure.xml)
+					blob syncToken = (blob)[ 0xaau, 0xaau, 0xaau, 0xaau ];  
+
+					// a blob with 3 garbage bytes
+					blob garbageBytes = (blob)[ 222ub, 222ub, 222ub ];  
+
+				}					
+				onProcess :
+				{
+					// submit a valid record, one sync token (which is ignored), than one more valid
+					submit( { payload = validSensorData }, O);
+					submit( { payload = syncToken }, O);
+					submit( { payload = validSensorData }, O);
+					// submit a punctuation to get the statistics. At this point we should have 3 tuples received,
+					// but only 2 tuples sent, as the detection of the sync record does not lead to submission					
+					submit(Sys.WindowMarker, O);
+
+					// now we submit 2 valid records and 2 invalid ones which brings the parser out-of-sync
+					submit( { payload = validSensorData }, O);
+					submit( { payload = validSensorData }, O);
+					submit( { payload = invalidSensorData }, O);
+					submit( { payload = invalidSensorData }, O);
+					// now we send a few 0 bytes, which will also be dropped, and than the sync pattern which will cause the parser to resync
+					// afterwards we send two valid records	
+					submit( { payload = garbageBytes }, O);												
+					submit( { payload = syncToken }, O);
+					submit( { payload = validSensorData }, O);
+					submit( { payload = validSensorData }, O);
+					// submit a punctuation to get the statistics. At this point we should have 8 tuples received, 4 sent
+					// 37 bytes received and 13 of them dropped
+					submit(Sys.WindowMarker, O);
+
+				}
+		}
+
+		/**
+		 * Decode the binary records according to the configured mapping
+		 */
+		(stream<SensorData> Output as O; stream<Metric> Metrics as M) as Parse = StructureParse(SourceData as I)
+		{
+			param
+				payloadAttribute : payload;
+				structureDocument : "etc/structure.xml";
+				mappingDocument : "etc/mapping.xml";
+			output M:
+				nTuplesReceived = nTuplesReceived(),
+				nTuplesSent = nTuplesSent(),
+				nBytesReceived = nBytesReceived(),
+				nBytesDropped = nBytesDropped()
+				;
+		}
+
+		/**
+		 * Write decoded records to a text file
+		 */
+		() as Sink = FileSink(Output as I)
+		{
+			param
+				file: "output.txt";
+			 	format: txt;
+			 	flush: 1u;
+		}
+		
+		/**
+		 * Write metrics to text file.
+		 */
+		() as MetricsSink = FileSink(Metrics as I)
+		{
+			param
+				file: "metrics.txt";
+				format: txt;
+				flush: 1u;
+				writePunctuations: true;
+		}
+
+}

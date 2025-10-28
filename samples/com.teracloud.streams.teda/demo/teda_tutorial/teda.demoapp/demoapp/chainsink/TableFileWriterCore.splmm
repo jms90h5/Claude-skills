@@ -1,0 +1,431 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_SINK_DEBUG());
+
+	# -------------------------------------------------------------------------
+
+	my $splitFileName;
+	my $numTables = 0;
+	my @tableNameList;
+	my @tableStreamList;
+	my $suppressedAttributes = "tablename";
+	# suppress FileInfo Schema attributes
+	$suppressedAttributes = $suppressedAttributes.",filename, fileType, readerLinenumber, readerInvalidLineInd, readerInvalidPayload, readerInvalidMessage, chainPunct, groupId, chainId";
+	my $writeToSubDir;
+	my $targetDirectory;
+	my $targetFilename;
+	my $CHAIN_SINK_TABLE_FILES_OUTPUT = 0;
+	my $isSampleCode = $configurator->isOn(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $storageType = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	my $tableFileWriter = ($storageType > 0 ? 0 : 1);
+	if (1 == $tableFileWriter) {
+		my $tables = $configurator->getStringList(Configurator::ITE_STORAGE_TABLENAMES());
+
+		@tableNameList = @{$tables} if (defined $tables);
+		
+		my @tableList = @tableNameList;
+		foreach my $tab (@tableList) {
+			$tab =~ s/\./_/;
+			push @tableStreamList, $tab;
+			$numTables++;
+		}		
+		print "// numTables: $numTables \n";
+		print "// Stream(s) used for table split: \n";
+		foreach my $tab (@tableStreamList) {print "// $tab\n";}
+		print "// Table names: \n";
+		foreach my $tab (@tableNameList) {print "// $tab\n";}
+
+		$targetDirectory = "outputDir";
+		$targetFilename = "tablename+\"-\"+groupId+\"_\"+filename+\".csv\"";
+
+		$CHAIN_SINK_TABLE_FILES_OUTPUT = $configurator->getEnum(Configurator::ITE_STORAGE_OUTPUTDIRECTORYSTRUCTURE());
+		if (1==$CHAIN_SINK_TABLE_FILES_OUTPUT)  {
+			$writeToSubDir=1;
+			$targetDirectory=$targetDirectory."+\"/\"+filename";
+		}
+	}
+%>
+namespace demoapp.chainsink;
+
+<%if (1==$tableFileWriter) {%>
+
+use demoapp.streams::*;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+use com.teracloud.streams.teda.internal.fileutils::rename;
+
+/**
+ * TableFileWriterCore
+ * Writes table rows to file and updated the File Statistics
+ * One FileSink per table name
+ * Window punctuation and statistic tuple must be received before statistic tuple is forwarded.
+ *
+ * @input  InTableRowToWrite Table tuples for table File Sink(s)
+ * @input  InStat File Statistics
+ * @output OutStat File Statistics containing table Statistics
+ * 
+ * @param outputDir
+ * Output directory of table files
+ *
+ * @param commitDir
+ * Output directory of committed table files
+ * 
+ * @param groupId 
+ * Name of groupID
+ * 
+ * @param chainId 
+ * Name of chainID
+ */
+public composite TableFileWriterCore ( 
+	input 
+		stream<TypesCommon.ChainSinkStreamType> InTableRowToWrite,
+		stream<TypesCommon.FileStatistics> InStat;
+	output
+		stream<TypesCommon.FileStatistics> OutStat
+)
+{
+	param
+		expression<rstring> $outputDir;
+		expression<rstring> $commitDir;
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as TableFileWriterInputSink = FileSink (InTableRowToWrite) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/SINK_FILE_WRITER_IN_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as TableFileWriterInputStatSink = FileSink (InStat) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/SINK_FILE_WRITER_STAT_IN_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		<% } %>
+
+		// Collect Table Statistic
+		// Punctuation must be forwarded to FileWriters
+		@spl_category(name="common")
+		(stream<InRow> TableRowToWrite as Out;
+		stream<InStat> FileStat as stats
+		) as RowWriter = Custom(InTableRowToWrite as InRow;InStat) {
+			logic
+				state : {
+					rstring outputDir = $outputDir; // prevents submission code to be called when using directory param
+					mutable map<rstring,TypesCommon.TableStatisticData> statsMap; // key: tablename
+					mutable list<rstring> statsTableFiles;
+					mutable	boolean isPunctReceived = false;
+					mutable boolean isStatReceived = false;
+					mutable InStat queuedStat = {};
+					<%if ($writeToSubDir) {%>
+					mutable rstring currentFilename = "";
+					<%}%>
+				}
+				onTuple InRow: {
+						<%if ($writeToSubDir) {%>
+						// create sub directory for each new table file set
+						if (("" == currentFilename) || (currentFilename != filename)) {
+							currentFilename = filename;
+							createDir(<%=$targetDirectory%>);
+						}
+						<%}%>
+						// update statistics per table
+						if (!(tablename in statsMap)) {
+							statsMap[tablename] = { insertedRows=1l, updateRows=0l, duplicateRows=0l };
+							appendM(statsTableFiles, <%=$targetDirectory%>+"/"+<%=$targetFilename%>);
+						} else {
+							statsMap[tablename].insertedRows = statsMap[tablename].insertedRows++;
+						}
+						// forward input table stream tuple
+						submit(InRow,Out);
+					}
+				onPunct InRow: {
+						if (currentPunct() == Sys.WindowMarker){
+							// flush/close table files
+							submit(Sys.WindowMarker, Out);
+
+							// send statistics if received before punct
+							if (isStatReceived) {
+								// add table statistics
+								queuedStat.tableStats=statsMap;
+								queuedStat.tableFiles=statsTableFiles;
+								// forward statistic tuple
+								submit(queuedStat, stats);
+								// reset counter and meta data
+								isPunctReceived = false;
+								isStatReceived = false;
+								clearM(statsMap);
+								clearM(statsTableFiles);
+							}
+							else {
+								isPunctReceived = true;
+							}
+						}
+					}
+				onTuple InStat : {
+					// punct must be received before forwarding statistic tuple
+					if (isPunctReceived) {
+						// add table statistics 
+						if (0 == spl.collection::size(InStat.tableStats)) {
+							// replace only if not present (could have been created by PostDedupProcessor)
+							InStat.tableStats=statsMap; 
+						}
+						InStat.tableFiles=statsTableFiles;
+						// forward statistic tuple
+						submit(InStat,stats);
+						// reset counter and meta data
+						isPunctReceived = false;
+						isStatReceived = false;
+						clearM(statsMap);
+						clearM(statsTableFiles);
+					}
+					else {
+						// enqueue statistic tuple
+						queuedStat = InStat;
+						isStatReceived = true;
+						// do not forward statistic tuple here
+					}
+				}
+		}
+
+		// Split on table name
+		@spl_category(name="common")
+		(
+		<% my $i=0; foreach (@tableStreamList) { 
+		print ("\n\t\tstream<InRow> TableRowToWrite_".$_);
+		print ";" if ($i < $numTables-1);
+		++$i;
+		}%>
+		) as TablenameSplit = Custom(TableRowToWrite as InRow) {
+			logic
+				state : {
+					map<rstring /* tablename */, uint32 /* port */> tableConfig = {
+					<% my $i=0; foreach (@tableNameList) { 
+					print ("\n\t\t\t\t\t\"$_\": $i");
+					print "," if ($i < $numTables-1);
+					++$i;
+					}%>
+					};
+				}
+			onTuple InRow: {
+				submit(InRow, tableConfig[tablename]);
+			}
+			onPunct InRow: {
+				if (currentPunct() == Sys.WindowMarker){
+					// flush/close table files - forward punct to all output ports
+					<%foreach (@tableStreamList) {%>
+					submit(Sys.WindowMarker, TableRowToWrite_<%=$_%>);
+					<%}%>
+				}
+			}
+		}
+
+		<% foreach (@tableStreamList) { %> 
+		@spl_category(name="common")
+		() as TableSink_<%=$_%> = FileSink(TableRowToWrite_<%=$_%>) {
+			logic
+				state : {
+					rstring outputDir = $outputDir; // prevents submission code to be called when using directory param
+				}
+			param
+				file :  <%=$targetDirectory%>+"/"+<%=$targetFilename%>;
+				format: csv;
+				flushOnPunctuation: true;
+				closeMode: punct;
+				append: false;
+				quoteStrings : false;
+				suppress: <%=$suppressedAttributes%>;
+		}
+		<%} #end foreach%>
+
+
+		// Table files Finalizer
+		// moves table files
+		@spl_category(name="common")
+		(
+		<%if ((!$writeToSubDir) || (2==$CHAIN_SINK_TABLE_FILES_OUTPUT)) {%>
+		stream<TypesCommon.TableFilesMoveStream> FileMoveToLoad; // moves table out files to load dir
+		<%}%>
+		stream<TypesCommon.FileStatistics> OutStat
+		) as TableWriterFinalize = Custom(FileStat as InStat) {
+			logic
+			state : {
+				<%if (2==$CHAIN_SINK_TABLE_FILES_OUTPUT) {%>
+				mutable rstring dateDir = "";
+				<%}%>
+				<%if ((!$writeToSubDir) || (2==$CHAIN_SINK_TABLE_FILES_OUTPUT)) {%>
+				mutable FileMoveToLoad outTableFilesMoverTuple = {};
+				<%}%>
+				<%if ($writeToSubDir) {%>
+				rstring outputDir = $outputDir; // prevents submission code to be called when using directory param
+				mutable int32 err=0;
+				boolean ok = createDir($commitDir);
+				<%}%>
+			}
+			onTuple InStat : {
+				// Move files
+				if (false == InStat.duplicate) {
+					if (0 == spl.collection::size(InStat.errors)) {
+						<%if (2==$CHAIN_SINK_TABLE_FILES_OUTPUT) {%>
+						// get current date
+						dateDir = com.teracloud.streams.teda.internal.fileutils::getDateNow();
+						<%}%>
+						// move all table out files belonging to one input file to load dir
+						if (0 < spl.collection::size(InStat.tableFiles)) {
+						<%	if (2==$CHAIN_SINK_TABLE_FILES_OUTPUT) { %>
+							outTableFilesMoverTuple.filenameList = InStat.tableFiles;
+							outTableFilesMoverTuple.dateInfo = dateDir;
+							submit(outTableFilesMoverTuple,FileMoveToLoad);
+						<%	} else {%>
+						<%		if ($writeToSubDir) {%>
+							mutable rstring stripFilename=com.teracloud.streams.teda.file.path::filename(filename);
+							rstring sourcePath= $outputDir + "/" + stripFilename;
+							rstring destPath = $commitDir + "/" + stripFilename;
+							// rename dir
+							com.teracloud.streams.teda.internal.fileutils::rename(sourcePath, destPath, err);
+							if(err!=0) {
+								appTrc(Trace.error, "Could not rename directory '" + sourcePath+"' to '"+destPath+"': " + (rstring)err);
+							}
+						<%		} else { %>
+							outTableFilesMoverTuple.destPath = $commitDir + "/";
+							outTableFilesMoverTuple.filenameList = InStat.tableFiles;
+							submit(outTableFilesMoverTuple,FileMoveToLoad);
+						<%		}%>
+						<%	}%>
+						}
+					}
+				}
+				submit(InStat,OutStat); // forwards statistic tuple
+			}
+		}
+
+		<%	if (2==$CHAIN_SINK_TABLE_FILES_OUTPUT) { %>
+		@spl_category(name="common")
+		() as CustomTableFileMove = TableFilesDateMover (FileMoveToLoad) {
+			param
+				commitDir: $commitDir;
+		}
+		<%	} else {%>
+		<%		if (!$writeToSubDir) {%>
+		// File Mover for table out files - moves files to load dir
+		// move each table file to destPath directories
+		@spl_category(name="common")
+		() as TableOutFilesMover  = com.teracloud.streams.teda.internal.ingestion::FilesMove(FileMoveToLoad) {
+		}
+		<%		}%>
+		<%	}%>
+
+}
+
+<%	if (2==$CHAIN_SINK_TABLE_FILES_OUTPUT) { %>
+/**
+ * TableFilesDateMover
+ * File Mover implements code to move output files to date sub directories
+ *
+ * @input  InFilesToMove filenames of output file
+ *
+ * @param commitDir
+ * Directory of committed output files to be written/moved
+ */
+public composite TableFilesDateMover (
+	input 
+		InFilesToMove
+)
+{
+	param
+		expression<rstring> $commitDir;
+
+	graph
+
+		// creates for each target table a sub directory in load dir
+		// moves table files to table specific load dir
+		@spl_category(name="common")
+		() as TableSubDirMover = Custom(InFilesToMove as IN) {
+			logic
+				state : {
+					<% my $i=0; foreach (@tableNameList) { %>
+					mutable boolean res<%=$i%>=createDir($commitDir+"/"+"<%=$_%>");
+					mutable rstring dateDir<%=$i%> = "";
+					<%++$i;}%>
+					mutable rstring newName = "";
+					mutable rstring shortName = "";
+					mutable int32 err=0;
+				}
+			onTuple IN : {
+				for (rstring tableFile in IN.filenameList) {
+					shortName = com.teracloud.streams.teda.file.path::filename(tableFile);
+					<%my $i=0;my $ifstr; foreach (@tableNameList) { $ifstr=($i>0)?"else if":"if";%>
+					<%=$ifstr%> (-1 != findFirst(shortName, "<%=$_%>")) {
+						// date subdir in table dir
+						if (dateDir<%=$i%> != IN.dateInfo) {
+							createDir($commitDir+"/<%=$_%>/"+IN.dateInfo);
+							dateDir<%=$i%> = IN.dateInfo;
+						}
+						newName = $commitDir+"/<%=$_%>/"+IN.dateInfo+"/"+shortName;
+					}
+					<%$i++;}%>
+					if ("" != newName) {
+						rename(tableFile, newName, err);
+						if(err!=0) {
+							appTrc (Trace.error, "Could not rename directory '" + tableFile+"' to '"+newName+"': " + (rstring)err);
+						}
+					}
+					else {
+						appTrc (Trace.error, "Could not move file (Unknown directory / table): "+ tableFile);
+					}
+					newName = "";
+				}
+			}
+		}
+}
+<%	}%>
+
+<%} # endif tableFileWriter%>

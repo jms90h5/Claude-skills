@@ -1,0 +1,209 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+/**
+ * The sample demonstrates the usage of the ExceptionCatcher operator.
+ * 
+ * Three different use cases are implemented:
+ * 
+ * 1) The substring() function throws an exception if it peeks behind the string.
+ * 2) The regexMatch() function throws an exception if it gets an invalid regular expression.
+ * 3) An exception is thrown while casting a text to an integer.
+ * 
+ * Each use case has its own ExceptionCatcher instance. Even if an exception
+ * occurred, subsequent tuples are still processed i.e. the PEs are still
+ * healthy and able to process tuples. 
+ */
+
+namespace teda.sample.ExceptionCatcher.Basic;
+
+use com.teracloud.streams.teda.utility::ExceptionCatcher;
+
+/**
+ * The type holds the iteration count, the exception type and text.
+ */
+type ExceptionType = tuple
+<
+	uint64 counter, // forwarded from SourceType
+	rstring exceptionType, // = getExceptionType()
+	rstring text // = getExceptionText()
+>;
+
+/**
+ * The filename.
+ */
+type FilenameType = tuple<rstring filename>;
+
+/**
+ * Catch the exception of the fused downstream operator(s).
+ */
+composite Demo(input iPort; output donePort)
+{
+	param
+		operator $executor;
+		expression<rstring> $filename;
+	graph
+		/**
+		 * Catch exceptions from fused operators.
+		 */
+		(stream<I> Forwarded; stream<ExceptionType> Exceptions as E) as CatchMe = ExceptionCatcher(iPort as I)
+		{
+		 	output E: exceptionType = getExceptionType(), text = getExceptionText();
+			config placement: partitionColocation(getThisCompositeInstanceName());
+		}
+		/**
+		 * The exception throwing operator.
+		 */
+		stream<I> GoodData as O = $executor(Forwarded as I)
+		{
+			config placement: partitionColocation(getThisCompositeInstanceName()), partitionExlocation("TEST");
+		}
+		/**
+		 * Save the good results.
+		 */
+		stream<FilenameType> GoodSink = FileSink(GoodData)
+		{
+			param file: $filename + "-good.txt"; format: txt; flush: 1u; writePunctuations: true;
+			config
+				placement : partitionColocation(getThisCompositeInstanceName()+"SINK"), partitionExlocation("TEST");			
+		}
+		/**
+		 * Caught exceptions are stored here.
+		 */
+		stream<rstring filename> ExceptionsSink = FileSink(Exceptions)
+		{
+			param file: $filename + "-exceptions.txt"; format: txt; flush: 1u; writePunctuations: true;
+			config
+				placement : partitionColocation(getThisCompositeInstanceName()+"SINK");			
+		}
+		/**
+		 * Fuse both done events.
+		 */
+		stream<I> donePort = Filter(GoodSink, ExceptionsSink as I)
+		{
+			config
+				placement : partitionColocation(getThisCompositeInstanceName()+"SINK");
+		}
+}
+
+/**
+ * The operator throws an exception if the substring() function
+ * tries to access characters behind the input string.
+ */
+composite OutOfBounds(input iPort; output oPort)
+{
+	graph
+		stream<I> oPort as O = Custom(iPort as I)
+		{
+			logic
+			onTuple I: { text = substring(text, (int32)counter, 1); submit(I, O); }
+			onPunct I: { submit(currentPunct(), O); }
+		}
+}
+
+/**
+ * For two counter values the operator calls a function with an invalid
+ * argument.
+ */
+composite InvalidArguments(input iPort; output oPort)
+{
+	graph
+		stream<I> oPort as O = Functor(iPort as I)
+		{
+			logic
+			onTuple I:
+			{
+				if (counter in [3ul, 6ul])
+				{
+					// The star leads to the invalid argument exception.
+					regexMatch(I.text, "*");
+				}
+			}
+		}
+}
+
+/**
+ * The operator throws an exception if it cannot convert a text into an integer.
+ */
+composite InvalidCasts(input iPort; output oPort)
+{
+	graph
+		stream<I> oPort as O = Functor(iPort as I)
+		{
+			output O: result = (int32)text;
+		}
+}
+
+/**
+ * Run all demos in parallel.
+ */
+@threading(model=manual)
+composite Main
+{
+	type
+		SourceType = tuple
+		<
+			uint64 counter,
+			rstring text,
+			int32 result
+		>;
+	graph
+		// Generate test data leading to different kind of exceptions.
+		stream <SourceType> Data as O = Beacon()
+		{
+			param
+				iterations: 10;
+				period: 0.25;
+			output
+				O: counter = IterationCount(), text = "123456" + (IterationCount() == 3ul ? "BAD" : "");
+			config
+				placement : partitionColocation("START"), partitionExlocation("TEST");				
+		}
+		
+		stream<FilenameType> DoneA = Demo(Data)
+		{
+			param filename: "GoodDataOrOutOfBound"; executor: OutOfBounds;
+		}
+		
+		stream<FilenameType> DoneB = Demo(Data)
+		{
+			param filename: "GoodDataOrInvalidArgument"; executor: InvalidArguments;
+		}
+		
+		stream<FilenameType> DoneC = Demo(Data)
+		{
+			param filename: "GoodDataOrInvalidCasts"; executor: InvalidCasts;
+		}
+		
+		/**
+		 * Store names from files being done.
+		 */
+		() as Done = FileSink(DoneA, DoneB, DoneC)
+		{
+			param file: "done.txt"; format: txt; flush: 1u;
+			config
+				placement : partitionColocation("DONE"), partitionExlocation("TEST");			
+		}
+}

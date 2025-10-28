@@ -1,0 +1,78 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2014, 2016     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace sample;
+
+// This example illustrates the use of a @consistent annotation 
+// applied to a primitive operator written in C++. This primitive
+// operator was adapted to pause and resume its tuple submission
+// during a drain or a reset.
+composite ReplayableSource {
+  graph
+    // Instantiation of the JobControlPlane operator. This operator
+    // hosts the ConsistentRegionMXBean responsible for managing
+    // a consistent region.
+    () as JCP = JobControlPlane() {}
+
+    // StartOfRegion is a sample C++ primitive operator that can be a
+    // start operator in a time-driven consisten region. The operator
+    // submits numbers starting at 0 and increases the value by 1 at 
+    // each submission. A tuple is submitted at every 0.2 seconds.
+    @consistent(trigger=periodic, period=5.0, drainTimeout=30.0, resetTimeout=30.0)
+    stream<uint64 counter> Counter = StartOfRegion() {
+    }
+
+    stream<uint64 counter> Even = Functor(Counter) {
+      param
+        filter: counter % 2lu == 0lu;
+    }
+
+    stream<uint64 counter> Odd = Functor(Counter) {
+      param
+        filter: counter % 2lu == 1lu;
+    }
+
+    stream<uint64 counter> PassThrough = Custom(Even, Odd as In) {
+      logic
+        onTuple In : {
+          submit(In, PassThrough); 
+        }
+    } 
+
+    // FileSink operator truncates the output file when resetting.
+    // Output file must have all numbers starting from 0 up until
+    // the last number submitted by the Counter operator. Numbers 
+    // can be out of order. 
+    () as MySink = FileSink(PassThrough) {
+      param
+        file: "replayableSource.dat";
+        truncateOnReset: true;
+        flush: 10u;
+    }
+
+  config
+    restartable: true;
+    tracing: trace;
+}

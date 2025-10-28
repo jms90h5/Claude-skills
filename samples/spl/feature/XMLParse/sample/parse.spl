@@ -1,0 +1,72 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2012, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+/** 
+This sample reads an XML document containing information about books and creates tuples
+with title/authors/price/reference information.
+
+1. An `spl.adapter::FileSource` operator is configured to read in the XML from the file 
+"catalog.xml" in 1K byte chunks and produce output tuples each containing a 1K "blob" of XML.
+2. An `spl.XML.XMLParse` operator parses the incoming block-form XML data into tuples.  
+Each XML <book> element produces one output tuple.  Elements and attributes of the <book> element
+are assigned to the output tuple's attributes.
+3 An `spl.adapter::FileSink` operator writes the results of the parsed XML to the output file 
+`Results.txt`.
+*/
+ 
+namespace sample;
+
+composite Parse {
+  type ReferenceType = tuple <int32 quality, rstring book>;
+       BookInfo = tuple<rstring title, list<rstring> authors, decimal32 price, list<ReferenceType> references>;
+
+  graph
+
+    // An spl.adapter::FileSource operator is configured to read in the XML from the file "catalog.xml" in 1K byte chunks and produce output
+    // tuples each containing a 1K "blob" of XML.  Other block sizes could be used if desired.
+    stream <blob xmlData> XML = FileSource () {
+        param file : "catalog.xml";
+              format: block;
+              blockSize : 1024u;
+    }
+    
+    // An spl.XML.XMLParse operator parses the incoming block-form XML data into tuples.  Each <book> XML element produces one output
+    // tuple.  Elements and attributes of the <book> element are assigned to the output tuple's attributes.
+    stream<BookInfo> X = XMLParse(XML) {
+        param   trigger : "/catalog/book";
+                parsing : permissive;     // log and ignore errors
+        output X : title = XPath ("title/text()"),
+                   authors = XPathList ("author/text()"),
+                   price = (decimal32) XPath ("@price"),
+                   references = XPathList ("reference", { quality = (int32) XPath ("@quality"),
+                                                          book = XPath ("book/text()") });
+    }
+
+    // An spl.adapter::FileSink operator writes the results of the parsed XML to the output file Results.txt.
+    () as Nill = FileSink(X) {
+        param file : "Results.txt";
+    }
+}

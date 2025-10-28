@@ -1,0 +1,401 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+	my $curDir = $projDir;
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_DEBUG());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+
+	my $hasBundleOutput = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TAP());
+
+	my $TRANSFORMER_LEVEL1_SPLIT = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TUPLEGROUPSPLIT());
+	
+	my ($n, $v) = $configurator->getEnum(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_OUTPUTTYPE());
+	my $TRANSFORMER_RECORD_OUT_TYPE = ("recordStream" eq $n) ? "TypesCommon.RecordStreamType" : "TypesCommon.TableStreamType";
+
+	my $TRANSFORMER_COUNTER_ATTRIBUTE = CodeGenFrw::getConstant('STATISTIC_SEQUENCE_NUMBER');
+
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	
+	my ($n, $v) = $configurator->getEnumList(Configurator::ITE_EXPORT_STREAMS());
+	my %hash = map { $_ => undef } @{$v};
+	my $exportEnabled = (exists $hash{transformer});
+	
+%>
+namespace demoapp.chainprocessor.transformer;
+
+use demoapp.streams::*;
+<%if (1 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.chainprocessor.transformer.custom::*;
+<%} else {%>
+use demoapp.chainprocessor.transformer.sample::*;
+<%}%>
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+
+<%
+	my $numGroups = 0;
+	if ((0 == $contextDisabled) && (1==$TRANSFORMER_LEVEL1_SPLIT))
+	{
+		my $chainCfgFile = $curDir."/".$configurator->getString(Configurator::ITE_INGEST_LOADDISTRIBUTION_GROUPCONFIGFILE());
+		$numGroups=CodeGenFrw::getNumGroups($chainCfgFile);
+		print("//\t\t[GROUPS=$numGroups]\n");
+	}
+%>
+
+/**
+ * ChainprocessorTransformerCore
+ * Composite covers the custom transformer composite.
+ * Increments a sequence number for each output tuple.
+ * Takes care about groupId split and routing to the right output stream
+ *
+ * @input  InRecord Record tuples to be passed to custom transformer composite
+ * @input  InStat Statistic tuple
+ *
+ * @output OutRecord Record tuples
+ * @output OutStat Statistic tuples
+ * @output OutRej Rejected tuples<% if (1 == $hasBundleOutput) {%>
+ * @output OutForBundle Tuples for transformer bundle of all chains<%}%>
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ * 
+ * @param reprocessDir
+ * Output directory of files to be reprocessed
+ * 
+ * @param disableLookup
+ * Lookup code is not called - no access to shared memory.
+ * 
+ * @param applControlDir
+ * The LookupCache operator requires this parameter that provides the path to the control directory.
+ * This directory provides the information about the name of the Lookup Manager job that 
+ * the LookupCache operator needs to specify the shared memory segment name 
+ */
+public composite ChainprocessorTransformerCore (
+	input 
+		InRecord,
+		InStat;
+	output
+		<% if (1 == $TRANSFORMER_LEVEL1_SPLIT) {%>
+		// OutRecord for each groupId
+		<%=join(",\n\t\t",map { 'OutRecord_'.CodeGenFrw::l0($_); }(0..$numGroups-1))%>,
+		<% } else { # no level1 split %>
+		OutRecord,
+		<% } #endif $TRANSFORMER_LEVEL1_SPLIT %>
+		OutStat,
+		OutRej<% if (1 == $hasBundleOutput) {%>,
+		OutForBundle<%}%>
+) {
+	
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $reprocessDir;
+		expression<boolean> $disableLookup;
+		expression<rstring> $applControlDir; // hidden lm jobname for segments
+
+	graph
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as ChainTransformerInputSink = FileSink (InRecord) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_TRANSFORMER_IN_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainTransformerInputStatSink = FileSink (InStat) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_TRANSFORMER_STAT_IN_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		<% } %>
+
+		// Transformer Logic
+		<%if (0 == $ENABLE_CUSTOM_CODE) {%>@spl_category(name="sample")<%}%>		
+		(
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> TransfRecStream;
+		stream<TypesCommon.FileStatistics> StatStream;
+		stream<TypesCommon.RejectedDataStreamType> OutRej;
+		stream<TypesCommon.BundledTransformerOutputStreamType> OutForBundle
+		) as TransformProc = DataProcessor(InRecord; InStat) { 
+			param
+				groupId:			$groupId;
+				chainId: 			$chainId;
+				reprocessDir:		$reprocessDir;
+				disableLookup:		$disableLookup;
+				applControlDir:		$applControlDir;
+		}
+		
+		<%if ($exportEnabled) {%>
+		@spl_category(name="common")
+		() as Exporter = Export(TransfRecStream) {
+			param
+				properties: { ite="demoapp.chainprocessor.transformer_output_DataProcessor" };
+				allowFilter: true;
+				congestionPolicy: dropConnection; // prevents back-pressure from slow importer 
+		}
+		<%}%>
+		
+
+		<% if (1 == $TRANSFORMER_LEVEL1_SPLIT) {%>
+		// split to groupId
+		@spl_category(name="common")
+		(
+		<%=join(";\n\t\t",map { 'stream<'.$TRANSFORMER_RECORD_OUT_TYPE.'> OutRecord_'.CodeGenFrw::l0($_); }(0..$numGroups-1))%>;
+		stream<TypesCommon.FileStatistics> OutStat
+		) = Custom(TransfRecStream;StatStream) {
+			logic
+				state: {
+					mutable int64 seqNo = 0l;
+					mutable boolean isPunctReceived = false;
+					mutable boolean isStatReceived = false;
+					mutable rstring errorText = "";
+					mutable InStat queuedStat;
+					mutable <%=$TRANSFORMER_RECORD_OUT_TYPE%> chainPunctTuple = {};
+					<%for (my $i=0; $i<$numGroups; $i++) {%>
+					mutable int64 sentTuples<%=CodeGenFrw::l0($i)%> = 0l;
+					<%} #end for%>
+					mutable rstring usedPorts = "";
+				}
+				onTuple
+					TransfRecStream: {						
+						// send to correct output port
+						if ("00" == groupId) {submit(TransfRecStream, OutRecord_00);seqNo++;sentTuples00++;}
+						<%for (my $i=1; $i<$numGroups; $i++) {%>
+						else if ("<%=CodeGenFrw::l0($i)%>" == groupId) {submit(TransfRecStream, OutRecord_<%=CodeGenFrw::l0($i)%>);seqNo++;sentTuples<%=CodeGenFrw::l0($i)%>++;}
+						<%}%>
+						else {							
+							<%my $knownGroupIds;
+							for (my $i=0; $i<$numGroups; $i++) {
+							$knownGroupIds = $knownGroupIds . "," if $i>0;
+							$knownGroupIds = $knownGroupIds . CodeGenFrw::l0($i);
+							}%>
+							errorText = "ERROR in business logic - unknown groupId " + groupId + " detected - supported groupIds=[" + "<%=$knownGroupIds%>" + "] - check your logic in demoapp.chainprocessor.transformer.custom::DataProcessor";
+							appTrc(Trace.error, errorText);
+							shutdownPE();
+						}
+					}
+				onTuple
+					StatStream: {						
+						if (isPunctReceived) {
+							// update and send statistic tuple
+							if (errorText!="") {
+								appendM(StatStream.errors,errorText);
+							}
+							StatStream.<%=$TRANSFORMER_COUNTER_ATTRIBUTE%>=seqNo;
+							<%for (my $i=0; $i<$numGroups; $i++) {%>
+							<%if ($i>0) {%>usedPorts += ",";<%}%>
+							usedPorts += "<%=CodeGenFrw::l0($i)%>:"+(rstring)sentTuples<%=CodeGenFrw::l0($i)%>;
+							<%} #end for%>
+							StatStream.groupId=usedPorts;
+							submit(StatStream, OutStat); //statistic port
+							// reset variables
+							seqNo=0l;
+							isStatReceived = false;
+							isPunctReceived = false;
+							errorText = "";
+							usedPorts = "";<%for (my $i=0; $i<$numGroups; $i++) {%>
+							sentTuples<%=CodeGenFrw::l0($i)%> = 0l;<%} #end for%>														
+						}
+						else {
+							isStatReceived = true;
+							// will be sent onPunct
+							queuedStat=StatStream;
+						}
+					}
+				onPunct 
+					TransfRecStream: {
+						if (currentPunct() == Sys.WindowMarker) {
+							if (isStatReceived) {
+								// update and send queued statistic tuple
+								if (errorText!="") {
+									appendM(queuedStat.errors,errorText);
+								}								
+								queuedStat.<%=$TRANSFORMER_COUNTER_ATTRIBUTE%>=seqNo;
+								<%for (my $i=0; $i<$numGroups; $i++) {%>
+								<%if ($i>0) {%>usedPorts += ",";<%}%>
+								usedPorts += "<%=CodeGenFrw::l0($i)%>:"+(rstring)sentTuples<%=CodeGenFrw::l0($i)%>;								 
+								<%} #end for%>
+								queuedStat.groupId=usedPorts;
+								submit(queuedStat, OutStat); // statistic port
+								// reset variables
+								seqNo=0l;
+								isStatReceived = false;
+								isPunctReceived = false;
+								errorText = "";
+								usedPorts = "";<%for (my $i=0; $i<$numGroups; $i++) {%>
+								sentTuples<%=CodeGenFrw::l0($i)%> = 0l;<%} #end for%>
+							}
+							else {
+								isPunctReceived=true;
+							}
+							// convert punct to data tuple with chainPunct flag and chainId
+							// required to address the right chain sink at context output
+							chainPunctTuple.chainId = $chainId;
+							chainPunctTuple.chainPunct = true;
+							// send chainPunct to all groups 
+							<%for (my $i=0; $i<$numGroups; $i++) {%>
+							chainPunctTuple.groupId = "<%=CodeGenFrw::l0($i)%>";
+							submit(chainPunctTuple, OutRecord_<%=CodeGenFrw::l0($i)%>);
+							<%} #end for%>
+						}
+					}
+		}
+		<% } else { # no level1 split %>
+		@spl_category(name="common")
+		(
+		stream<<%=$TRANSFORMER_RECORD_OUT_TYPE%>> OutRecord;
+		stream<TypesCommon.FileStatistics> OutStat
+		) = Custom(TransfRecStream as TransfTable;StatStream as TransfStat) {
+			logic
+				state: {
+					mutable int64 seqNo = 0l;
+					mutable boolean isPunctReceived = false;
+					mutable boolean isStatReceived = false;
+					mutable InStat queuedStat;
+					<%if (0 == $contextDisabled) {%>
+					mutable TransfTable chainPunctTuple = {};
+					<%}%>
+				}
+				onTuple
+					TransfTable: {
+						seqNo++;
+						submit(TransfTable, OutRecord);
+					}
+				onTuple
+					TransfStat: {
+						if (isPunctReceived) {
+							// update and send statistic tuple
+							TransfStat.<%=$TRANSFORMER_COUNTER_ATTRIBUTE%>=seqNo;
+							submit(TransfStat, OutStat);
+							// reset variables
+							seqNo=0l;
+							isStatReceived = false;
+							isPunctReceived = false;
+						}
+						else {
+							isStatReceived = true;
+							// will be sent onPunct
+							queuedStat=TransfStat;
+						}
+					}
+				onPunct 
+					TransfTable: {
+						if (currentPunct() == Sys.WindowMarker) {
+							if (isStatReceived) {
+								// update and send queued statistic tuple
+								queuedStat.<%=$TRANSFORMER_COUNTER_ATTRIBUTE%>=seqNo;
+								submit(queuedStat, OutStat);
+								// reset variables
+								seqNo=0l;
+								isStatReceived = false;
+								isPunctReceived = false;
+							}
+							else {
+								isPunctReceived=true;
+							}
+							<%if (0 == $contextDisabled) {%>
+							// convert punct to data tuple with chainPunct flag and groupId and chainId
+							// required to address the right chain sink at dedup output
+							chainPunctTuple.groupId = $groupId;
+							chainPunctTuple.chainId = $chainId;
+							chainPunctTuple.chainPunct = true;
+							submit(chainPunctTuple, OutRecord);
+							<%} else {%>
+							submit(Sys.WindowMarker, OutRecord);
+							<%}%>
+						}
+					}
+		}
+		<% } #endif $TRANSFORMER_LEVEL1_SPLIT %>
+
+		<% if($tapEnabled) {%>
+				<% if (0 == $TRANSFORMER_LEVEL1_SPLIT) {%>
+		@spl_category(name="debug")
+		() as ChainTransformerOutputSink = FileSink (OutRecord) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_TRANSFORMER_OUT_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+				<% } else {%>
+					<%for (my $i1 = 0; $i1 < $numGroups; $i1++) {%>
+		@spl_category(name="debug")
+		() as ChainTransformerOutputSink<%=CodeGenFrw::l0($i1)%> = FileSink (OutRecord_<%=CodeGenFrw::l0($i1)%>) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_TRANSFORMER_OUT_<%=CodeGenFrw::l0($i1)%>_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+					<%}%>
+				<% } #endif $TRANSFORMER_LEVEL1_SPLIT %>
+		@spl_category(name="debug")
+		() as ChainTransformerOutStatSink = FileSink (OutStat) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_TRANSFORMER_STAT_OUT_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		<% 		if (1 == $hasBundleOutput) {%>
+		@spl_category(name="debug")
+		() as ChainTransformerOutUpdSubskey = FileSink (OutForBundle) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_TRANSFORMER_BUNDLE_OUT_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		<% 		} %>
+		<% } %>
+}
+
+

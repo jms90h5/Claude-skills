@@ -1,0 +1,7 @@
+Overview: Composites illustrates how to write simple composite operators, and
+how to invoke them.
+
+1. To build the sample application:
+   make
+
+Note: This sample is compile-only.

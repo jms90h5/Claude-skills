@@ -1,0 +1,73 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2012, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+use com.teracloud.streams.timeseries.modeling::Kalman;
+/*
+============================================================================
+This composite operator includes the SPL test driver code for verifying the 
+DWT (Discrete Wavelet Transform) operator in the IBM Streams
+Time Series Toolkit. 
+  
+First created on: November/07/2011
+Last modified on: November/07/2011
+============================================================================
+*/
+//namespace com.teracloud.streams.timeseries.dwt.testdriver;
+
+// Declare a use directive for the DWT primitive operator.
+
+ 
+composite KalmanMain {
+	type
+	Timeseries = tuple < float64 index, float64 Observe >;
+	
+	graph
+	stream<rstring stamptime, float64 price, float64 svalue, float64 s1value, float64 s2value,  float64 volume,  float64 s4value> Src= FileSource()
+	{
+		param
+              file:"stock.csv";
+		format: csv;
+	} 
+	
+	stream<float64 price, float64 predictedObservation> KalmanStream=Kalman(Src)
+	{
+		param
+		inputTimeSeries: price;
+		controlDimension: 5u;
+		parameterFile:"etc/Parameters.dat";
+	       output
+       	 KalmanStream: 
+              predictedObservation=predictedTimeSeries();
+
+	}
+		
+	() as Snk=FileSink(KalmanStream)
+	{
+		param
+		file: "KalmanOut.dat";
+		format: csv;
+	}
+	}

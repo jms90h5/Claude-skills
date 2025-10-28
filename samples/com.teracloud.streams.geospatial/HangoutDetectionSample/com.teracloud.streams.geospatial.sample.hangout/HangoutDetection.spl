@@ -1,0 +1,202 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2015, 2018     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace com.teracloud.streams.geospatial.sample.hangout ;
+/*
+ * This composite demonstrates the use of the Hangout operator.
+ * A series of sample events are streamed in to the operator via a FileSource and then to through the Hangout operator.
+ * The events are location data reported for taxis moving in and around London for May 1, 2018.
+ * The Hangout operator reports that a taxi is hanging out if it remains in the same 75m region for 10 minutes or more.
+ * In addition to detecting which taxis are idle, It also demonstrates some ways that the output of the Hangout operator can be used.
+ * The output stream of the Hangout operator, TaxiHangoutStream, is used to address 2 use cases:
+ * Case 1: Track where a moving object was hanging out, and when the hangout stopped. 
+ * See the comments on the HangoutSummary stream
+ * Case 2: Identify the top areas for hangouts, i.e.  popular hangout geohashes based on the number of taxis that were reported to be hanging out there.
+ * 
+ */
+use com.teracloud.streams.geospatial::Hangout ;
+use com.teracloud.streams.cep::MatchRegex ;
+use com.teracloud.streams.datetime.convert::* ;
+
+composite HangoutDetection
+{
+	param
+		expression<rstring> $resultDir :
+			getSubmissionTimeValue("resultFileDirectory", "results") ;
+	type
+        Taxi_DataCSVFileFormat      = rstring timeStampStr, float64 latitude, float64 longitude, rstring id, rstring attr ;
+        HangoutParamInfo            = Taxi_DataCSVFileFormat, tuple<rstring event_id, int64 timeStamp> ;
+        HangoutDetails              = rstring hangoutGeohash, boolean isHangingOut, uint64 hangoutDuration ;
+        TaxisInGeohash              = rstring geohash, int32 numTaxisHangingOutInGeohash, list<rstring> taxis ;
+        HangoutSummary              = rstring id, uint64 totalHangoutDuration, rstring geohash, int64 lastSeenTime, rstring lastSeenTimeStr, float64 lastSeenLatitude, float64 lastSeenLongitude ;
+        
+        
+	graph
+	
+        stream<Taxi_DataCSVFileFormat> RawCSVData = FileSource() {
+            param
+                file :          getApplicationDir() + "/data/input/taxiData.txt" ;
+                hasHeaderLine : true ;
+                format :        csv ;
+                initDelay :     5.0 ;
+        }
+
+
+        stream<HangoutParamInfo> TaxiLocationData as O = Custom(RawCSVData as I) {
+            // Annotate the raw data with an event id, and also 
+            // create a timestamp in milliseconds from  the timestamp string
+
+            logic
+                state : {
+                    mutable int32 tupleCount = 0 ;
+                }
+
+                onTuple RawCSVData : {
+                    mutable HangoutParamInfo ahi = {};
+                    
+                    assignFrom(ahi, I);
+                    
+                    tupleCount++ ;
+                    
+                    ahi.event_id    = (rstring)tupleCount ;
+                    ahi.timeStamp   = (int64)(((float64) toTimestamp(Sys.YYYY_MM_DD_hh_mm_ss, I.timeStampStr, "UTC-2")) * 1000.0) ;
+                    
+                    submit(ahi, O);
+                }
+                
+                onPunct RawCSVData : {
+                    submit(currentPunct(), O);
+                }
+		}
+
+
+        stream<HangoutDetails, HangoutParamInfo> TaxiHangoutStream = Hangout(TaxiLocationData) {
+            param
+                precision :         10.0 ; //incoming location data is adjusted to within 10m
+                //this is the desired size of the geohash grids.
+                //taxis must remain within one geohash of roughly 75mx75m for at least 10 minutes (minimumDwellTime) to be considered idle.
+                cellSize :          75.0 ;
+                sampleLatitude :    51.0 ;
+                minimumDwellTime :  (uint32) minutes(10.0) ; //minimum number of time spent within same geohash to be considered idle.
+
+            output
+                TaxiHangoutStream : hangoutGeohash  = HangoutGeohashBase32(),
+                                    isHangingOut    = IsInHangout(),
+                                    hangoutDuration = HangoutDuration() ;
+        }
+
+
+        // Use the complex event processing operator MatchRegex to determine when an entity stops hanging out
+        (stream<HangoutSummary> HangoutSummaries as O) as StupHangoutDetector = MatchRegex(TaxiHangoutStream)
+        {
+            param
+                partitionBy :   id ;
+                //The pattern is a tuple with hangingOut = true immediately followed by a tuple with isHangingOut = false
+                pattern :       "hangout stop" ;
+                predicates :    {   hangout = isHangingOut == true,
+                                    stop = isHangingOut == false } ;
+
+            output
+                O : totalHangoutDuration    = Max(hangoutDuration), //the duration is the total time in that hangout, so use Max to get the highest reported duration
+                    id                      = Any(id),
+                    geohash                 = First(hangoutGeohash),
+                    lastSeenLatitude        = First(latitude),
+                    lastSeenLongitude       = First(longitude),
+                    lastSeenTimeStr         = First(timeStampStr),
+                    lastSeenTime            = First(timeStamp) ;
+        }
+        
+        
+        // Log hangout start and stop to console
+        () as HangoutSummaryPrinter = Custom(HangoutSummaries as I) {
+            logic
+                onTuple I : {
+                    float64 durationInMinutes = ((float64) I.totalHangoutDuration) / 60.0 ;
+                    printStringLn(  "Taxi " + I.id + " spent " +
+                                    formatNumber(durationInMinutes) + " minutes at geohash " + I.geohash +
+                                    ", last seen there at " + I.lastSeenTimeStr) ;
+                }
+
+            config
+                placement : partitionExlocation("case1") ;
+        }
+
+
+        stream<HangoutDetails, HangoutParamInfo> DetectedHangoutsOnly = Filter(TaxiHangoutStream) {
+            param
+                filter :        isHangingOut ; //only forward tuples for taxis that are hanging out 
+        }
+
+
+        () as HangoutEventsDumper = FileSink(DetectedHangoutsOnly) {
+            param
+                file :      "results/idleTaxis.txt" ;
+                format :    csv ;
+                flush :     1u ;
+        }
+
+
+        stream<TaxisInGeohash> HangoutsPerGeohash = Aggregate(DetectedHangoutsOnly as I) {
+            window
+                //Ideally would use a time based window, but using a file here so use punct for simplicity.
+                I : tumbling, punct() ;
+            param
+                groupBy : hangoutGeohash ;
+            output
+                HangoutsPerGeohash :    taxis                       = CollectDistinct(id),
+                                        numTaxisHangingOutInGeohash = CountDistinct(id),
+                                        geohash                     = Any(hangoutGeohash) ;
+        }
+
+
+        stream<I> SortedHangoutsPerGeohash = Sort(HangoutsPerGeohash as I) {
+            window
+                I : tumbling, punct() ; //use the punct from aggregate to trigger a  sort
+
+            param
+                sortBy :    numTaxisHangingOutInGeohash ;
+                order :     descending ;
+        }
+
+
+        () as SortedHangoutsPerGeohashDumper = FileSink(SortedHangoutsPerGeohash) {
+            param
+                file :      "results/HangoutsPerGeohash.txt" ;
+                format :    csv ;
+                flush :     1u ;
+		}
+
+
+        () as SortedHangoutsPerGeohashPrinter = Custom(SortedHangoutsPerGeohash as I) {
+            logic
+                onTuple I : {
+                    println(I) ;
+                }
+
+            config
+                placement : partitionExlocation("case1") ;
+        }
+
+}

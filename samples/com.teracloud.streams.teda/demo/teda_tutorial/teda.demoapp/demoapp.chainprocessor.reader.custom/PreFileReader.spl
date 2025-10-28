@@ -1,0 +1,113 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainprocessor.reader.custom;
+
+use demoapp.functions::*;
+use demoapp.streams::*;
+
+/**
+ * Implements a file preprocessing that is used to determine attribute values
+ * once per file or to determine the file type if the file type cannot be
+ * derived from the file name. Each input tuple must result in an output tuple.
+ *
+ * Turn on the **ite.ingest.reader.preprocessing** parameter to activate this
+ * composite operator.
+ *
+ * Add SPL attributes to the ExtendedFileInfo type that is defined in this
+ * composite operator.
+ *
+ * Adapt the code blocks that are marked with "custom code begin" and "custom
+ * code end".
+ * 
+ * Exceptions raised in this operator result in a failed file (file is not processed).
+ * 
+ * @input  InFileInfo
+ * Tuples to be validated.
+ * Operations or filename extractions to be performed per file can be done here.
+ * Enhances the file information.
+ *
+ * @output OutFileInfo
+ * Tuples with extended file information.
+ * Set the attributes of the ExtendedFileInfo type before submitting a tuple to this port.
+ *
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ */
+public composite PreFileReader (
+	input
+		stream<TypesCommon.FileIngestSchema> InFileInfo; // contains ExtendedFileInfo
+	output
+		stream<TypesCommon.FileIngestSchema> OutFileInfo // contains ExtendedFileInfo
+) {
+	
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	type
+		/**
+		 * The type of the custom extended file name info stream
+		 * Attributes are passed through the parser and appended to each Record tuple
+		 * 
+		 * Type is used in TypesCommon
+		 */
+		static ExtendedFileInfo = tuple<
+			// ------------------------------------------------
+			// custom code begin
+			// ------------------------------------------------
+			// Add your custom attributes here
+			rstring customFileInfo
+			// ------------------------------------------------
+			// custom code end
+			// ------------------------------------------------
+		>;
+
+	graph
+
+		// This operator sets some extra attributes defined in ExtendedFileInfo to InFileInfo stream
+		(
+		stream<InFileInfo> OutFileInfo
+		) as FileInfoEnhancer = Custom(InFileInfo as InFile) {
+			logic
+			onTuple InFile: {
+				// ------------------------------------------------
+				// custom code begin
+				// ------------------------------------------------
+				// add custom file info extraction code here
+				// ------------------------------------------------
+				// custom code end
+				// ------------------------------------------------
+				submit(InFile,OutFileInfo);
+			}
+		}
+
+}
+

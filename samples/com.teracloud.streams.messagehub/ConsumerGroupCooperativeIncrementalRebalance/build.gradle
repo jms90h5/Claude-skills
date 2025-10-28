@@ -1,0 +1,23 @@
+apply from: "${rootDir}/common.gradle"
+apply plugin: 'java'
+
+def toolkitPath = project(':com.teracloud.streams.messagehub').projectDir
+def namespace = "com.teracloud.streams.messagehub.sample"
+def mainComp = "ConsumerGroupCooperativeIncremental"
+
+task compile() {
+    dependsOn ':com.teracloud.streams.messagehub:copyLibToImpl'
+    doLast {
+        compileApp(namespace, mainComp, toolkitPath)
+    }
+}
+
+task cleanIt() {
+    doLast {
+        cleanApp(namespace, mainComp)
+    }
+}
+
+build.dependsOn compile
+clean.dependsOn cleanIt
+

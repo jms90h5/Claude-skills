@@ -1,0 +1,197 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+	my $curDir = $projDir;
+
+	# -------------------------------------------------------------------------
+	# Get mandatory application specific configuration parameters
+	# -------------------------------------------------------------------------
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	
+	my $FILEINGESTION_LEVEL1_SPLIT_DISABLED = $configurator->isOff(Configurator::ITE_INGEST_FILEGROUPSPLIT());
+	my $TRANSFORMER_LEVEL1_SPLIT = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_TUPLEGROUPSPLIT());
+
+	my $numGroups = 0;
+	if (0 == $contextDisabled) {
+		my $chainCfgFile = $curDir."/".$configurator->getString(Configurator::ITE_INGEST_LOADDISTRIBUTION_GROUPCONFIGFILE());
+		$numGroups = CodeGenFrw::getNumGroups($chainCfgFile);
+		print("//\t\t[GROUPS=$numGroups]\n");
+	}
+	# -------------------------------------------------------------------------
+%>
+namespace demoapp.chainsink;
+
+<%if (0 == $contextDisabled) {%>
+use demoapp.streams::*;
+use com.teracloud.streams.teda.file::rename;
+
+/**
+ * ContextDataFileWriterCore
+ * Writes custom context data tuples to files
+ *
+ * @input  InData Tuples for File Sink
+ * @input  InMove Move trigger
+ * 
+ * @param checkpointDir
+ * Output directory of checkpoint files
+ */
+public composite ContextDataFileWriterCore (
+	input
+		InData,
+		InMove
+)
+{
+	param
+		expression<rstring> $checkpointDir;
+
+	graph
+
+	<%if ( (0 == $contextDisabled) && (1 == $FILEINGESTION_LEVEL1_SPLIT_DISABLED) && (1 == $TRANSFORMER_LEVEL1_SPLIT) ) {%>
+
+		// Context (Level1ID) Split
+		@spl_category(name="common")
+		(
+		<%=join(";\n\t\t",map { 'stream<InData> OutDataSplit_'.CodeGenFrw::l0($_); }(0..$numGroups-1))%>
+		) = Custom(InData; InMove) {
+			logic
+				state : {
+					mutable map<rstring,rstring> dataFilesMap; // key: groupId, value: filename
+					rstring dir = $checkpointDir; // prevents submission code to be called when using directory param
+				}
+				onTuple InData : {
+					if (!(groupId in dataFilesMap)) {
+						mutable rstring dataFilename=filename+"<%=CodeGenFrw::getConstant('CUSTOM_CONTEXT_FILE_EXTENSION')%>";
+						dataFilesMap[groupId] = dataFilename;
+					}
+					// send to correct output port
+					if ("00" == groupId) {submit(InData, OutDataSplit_00);}
+					<%for (my $i=1; $i<$numGroups; $i++) {%>
+					else if ("<%=CodeGenFrw::l0($i)%>" == groupId) {submit(InData, OutDataSplit_<%=CodeGenFrw::l0($i)%>);}
+					<%}%>
+				}
+				onTuple InMove : {
+					if (InMove.move) {
+	 					for (rstring fileLevel1Id in dataFilesMap) {
+							mutable int32 err=0;
+							mutable rstring oldname=dir+"/"+fileLevel1Id+"/"+dataFilesMap[fileLevel1Id];
+							mutable rstring newname=dir+"/"+fileLevel1Id+"/<%=CodeGenFrw::getConstant('COMMIT_DIR')%>/"+dataFilesMap[fileLevel1Id];
+							rename(oldname, newname, err);
+						}
+					}
+					// clear the list
+					clearM(dataFilesMap);
+				}
+				onPunct InData: {
+						// forward to all output port
+						<%for (my $i=0; $i<$numGroups; $i++) {%>
+						submit(Sys.WindowMarker, OutDataSplit_<%=CodeGenFrw::l0($i)%>);
+						<%}%>
+				}
+		}
+
+		<%for (my $i=0; $i<$numGroups; $i++) {%>
+		@spl_category(name="common")
+		() as ChkDataSink_<%=CodeGenFrw::l0($i)%> = FileSink(OutDataSplit_<%=CodeGenFrw::l0($i)%>) {
+			logic
+				state : {
+					rstring dir = $checkpointDir; // prevents submission code to be called when using directory param
+				}
+			param
+				file : dir+"/"+groupId+"/"+filename+"<%=CodeGenFrw::getConstant('CUSTOM_CONTEXT_FILE_EXTENSION')%>";
+				suppress: filename,groupId;
+				format: bin;
+				flushOnPunctuation: true;
+				closeMode: punct;
+				append: false;
+		}
+		<%}%>
+		
+	<%} else { %>
+		// Constant Level1ID
+		@spl_category(name="common")
+		(
+		stream<InData> OutData
+		) = Custom(InData; InMove) {
+			logic
+				state : {
+					rstring dir = $checkpointDir; // prevents submission code to be called when using directory param
+					mutable rstring dataFilename;
+					mutable rstring fileLevel1Id;
+				}
+				onTuple InData : {
+					dataFilename=filename+"<%=CodeGenFrw::getConstant('CUSTOM_CONTEXT_FILE_EXTENSION')%>";
+					fileLevel1Id=groupId;
+					// send to file sink
+					submit(InData, OutData);
+				}
+				onTuple InMove : {
+					if ((InMove.move) && ("" != dataFilename))  {
+						mutable int32 err=0;
+						mutable rstring oldname=dir+"/"+fileLevel1Id+"/"+dataFilename;
+						mutable rstring newname=dir+"/"+fileLevel1Id+"/<%=CodeGenFrw::getConstant('COMMIT_DIR')%>/"+dataFilename;
+						rename(oldname, newname, err);
+					}
+					// reset the filename
+					dataFilename="";
+				}
+				onPunct InData: {
+					submit(Sys.WindowMarker, OutData);
+				}
+		}
+
+		@spl_category(name="common")
+		() as ChkDataSink = FileSink(OutData) {
+			logic
+				state : {
+					rstring dir = $checkpointDir; // prevents submission code to be called when using directory param
+				}
+			param
+				file : dir+"/"+groupId+"/"+filename+"<%=CodeGenFrw::getConstant('CUSTOM_CONTEXT_FILE_EXTENSION')%>";
+				suppress: filename,groupId;
+				format: bin;
+				flushOnPunctuation: true;
+				closeMode: punct;
+				append: false;				
+		}
+	<%}%>
+		
+}
+<%} #endif dedup disabled%>

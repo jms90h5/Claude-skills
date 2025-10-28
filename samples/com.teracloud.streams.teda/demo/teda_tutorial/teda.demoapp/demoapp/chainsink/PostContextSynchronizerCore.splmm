@@ -1,0 +1,314 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+    use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $tapEnabled = $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_SINK_DEBUG());
+
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $CHAIN_EXCEPTION_HANDLER_ENABLED = $configurator->isOn(Configurator::ITE_RESILIENCEOPTIMIZATION());
+	my $CONTEXT_CUSTOM_COMPOSITE_ENABLED = ! $contextDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+
+	my $hashFileWriterEnabled = ! $dedupDisabled && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION_CHECKPOINTING());
+	
+	my $custContextFileWriterEnabled = $CONTEXT_CUSTOM_COMPOSITE_ENABLED && $configurator->isOn(Configurator::ITE_BUSINESSLOGIC_GROUP_CUSTOM_CHECKPOINTING());
+	my $useCustomCode = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	my $noDataFile = 0;
+	my $noSyncRequired = 0;
+	my $CHAIN_SINK_TYPE = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	my $noDataFile = 1 if (3==$CHAIN_SINK_TYPE);
+	# Optimization: If no writer in ChainSink then no additional tuple is sent from ContextCore to PostContextSynchronizerCore	
+	$noSyncRequired = 1 if ((0 == $custContextFileWriterEnabled) && (0 == $hashFileWriterEnabled) && (1 == $noDataFile));	
+%>
+namespace demoapp.chainsink;
+
+<%if (0 == $contextDisabled) {%>
+use demoapp.streams::*;<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>
+use com.teracloud.streams.teda.utility::ExceptionCatcher;
+	<%if ($useCustomCode) {%>
+use demoapp.streams.custom::*; // required for rejectreason
+	<%} else {%>
+use demoapp.streams.sample::*; // required for rejectreason
+	<%}%>
+<%}%>
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+use com.teracloud.streams.teda.utility::BloomFilterTypes;
+
+/**
+ * PostContextSynchronizerCore
+ * Synchronizes Statistics, Punctuation and Record tuples
+ * Waits for all expected tuples to be received
+ * Statistics and punct forwarded when all expected tuples are received on InRec
+ * 
+ * @input  InRec Record tuples
+ * @input  InStat Statistic tuples
+ *
+ * @output OutRec Record tuples
+ * @output OutStat Statistic tuples
+ * @output OutRej Rejected tuples<%if (1 == $hashFileWriterEnabled) {%>
+ * @output OutHash Tuple to checkpoint hashcodes<%} #endif hashFileWriterEnabled%><%if (1 == $custContextFileWriterEnabled) {%>
+ * @output OutContext Tuple to checkpoint custom context data<%} #endif custContextFileWriterEnabled%>
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ */
+public composite PostContextSynchronizerCore (
+	input
+		InRec,
+		InStat;
+	output
+		OutRec,
+		OutStat,
+		OutRej<%if (1 == $hashFileWriterEnabled) {%>,
+		OutHash<%} #endif hashFileWriterEnabled%><%if (1 == $custContextFileWriterEnabled) {%>,
+		OutContext<%} #endif custContextFileWriterEnabled%>		
+) {
+
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as ChainPostDedupInputSink = FileSink (InRec) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_POSTCONTEXT_IN_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainPostDedupInputStatSink = FileSink (InStat) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_POSTCONTEXT_STAT_IN_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		<% } %>
+
+		<%my $recordSyncInput = "InRec";%>
+		<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>
+			<%$recordSyncInput = "ControlledRec";%>
+		// Catch exceptions and prevent PE crash
+		@spl_category(name="common")
+		(
+		stream<InRec> ControlledRec;
+		stream<InRec> RecordToReject
+		) as ChainExceptionCatcher = ExceptionCatcher(InRec) {
+		}
+		<%}%>
+
+		@spl_category(name="common")
+		(
+		stream<IN> OutRec;
+		stream<InStat> OutStat;
+		stream<TypesCommon.RejectedDataStreamType> OutRej<%if (1 == $hashFileWriterEnabled) {%>;
+		stream<TypesCommon.HashStreamType> OutHash<%} #endif hashFileWriterEnabled%><%if (1 == $custContextFileWriterEnabled) {%>;
+		stream<TypesCommon.ContextCheckpointFileStreamType> OutContext<%} #endif custContextFileWriterEnabled%>
+		) as RecordSync = Custom(<%=$recordSyncInput%> as IN; InStat<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>; RecordToReject<%}%>) {
+			logic state: {<%if (0 == $noSyncRequired) {%>
+					mutable int64 receivedPostDedupTuples = 0l;
+					mutable int64 expectedPostDedupTuples = 0l;
+					mutable InStat queuedStat = {};<%}%>
+					mutable int64 numRejectedInvalids = 0l;
+				}
+				onTuple IN: {
+					<%if (0 == $noSyncRequired) {%>
+					receivedPostDedupTuples++;
+					// -----------------------
+					<%if ((0 == $dedupDisabled) && ((1 == $hashFileWriterEnabled) || (1 == $custContextFileWriterEnabled))) {%>
+					if (BloomFilterTypes.unique == IN.bloomFilterResult) {<%
+					}%><%
+						if (1 == $hashFileWriterEnabled) {%>
+						// send hash codes to file sink
+						if ("" != IN.hashcode) {
+							mutable OutHash outTuple = {};
+							outTuple.hashcode=IN.hashcode;
+							outTuple.filename=IN.filename;
+							outTuple.groupId=IN.groupId;
+							outTuple.partitionId=IN.partitionId;
+							submit(outTuple,OutHash);
+						}<%
+						} #endif hashFileWriterEnabled%><%
+						if (1 == $custContextFileWriterEnabled) {%>
+						// send custom context data to file sink
+						mutable OutContext otupleC = {};
+						assignFrom(otupleC, IN);
+						submit(otupleC,OutContext);<%
+						} #endif custContextFileWriterEnabled%>
+					<%if ((0 == $dedupDisabled) && ((1 == $hashFileWriterEnabled) || (1 == $custContextFileWriterEnabled))) {
+					%>}<%}
+					%><%if (0 == $noDataFile) {
+					%>
+					// -----------------------
+					// forward data tuple
+					submit(IN,OutRec);
+					<%}#endif noDataFile%>
+					if (expectedPostDedupTuples==receivedPostDedupTuples) {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "RecordStream(onTuple): Send punct;ExpectedTuples="+(rstring)expectedPostDedupTuples+";ReceivedTuples="+(rstring)receivedPostDedupTuples);
+						}
+						// send punctuation
+						<%if (1 == $hashFileWriterEnabled) {%>
+						submit(Sys.WindowMarker, OutHash);
+						<%} #endif hashFileWriterEnabled%>
+						<%if (1 == $custContextFileWriterEnabled) {%>
+						submit(Sys.WindowMarker, OutContext);
+						<%} #endif%>
+						submit(Sys.WindowMarker, OutRec);
+
+						queuedStat.rejectedInvalids += numRejectedInvalids;
+						// forward statistic tuple
+						submit(queuedStat,OutStat);
+
+						// reset operator members
+						receivedPostDedupTuples = 0l;
+						expectedPostDedupTuples = 0l;
+						numRejectedInvalids = 0l;
+					}
+					<%}#endif noSyncRequired%>
+				}
+				onTuple InStat: {
+					<%if (0 == $noSyncRequired) {%>
+					// checks if we have to wait for expected tuples
+					expectedPostDedupTuples=InStat.<%=CodeGenFrw::getConstant('STATISTIC_SEQUENCE_NUMBER')%>;
+					if (expectedPostDedupTuples==receivedPostDedupTuples) {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "StatStream(onTuple): Send punct;ExpectedTuples="+(rstring)expectedPostDedupTuples+";ReceivedTuples="+(rstring)receivedPostDedupTuples);
+						}
+					<%}#endif noSyncRequired%>
+						// send punctuation
+						<%if (1 == $hashFileWriterEnabled) {%>
+						submit(Sys.WindowMarker, OutHash);
+						<%} #endif hashFileWriterEnabled%>
+						<%if (1 == $custContextFileWriterEnabled) {%>
+						submit(Sys.WindowMarker, OutContext);
+						<%} #endif%>
+						submit(Sys.WindowMarker, OutRec);
+
+						InStat.rejectedInvalids += numRejectedInvalids;
+						// forward statistic tuple
+						submit(InStat,OutStat);
+
+						// reset operator members
+						<%if (0 == $noSyncRequired) {%>
+						receivedPostDedupTuples = 0l;
+						expectedPostDedupTuples = 0l;<%}#endif noSyncRequired%>
+						numRejectedInvalids = 0l;
+					<%if (0 == $noSyncRequired) {%>
+					}
+					else {
+						// enqueue statistic tuple
+						queuedStat = InStat;
+					}
+					<%}#endif noSyncRequired%>
+				}
+				<%if ($CHAIN_EXCEPTION_HANDLER_ENABLED) {%>
+				onTuple RecordToReject: {
+					// create tuple with reject info
+					mutable OutRej rejInvalid = {};
+					rejInvalid.filename = RecordToReject.filename;
+					rejInvalid.readerLinenumber = RecordToReject.readerLinenumber;
+					rejInvalid.rejectreason = (uint32)TypesCustom.rrInvalidLine;
+					submit(rejInvalid,OutRej);
+					numRejectedInvalids++;
+					<%if (0 == $noSyncRequired) {%>
+					// check if file is processed (last tuple is having an exception)
+					if (expectedPostDedupTuples==receivedPostDedupTuples) {
+						// send punctuation
+						<%if (1 == $hashFileWriterEnabled) {%>
+						submit(Sys.WindowMarker, OutHash);
+						<%} #endif hashFileWriterEnabled%>
+						<%if (1 == $custContextFileWriterEnabled) {%>
+						submit(Sys.WindowMarker, OutContext);
+						<%} #endif%>
+						submit(Sys.WindowMarker, OutRec);
+
+						queuedStat.rejectedInvalids += numRejectedInvalids;
+						// forward statistic tuple
+						submit(queuedStat,OutStat);
+
+						// reset operator members
+						receivedPostDedupTuples = 0l;
+						expectedPostDedupTuples = 0l;
+						numRejectedInvalids = 0l;
+					}
+					<%}#endif noSyncRequired%>				
+				}
+				<%}%>
+				/*
+				onPunct IN: {
+					if (currentPunct() == Sys.WindowMarker) {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "RecordStream(onPunct): ExpectedTuples="+(rstring)expectedPostDedupTuples+";ReceivedTuples="+(rstring)receivedPostDedupTuples);
+						}
+						// do not forward punct here
+					}
+				}
+				*/
+		}
+
+		<% if($tapEnabled) {%>
+		@spl_category(name="debug")
+		() as ChainPostDedupOutputSink = FileSink (OutRec) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_POSTCONTEXT_OUT_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		@spl_category(name="debug")
+		() as ChainPostDedupOutStatSink = FileSink (OutStat) {
+			logic state : boolean dirOk = createDir(dataDirectory() + "/debug");
+			param	file	: "./debug/CHAIN_POSTCONTEXT_STAT_OUT_"+$groupId+"_"+$chainId+".txt";
+					format	: txt;
+					flush : 1u;
+					writePunctuations: true;
+		}
+		<% } %>
+}
+<%} # endif context disabled%>

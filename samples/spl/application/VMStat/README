@@ -1,0 +1,16 @@
+Overview: VMStat will report virtual memory statistics at regular intervals
+using the VMStatReader operator.
+
+The VMStatReader operator is a primitive opertor that looks into the
+/proc/vmstat file to retreive periodic readings of memory statistics.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone period=0.1 
+
+Notes: 
+  - The command line parameter 'period' is used to speciy the period in
+    seconds (e.g. 0.1 seconds).
+

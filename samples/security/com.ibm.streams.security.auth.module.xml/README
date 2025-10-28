@@ -1,0 +1,46 @@
+README
+------
+This sample custom login module is provided as an example only and it is not meant to be use in production.
+
+
+1. To build the sample custom login module, follow the instructions below:
+
+ a. source bin/streamsprofile.sh in your streams installation
+
+ b. Download Bnd tool from http://www.aqute.biz/Bnd/Download
+
+ c. Update the build.properties's bnd.path property to the absolute path where bnd tool jar resides.
+    
+    build.properties:
+    -----------------
+    bnd.path=/path/to/biz.aQute.bnd-2.4.1.jar
+   
+ d. Run the Ant build.xml script:  ant
+    After successfully compilation, the custom login module OSGi jar is created in the build/bundles directory.
+
+      
+2. To configure the Streams security to use the sample custom login module:
+
+ a. Install the custom login module OSGi jar by placing it into the domain's security.loginModulePath property.
+ (The default value is %STREAMS_USER_HOME%/.streams/var/security/modules)
+
+ b. Update the login configuration via streamtool setloginconfig command to configure to use the installed login module(s).
+ (Please refer to the Streams's JAAS login configuration file example for details.)
+
+
+Security login config xml example:
+----------------------------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<securityDomain xmlns="http://www.ibm.com/xmlns/prod/streams/security/domain/config/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<authentication>
+   <jaas>
+      <jaasConfig name="streams-jaas">
+         <loginModule moduleClass="com.ibm.streams.security.auth.module.xml.SimpleUserLoginModule" flag="required">
+            <moduleOption name="usersFile" value="/home/streamsadmin/users.xml" />
+         </loginModule>
+      </jaasConfig>
+   </jaas>
+</authentication>
+</securityDomain>
+    

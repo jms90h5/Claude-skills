@@ -1,0 +1,138 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $isEnabled = 0;
+	my $ITE_STORAGE_TYPE = $configurator->getEnum(Configurator::ITE_STORAGE_TYPE());
+	if (3==$ITE_STORAGE_TYPE) {
+		$isEnabled = 1;
+	}
+%>
+namespace demoapp.chainsink;
+
+<%if (1 == $isEnabled) {%>
+use demoapp.streams::*;
+
+/**
+ * NoFileWriterCore
+ * The no-file writer implementation. This composite does not write any files.
+ * Window punctuation and statistic tuple must be received before statistic tuple is forwarded.
+ *
+ * @input  InRecords Records (punctuation only)
+ * @input  InStat Statistic tuple
+ *
+ * @output OutStat Statistic tuples
+ *
+ * @param outputDir
+ * Directory of output files to be written (not used in this composite)
+ *
+ * @param commitDir
+ * Output directory of load files (not used in this composite)
+ * 
+ * @param groupId 
+ * Name of groupID
+ * 
+ * @param chainId 
+ * Name of chainID
+ */
+public composite NoFileWriterCore (
+	input 
+		stream<TypesCommon.ChainSinkStreamType> InRecords,
+		stream<TypesCommon.FileStatistics> InStat;
+	output
+		stream<TypesCommon.FileStatistics> OutStat
+)
+{
+	param
+		expression<rstring> $outputDir;
+		expression<rstring> $commitDir;
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+		(
+		stream<InStat> OutStat		
+		) as NoFile = Custom(InRecords; InStat) {
+			logic
+				state : {
+					mutable	boolean isPunctReceived = false;
+					mutable boolean isStatReceived = false;
+					mutable InStat queuedStat = {};
+				}
+				onTuple InRecords: {
+					// ignore data tuples
+				}
+				onPunct InRecords: {
+					if (currentPunct() == Sys.WindowMarker){
+						// send statistics if received before punct
+						if (isStatReceived) {							
+							// forward statistic tuple
+							submit(queuedStat, OutStat);							
+							// reset
+							isPunctReceived = false;
+							isStatReceived = false;
+						}
+						else {
+							isPunctReceived = true;
+						}
+					}
+				}
+				onTuple InStat : {
+					// punct must be received before forwarding statistic tuple
+					if (isPunctReceived) {						
+						// forward statistic tuple
+						submit(InStat, OutStat);						
+						// reset
+						isPunctReceived = false;
+						isStatReceived = false;
+					}
+					else {
+						// enqueue statistic tuple
+						queuedStat = InStat;
+						isStatReceived = true;
+						// do not forward statistic tuple here
+					}
+				}
+		}		
+}
+
+<%} #endif enabled%>

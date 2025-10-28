@@ -1,0 +1,174 @@
+//
+// ****************************************************************************
+// * Copyright (C) 2017, International Business Machines Corporation          *
+// * All rights reserved.                                                     *
+// ****************************************************************************
+//
+
+namespace com.teracloud.streams.objectstorage.sample;
+
+use com.teracloud.streams.objectstorage.s3::*;
+use com.teracloud.streams.objectstorage::ObjectStorageSink;
+use com.teracloud.streams.objectstorage::ObjectStorageSinkOut_t;
+
+/**
+ * This sample application shows the usage of the Source and Sink operators and functions to access Object Storage.
+ * A bucket is created, a sample file read and written as several small objects to Object Storage, then read from Object Storage.
+ * Finally the objects and the bucket is deleted.
+ * 
+ * Additional purpose of the sample is to demonstrate how to configure the operators and functions with basic (HMAC) authentication.
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param bucket 
+ * bucket name
+ *
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ */
+@threading(model=manual)
+composite FunctionsSample {
+
+	param
+		expression<rstring> $accessKeyID : getSubmissionTimeValue("os-access-key-id");
+		expression<rstring> $secretAccessKey : getSubmissionTimeValue("os-secret-access-key");
+		expression<rstring> $endpoint : getSubmissionTimeValue("os-endpoint", "s3.us.cloud-object-storage.appdomain.cloud");
+		expression<rstring> $bucket : getSubmissionTimeValue("os-bucket", "streams-sample");
+		expression<boolean> $sslEnabled: (boolean) getSubmissionTimeValue("sslEnabled", "true");
+
+	graph
+
+		stream<rstring result> SampleRes = FunctionsSampleBasic() {
+			param
+				accessKeyID: $accessKeyID;
+				secretAccessKey: $secretAccessKey;
+				bucket: $bucket;
+				endpoint: $endpoint;
+				sslEnabled: $sslEnabled;
+		}	
+}
+
+/**
+ * Composite used by FunctionsSample main composite and test application
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param bucket 
+ * bucket name
+ * 
+ * @param objectName
+ * Object name used by Sink operator
+ *
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ *
+ * @output SampleResult
+ * This stream is evaluated by the tester.
+ */
+public composite FunctionsSampleBasic (output SampleResult) {
+	param
+		expression<rstring> $accessKeyID;
+		expression<rstring> $secretAccessKey;
+		expression<rstring> $bucket;
+		expression<rstring> $endpoint: "s3.us.cloud-object-storage.appdomain.cloud";
+		expression<rstring> $objectName: "output_%TIME.txt";
+		expression<boolean> $sslEnabled: true;
+
+	type
+		DataType = tuple<rstring objectName, rstring data>;
+		S3ObjectStorageSourceIn_t = tuple<rstring objectName>;
+		S3ObjectStorageSinkOut_t = tuple<rstring objectName, uint64 size>;
+
+	graph
+
+		(stream<rstring data> Lines as O) as DataGen = Custom() {
+			logic
+			onProcess: {
+				submit ({data="first line"}, O);
+				submit ({data="second line"}, O);
+				submit ({data="third line"}, O);
+				while (true) {
+					block(1.0);
+				}
+			}
+		}	
+		
+		stream<S3ObjectStorageSinkOut_t> ObjStSink = S3ObjectStorageSink(Lines as I) {
+			logic state: {
+				mutable boolean res = initialize($accessKeyID, $secretAccessKey, $endpoint, $sslEnabled); // init S3 client
+				mutable boolean res1 = createBucket($bucket);
+			} 
+			param
+				accessKeyID : $accessKeyID;
+				secretAccessKey : $secretAccessKey; 
+				endpoint : $endpoint;
+				bucket : $bucket;
+				tuplesPerObject: 1l;
+				timeFormat: "yyyy-MM-dd'T'HHmmss";		
+				objectName: $objectName;
+				sslEnabled: $sslEnabled;
+		}
+
+		(stream<S3ObjectStorageSourceIn_t> ObjToRead as O) as SampleReader = Custom(ObjStSink as I) {
+			logic
+			onTuple I: {
+				printStringLn("Object with name '" + I.objectName + "' of size '" + (rstring)I.size + "' has been created.");
+				printStringLn("read object " + I.objectName);
+				submit ({objectName=I.objectName}, O);
+			}
+		}		
+
+		stream<rstring line> ObjStSource = S3ObjectStorageSource(ObjToRead as I) {
+			logic state: {
+				mutable boolean res = initialize($accessKeyID, $secretAccessKey, $endpoint, $sslEnabled); // init S3 client
+				mutable boolean res1 = createBucket($bucket);
+			}
+			param
+				accessKeyID : $accessKeyID;
+				secretAccessKey : $secretAccessKey; 
+				endpoint : $endpoint;
+				bucket : $bucket;
+				sslEnabled: $sslEnabled;
+		}
+		
+		stream<rstring result> SampleResult = Custom(ObjStSource as I) {
+			logic
+			state: {
+				mutable boolean res = initialize($accessKeyID, $secretAccessKey, $endpoint, $sslEnabled); // init S3 client
+				mutable int32 count = 0;
+			}
+			onTuple I: {
+				printStringLn ((rstring)I); // dump the tuple
+				count++;
+				if (3 == count) {
+					printStringLn ("list objects");
+					mutable list<rstring> objects = listObjects($bucket);
+					for (rstring name in objects) {
+						printStringLn ("delete object: " + name);
+						deleteObject(name, $bucket);
+					}
+					printStringLn ("deleteBucket " + $bucket);
+					deleteBucket($bucket);
+					submit ({result="ok"}, SampleResult);
+				}
+			}
+		}
+
+
+}

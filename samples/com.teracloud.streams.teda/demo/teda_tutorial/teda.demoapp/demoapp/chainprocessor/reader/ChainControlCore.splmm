@@ -1,0 +1,138 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=3;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $roundRobinSplitDisabled = $configurator->isNotEqual(Configurator::ITE_INGEST_LOADDISTRIBUTION(), Configurator::Enum::LoadDistribution::roundRobin());
+
+%>
+namespace demoapp.chainprocessor.reader;
+
+use demoapp.fileingestion::*;
+use demoapp.streams::*;
+use com.teracloud.streams.teda.internal.logfilewriter::StatusfileSink;
+use com.teracloud.streams.teda.internal.ingestion::PrioritizedQueue;
+use com.teracloud.streams.teda.internal::ChainGate;
+
+
+/**
+ * ChainControlCore
+ * Chain processing can be stopped by Application Control.
+ * Application Control needs to be informed that chain is inactive (Ack state = clear) if stop command is received.
+ * Switch status is changed to false if stop cmd is received from Application Control
+ * In case chain is processing a file the Ack state is pending
+ * If AcksIn is received the Ack state is changed to clear and stopped state is sent to Application Control if status was stopping.
+ *
+ * @input  FileInfosIn file names
+ * @input  AppControlIn must be of type boolean: true = start, false = stop
+ * @input  AcksIn indicates end of file processing in the chain
+ * @output FileInfosOut = FileInfosIn (if running otherwise none)
+ * @output ChainStatusOut emits a tuple when the chain status changes. It indicates the same status as AppControlOut but is submitted before AppControlOut
+ * @output AppControlOut is of type boolean: true = running, false = stopped
+ * 
+ * @param statusfile
+ * Name of chain status file
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ */
+public composite ChainControlCore(
+	input FileInfosIn, AppControlIn, AcksIn;
+	output FileInfosOut, ChainStatusOut, AppControlOut
+) {
+	param
+		expression<rstring> $statusfile;
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $peNameChain;
+
+	type
+		InternalState = enum {stopped, running, stopping};
+		AckState = enum {clear, pending};
+
+	graph
+
+		<%my $gateInputStream="FileInfosIn";%>
+		<%if (0 == $roundRobinSplitDisabled) {%>
+		<%	$gateInputStream="FileInfosInQueued";%>
+		// ------------------------------------------------------
+		// queue the filenames in case roundRobinSplit is enabled
+		// Urgent files must be able to pass the others
+		@spl_category(name="common")
+		(stream<FileInfosIn> FileInfosInQueued
+		) as ChainQueue = PrioritizedQueue(FileInfosIn) {
+			param
+				urgentAttr: urgent;
+				peName:     $peNameChain;
+		}
+		<%}%>
+
+		@spl_category(name="common")
+		(
+			stream<FileInfosIn> FileInfosOut;
+			stream<boolean start> ChainStatusOutInt;
+			stream<rstring status> FileInfosState
+		) as ChainGate_ = ChainGate(<%=$gateInputStream%>; AcksIn; AppControlIn) {
+			//SINGLE_PE_JOB config threadedPort: queue(AcksIn, Sys.Wait, 100), queue(AppControlIn, Sys.Wait, 100);
+		}
+
+		@spl_category(name="common")
+		() as StatusSink = StatusfileSink(FileInfosState) {
+			param
+				file: $statusfile;
+		}
+
+		@spl_category(name="common")
+		(
+			stream<AppControlIn> ChainStatusOut as Stat;
+			stream<AppControlIn> AppControlOut as Ctl
+		) as StatusOut = Custom(ChainStatusOutInt as I){
+			logic onTuple I: {
+				mutable AppControlIn ot = {start=false, chainPunct=false,groupId=$groupId, chainId=$chainId};
+				ot.start = I.start;
+				submit(ot, Stat);
+				submit(ot, Ctl);
+			}
+		}
+
+}

@@ -1,0 +1,137 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2015, 2020     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace com.teracloud.streams.geospatial.sample.geofence ;
+
+use com.teracloud.streams.geospatial::* ;
+use com.teracloud.streams.geospatial.ext::* ;
+
+
+/**
+ * This application demonstrates the basic use of the GeoFence operator.
+ * The entity stream contains random location data read from the
+ * file data/input/entitiesDataStream.txt. 
+ * The fence stream is read from the file data/input/fences.csv, 
+ * which defines fences in the Toronto, Ontario area.
+ * The output contains the entity ID, the current location, the list
+ * of fences the entity is in, the list of fences the entity just entered,
+ * and the list of fences the entity just exited.
+ * 
+ * By un-commenting the code for the EntitiesGenerator and the EntitiesStreamSink
+ * operators you can create your own input file with random location data.
+ * 
+ * */
+composite GeofenceWktSample {
+
+	type
+		PointTuple			= tuple<rstring id, rstring wkt> ;
+		EntityTuple			= PointTuple, tuple<uint32 updateAction, rstring note> ;
+		FenceDataTuple		= tuple<rstring fenceId, int32 fenceUpdateAction, rstring fencePolygon> ;
+		MatchedFencesTuple	= tuple<list<rstring> fences, list<rstring> fencesEntered, list<rstring> fencesExited> ;
+
+		
+	graph
+	
+//		(stream<EntityTuple> EntitiesStreamForFile) as EntitiesGeneratorFoFile = Custom()
+//		{
+//			logic
+//				onProcess :
+//				{
+//					while(! isShutdown())
+//					{
+//						// NYC			Latitude	40.74427			40.756538
+//						//				Latitude	-73.97687			-74.00645
+//						// London		Latitude	51.479108			51.5076282	
+//						//				Longitude	-0.131960700000036	-0.15649800000005598
+//						// Hong Kong	Latitude	22.270225			22.278101
+//						// 				Longitude	114.14979100000005	114.16497000000004	
+//						// Markham		Latitude	43.837003			43.889233
+//						//				Latitude	-79.263783			-79.366093
+//						
+//						// This is for Markham
+//						float64 latitude	= randomLatitude(	43.837003,	43.889233) ;
+//						float64 longitude	= randomLongitude(	-79.263783,	-79.366093) ;
+//						
+//						rstring id = randomId(10, 10) ;
+//						
+//						submit({	id	= id,
+//									wkt	= com.teracloud.streams.geospatial.ext::point(longitude, latitude),
+//									updateAction = 1u,
+//									note = "My Note"
+//								},
+//								EntitiesStreamForFile) ;
+//						block(0.1) ;
+//					}
+//				}
+//		}
+//
+//
+//		() as EntitiesStreamSink = FileSink(EntitiesStreamForFile)
+//		{
+//			param
+//				file : "entitiesDataStream.txt" ;
+//				format : csv ;
+//		}
+
+
+		stream<FenceDataTuple> FencesDataStream = FileSource()
+		{
+			param
+				file :		"input/fences.csv" ;
+				format :	csv ;
+				initDelay :	5.0 ;
+		}
+
+
+		(stream<EntityTuple> EntitiesStream) as EntitiesGenerator = FileSource()
+		{
+			param
+				file :		"input/entitiesDataStream.txt" ;
+				format : 	csv ;
+				initDelay :	10.0 ;
+		}
+
+
+		stream<PointTuple, MatchedFencesTuple> MatchedFencesStream = Geofence(EntitiesStream; FencesDataStream)
+		{
+			param
+				outputMode :	events ;
+				geometry :		wkt ;
+			output
+				MatchedFencesStream :
+					fences			= CurrentFences(),
+					fencesEntered	= FencesEntered(),
+					fencesExited	= FencesExited() ;
+		}
+
+
+		() as MatchedFenceSink = FileSink(MatchedFencesStream)
+		{
+			param
+				file : 	"results/triggeredFences.txt" ;
+				format : csv ;
+		}
+
+}

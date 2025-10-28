@@ -1,0 +1,194 @@
+namespace application ;
+
+use com.teracloud.streams.inet.rest::HTTPRequestProcess ;
+use com.teracloud.streams.inet.rest::HTTPRequest ;
+
+/**
+* This is an example of using the HTTPRequestProcess() operator to put up a form, 
+* get form input and generate a response. This uses the Tuple aspect of the operator,
+* the RequestProcessJson example does this same process with the Json aspect. 
+*
+* Description: 
+* * Using th context put up the index.html page in /opt/html, which includes a form.
+* * The forms action (/livepage/HttpTuple/ports/analyze/0/login) post to the operator.
+* * The HTTPTupleProcess operator outputs the request, note the use of pathInfo to route the request.
+* * On completion of the processing, the response is input to the originating HTTPTupleProcess operator. 
+*    
+* The goal:
+* * Demonstrate the processing of forms.
+* * Reiterate how important it is NOT to mess with the id. 
+* 
+* Procedure:
+* * build the sample - execute 'make'
+* * submit the sample to your streams instance
+* * open the browser and point tu url http://localhost:8080/livepage
+* * fill in the form and submit 
+*/
+public composite DynTuple {
+
+	graph
+		
+		/*
+		 * Receive a HTTP request and forward the content into the RequestStrream 
+		 * Receive the answer from Streams in ResponseStream1 build the HTTP response
+		 */
+		(stream<HTTPRequest> RequestStream as O) as HttpTuple = HTTPRequestProcess(ResponseStream1) {
+			param
+				context : "livepage" ;
+				contextResourceBase : getThisToolkitDir() + "/opt/html" ;
+				port : 8080 ;
+		}
+
+		/*
+		 * Print out the received request parameters
+		 */
+		stream<HTTPRequest> RequestStream1 as O = Custom(RequestStream as I) {
+			logic
+				onTuple I: {
+					printStringLn("REQUEST:" + (rstring)I);
+					submit(I, O);
+				}
+				onPunct I: printStringLn("REQUEST:" + (rstring)currentPunct());
+		}
+		
+		/*
+		 * Filter the requests 
+		 * /login request ? drop on floor if not. Real code with have multiple branches.
+		 */
+		stream<HTTPRequest> LoginStream as O = Functor(RequestStream1 as I) {
+			param
+				filter : I.pathInfo == "/login" ;
+		}
+
+		/*
+		 * Parse form parameters
+		 */
+		stream<int64 key, map<rstring, rstring> formdata, rstring error> FormStream as O = Custom(LoginStream as I) {
+			logic
+				onTuple I : {
+					//transfer the tracking key
+					mutable O otuple = {};
+					otuple.key = I.key;
+					//get the form data
+					otuple.error = "";
+					mutable list<rstring> dict = [];
+					dict = tokenize(I.request, "&", true);
+					if(size(dict) > 0) {
+						for(rstring entry in dict) {
+							println("entry:" + entry);
+							list<rstring> keyval = tokenize(entry, "=", true) ;
+							if(size(keyval) > 1) {
+								insertM(otuple.formdata, keyval[0], keyval[1]);
+							} else if(size(keyval) == 1) {
+								insertM(otuple.formdata, keyval[0], "");
+							} else {
+								otuple.error = "ERROR-nameValueParse";
+							}
+						}
+					} else {
+						otuple.error = "ERROR-noFormData";
+					}
+					println(otuple);
+					submit(otuple, O) ;
+				}
+		}
+
+		/*
+		 * Build the response: Accept request with any password. Emulate an error if the password is empty
+		 * This builds the HTML that is to returned to the browser. 
+		 * The page will invoke the template normal.hbs or junk.hbspassed, the variables
+		 * that the template file will be using variables that are in the I.formdata (map<rstring, rstring>).
+		 */
+		stream<HTTPRequest> ResponseStream as O = Custom(FormStream as I) {
+			logic
+				state : {
+					rstring preHtml = '<!DOCTYPE html> <html lang="en"><title>Demonstration</title>';
+					rstring junkHtml = '
+<body>
+  <meta charset=\'utf-8\'>
+  <div>
+    <h1>Pitiful password dude.</h1>
+    <p>Here we are in the Status code 401 case indicating that the request requires authentication.</p>
+    <h2>Yo! %name% ! </h2>
+    <p>What is with the password, you can do better than that. </p>
+
+    <table border="2">
+        <tr><th>NAME</th><th>PROFESSION</th></tr>
+        <tr><td>%name%</td><td>%profession%</td></tr>
+    </table>
+        I am a %profession%.
+  </div>
+</body>
+</html>';
+					rstring normalHtml = '
+<body>
+  <meta charset=\'utf-8\'>
+  <div>
+    <h1>Demo Nonsense Text</h1>
+    <p>Here we are in the Status code 200 case indicating the request succeeded normally.</p>
+    <h2>My name is %name%. </h2>
+    <p>To be, or not to be, that is the question:</p>
+    <p>Whether \'tis nobler in the mind to suffer</p>
+    <p>The slings and arrows of outrageous fortune,</p>
+    <p>Or to take Arms against a Sea of troubles,</p>
+    <p>and opposing them by becoming a %profession%</p>
+    <p>and fighting the good fight.</p>
+
+    <table border="2">
+        <tr><th>NAME</th><th>PROFESSION</th></tr>
+        <tr><td>%name%</td><td>%profession%</td></tr>
+    </table>
+        I am a %profession%.
+  </div>
+</body>
+</html>';
+				}
+				onTuple I : {
+					//transfer the tracking key
+					mutable O otuple = {};
+					otuple.key = I.key;
+					if (I.error == "") {
+						if (has(I.formdata, "name") && has(I.formdata, "password") && has(I.formdata, "profession")) {
+							if (I.formdata["name"] == "") {
+								otuple.status = 400; //Status code (400) indicating the request sent by the client was syntactically incorrect.
+								otuple.response = "ERROR-nameRequired";
+							} else {
+								if (I.formdata["password"] == "") {
+									otuple.status = 401; //Status code (401) indicating that the request requires HTTP authentication.
+									rstring html1 = regexReplace(junkHtml, "%name%", I.formdata["name"], true);
+									rstring html2 = regexReplace(html1, "%profession%", I.formdata["profession"], true);
+									otuple.response = preHtml + html2;
+								} else {
+									otuple.status = 200; //Status code (200) indicating the request succeeded normally.
+									rstring html1 = regexReplace(normalHtml, "%name%", I.formdata["name"], true);
+									rstring html2 = regexReplace(html1, "%profession%", I.formdata["profession"], true);
+									otuple.response = preHtml + html2;
+								}
+							}
+						} else {
+							otuple.status = 400; //Status code (400) indicating the request sent by the client was syntactically incorrect.
+							otuple.response = "ERROR-notRequiredParams";
+						}
+					} else {
+						otuple.status = 400; //Status code (400) indicating the request sent by the client was syntactically incorrect.
+						otuple.response = I.error;
+					}
+					submit(otuple, O);
+				}
+		}
+
+		/*
+		 * Print the response stream
+		 */
+		stream<HTTPRequest> ResponseStream1 as O = Custom(ResponseStream as I) {
+			logic
+				onTuple I: {
+					printStringLn("RESPONSE:" + (rstring)I);
+					submit(I, O);
+				}
+				onPunct I: printStringLn("RESPONSE:" + (rstring)currentPunct());
+		}
+
+	config
+		restartable: false;
+}

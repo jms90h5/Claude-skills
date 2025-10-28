@@ -1,0 +1,105 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=4;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+
+	my $isEnabled = $configurator->isOn(Configurator::ITE_INGEST_READER_PREPROCESSING());
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+
+%>
+namespace demoapp.chainprocessor.reader.sample;
+
+<%if ((1 == $isEnabled) && (0 == $ENABLE_CUSTOM_CODE)) {%>
+use demoapp.streams::*;
+
+/**
+ * PreFileReader
+ * Enhances the file information.
+ * For instance: Operations or filename extractions to be performed per file can be done here.
+ * Additional attributes to be passed as file information for each record by the parser are defined in ExtendedFileInfo type.
+ *
+ * @input  InFileInfo Tuples to be validated
+ *
+ * @output OutFileInfo Record tuples
+ *
+ * @param groupId
+ * Name of groupId
+ *
+ * @param chainId
+ * Name of chainId
+ */
+public composite PreFileReader (
+	input 
+		stream<TypesCommon.FileIngestSchema> InFileInfo; // contains ExtendedFileInfo
+	output
+		stream<TypesCommon.FileIngestSchema> OutFileInfo // contains ExtendedFileInfo
+) {
+	
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	type
+		/**
+		 * The type of the custom extended file name info stream
+		 * Attributes are passed through the parser and appended to each Record tuple
+		 * 
+		 * Type is used in TypesCommon
+		 */
+		static ExtendedFileInfo = tuple<rstring customFileInfo>; // Add your custom attributes here
+
+	graph
+
+		// This operator sets some extra attributes defined in ExtendedFileInfo to InFileInfo stream
+		@spl_category(name="sample")
+		(
+		stream<InFileInfo> OutFileInfo
+		) as FileInfoEnhancer = Custom(InFileInfo as InFile) {
+			logic
+			onTuple InFile: {
+				// custom code begin
+				InFile.customFileInfo="";
+				// custom code end 
+				submit(InFile,OutFileInfo);
+			}
+		}
+
+}
+<%} #endif enabled%>

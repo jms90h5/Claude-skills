@@ -1,0 +1,123 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2009, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+/** 
+The WordCount sample demonstrates how text data may be analyzed and tabulated in a stream computing scenario.
+
+You can modify this sample to create new applications.  Here are some things you might want to experiment with:
+
+* Use an `spl.adapter::DirectoryScan` operator to feed file names to the `FileSource` operator, in order to have the application 
+  count the words in any file that is copied into the "watched" directory.  (Change the submit-time variable to be the 
+  directory to be watched, rather than the individual file name to be read.)
+* Change the logic in the word count algorithm to produce another count that ignores common words such as "a", "the", "and", 
+  and so forth. Have the application write out both the "full" word count as well as the "meaningful word" count.
+*/
+                               
+namespace sample;
+
+/** 
+Given an input file, outputs the number of lines, words, and characters to the console.
+
+1. An `spl.adapter::FileSource` operator reads lines of text data from a file and sends it one line per output tuple.
+2. An `spl.relational::Functor` operator uses the built-in tokenize function to split each incoming line into words, 
+   then count the number of words (separated by whitespace) and characters (including whitespace) in the line. The 
+   number of words and characters in the incoming line of text are sent in the output tuple.
+3. An `spl.utility::Custom` operator tallies the number of lines received, the number of words in all lines received, 
+   and the number of characters in all lines received.  The operator is configured to submit an output tuple with 
+   the grand total of lines, words, and characters, only when a FinalMarker punctuation is received (which occurs 
+   when the end of the input file is reached).
+4. Another `Custom` operator is configured to write the final count of lines, words, and characters to the console.
+
+@param file A submit-time `rstring` value specifying the file name of the text to be processed.
+*/
+composite WordCount
+{
+param 
+  expression<rstring> $file : getSubmissionTimeValue("file");
+
+type 
+  WordCharStat = int32 words, int32 chars;
+  LineStat = int32 lines, WordCharStat wcs;
+
+graph
+
+  // Read lines of text data from a file and sends it one line per output tuple.
+  stream<rstring line> Data = FileSource()
+  {
+    param file   : $file;
+          format : line;
+  }
+
+  // Use built-in tokenize function to split each incoming line into words. The number
+  // of words and characters in the incoming line of text are sent in the output tuple.
+  stream<LineStat> CountOneLine = Functor(Data) 
+  {
+    logic
+      state : 
+      {
+        mutable list<rstring> tokens; 
+      }
+      onTuple Data :
+      {
+        tokens = tokenize (line, " \t", false);
+      }
+    output 
+      CountOneLine : lines = 1, wcs = {words = size(tokens), chars = length(line) + 1};
+  }
+
+  // Tally the number of lines received, the number of words in all lines received, and the
+  // number of characters in all lines received.  
+  stream<LineStat> CountAllLines  = Custom(CountOneLine) 
+  {
+    logic
+      state : 
+      {
+        mutable LineStat aggregate = { lines=0, wcs = {words=0, chars=0} };
+      }
+      onTuple CountOneLine :
+      {
+        aggregate.lines += CountOneLine.lines;
+        aggregate.wcs.words += CountOneLine.wcs.words;
+        aggregate.wcs.chars += CountOneLine.wcs.chars; 
+      }      
+      onPunct CountOneLine:
+      {
+        if(currentPunct()==Sys.FinalMarker) 
+          submit(aggregate, CountAllLines);
+      }    
+  }
+
+  // Write the final count of lines, words, and characters to the console.
+  () as Writer = Custom(CountAllLines)
+  {
+    logic
+      onTuple CountAllLines :
+      {
+        println(CountAllLines);
+      }
+  }
+}
+

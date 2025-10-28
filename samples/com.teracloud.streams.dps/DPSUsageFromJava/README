@@ -1,0 +1,14 @@
+This application demonstrates how to use the DPS toolkit Java API from a Java operator.
+
+To compile this application from the command line, run the Makefile by typing "make"
+Launch by submitting the job to the domain:
+streamtool submitjob -d [domain] output/JavaDPSDemo/Distributed/application.JavaDPSDemo.sab
+
+NOTE:
+If the toolkit is not located in the standard Streams toolkit directory (for example,
+because you loaded it from Github), you have to set the environment variable STREAMSX_DPS_TOOLKIT
+to point to the directory where the info.xml file of the toolkit is located.
+For example enter the command :
+export STREAMSX_DPS_TOOLKIT=/myhome/mytoolkits/com.teracloud.streams.dps
+before running the make command.
+If this variable is not set the DPS toolkit from the standard Streams toolkit location will be used.

@@ -1,0 +1,76 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.fileingestion.custom;
+
+use com.teracloud.streams.teda.internal.ingestion::ProcessFileInfo;
+
+
+/**
+ * This composite extracts a custom file attribute as
+ * sort attribute (in the following the filename is used).
+ *  
+ * Set the **ite.ingest.directoryScan.sort** parameter to
+ * custom to activate this composite operator.
+ * 
+ * Not `Invalid` stream tuple is generated.
+ * 
+ * Use this operator together with a the FileSort operator.
+ * 
+ * @input In the input file info
+ * @output Out the input file info with sort attribute
+ * @output Invalid no tuple generated
+ * @param filedateInFilenamePat dummy parameter
+ * @param filedateOrder dummy parameter
+ */
+public composite GetSortAttribute (
+	input
+		stream<ProcessFileInfo> In;
+	output
+		Out,
+		stream<ProcessFileInfo> Invalid )
+{
+	param
+		expression<list<rstring> > $filedateInFilenamePat;
+		expression<list<rstring> > $filedateOrder;
+		
+	type
+		static SortFileInfo = ProcessFileInfo, tuple <rstring sortAttr>;
+		
+	graph 
+		
+		stream<SortFileInfo> Out = Functor(In)
+		{
+			output
+				Out : sortAttr = In.filenameOnly;
+		}
+		
+		 
+		stream<ProcessFileInfo> Invalid = Custom()
+		{
+		}
+}

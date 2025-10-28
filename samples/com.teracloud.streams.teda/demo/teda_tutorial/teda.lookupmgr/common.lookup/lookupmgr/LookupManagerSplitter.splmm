@@ -1,0 +1,1001 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $customizingXmlFile="$ENV{LOOKUP_CUSTOM_XML}";
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::LookupManager());
+
+	my $disableDbQuery = $configurator->isOff(Configurator::LM_DB());
+	my $enableDbInputFile = $configurator->isOn(Configurator::LM_FILE());
+	my $isCSVLineQuoted;
+	if ($enableDbInputFile) {
+		$isCSVLineQuoted = $configurator->isOn(Configurator::LM_FILE_QUOTED());
+	}
+	my $splTypesSplmm = catdir($projDir,"common.lookup.lookuptypes","LookupMgrTypes.spl");
+	$splTypesSplmm = catdir($projDir,"common.lookup","lookuptypes","LookupMgrTypes.spl") unless (-f $splTypesSplmm);
+	my $splTypesSplNotGenerated = 0;
+	if (-e $splTypesSplmm) {
+		print "// $splTypesSplmm\n";
+	}
+	else {
+		$splTypesSplNotGenerated = 1;
+	}
+	
+	# Prepare directory settings
+	# Convert relative path to absolut path as needed
+	
+	my $initCmdName="Init";
+	my $initCmdNameLc=lc($initCmdName);
+	my $updateCmdName="Update";
+	my $updateCmdNameLc=lc($updateCmdName);
+	my $deleteCmdName="Delete";
+	my $deleteCmdNameLc=lc($deleteCmdName);
+
+	### Repository segments - begin
+	my @sumRepositoryList;
+	my @streamsSchemaList;
+	my %dbAccessSpecifications;
+	my %dbSchemaMapping;
+	my %dbDeleteStreams;
+	if (-e ".mkrun") { # checks if makefile was called
+		# list of repository segments
+		@sumRepositoryList = CodeGenFrw::getSegmentStreamList($customizingXmlFile);
+		@sumRepositoryList = sort (@sumRepositoryList);
+
+		# get all streams
+		@streamsSchemaList = CodeGenFrw::getStreamsSchemaList($customizingXmlFile);
+		
+		unless ($disableDbQuery) {
+			# list of access specifications
+			CodeGenFrw::getStreamOfAccessSpec($customizingXmlFile,\%dbAccessSpecifications);
+			print "// Mapping streams to DB access specification - begin\n";
+			foreach my $repSeg (keys %dbAccessSpecifications) {
+				print "// Stream name:$repSeg\t- DB access specification:$dbAccessSpecifications{$repSeg}\n";
+			}
+			print "// Mapping streams to DB access specification - end\n";
+
+			# DB schema and SPL attribute mapping
+			print "// Mapping SPL attributes to DB table attributes - begin\n";
+			CodeGenFrw::getDbSchemaMapping($customizingXmlFile,\%dbSchemaMapping);
+			foreach my $repSeg (keys %dbSchemaMapping) {
+				print "// Stream $repSeg - begin\n";
+				foreach my $splAttrName (keys %{$dbSchemaMapping{$repSeg}}) {
+					print "//\t\tSPL attribute:$splAttrName\t- DB attribute:$dbSchemaMapping{$repSeg}->{$splAttrName}\n";
+				}
+				
+				print "// Stream $repSeg - end\n";
+			}
+			print "// Mapping SPL attributes to DB table attributes - end\n";
+			
+			# DB Deletion streams
+			CodeGenFrw::getDeleteStreamName($customizingXmlFile,\%dbDeleteStreams);
+			print "// Mapping repository segment to DB delete stream - begin\n";
+			foreach my $repSeg (keys %dbDeleteStreams) {
+				print "// Repository stream name:$repSeg\t- delete stream name:$dbDeleteStreams{$repSeg}\n";
+			}
+			print "// Mapping repository segment to DB delete stream - end\n";
+		}
+	}	
+	### Repository segments - end
+	if (-e ".mkrun") { # checks if makefile was called
+		CodeGenFrw::createCSVMappingFiles($customizingXmlFile, $projDir . "/etc", \@sumRepositoryList);
+	}
+%>  
+namespace common.lookup.lookupmgr;
+<%unless ($disableDbQuery) {
+%>use com.teracloud.streams.db::*;<%}%>
+use common.lookup.lookuptypes::*;
+use com.teracloud.streams.teda.internal.shm::*;
+use com.teracloud.streams.teda.internal.fileutils::createDir;
+use com.teracloud.streams.teda.utility::ExceptionCatcher;
+use com.teracloud.streams.teda.parser.text::CSVParse;
+
+/**
+The **Data Splitter** composite splits the command request to file or ODBC operators depending on content. 
+It reads the data from source (ODBC of file) and provides the results in parallel to each lookup manager cache operator.
+
+**Supported commands:**
+
+ * `initial` - initial command using data source
+ * `file_initial` or `initial_file` - initial command using csv-file source
+ * `update` - update command using data source
+ * `file_update` or `update_file` - update command using csv-file source
+ * `delete`, `file_delete` or `delete_file` - delete command using csv-file source
+
+**Command syntax**
+
+The write request can be defined for all segments/db-tables or for one specific only.
+The syntax of the command line in command file is following:
+`command;segment/repository;application`
+*Examples:*
+ * `initial;;` - starts initial write request for all segments of all applications
+ * `initial;;my.unique.job` - starts initial write request for all segments of `my.unique.job` application
+ * `initial;<%=$sumRepositoryList[0]%>;my.unique.job` - starts initial write request for <%=$sumRepositoryList[0]%> segment of `my.unique.job` application
+
+**DB queries**
+
+The DB queries must be defined in `connections.xml` file for each repository segment. One query one segment. The name of the `access specification` is defined as `<segment-name>`. Each query is finalized by window punctuation.
+
+Each segment stores data that are results of a specific query on one or more DB tables. Each query request is defined by the `access specification` (here: `<segment-name>`) in the connections.xml file.
+The data stored in the repository are structured by the result of the DB query. It is possible, there are 2 different repository segments collecting data from same DB table but resulting from 2 different query requests, that 
+are defined by 2 different `access specification` definitions in connections.xml file.
+
+**File queries**
+
+It requires setting of `csvFilesDir` parameter. The row indexes are defined in Lookup Manager customizing file.
+
+ * Reference of tuple types: [common.lookup.lookuptypes::LookupMgrTypes.spl]
+ *
+
+@input ControlledCommand Input command provided by command file. *Type*: 'LookupMgrCommandLine'. 
+<%unless ($disableDbQuery) {
+%>@input DbCredentials DB credentials provided after the DB check. *Type*: 'LookupMgrDbCredentials'.<%
+}%>
+
+<%foreach my $repositoryShortName (@sumRepositoryList) 
+{%>@output LookupMgrSplit<%=$repositoryShortName%> Generated output port by list of repositories/queries providing query results for <%=$repositoryShortName%> repository. *Type*: 'Schema<%=$repositoryShortName%>'. 
+<%}%>
+@output SplitterInfo Output port providing name of command file, command and list of segments involved in command process. *Type*: 'LookupMgrCommandData'.
+@output SplitterErrorReport Output port information and status of error providing this information to other composites and operators. The PE will shutdown on error. *Type*: 'LookupMgrErrorList'.
+<%unless ($disableDbQuery) {
+%>@param dbConnection Name of DB connections defined in `connections.xml`. It is a submission parameter.
+@param dbName Name of database. It is a submission parameter.
+@param dbUser Database user name. It is a submission parameter.
+@param dbPass Password of DB user. It is a submission parameter.<%}%>
+<%if ($enableDbInputFile) {
+%>@param csvFilesDir folder including the csv files containing lookup data. Path is defined by `csvFilesDir/<segment-name>.csv` 
+e.g. `/my/lookup/file/folder/<%=$sumRepositoryList[0]%>.csv`. It is a submission parameter.
+@param ignoreEmptyCSVLines The parameter defines how to handle empty lines.
+@param ignoreHeaderCSVLines The parameter defines how to handle header lines.
+@param csvEolMarker The parameter defines the end-of-line marker.
+@param csvSeparator The parameter defines the separator between attributes.<%}%> 
+ */
+public composite LookupManagerSplitter (
+	input
+			ControlledCommand<%unless ($disableDbQuery) {%>,
+			DbCredentials<%}%>;
+	output <%foreach my $repositoryShortName (@sumRepositoryList) 
+			{%>LookupMgrSplit<%=$repositoryShortName%>,
+			<%}%>SplitterInfo,
+			SplitterErrorReport)
+{
+	param
+		<%unless ($disableDbQuery) {
+		%>expression<rstring> $dbConnection;
+		expression<rstring> $dbName;
+		expression<rstring> $dbUser;
+		expression<rstring> $dbPass;<%}%>
+		<%if ($enableDbInputFile) {
+		%>expression<rstring> $csvFilesDir;
+		expression<boolean> $ignoreEmptyCSVLines;
+		expression<boolean> $ignoreHeaderCSVLines;
+		expression<rstring> $csvEolMarker;
+		expression<rstring> $csvSeparator;<%
+		}%>
+
+	type 
+/**
+ * The tuple *SplitterProcessingType* provides information about the processed command and request type (ODBC/CSV) through the composite.
+ */
+		SplitterProcessingType = tuple<
+			boolean odbcProcessing,
+			rstring lookup_cmd
+		>;
+
+/**
+ * The tuple *CsvParserInput* provides information about the processed command and payload (line) from FileSource operator.
+ */
+		CsvParserInput = tuple<
+			rstring payload,
+			rstring lookup_cmd,
+			rstring reason,
+			uint64 lineNo,
+			rstring errId
+		>;
+
+<%if (0 == $splTypesSplNotGenerated) {%>	
+	graph
+
+		// Command Distributor
+/**
+@input ControlledCommand Input command provided by command file
+
+@output SplitterInfo Output providing information about the content of the command-file, like command type and file name. 
+The Begin of the command processing starts here. The most important information if the list of involved segments.
+<%foreach my $repositoryShortName (@sumRepositoryList) 
+{%>@output <%=$repositoryShortName%> The lookup trigger for <%=$repositoryShortName%> segment including command type (update, delete or initial) 
+and information about source (file or database)
+<%}%>
+*/
+		
+		(<%	my $tabNum = 0;
+		foreach my $repositoryShortName (@sumRepositoryList){
+			my $streamSeparator=";";
+			$tabNum++;
+			$streamSeparator="" if (scalar (@sumRepositoryList) eq scalar $tabNum);
+		%>stream <SplitterProcessingType> <%=$repositoryShortName%>;<%}%>
+		stream <LookupMgrTypes.LookupMgrCommandData> SplitterInfo
+		) as CommandSplitter = Custom (ControlledCommand)
+		{
+			logic
+				onTuple ControlledCommand: 
+				{
+					mutable boolean in_odbcProcessing = <%unless ($disableDbQuery) {%>true<%}else{%>false<%}%>;
+					mutable rstring lookupCommand = "";
+					mutable SplitterInfo triggerInfo={};
+
+					// set command
+					if (0 != spl.collection::size(regexMatch (command, "<%=$updateCmdNameLc%>"))) {
+						lookupCommand = "<%=$updateCmdNameLc%>";
+					}
+					if (0 != spl.collection::size(regexMatch (command, "<%=$initCmdNameLc%>"))) {
+						lookupCommand = "<%=$initCmdNameLc%>";
+					}
+					if (0 != spl.collection::size(regexMatch (command, "<%=$deleteCmdNameLc%>"))) {
+						lookupCommand = "<%=$deleteCmdNameLc%>";
+					}
+					<%if (! $disableDbQuery && $enableDbInputFile) {%>
+					// check for data source: file or DB
+					if (0 != spl.collection::size(regexMatch (command, "file"))) {
+						in_odbcProcessing = false;
+					}
+					else {
+						in_odbcProcessing = true;
+					}<%}%>
+					
+					triggerInfo.commandFilename = ControlledCommand.filename; 
+					triggerInfo.command = lookupCommand;
+					triggerInfo.commandStartedAt = ControlledCommand.commandStartedAt;
+					
+					<%foreach  my $repositoryShortName (@sumRepositoryList){%>
+					mutable <%=$repositoryShortName%> out<%=$repositoryShortName%> ={};
+					out<%=$repositoryShortName%>.lookup_cmd = lookupCommand;
+					out<%=$repositoryShortName%>.odbcProcessing = in_odbcProcessing;<%}%>
+					
+					// determinate split to repository
+					if ("" == repositoryName) {
+						if ("<%=$initCmdNameLc%>" == lookupCommand) {
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "for " + lookupCommand + " command", "LookupManagerSplitter");
+							}
+							// append repositories
+							<%foreach  my $repositoryShortName (@sumRepositoryList){
+							%>appendM(triggerInfo.repositories, "<%=$repositoryShortName%>");
+							<%}%>
+						}
+						else if ("<%=$updateCmdNameLc%>" == lookupCommand) {
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "for " + lookupCommand + " command", "LookupManagerSplitter");
+							}
+							// append repositories
+							<%foreach  my $repositoryShortName (@sumRepositoryList){
+							%>appendM(triggerInfo.repositories, "<%=$repositoryShortName%>");
+							<%}%>
+						}
+						else { // command type already checked in COMMAND_READER therefore this is the last possible choice - delete
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "for " + lookupCommand + " command", "LookupManagerSplitter");
+							}
+							// append repositories
+							<%foreach  my $repositoryShortName (@sumRepositoryList){
+							%>appendM(triggerInfo.repositories, "<%=$repositoryShortName%>");
+							<%}%>
+						}
+					} // end if repositoryName
+					else {
+						if ("<%=$initCmdNameLc%>" == lookupCommand) {
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "for " + lookupCommand + " command", "LookupManagerSplitter");
+							}<%
+							foreach  my $repositoryShortName (@sumRepositoryList){%>
+							if ("<%=$repositoryShortName%>" == repositoryName) {
+								appendM(triggerInfo.repositories, "<%=$repositoryShortName%>");
+							}<%}%>
+						} // end <%=$initCmdNameLc%>
+						else if ("<%=$updateCmdNameLc%>" == lookupCommand) {
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "for " + lookupCommand + " command", "LookupManagerSplitter");
+							}<%
+							foreach  my $repositoryShortName (@sumRepositoryList){%>
+							if ("<%=$repositoryShortName%>" == repositoryName) {
+								appendM(triggerInfo.repositories, "<%=$repositoryShortName%>");
+							}<%}%>
+						}  // end <%=$updateCmdNameLc%>
+						else {// command type already checked in COMMAND_READER therefore this is the last possible choice - delete
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "for " + lookupCommand + " command", "LookupManagerSplitter");
+							}<%
+							foreach  my $repositoryShortName (@sumRepositoryList){%>
+							if ("<%=$repositoryShortName%>" == repositoryName) {
+								appendM(triggerInfo.repositories, "<%=$repositoryShortName%>");
+							}<%}%>
+						}  // end <%=$deleteCmdNameLc%>
+					} // end else repositoryName
+
+					// send request trigger
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Send splitter information: " + (rstring)triggerInfo, "LookupManagerSplitter");
+					}
+					submit(triggerInfo, SplitterInfo);
+					<%foreach  my $repositoryShortName (@sumRepositoryList){
+					%>
+					if (has(triggerInfo.repositories,"<%=$repositoryShortName%>")) {
+						submit(out<%=$repositoryShortName%>, <%=$repositoryShortName%>);
+					}
+					<%}%>
+				}
+			
+			config placement :	partitionColocation("DATA_PROCESS_SPLITTER"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>");
+		}
+<%
+		my $odbcPrefix = "";
+		foreach my $repositoryShortName (@sumRepositoryList){
+			if ($enableDbInputFile) {
+				$odbcPrefix="Odbc";%>
+		// Split File/ODBC
+/**
+This Custom operator splits the trigger stream to lookup source depends on source information.
+@input <%=$repositoryShortName%> The lookup trigger for <%=$repositoryShortName%> segment received from CommandSplitter operator
+
+@output <%=$repositoryShortName%>File triggers the file-read process for <%=$repositoryShortName%> segment.<%unless ($disableDbQuery) {%>
+@output <%=$odbcPrefix%><%=$repositoryShortName%> triggers the DB query process for <%=$repositoryShortName%> segment.<%}%>
+ */
+		(stream <SplitterProcessingType> <%=$repositoryShortName%>File<%unless ($disableDbQuery) {%>;
+		 stream <SplitterProcessingType> <%=$odbcPrefix%><%=$repositoryShortName%><%}%>
+		) as Splitter<%=$repositoryShortName%> = Custom (<%=$repositoryShortName%>) {
+			logic
+				state: {
+					mutable boolean fileCommand = false;
+				}
+
+				onTuple <%=$repositoryShortName%> : {
+					<%unless ($disableDbQuery) {
+		 			%>if (odbcProcessing) {
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "ODBC request", "LookupManagerSplitter");
+						}
+						submit (<%=$repositoryShortName%>,<%=$odbcPrefix%><%=$repositoryShortName%>);
+						fileCommand = false;
+					}
+					else  {
+						<%}%>if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "File request", "LookupManagerSplitter");
+						}
+						submit (<%=$repositoryShortName%>,<%=$repositoryShortName%>File);
+						fileCommand = true;
+					<%unless ($disableDbQuery) {%>}<%}%>
+				}
+		}
+		
+/**
+This Custom operator provides 'filename' to SourceFile operator and forward the 'lookup_cmd' attribute to CSVParser.
+@input <%=$repositoryShortName%>File - The lookup trigger forwarded by lookup source splitter.
+@output <%=$repositoryShortName%>CSVFile CSV file name in tuple (filename).
+ */
+		(stream<LookupMgrTypes.FileName> <%=$repositoryShortName%>CSVFile;
+		stream<<%=$repositoryShortName%>File> <%=$repositoryShortName%>FileCommand) as <%=$repositoryShortName%>FileExtensionChecker = Custom(<%=$repositoryShortName%>File) {
+			logic
+				onTuple <%=$repositoryShortName%>File : {
+					mutable <%=$repositoryShortName%>File outCmd = {};
+					mutable <%=$repositoryShortName%>CSVFile outFile = {};
+					mutable rstring csvExtension = ".csv";
+					if ("<%=$deleteCmdNameLc%>" == lookup_cmd) {
+						csvExtension = ".del" + csvExtension;
+					}
+					outFile.filename = $csvFilesDir + "/" + "<%=$repositoryShortName%>" + csvExtension;
+					outCmd.lookup_cmd = lookup_cmd;
+					submit (outCmd, <%=$repositoryShortName%>FileCommand);
+					submit (outFile, <%=$repositoryShortName%>CSVFile);
+				}
+		}
+/**
+ * This ExceptionCatcher operator catches the FileSource exceptions like 'File not found' 
+ */
+		(
+		stream<<%=$repositoryShortName%>CSVFile> Controlled<%=$repositoryShortName%>CSVFile;
+		stream<<%=$repositoryShortName%>CSVFile, LookupMgrTypes.LookupMgrFileExceptionInfo> <%=$repositoryShortName%>CSVFileToReject
+		) as <%=$repositoryShortName%>CSVSourceExceptionCatcher = ExceptionCatcher(<%=$repositoryShortName%>CSVFile) {
+			output <%=$repositoryShortName%>CSVFileToReject: 
+				exceptionType = getExceptionType(), 
+				exceptionText = getExceptionText();
+		}
+
+/**
+This FileSource operator reads the '$repositoryShortName.csv' and '$repositoryShortName.del.csv' file line by line, provides the line as 'payload' to CSV Parser. The 'filename' will be reseted.
+@param format The line format in output 
+@input <%=$repositoryShortName%>CSVFile - CSV file name in tuple (filename).
+@output <%=$repositoryShortName%>CsvLineContent CSV file line.
+ */
+		stream<LookupMgrTypes.LookupMgrLineContent> <%=$repositoryShortName%>CsvLineContent = FileSource(Controlled<%=$repositoryShortName%>CSVFile)
+		{
+			param
+				eolMarker: $csvEolMarker;
+				format: line;
+			output <%=$repositoryShortName%>CsvLineContent:
+				filename = "";
+		}
+
+/**
+This Custom operator merges 'lookup_cmd' attribute to the output of CSV line provided by FileSource operator.
+@param format The line format in output 
+@input <%=$repositoryShortName%>CSVFile - Stream including CSV line.
+@input <%=$repositoryShortName%>File - Stream including 'lookup_cmd' attribute.
+@output <%=$repositoryShortName%>LineContent Merged stream.
+ */
+		stream<CsvParserInput> <%=$repositoryShortName%>LineContent = Custom (<%=$repositoryShortName%>FileCommand;<%=$repositoryShortName%>CsvLineContent) {
+			logic
+				state : {
+					mutable CsvParserInput outTuple = {};
+				}
+				onTuple <%=$repositoryShortName%>FileCommand : {
+					outTuple.lookup_cmd = lookup_cmd;
+					if (outTuple.payload != "") {
+						submit (outTuple, <%=$repositoryShortName%>LineContent);
+					}
+				}
+				onTuple <%=$repositoryShortName%>CsvLineContent : {
+					outTuple.payload = payload;
+					if (outTuple.lookup_cmd != "") {
+						submit (outTuple, <%=$repositoryShortName%>LineContent);
+					}
+				}
+				onPunct <%=$repositoryShortName%>CsvLineContent : {
+					if (currentPunct() == Sys.WindowMarker) {
+						outTuple.lookup_cmd = "";
+						outTuple.payload = "";
+						submit (Sys.WindowMarker, <%=$repositoryShortName%>LineContent);
+					}
+				}
+		}
+
+
+
+/**
+This CSVParser operator parses CSV lines and provide 'lookup_cmd' attribute. The synchronization in this PE is done by threaded input port.
+@param mappingDocument Name of defined mapping xml file: etc/<%=$repositoryShortName%>_mapping.xml
+@param payloadAttribute Name of payload attribute: payload 
+@input <%=$repositoryShortName%>LineContent - The Stream including 'payload' attribute as CSV line and 'lookup_cmd' attribute.
+@output LookupMgrFile<%=$repositoryShortName%> CSV file parsed line according to mapping defined in <%=$repositoryShortName%>_mapping.xml. The 'lookup_cmd' attribute is forwarded.
+@output ErroneousContent<%=$repositoryShortName%> The error stream including content of the input stream.
+ */
+		(stream<LookupMgrTypes.Schema<%=$repositoryShortName%>> LookupMgrFile<%=$repositoryShortName%>; 
+		stream<<%=$repositoryShortName%>LineContent> ErroneousContent<%=$repositoryShortName%>) as <%=$repositoryShortName%>CommandParser 
+		= CSVParse(<%=$repositoryShortName%>LineContent)
+		{
+			param
+				ignoreEmptyLines: $ignoreEmptyCSVLines;
+				ignoreHeaderLines: $ignoreHeaderCSVLines;
+				quoted: <%=($isCSVLineQuoted ? 'on' : 'off' )%>;
+				separator: $csvSeparator;
+				mappingDocument: "etc/<%=$repositoryShortName%>_mapping.xml";
+				payloadAttribute: payload;
+				
+			output LookupMgrFile<%=$repositoryShortName%>: lookup_cmd = fromInput();
+				ErroneousContent<%=$repositoryShortName%>: lookup_cmd = fromInput(),
+					reason = Message(),
+					errId = MessageId(),
+					lineNo = TupleNumber();
+
+			config
+				threadedPort : queue(<%=$repositoryShortName%>LineContent, Sys.Wait);
+		}
+		
+/**
+This Custom operator handles the data file-end and errors of CSV Parser. If the complete CSV input read, then move it to archive. In case of error, the incorrect input file will not be moved.
+This kind of error will make inconsistent changes in memory segments therefore the processing will be stopped. 
+@input LookupMgrFile<%=$repositoryShortName%> The parsed output stream providing punctuation generated by FileSource operator.
+@input ErroneousContent<%=$repositoryShortName%> The parsed error stream providing incorrect lines.
+@output CsvParserErrors<%=$repositoryShortName%> The output stream providing error reports to the ErrorCollector.
+@output ControlledLookupMgrFile<%=$repositoryShortName%> The output stream providing data tuples from LookupMgrFile<%=$repositoryShortName%>.
+ */
+		(stream <LookupMgrFile<%=$repositoryShortName%>> ControlledLookupMgrFile<%=$repositoryShortName%>;
+		 stream <LookupMgrTypes.LookupMgrErrorInfo> CsvParserErrors<%=$repositoryShortName%>) as CsvParserErrorHandler<%=$repositoryShortName%> = 
+			Custom (LookupMgrFile<%=$repositoryShortName%>;
+					ErroneousContent<%=$repositoryShortName%>;
+					<%=$repositoryShortName%>CSVFileToReject) {
+			logic
+				state : {
+					rstring archDir = $csvFilesDir + "/archive";
+					boolean dirOk   = createDir(archDir);
+					mutable rstring fileByCmd = "<%=$repositoryShortName%>.csv";
+					mutable boolean firstTuple = true;
+					mutable rstring failedFilename = "";
+					uint8 maxIncorrectParserLines = 15ub;
+					mutable list<rstring> listIncorrectParserLines = [];
+					mutable uint64 nIncorrectParserLines = 0ul;
+					mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {}; // single fault report
+				}
+				onTuple <%=$repositoryShortName%>CSVFileToReject : {
+					// fill in data for CSV parser exception error
+					failedFilename=filename;
+					// report error to trace
+					appTrc(Trace.error, "Corrupt file '" + failedFilename + "'. Cannot open file because of exception (" +
+						exceptionType + "): " + exceptionText, "LookupManagerSplitter");
+					
+					// set error tuple entries
+			 		etuple.command 	= ""; 
+			 		etuple.segment 	= "<%=$repositoryShortName%>";
+			 		etuple.errorId 	= LookupMgrTypes.LM006;
+					mutable list<rstring> errMsgParams = [exceptionType, exceptionText];
+			 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM006, errMsgParams);
+	 		
+	 				// send error report 
+					submit(etuple, CsvParserErrors<%=$repositoryShortName%>);
+					// clean-up
+					etuple.command 	= ""; 
+			 		etuple.segment 	= "";
+			 		etuple.errorId 	= LookupMgrTypes.LM000;
+			 		etuple.errorMessage 	= "";
+			 		etuple.continueOnError 	= false;
+			 		
+			 		// send punctuation on ControlledLookupMgrFile<%=$repositoryShortName%>
+			 		submit (Sys.WindowMarker, ControlledLookupMgrFile<%=$repositoryShortName%>);
+				}
+				onTuple ErroneousContent<%=$repositoryShortName%> : {
+					// fill in data for CSV parser error
+					if (("<%=$deleteCmdNameLc%>" == lookup_cmd) && firstTuple) {
+						fileByCmd = "<%=$repositoryShortName%>.del.csv";
+						firstTuple = false;
+					}
+					// report error to trace - trace only 'maxIncorrectParserLines' times
+					if (nIncorrectParserLines < (uint64)(maxIncorrectParserLines + 1ub)) {
+						appTrc(Trace.error, "Incorrect line in '" + fileByCmd + "' detected reading data for command '" + lookup_cmd + "'-[" + payload + "]", "LookupManagerSplitter");
+					}
+					// report multiple errors to trace - more then 'maxIncorrectParserLines' times
+					else if (nIncorrectParserLines == (uint64)(maxIncorrectParserLines + 1ub)) {
+						appTrc(Trace.error, "More then " + (rstring)maxIncorrectParserLines + " incorrect lines in '" + fileByCmd + "' detected. It looks to be a general input data problem - correct the input source for segment '<%=$repositoryShortName%>'", "LookupManagerSplitter");
+					}
+					// set error report DATA on first error
+					if (0ul == nIncorrectParserLines) {
+				 		etuple.command 	= lookup_cmd; 
+				 		etuple.segment 	= "<%=$repositoryShortName%>";
+				 		etuple.errorId 	= LookupMgrTypes.LM007;
+				 		etuple.continueOnError = false;
+				 	}
+				 	// append the line
+				 	if (nIncorrectParserLines < (uint64)maxIncorrectParserLines) {
+				 		mutable rstring lineErrorInfo = errId + ": '" + reason + "' at line " + (rstring) lineNo;
+						appendM(listIncorrectParserLines, lineErrorInfo);
+					}
+					else if (nIncorrectParserLines == (uint64)maxIncorrectParserLines) {
+						appendM(listIncorrectParserLines, "...");
+					}
+					nIncorrectParserLines++;
+				}
+				onTuple LookupMgrFile<%=$repositoryShortName%> : {
+					// adjust file name of the delete command in case of first command tuple
+					if (("<%=$deleteCmdNameLc%>" == lookup_cmd) && firstTuple) {
+						fileByCmd = "<%=$repositoryShortName%>.del.csv";
+						firstTuple = false;
+					}
+					// forward data
+					submit(LookupMgrFile<%=$repositoryShortName%>,ControlledLookupMgrFile<%=$repositoryShortName%>);
+				}
+				onPunct LookupMgrFile<%=$repositoryShortName%> : {
+					mutable boolean sendErrTuple = false;
+					if (currentPunct() == Sys.WindowMarker) {
+						if (0ul != nIncorrectParserLines) {
+							// send CSV parser error
+							// fill in the error lines
+							mutable list<rstring> errMsgParams = [fileByCmd, etuple.command, (rstring)nIncorrectParserLines, (rstring)listIncorrectParserLines];
+					 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM007, errMsgParams);
+							// clean-up
+							sendErrTuple=true;
+					 		nIncorrectParserLines = 0ul;
+							clearM(listIncorrectParserLines);
+						}
+						else {
+							// move file
+							mutable int32 err=0;
+							rstring oldname = $csvFilesDir + "/" + fileByCmd;
+							
+							rstring newname = regexReplace (oldname, '.*/', archDir + "/" + convertTimestampString(getTimestamp()) + "_", false);
+							com.teracloud.streams.teda.file::rename(oldname, newname, err);
+							if(err!=0) {
+								appTrc(Trace.error, "Could not rename file '" + oldname+"' to '"+newname+"': " + (rstring)err);
+							}
+						}
+						firstTuple = true;
+						if (sendErrTuple) {
+							sendErrTuple = false;
+							// send error report 
+							submit(etuple, CsvParserErrors<%=$repositoryShortName%>);
+							// clean-up
+							etuple.command 	= ""; 
+					 		etuple.segment 	= "";
+					 		etuple.errorId 	= LookupMgrTypes.LM000;
+					 		etuple.errorMessage 	= "";
+					 		etuple.continueOnError 	= false;
+						}
+						submit (Sys.WindowMarker, ControlledLookupMgrFile<%=$repositoryShortName%>);
+					}
+				}
+		}
+		<%	} # if (enableDbInputFile) end%>
+		<%unless ($disableDbQuery) {%>
+		// DB query <%=$repositoryShortName%>
+		<%my $delStreamName = undef;
+		my $insertPostfix = "";
+		my $dbMappedStream = undef;
+		$delStreamName = $dbDeleteStreams{$repositoryShortName} if ($dbDeleteStreams{$repositoryShortName});
+		$dbMappedStream = $dbSchemaMapping{$repositoryShortName} if ($dbSchemaMapping{$repositoryShortName});
+		$insertPostfix = "Insert" if ($delStreamName || $dbMappedStream);
+		if ($delStreamName) {
+%>
+/**
+This Custom operator supply the ODBC Run input streams to <%=$odbcPrefix%><%=$repositoryShortName%><%=$insertPostfix%> port for 'initial/update' command
+or to <%=$odbcPrefix%><%=$delStreamName%> port for 'delete' command.
+@input <%=$odbcPrefix%><%=$repositoryShortName%> - The lookup trigger forwarded by lookup source splitter.
+@output <%=$repositoryShortName%>CSVFile CSV file name in tuple (filename).
+ */
+		(stream<<%=$odbcPrefix%><%=$repositoryShortName%>> <%=$odbcPrefix%><%=$repositoryShortName%><%=$insertPostfix%>;
+		stream<<%=$odbcPrefix%><%=$repositoryShortName%>> <%=$odbcPrefix%><%=$delStreamName%>) as <%=$odbcPrefix%><%=$repositoryShortName%>Supplier = Custom(<%=$odbcPrefix%><%=$repositoryShortName%>) {
+			logic
+				onTuple <%=$odbcPrefix%><%=$repositoryShortName%> : {
+					if ("<%=$deleteCmdNameLc%>" == lookup_cmd) {
+						submit (<%=$odbcPrefix%><%=$repositoryShortName%>, <%=$odbcPrefix%><%=$delStreamName%>);
+					}
+					else {
+						submit (<%=$odbcPrefix%><%=$repositoryShortName%>, <%=$odbcPrefix%><%=$repositoryShortName%><%=$insertPostfix%>);
+					}
+				}
+		}
+/**
+The ODBCRun operator starts the DB query for $repositoryShortName segment. Each segment stores data that are results of a specific 
+ * query on one or more DB tables. Each query request is defined by the 'access' (here: <%=$repositoryShortName%>) in the connections.xml file.
+ * The data stored in the repository are structured by the result of the DB query. 
+ * It is possible, there are 2 different repository segments collecting data from same DB table but resulting from 2 different query requests, that 
+ * are defined by 2 different 'access' definitions in connections.xml file.
+@input <%=$odbcPrefix%><%=$repositoryShortName%> port receiving the trigger to start the lookup in DB.
+
+@param connection provides the name of DB connection defined in connextions.xml file.
+@param access the name of 'access' element in connections.xml file defined as <%=$repositoryShortName%> for <%=$repositoryShortName%> segment
+@param connectionDocument - the name of XML file describing DB connections; here fixed to './connections.xml'
+@param commitOnPunctuation - defines if commit generates punctuation; here fixed to true
+@param connectionPolicy is used to determine when the connection occurs; 
+here fixed to 'Deferred': the initial connection to the database is not attempted until a connection is needed.
+@param connectionDatabase - the name of database. It can be defined at submission
+@param connectionUser - the name of database user. It can be defined at submission
+@param connectionPassword - the name of database password. It can be defined at submission
+@output LookupMgrOdbc<%=$repositoryShortName%> sends the query result data row by row finishing with punctuation.
+@output LookupMgrOdbcError<%=$repositoryShortName%> sends the SQL error data to error handler.
+ */
+<%			print "\t\t// Access specification: $dbAccessSpecifications{$repositoryShortName}\n";
+			print "\t\t// Delete DB stream: $delStreamName\n";
+			print "\t\t// Delete DB stream - access: $dbAccessSpecifications{$delStreamName}\n";
+%>		(stream<LookupMgrTypes.Schema<%=$delStreamName%>> LookupMgrOdbc<%=$delStreamName%>;
+		stream<LookupMgrTypes.OdbcErrorOutput> LookupMgrOdbcError<%=$delStreamName%>
+		)as LookupMgrODBC<%=$delStreamName%> = ODBCRun(<%=$odbcPrefix%><%=$delStreamName%>;DbCredentials)
+		{
+			param
+				connection         : $dbConnection;
+				access             : "<%=$dbAccessSpecifications{$delStreamName}%>";
+				connectionDocument : "./connections.xml";
+				commitOnPunctuation: true;
+				connectionPolicy   : Deferred;
+				connectionDatabase : $dbName;
+				connectionUser     : $dbUser;
+				connectionPassword : $dbPass;
+			output
+				LookupMgrOdbc<%=$delStreamName%> : 
+					lookup_cmd = <%=$odbcPrefix%><%=$delStreamName%>.lookup_cmd;
+		}<%} # end $delStreamName%>
+/**
+The ODBCRun operator starts the DB query for $repositoryShortName segment. Each segment stores data that are results of a specific 
+ * query on one or more DB tables. Each query request is defined by the 'access' (here: <%=$repositoryShortName%>) in the connections.xml file.
+ * The data stored in the repository are structured by the result of the DB query. 
+ * It is possible, there are 2 different repository segments collecting data from same DB table but resulting from 2 different query requests, that 
+ * are defined by 2 different 'access' definitions in connections.xml file.
+@input <%=$odbcPrefix%><%=$repositoryShortName%> port receiving the trigger to start the lookup in DB.
+
+@param connection provides the name of DB connection defined in connextions.xml file.
+@param access the name of 'access' element in connections.xml file defined as <%=$repositoryShortName%> for <%=$repositoryShortName%> segment
+@param connectionDocument - the name of XML file describing DB connections; here fixed to './connections.xml'
+@param commitOnPunctuation - defines if commit generates punctuation; here fixed to true
+@param connectionPolicy is used to determine when the connection occurs; 
+here fixed to 'Deferred': the initial connection to the database is not attempted until a connection is needed.
+@param connectionDatabase - the name of database. It can be defined at submission
+@param connectionUser - the name of database user. It can be defined at submission
+@param connectionPassword - the name of database password. It can be defined at submission
+@output LookupMgrOdbc<%=$repositoryShortName%> sends the query result data row by row finishing with punctuation.
+@output LookupMgrOdbcError<%=$repositoryShortName%> sends the SQL error data to error handler.
+ */
+ <%			print "\t\t// Access specification: $dbAccessSpecifications{$repositoryShortName}\n";
+ 			if ($dbMappedStream) {
+ 			print "\t\t// $repositoryShortName : DB mapping !\n";
+ 			}
+ %>		(stream<LookupMgrTypes.Schema<%if ($dbMappedStream) {%>Db<%}%><%=$repositoryShortName%>> LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%>;
+		stream<LookupMgrTypes.OdbcErrorOutput> LookupMgrOdbcError<%=$repositoryShortName%><%=$insertPostfix%>
+		)as LookupMgrODBC<%=$repositoryShortName%><%=$insertPostfix%> = ODBCRun(<%=$odbcPrefix%><%=$repositoryShortName%><%if ($delStreamName){%><%=$insertPostfix%><%}%>;DbCredentials)
+		{
+			param
+				connection         : $dbConnection;
+				access             : "<%=$dbAccessSpecifications{$repositoryShortName}%>";
+				connectionDocument : "./connections.xml";
+				commitOnPunctuation: true;
+				connectionPolicy   : Deferred;
+				connectionDatabase : $dbName;
+				connectionUser     : $dbUser;
+				connectionPassword : $dbPass;
+			output
+				LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%> : 
+					lookup_cmd = <%=$odbcPrefix%><%=$repositoryShortName%><%if ($delStreamName){%><%=$insertPostfix%><%}%>.lookup_cmd;
+		}
+<%
+		if ($delStreamName || $dbMappedStream) {
+%>
+/**
+This Custom operator merge the ODBCRun output streams to common query output stream.
+@input LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%> - query results for initial/update command.
+@input LookupMgrOdbc<%=$delStreamName%> - query results for delete command.
+@input LookupMgrOdbcError<%=$repositoryShortName%><%=$insertPostfix%> - Error output on initial/update request.
+@input LookupMgrOdbcError<%=$delStreamName%> - Error output on delete request.
+@output LookupMgrOdbc<%=$repositoryShortName%> - Common output stream.
+@output LookupMgrOdbcError<%=$repositoryShortName%> - Common error output stream.
+ */
+		(stream<LookupMgrTypes.Schema<%=$repositoryShortName%>> LookupMgrOdbc<%=$repositoryShortName%>;
+		stream<LookupMgrOdbcError<%=$repositoryShortName%><%=$insertPostfix%>> LookupMgrOdbcError<%=$repositoryShortName%>) 
+			as <%=$odbcPrefix%><%=$repositoryShortName%>Collector = Custom(
+				LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%>;
+				<%if ($delStreamName) {%>LookupMgrOdbc<%=$delStreamName%>;
+				<%}%>LookupMgrOdbcError<%=$repositoryShortName%><%=$insertPostfix%><%if ($delStreamName) {%>,
+				LookupMgrOdbcError<%=$delStreamName%><%}%> as ErrorIn
+			) {
+			logic
+				// <%=$repositoryShortName%><%=$insertPostfix%> stream
+				onTuple LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%> : {
+					<%if ($dbMappedStream) {
+					%>mutable LookupMgrOdbc<%=$repositoryShortName%> oTuple = {};
+					assignFrom(oTuple,LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%>);
+					<%	foreach my $splAttrName (keys %{$dbMappedStream}) {
+							if ($splAttrName ne $dbMappedStream->{$splAttrName}) {
+					%>oTuple.<%=$splAttrName%> = <%=$dbMappedStream->{$splAttrName}%>;
+					<%		}
+						}
+					%>submit (oTuple,LookupMgrOdbc<%=$repositoryShortName%>);<%}
+					else {%>submit (LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%>,LookupMgrOdbc<%=$repositoryShortName%>);<%
+					}%>
+				}
+				onPunct LookupMgrOdbc<%=$repositoryShortName%><%=$insertPostfix%> : {
+					if (currentPunct() == Sys.WindowMarker) {
+						submit (Sys.WindowMarker, LookupMgrOdbc<%=$repositoryShortName%>);
+					}
+				}
+				<%if ($delStreamName) {%>// LookupMgrOdbc<%=$delStreamName%> stream
+				onTuple LookupMgrOdbc<%=$delStreamName%> : {
+					<%if ($dbSchemaMapping{$delStreamName}) {%>mutable LookupMgrOdbc<%=$repositoryShortName%> oTuple = {};
+					assignFrom(oTuple,LookupMgrOdbc<%=$delStreamName%>);
+					<%	if ($delStreamName) {
+							foreach my $splAttrName (keys %{$dbSchemaMapping{$delStreamName}}) {
+								if ($splAttrName ne $dbSchemaMapping{$delStreamName}->{$splAttrName}) {
+						%>oTuple.<%=$splAttrName%> = <%=$dbSchemaMapping{$delStreamName}->{$splAttrName}%>;
+					<%			}
+							}
+						}
+					%>submit (oTuple,LookupMgrOdbc<%=$repositoryShortName%>);<%}
+						else {%>submit (LookupMgrOdbc<%=$delStreamName%>,LookupMgrOdbc<%=$repositoryShortName%>);<%
+					}%>
+				}
+				onPunct LookupMgrOdbc<%=$delStreamName%> : {
+					if (currentPunct() == Sys.WindowMarker) {
+						submit (Sys.WindowMarker, LookupMgrOdbc<%=$repositoryShortName%>);
+					}
+				}
+				<%}%>// error report streams as ErrorIn
+				onTuple ErrorIn : {
+					submit (ErrorIn,LookupMgrOdbcError<%=$repositoryShortName%>);
+				}
+				onPunct ErrorIn : {
+					if (currentPunct() == Sys.WindowMarker) {
+						submit (Sys.WindowMarker, LookupMgrOdbcError<%=$repositoryShortName%>);
+					}
+				}
+		}
+<%} # end if $delStreamName%>
+		<%}# end not 'disableDbQuery%>
+<%
+		} # foreach my $repositoryShortName (@sumRepositoryList)
+%>
+/**
+This Custom collects and forwards results for each segment to the output of this composite. and catches error streams. 
+@input LookupMgrError<segment-name> port receiving ERRORs.
+@input SplitterInfo Input providing information about the content of the command-file, like command type and file name. 
+@output SplitterErrorReport Output port information and status of the error .
+*/
+		(<%
+		foreach my $repositoryShortName (@sumRepositoryList){
+		%>stream <LookupMgrTypes.Schema<%=$repositoryShortName%>> LookupMgrSplit<%=$repositoryShortName%>;
+		<%}%>stream <LookupMgrTypes.LookupMgrErrorList> SplitterErrorReport) as DataForwarderAndErrorCollector
+		= Custom (
+		<%
+		foreach my $repositoryShortName (@sumRepositoryList){
+		%><%unless ($disableDbQuery) {%>LookupMgrOdbcError<%=$repositoryShortName%>;
+		LookupMgrOdbc<%=$repositoryShortName%>;
+		<%}%><%if ($enableDbInputFile) {%>CsvParserErrors<%=$repositoryShortName%>;
+		ControlledLookupMgrFile<%=$repositoryShortName%>;
+		<%}%><%}%>SplitterInfo) {
+			logic
+				state: {
+					mutable rstring triggedCommand = "";
+					mutable rstring triggedFilename = "";
+ 				}
+				onTuple SplitterInfo : {
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Splitter information: " + (rstring)SplitterInfo, "LookupManagerSplitter");
+					}
+					triggedFilename = SplitterInfo.commandFilename;
+					triggedCommand = SplitterInfo.command;
+				}<%
+				foreach my $repositoryShortName (@sumRepositoryList){
+				%><%unless ($disableDbQuery) {
+					my $insertPostfix = "";
+				%>onTuple LookupMgrOdbcError<%=$repositoryShortName%> : {
+					appTrc(Trace.error, "Request on <%=$repositoryShortName%> failed.", "LookupManagerSplitter");
+					if (triggedCommand == "") {
+						appTrc(Trace.error, "Missing filename information from QDBC query for error report.", "LookupManagerSplitter");
+					}
+					// get and send command error data 
+					mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {};
+					// check behavior for 
+					if (triggedCommand == "<%=$initCmdNameLc%>") {
+						etuple.continueOnError 	= false;
+					}
+					else {
+						etuple.continueOnError 	= true;
+					} 
+			 		etuple.command 	= triggedCommand; 
+			 		etuple.segment 	= "<%=$repositoryShortName%>";
+			 		etuple.errorId 	= LookupMgrTypes.LM008;
+					mutable list<rstring> errMsgParams = ["<%=$repositoryShortName%>", triggedCommand, sqlmessage, (rstring)sqlcode, sqlstate];
+			 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM008, errMsgParams);
+
+					mutable LookupMgrTypes.LookupMgrErrorList errTuple = {}; // output error tuple schema
+			 		errTuple.filename=triggedFilename;
+					appendM(errTuple.listOfErrors,etuple);
+					submit(errTuple,SplitterErrorReport);
+					clearM(errTuple.listOfErrors);
+				}
+				onTuple LookupMgrOdbc<%=$repositoryShortName%> : {
+					submit(LookupMgrOdbc<%=$repositoryShortName%>,LookupMgrSplit<%=$repositoryShortName%>);
+				}
+				onPunct LookupMgrOdbc<%=$repositoryShortName%> : {
+					if (currentPunct() == Sys.WindowMarker) {
+						submit (Sys.WindowMarker, LookupMgrSplit<%=$repositoryShortName%>);
+					}
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Punctuation from LookupMgrSplit<%=$repositoryShortName%> forwarded via LookupMgrOdbc<%=$repositoryShortName%>.", "LookupManagerCore");
+					}
+				}<%}%>
+				<%if ($enableDbInputFile) {%>onTuple CsvParserErrors<%=$repositoryShortName%> : {
+					appTrc(Trace.error, "Request on <%=$repositoryShortName%> failed.", "LookupManagerSplitter");
+					if (triggedFilename == "") {
+						appTrc(Trace.error, "Missing filename information from CSV Parser for error report.", "LookupManagerSplitter");
+					}
+					// set flag for exception
+					if(errorId == LookupMgrTypes.LM006) {
+						if (triggedCommand == "<%=$initCmdNameLc%>") {
+							continueOnError = false;
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "Do not continue '<%=$initCmdNameLc%>' from <%=$repositoryShortName%> CSV file.", "LookupManagerSplitter");
+							}
+						}
+						else {
+							continueOnError = true;
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "Continue on Error from <%=$repositoryShortName%> CSV file, because it is not the '<%=$initCmdNameLc%>'.", "LookupManagerSplitter");
+							}
+						} 
+					}
+					// set the command if not provided from error
+					if (command == "") {
+						command = triggedCommand;
+					}
+					
+					// get and send command error data
+					mutable LookupMgrTypes.LookupMgrErrorList errTuple = {}; // output error tuple schema
+			 		errTuple.filename=triggedFilename;
+					appendM(errTuple.listOfErrors,CsvParserErrors<%=$repositoryShortName%>);
+					submit(errTuple,SplitterErrorReport);
+					clearM(errTuple.listOfErrors);
+				}
+				onTuple ControlledLookupMgrFile<%=$repositoryShortName%> : {
+					submit(ControlledLookupMgrFile<%=$repositoryShortName%>,LookupMgrSplit<%=$repositoryShortName%>);
+				}
+				onPunct ControlledLookupMgrFile<%=$repositoryShortName%> : {
+					if (currentPunct() == Sys.WindowMarker) {
+						submit (Sys.WindowMarker, LookupMgrSplit<%=$repositoryShortName%>);
+					}
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Punctuation from LookupMgrSplit<%=$repositoryShortName%> forwarded via ControlledLookupMgrFile<%=$repositoryShortName%>.", "LookupManagerCore");
+					}
+				}
+				<%}%>
+				<%}%>
+			config placement :	partitionColocation("DATA_PROCESSOR"), partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>");
+		}
+		//  ERROR handling
+		
+<%} # endif SplRepositoryTypes file generated%>
+}
+
+/**
+The SPL function 'checkNameInList' checks if a list has a name
+@param name - name to be found
+@param namelist - list of names
+@return `boolean` A boolean flag will be set true if name found in the list, else false
+*/
+boolean checkNameInList (rstring name, list<rstring> namelist) {
+	mutable boolean foundFlag = false;
+	for (rstring listedName in namelist) {
+		if (listedName == name) {
+			foundFlag = true;
+		}
+	}
+	return foundFlag;
+}
+
+/**
+The SPL function 'leadingZero' checks if part of data or time needs leading zero. if so, then converts e.g. 7 to 07
+@param num - numeric part of timestamp
+@return `rstring` converted output
+*/
+rstring leadingZero(rstring num) {
+   if(length(num)==1)
+   {
+      return "0" + num;
+   }
+   return num;
+}
+/**
+The SPL function 'convertTimestampString' converts timestamp to format YYYYMMDD_hhmmss
+@param tstamp - timestamp
+@return `rstring` Timestamp in format YYYYMMDD_hhmmss
+*/
+rstring convertTimestampString(timestamp tstamp) {
+   rstring result = (rstring)year(tstamp)+
+   					leadingZero((rstring)(month(tstamp)+1u))+
+   					leadingZero((rstring)day(tstamp)) + 
+   					"_"+
+   					leadingZero((rstring)hour(tstamp))+
+   					leadingZero((rstring)minute(tstamp))+
+   					leadingZero((rstring)second(tstamp));
+   return result;
+}

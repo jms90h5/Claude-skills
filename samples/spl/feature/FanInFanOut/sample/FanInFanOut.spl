@@ -1,0 +1,106 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2010, 2013     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+/** 
+The `FanInFanOut` composite demonstrates how data from multiple input streams can be used to 
+create multiple new output streams of data.
+
+Modify this example to create new applications. Some suggestions: 
+* Try adding assignment statements within the `onTuple InLHS` and `onTuple InRHS` sections to use the `x`, or `y` 
+  attributes from input ports `InLHS` and `InRHS`. For example, assign a new value to the output attributes `w` and `z` 
+  that's a function of the input attributes.
+* Try adding a state section with state variables to keep a running tally of results from each input port, and use the
+  running tally as part of the value assigned to each output port's attributes w and z. 
+*/
+
+namespace sample;
+
+/** 
+Demonstrates processing of multiple input streams to produce multiple new output streams.
+The `spl.utility::Beacon` and `spl.utility::Custom` operators are part of the SPL Standard toolkit.
+
+1. Two `Beacon` operators are used to produce two streams of `float32` values, and three `Beacon` operators are used to 
+   produce three streams of `float64` values.  
+2. A `Custom` operator consumes the two `float32` streams (`SrcA` and `SrcB`) on its first port and consumes the 
+   three `float64` streams (`SrcC`, `SrcD` and `SrcE`) on its second port. Instructions to process the incoming
+   data may be specified in the logic section of the operator configuration.
+3. The `onTuple` sections in the `Custom` operator are triggered each time a tuple arrives on the corresponding input port.
+   You can use the attribute(s) in the tuple arriving on the port, plus any operator-state values, to compute result values
+   and assign those results to the output tuple attribute(s).  One or more output tuples can be submitted to either or both
+   of the output ports.
+4. The first output port `OutA` is fed to three downstream operators, and the second output port `OutB` is fed to two 
+   downstream operators.  
+ */
+composite FanInFanOut 
+{
+  graph 
+
+    // Five Beacon operators produce two streams of float32 values and three streams containing float64 of values.  
+    stream<float32 x> SrcA = Beacon() {}
+
+    stream<float32 x> SrcB = Beacon() {}
+
+    stream<float64 y> SrcC = Beacon() {}
+
+    stream<float64 y> SrcD = Beacon() {}
+
+    stream<float64 y> SrcE = Beacon() {}
+  
+
+    // Custom operator fans-in streams produced by Beacons. Of the five streams, two are handled by input port InLHS, and three 
+    // fan-in to input port InRHS.
+    (stream<float32 w> OutA; // first output port 
+     stream<float64 z> OutB) // second output port
+        = Custom(SrcA, SrcB       as InLHS; // fan-in: SrcA and B are connected to the first port
+                 SrcC, SrcD, SrcE as InRHS) // fan-in: SrcC, D, and E are connected to the second port
+     {                                      // streams connected to same port must have the same schema 
+       logic
+         onTuple InLHS: { 
+           // process a tuple from the first port 
+           // could be from any of the streams connected to the port (SrcA or B)
+         }
+         onTuple InRHS: { 
+           // process a tuple from the second port 
+           // could be from any of the streams connected to the port (SrcC, D, or E)
+         }
+     }
+
+   
+    // Stream OutA is connected to three Custom operators. These operators use a default configuration and demonstrate how an operator's
+    // output port may fan-out to multiple downstream operators' input ports.
+    () as SnkA = Custom(OutA) {}
+
+    () as SnkB = Custom(OutA) {}
+
+    () as SnkC = Custom(OutA) {}
+
+
+    // Stream Out2 is connected to two Custom operators. These operators use a default configuration and demonstrate how an operator's
+    // output port may fan-out to multiple downstream operators' input ports.
+    () as SnkD = Custom(OutB) {}
+
+    () as SnkE = Custom(OutB) {}
+}

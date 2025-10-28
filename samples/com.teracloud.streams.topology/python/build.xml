@@ -1,0 +1,40 @@
+<project name="streamsx.topology.sample.python" default="all" >
+    <description>
+        Build the sample python toolkit.
+    </description>
+
+  <property environment="env"/>
+  <fail unless="env.STREAMS_INSTALL" message="STREAMS_INSTALL not set."/>
+  <property name="streams.install" value="${env.STREAMS_INSTALL}"/>
+
+  <condition property="tk" value="../../com.teracloud.streams.topology" else="${streams.install}/toolkits/com.teracloud.streams.topology">
+    <available file="../../com.streamsx.topology" type="dir"/>
+  </condition>
+  
+  <property name="pytk" location="com.teracloud.streams.topology.pysamples"/>
+  <property name="pythonversion" value="python3"/>
+
+  <target name="all" depends="spldoc,extract"/>
+
+  <target name="extract">
+    <ant dir="${pytk}" target="toolkit" inheritAll="true">
+      <property name="tk" value="${tk}"/>
+    </ant>
+   </target>
+
+   <target name="spldoc" depends="extract">
+    <ant dir="${pytk}" target="spldoc" inheritAll="true">
+      <property name="tk" value="${tk}"/>
+    </ant>
+   </target>
+
+  <target name="clean" >
+    <ant dir="${pytk}" target="clean" inheritAll="true">
+      <property name="tk" value="${tk}"/>
+    </ant>
+    <delete>
+      <fileset dir="topology/spl/vwap_event_time" includes="out.txt"/>
+    </delete>
+  </target>
+
+</project>

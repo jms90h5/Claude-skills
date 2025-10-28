@@ -1,0 +1,372 @@
+/* begin_generated_IBM_copyright_prolog                             */
+/*                                                                  */
+/* This is an automatically generated copyright prolog.             */
+/* After initializing,  DO NOT MODIFY OR MOVE                       */
+/* **************************************************************** */
+/* Licensed Materials - Property of IBM                             */
+/* 5724-Y95                                                         */
+/* (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      */
+/* US Government Users Restricted Rights - Use, duplication or      */
+/* disclosure restricted by GSA ADP Schedule Contract with          */
+/* IBM Corp.                                                        */
+/*                                                                  */
+/* end_generated_IBM_copyright_prolog                               */
+<%
+	unshift @INC, (reverse(glob(sprintf("%s/toolkits/com.teracloud.streams.teda*/impl/nl/include", $ENV{STREAMS_INSTALL}))))[0];
+	require TedaToolkitResource;
+	use MultiLookupCache qw(
+				&intro
+				$inputPort $inTupleName $inTupleType
+				$outputPort $outTupleType
+				$releaseMode $useThreads $segmentNamePrefix $disableLookup
+				$numberOfStores $numberOfSegments
+				%uniqueStores @storeVector @storeSegmentIndexVector
+				%uniqueSegments @segmentVector @segmentUseCountVector
+				@keyTypeVector @valueTypeVector @containerTypeVector
+				$numberOfOutputAttributes
+				@outputAssignementFunctionNameVector @outputAssignementIsFindFunctionVector @outputAssignementIsAssignFunctionVector @outputAssignementAttributeNameVector @outputAssignementStoreIndexVector
+				@outputAssignementParamKeyVector @outputAssignementParamDefaultVector @outputAssignementParamFilterVector @outputAssignementParamValueVector
+				@outputAssignementHasAttributeNameVector @outputAssignementAssociatedFindFunctionIndex
+			);
+
+	intro($model);
+
+	print "\t//storeVector            =@storeVector\n";
+	print "\t//storeSegmentIndexVector=@storeSegmentIndexVector\n";
+	print "\t//segmentVector          =@segmentVector\n";
+	print "\t//segmentUseCount        =@segmentUseCountVector\n";
+	for (my $i = 0; $i < $numberOfStores; $i++) {
+		print "\t//$i\t$storeVector[$i]\t$segmentVector[$storeSegmentIndexVector[$i]]\n";
+	}
+%>
+/* Additional includes go here */
+//boost shm includes
+#include <boost/interprocess/managed_shared_memory.hpp>
+
+using namespace boost::interprocess;
+
+#define MYLOGASP "MultiLookupCache"
+
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+// Constructor
+MY_OPERATOR::MY_OPERATOR():
+	nHits(getContext().getMetrics().getCustomMetricByName("nHits")),
+	nMisses(getContext().getMetrics().getCustomMetricByName("nMisses")),
+<%
+	if ($disableLookup) {
+		print "\tenableLookup(false),\n";
+	}
+	print "\t";
+	for (my $i=0; $i<$numberOfStores; $i++) {
+		print "container_$i(), ";
+	}
+	print "\n\t";
+	for (my $i=0; $i<$numberOfStores; $i++) {
+		print "valueAssign_$i(NULL), ";
+	}
+	if ($useThreads eq 'true') {
+		print "\n\t";
+		for (my $i=0; $i<$numberOfOutputAttributes; $i++) {
+			if ($outputAssignementIsFindFunctionVector[$i] && ($outputAssignementStoreIndexVector[$i] > -1)) {
+				print "key_$i(), ";
+			}
+		}
+	}
+	print "\n\t";
+	for (my $i=0; $i<$numberOfOutputAttributes; $i++) {
+		if ($useThreads eq 'true') {
+			if ($outputAssignementIsFindFunctionVector[$i] && ($outputAssignementStoreIndexVector[$i] > -1)) {
+				print "value_$i(),";
+			}
+		}
+	}
+	print "\n\t";
+	for (my $i=0; $i<$numberOfOutputAttributes; $i++) {
+		if ($outputAssignementIsFindFunctionVector[$i] && ($outputAssignementStoreIndexVector[$i] > -1)) {
+			print "found_$i(false),";
+		}
+	}
+%>
+	initializationRequired(true) {
+	nHits.setValueNoLock(0);
+	nMisses.setValueNoLock(0);
+<%
+	print "\t";
+	for (my $i=0; $i<$numberOfSegments; $i++) {
+		print "segmentNames[$i] = SPL::rstring(); ";
+	}
+	print "\n\t";
+	for (my $i=0; $i<$numberOfSegments; $i++) {
+		print "shmp[$i] = NULL;";
+	}
+	print "\n";
+	for (my $i=0; $i<$numberOfStores; $i++) {
+		print "\tSPLAPPTRC(L_DEBUG, \"Store $storeVector[$i] shm ptype=\" << typeid(container_$i.first).name(), MYLOGASP);\n";
+		print "\tSPLAPPTRC(L_DEBUG, \"Store $storeVector[$i] shm ctype=\" << typeid(ContainerT_${i}::ShmContainer).name(), MYLOGASP);\n";
+	}
+%>
+}
+
+// Destructor
+MY_OPERATOR::~MY_OPERATOR() {
+	releaseAllShm();
+}
+
+// Notify port readiness
+void MY_OPERATOR::allPortsReady() {
+	// Notifies that all ports are ready. No tuples should be submitted before this.
+<%
+	if ($disableLookup) {
+		print "\tenableLookup = ! ".$disableLookup.";\n";
+	}
+	for (my $i=0; $i<$numberOfSegments; $i++) {
+		my $segmentName = "SPL::rstring(\"$segmentVector[$i]\")";
+		if ($segmentNamePrefix) {
+			$segmentName = $segmentNamePrefix." + ".$segmentName;
+		}
+		print "\tsegmentNames[$i] = $segmentName;\n";
+	}
+%>
+	//Source operators can use this method to spawn threads.
+	/*
+	  createThreads(1); // Create source thread
+	*/
+}
+
+// Notify pending shutdown
+void MY_OPERATOR::prepareToShutdown() {
+	// This is an asynchronous call
+}
+
+// Tuple processing for mutating ports 
+void MY_OPERATOR::process(Tuple & tuple, uint32_t port) {
+	<%=$inTupleType%>& <%=$inTupleName%> = static_cast<<%=$inTupleType%>&>(tuple);
+	//shm initialization
+	if ( initializationRequired ) {
+<%							if ($disableLookup) {%>
+		if (enableLookup) {
+<%}%>
+			//open all shm segments
+<%							for (my $i=0; $i<$numberOfSegments; $i++) {%>
+			shmp[<%=$i%>] = new managed_shared_memory(open_only, segmentNames[<%=$i%>].c_str()); //throwing version
+			SPL::uint64 o_<%=$i%> = shmp[<%=$i%>]->get_num_named_objects();
+			SPLAPPTRC(L_DEBUG, "shm segment opened name=" << segmentNames[<%=$i%>] << " sptr=" << shmp[<%=$i%>] << " objects=" << o_<%=$i%>, MYLOGASP);
+<%							}%>
+			//open all stores and create the value asign objects
+<%							for (my $i=0; $i<$numberOfStores; $i++) {%>
+			valueAssign_<%=$i%> = new com::ibm::streams::teda::internal::shm::ValueAssign<<%=$keyTypeVector[$i]%>>(shmp[<%=$storeSegmentIndexVector[$i]%>]);
+			container_<%=$i%> = shmp[<%=$storeSegmentIndexVector[$i]%>]->find<ContainerT_<%=$i%>::ShmContainer>("<%=$storeVector[$i]%>");
+			if (container_<%=$i%>.second == 1) {
+				SPLAPPTRC(L_DEBUG, "Store opened name=<%=$storeVector[$i]%>", MYLOGASP);
+				SPL::uint64 sz = container_<%=$i%>.first->size();
+				std::cout << "Store name=<%=$storeVector[$i]%> size=" << sz << std::endl;
+			} else {
+				SPLAPPTRC(L_ERROR, "Store not opened name=<%=$storeVector[$i]%> count=" << container_<%=$i%>.second, MYLOGASP);
+				THROW(SPL::SPLRuntime, "Object not found! name= << <%=$storeVector[$i]%> segmentName=" << segmentNames[<%=$storeSegmentIndexVector[$i]%>]);
+			}
+<%							}%>
+			SPLAPPTRC(L_DEBUG, "Shm Initialzation complete", MYLOGASP);
+<%							if ($disableLookup) {%>
+		}
+<%}%>
+		initializationRequired = false;
+	}
+
+	//call all find functions
+	int64_t hits = 0;
+	int64_t misses = 0;
+	<%=$outTupleType%> outputTuple;
+
+<%							for (my $i = 0; $i < $numberOfOutputAttributes; $i++) {
+								my $of = $outputAssignementFunctionNameVector[$i];
+								print "//COF '$of' Attribute '$outputAssignementAttributeNameVector[$i]'\n";
+								if ($outputAssignementIsFindFunctionVector[$i]) {
+									my $si = $outputAssignementStoreIndexVector[$i];%>
+	found_<%=$i%> = false; //store index=<%=$si%> store='<%=$storeVector[$si]%>'
+<%									if ($useThreads eq "false") {
+										if (defined $outputAssignementParamFilterVector[$i]) {%>
+	if (<%=$outputAssignementParamFilterVector[$i]->getCppExpression%>) {
+<%										}
+										if ($disableLookup) {%>
+		if (enableLookup) {
+<%										}%>
+			//SPLAPPTRC(L_TRACE, "lookup in store=<%=$storeVector[$si]%> key=" << <%=$outputAssignementParamKeyVector[$i]->getCppExpression()%>, MYLOGASP);
+			<%=$containerTypeVector[$si]%>::ShmContainer::key_type shmKey_<%=$i%>=valueAssign_<%=$si%>->in(<%=$outputAssignementParamKeyVector[$i]->getCppExpression()%>);
+			<%=$containerTypeVector[$si]%>::ShmContainer::const_iterator it_<%=$i%> = container_<%=$si%>.first->find(shmKey_<%=$i%>);
+			if (it_<%=$i%> != container_<%=$si%>.first->end()) {
+				hits++;
+				found_<%=$i%> = true;
+				unsigned char* bufptr = (unsigned char*)it_<%=$i%>->second.c_str();
+				uint64_t s = it_<%=$i%>->second.size();
+				SPL::NativeByteBuffer buf(bufptr, s);
+<%										if ($outputAssignementIsAssignFunctionVector[$i]) {%>
+				buf >> <%=$outputAssignementParamValueVector[$i]->getCppExpression()%>;
+<%										} else {%>
+				buf >> outputTuple.get_<%=$outputAssignementAttributeNameVector[$i]%>();
+				//SPLAPPTRC(L_TRACE, "lookup in store=<%=$storeVector[$si]%> key=" << <%=$outputAssignementParamKeyVector[$i]->getCppExpression()%> << " was found.", MYLOGASP);
+<%										}%>
+			}
+<%										if ($disableLookup) {%>
+		}
+<%										}
+										if ($outputAssignementParamFilterVector[$i] ne '') {%>
+	}
+<%										}
+									}
+								}
+							}
+%>
+	//assign all default values if not found
+<%	for (my $i = 0; $i < $numberOfOutputAttributes; $i++) {
+		my $of = $outputAssignementFunctionNameVector[$i];
+		if ($outputAssignementIsFindFunctionVector[$i]) {
+			my $si = $outputAssignementStoreIndexVector[$i];
+			print "\tif ( ! found_$i) {\n";
+			#print "\t\tSPLAPPTRC(L_TRACE, \"lookup in store=$storeVector[$si] key=\" << ".$outputAssignementParamKeyVector[$i]->getCppExpression()." << \" was not found result=\", MYLOGASP);\n";
+			if (defined $outputAssignementParamDefaultVector[$i]) { #assign defaults
+				my $defaultExp = $outputAssignementParamDefaultVector[$i]->getCppExpression();
+				if ($outputAssignementIsAssignFunctionVector[$i]) {
+					my $val = $outputAssignementParamValueVector[$i]->getCppExpression();
+					print "\t\t$val = $defaultExp; //store index=$si store='$storeVector[$si]'\n";
+				} else {
+					print "\t\toutputTuple.get_$outputAssignementAttributeNameVector[$i]() = $defaultExp; //store index=$si store='$storeVector[$si]'\n";
+				}
+			} else { #assign default element
+				if ($outputAssignementIsAssignFunctionVector[$i]) {
+					my $val = $outputAssignementParamValueVector[$i]->getCppExpression();
+					print "\t\t$val = $valueTypeVector[$si](); //store index=$si store='$storeVector[$si]'\n";
+				} else {
+					print "\t\toutputTuple.get_$outputAssignementAttributeNameVector[$i]() = $valueTypeVector[$si](); //store index=$si store='$storeVector[$si]'\n";
+				}
+			}
+			print "\t\tmisses++;\n";
+			print "\t}\n";
+		}
+	}
+%>
+	//assign the attributes with Has functions & assignement functions
+<%	for (my $i = 0; $i < $numberOfOutputAttributes; $i++) {
+		my $of = $outputAssignementFunctionNameVector[$i];
+		if ($outputAssignementIsFindFunctionVector[$i]) {
+			my $si = $outputAssignementStoreIndexVector[$i];
+			if ($outputAssignementIsAssignFunctionVector[$i]) {
+				print "\toutputTuple.get_$outputAssignementAttributeNameVector[$i]() = found_$i; //$of store index=$si store='$storeVector[$si]'\n";
+			} else {
+				if ($outputAssignementHasAttributeNameVector[$i] ne '') {
+					print "\toutputTuple.get_$outputAssignementHasAttributeNameVector[$i]() = found_$i; //$of store index=$si store='$storeVector[$si]'\n";
+				}
+			}
+		}
+	}
+%>
+	//assignements for all COF with assignement
+<%	my %assignedAttributes;
+	for (my $i = 0; $i < $numberOfOutputAttributes; $i++) {
+		my $of = $outputAssignementFunctionNameVector[$i];
+		if ($outputAssignementIsAssignFunctionVector[$i]) {
+			my $si = $outputAssignementStoreIndexVector[$i];
+			my $value = $outputAssignementParamValueVector[$i];
+			my $valueExp = $value->getSPLExpression();
+			my $valueSPLType = $value->getSPLType;
+			if (SPL::CodeGen::Type::isTuple($valueSPLType)) {
+				my @valueAttributes = SPL::CodeGen::Type::getAttributeNames($valueSPLType);
+				my @valueTypes      = SPL::CodeGen::Type::getAttributeTypes($valueSPLType);
+				for (my $j = 0; $j < @valueAttributes; $j++) {
+					print "\t//$valueExp $valueAttributes[$j]\n";
+					my $outputPortAttribute = $outputPort->getAttributeByName($valueAttributes[$j]);
+					if (defined $outputPortAttribute) {
+						my $outputPortAttributeType = $outputPortAttribute->getSPLType();
+						if ($outputPortAttributeType eq $valueTypes[$j]) {
+							if ($assignedAttributes{$valueAttributes[$j]}) {
+								SPL::CodeGen::errorln(TedaToolkitResource::TEDA_DUPLICATE_ASSIGNMENT("$valueAttributes[$j]"), $outputPortAttribute->getAssignmentSourceLocation());
+							} else {
+								my $val = $outputAssignementParamValueVector[$i]->getCppExpression();
+								print "\toutputTuple.get_$valueAttributes[$j]() = $val.get_$valueAttributes[$j]();\n";
+								$assignedAttributes{$valueAttributes[$j]} = 1;
+							}
+						} else {
+							SPL::CodeGen::warnln(TedaToolkitResource::TEDA_DIFFERENT_ASSIGNMENT_TYPES("$outputPortAttributeType", "$valueAttributes[$j]", "$valueTypes[$j]"), $value->getSourceLocation());
+						}
+					} else {
+							SPL::CodeGen::warnln(TedaToolkitResource::TEDA_MISSING_MATCHING_ATTRIBUTE("$valueAttributes[$j]", "$valueExp"), $value->getSourceLocation());
+					}
+				}
+			} else {
+				SPL::CodeGen::warnln(TedaToolkitResource::TEDA_PARAMETER_NOT_TUPLE_TYPE(), $value->getSourceLocation());
+			}
+			#print "\tSPL::Functions::Utility::assignFrom(outputTuple, value_$i); //store index=$si store='$storeVector[$si]'\n";
+		}
+	}
+%>
+	//assign all AsIs functions and auto assignement
+<%	for (my $i = 0; $i < $numberOfOutputAttributes; $i++) {
+		my $outputAttribute = $outputPort->getAttributeAt($i);
+		my $outputAttributeName = $outputAttribute->getName();
+		my $of = $outputAssignementFunctionNameVector[$i];
+		if ($of eq "AsIs") {
+			if ($assignedAttributes{$outputAttributeName}) {
+				SPL::CodeGen::errorln(TedaToolkitResource::TEDA_DUPLICATE_ASSIGNMENT("$outputAttributeName"), $outputAttribute->getAssignmentSourceLocation());
+			} else {
+				my $cppExp = $outputAssignementParamKeyVector[$i]->getCppExpression();
+				print "\toutputTuple.get_$outputAssignementAttributeNameVector[$i]() = $cppExp;\n";
+			}
+		} elsif ( ! defined $of) { #make auto assignemnt here
+			my $outputAttributeType = $outputAttribute->getSPLType();
+			for (my $j = 0; $j < $inputPort->getNumberOfAttributes(); $j++) {
+				my $inputAttribute = $inputPort->getAttributeAt($j);
+				my $inputAttributeName = $inputAttribute->getName();
+				if ($outputAttributeName eq $inputAttributeName) {
+					my $inputAttributeType = $inputAttribute->getSPLType();
+					if ($outputAttributeType eq $inputAttributeType) {
+						if ( ! $assignedAttributes{$outputAttributeName}) {
+							print "\toutputTuple.get_$outputAttributeName() = $inTupleName.get_$inputAttributeName();\n";
+						}
+					}
+				}
+			}
+		}
+	}
+%>
+	submit(outputTuple, 0);
+
+	nHits.incrementValueNoLock(hits);
+	nMisses.incrementValueNoLock(misses);
+<%	if ($releaseMode eq 'always') {%>
+	releaseAllShm();
+<%	}%>
+}
+
+// Punctuation processing
+void MY_OPERATOR::process(Punctuation const & punct, uint32_t port) {
+	if(punct == Punctuation::FinalMarker) {
+		releaseAllShm();
+	}
+	else if(punct == Punctuation::WindowMarker) {
+<%	if ($releaseMode eq 'punct') {%>
+		releaseAllShm();
+<%	}%>
+		submit(Punctuation::WindowMarker, 0);
+	}
+}
+
+void MY_OPERATOR::releaseAllShm() {
+<%
+	for (my $i=0; $i<$numberOfStores; $i++) {
+		print "\tif (valueAssign_$i != NULL) delete valueAssign_$i;\n";
+		print "\tvalueAssign_$i = NULL;\n";
+		print "\tcontainer_$i.first = NULL; ";
+		print "\tcontainer_$i.second = 0;\n";
+#		print "\tif (container_$i) delete container_$i; container_$i = NULL;\n";
+	}
+	for (my $i=0; $i<$numberOfSegments; $i++) {
+		print "\tif ( shmp[$i] != NULL) delete shmp[$i];\n";
+		print "\tshmp[$i] = NULL;\n";
+	}
+%>
+	initializationRequired = true;
+	SPLAPPTRC(L_DEBUG, "All shm released", MYLOGASP);
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

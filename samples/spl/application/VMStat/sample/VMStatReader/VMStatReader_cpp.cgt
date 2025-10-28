@@ -1,0 +1,79 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE     
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION   
+// OF THIS SAMPLE CODE.                                              
+//                                                                   
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY    
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL    
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM     
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST   
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA    
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                 
+//                                                                   
+// (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2009, 2012     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+#pragma SPL_NON_GENERIC_OPERATOR_IMPLEMENTATION_PROLOGUE
+
+#include <fstream>
+#define VMSTAT_READER_DBG "VMStatReader"
+
+using namespace std;
+
+void MY_OPERATOR::allPortsReady() 
+{
+    period_ = getParameter_period();
+    createThreads(1); 
+}
+
+void MY_OPERATOR::process(uint32_t i)
+{
+    string file = "/proc/vmstat";
+    ifstream f(file.c_str());
+    if (!f) THROW(SPLRuntime, "Cannot open '" << file << "'");
+    SPLAPPTRC(L_DEBUG,"File '" << file << "' has been opened", VMSTAT_READER_DBG);
+    OPort0Type otuple; 
+    while(!getPE().getShutdownRequested()) {
+        f.clear();
+        f.seekg(0, ios::beg);
+        if (f.fail())
+            THROW(SPLRuntime, "Error seeking in file '" << file << "t'");
+        while(!f.eof() && !getPE().getShutdownRequested()) {
+            string metricName;
+            uint64 metricValue;
+            f >> metricName >> metricValue;
+            if (f.eof()) 
+                break;
+            if (f.fail())
+                THROW(SPLRuntime, "Error reading from '" << file << "'");
+            SPLAPPTRC(L_DEBUG, "Read: " << metricName << " " << metricValue, VMSTAT_READER_DBG);
+            TupleIterator iter = otuple.findAttribute(metricName);
+            if(iter==otuple.getEndIterator()) {
+                SPLAPPTRC(L_DEBUG, "Stat '" << metricName << "' is not used", VMSTAT_READER_DBG);
+                continue; 
+            }
+            SPLAPPTRC(L_DEBUG, "Stat '" << metricName << "' is used", VMSTAT_READER_DBG);
+            ValueHandle handle = (*iter).getValue();
+            assert(handle.getMetaType()==Meta::Type::UINT64);
+            uint64 & value = handle;
+            value = metricValue;            
+        }
+        SPLAPPTRC(L_DEBUG, "tuple contents: " << otuple, VMSTAT_READER_DBG);            
+        getPE().blockUntilShutdownRequest(period_);
+        submit(otuple, 0);
+    }
+    f.close();
+    SPLAPPTRC(L_DEBUG,"File '" << file << "' has been closed", VMSTAT_READER_DBG);
+}
+
+#pragma SPL_NON_GENERIC_OPERATOR_IMPLEMENTATION_EPILOGUE

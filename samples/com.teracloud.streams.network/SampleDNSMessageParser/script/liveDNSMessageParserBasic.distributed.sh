@@ -1,0 +1,128 @@
+#!/bin/bash
+
+## Copyright (C) 2011, 2015  International Business Machines Corporation
+## All Rights Reserved
+
+################### parameters used in this script ##############################
+
+#set -o xtrace
+#set -o pipefail
+
+namespace=sample
+composite=LiveDNSMessageParserBasic
+
+self=$( basename $0 .sh )
+here=$( cd ${0%/*} ; pwd )
+projectDirectory=$( cd $here/.. ; pwd )
+[[ -f $STREAMS_INSTALL/toolkits/com.teracloud.streams.network/info.xml ]] && toolkitDirectory=$STREAMS_INSTALL/toolkits
+[[ -f $here/../../../../toolkits/com.teracloud.streams.network/info.xml ]] && toolkitDirectory=$( cd $here/../../../../toolkits ; pwd )
+[[ -f $here/../../../com.teracloud.streams.network/info.xml ]] && toolkitDirectory=$( cd $here/../../.. ; pwd )
+[[ $toolkitDirectory ]] || die "sorry, could not find 'toolkits' directory"
+
+[[ -f $STREAMS_INSTALL/samples/com.teracloud.streams.network/SampleNetworkToolkitData/info.xml ]] && samplesDirectory=$STREAMS_INSTALL/samples/com.teracloud.streams.network
+[[ -f $here/../../SampleNetworkToolkitData/info.xml ]] && samplesDirectory=$( cd $here/../.. ; pwd )
+[[ $samplesDirectory ]] || die "sorry, could not find 'samples' directory"
+
+buildDirectory=$projectDirectory/output/build/$composite.distributed
+dataDirectory=$projectDirectory/data
+logDirectory=$projectDirectory/log
+
+lookupPort=23456
+
+lookupWindowOptions=(
+-title "$self: DNS Lookups"
+-geometry 130x20
++sb
+)
+
+networkInterface=$( ifconfig ens6f3 1>/dev/null 2>&1 && echo ens6f3 || echo eth0 ) 
+
+coreCount=$( cat /proc/cpuinfo | grep processor | wc -l )
+
+domain=CapabilitiesDomain
+instance=CapabilitiesInstance
+
+toolkitList=(
+$toolkitDirectory/com.teracloud.streams.network
+$samplesDirectory/SampleNetworkToolkitData
+)
+
+compilerOptionsList=(
+--verbose-mode
+--rebuild-toolkits
+--spl-path=$( IFS=: ; echo "${toolkitList[*]}" )
+--part-mode=FALL
+--allow-convenience-fusion-options
+--optimized-code-generation
+--cxx-flags=-g3
+--static-link
+--main-composite=$namespace::$composite
+--output-directory=$buildDirectory 
+--data-directory=data
+--num-make-threads=$coreCount
+)
+
+compileTimeParameterList=(
+)
+
+submitParameterList=(
+-P networkInterface=$networkInterface
+-P "inputFilter=udp port 53"
+-P metricsInterval=1.0
+-P timeoutInterval=60.0
+-P lookupPort=$lookupPort
+)
+
+tracing=info # ... one of ... off, error, warn, info, debug, trace
+
+################### functions used in this script #############################
+
+die() { echo ; echo -e "\e[1;31m$*\e[0m" >&2 ; exit 1 ; }
+step() { echo ; echo -e "\e[1;34m$*\e[0m" ; }
+
+################################################################################
+
+[ -d $logDirectory ] || mkdir -p $logDirectory || echo "sorry, could not create directory '$logDirectory', $?"
+
+cd $projectDirectory || die "Sorry, could not change to $projectDirectory, $?"
+
+#[ ! -d $buildDirectory ] || rm -rf $buildDirectory || die "Sorry, could not delete old '$buildDirectory', $?"
+[ -d $dataDirectory ] || mkdir -p $dataDirectory || die "Sorry, could not create '$dataDirectory, $?"
+
+step "configuration for distributed application '$namespace.$composite' ..."
+( IFS=$'\n' ; echo -e "\nStreams toolkits:\n${toolkitList[*]}" )
+( IFS=$'\n' ; echo -e "\nStreams compiler options:\n${compilerOptionsList[*]}" )
+( IFS=$'\n' ; echo -e "\n$composite compile-time parameters:\n${compileTimeParameterList[*]}" )
+( IFS=$'\n' ; echo -e "\n$composite submission-time parameters:\n${submitParameterList[*]}" )
+echo -e "\ndomain: $domain"
+echo -e "\ninstance: $instance"
+echo -e "\ntracing: $tracing"
+
+step "building distributed application '$namespace.$composite' ..."
+sc ${compilerOptionsList[*]} -- ${compileTimeParameterList[*]} || die "Sorry, could not build '$composite', $?" 
+
+step "granting read permission for instance '$instance' log directory to user '$USER' ..."
+sudo chmod o+r -R /tmp/Streams-$domain/logs/$HOSTNAME/instances
+
+step "submitting distributed application '$namespace.$composite' ..."
+bundle=$buildDirectory/$namespace.$composite.sab
+streamtool submitjob -i $instance -d $domain --config tracing=$tracing "${submitParameterList[@]}" $bundle || die "sorry, could not submit application '$composite', $?"
+
+step "opening window for TCP stream from standalone application '$namespace.$composite' ..."
+( xterm "${lookupWindowOptions[@]}" -e " while [ true ] ; do ncat --recv-only localhost $lookupPort && break ; sleep 1 ; done " ) &
+
+step "waiting while application runs ..."
+sleep 25
+
+step "getting logs for instance $instance ..."
+streamtool getlog -i $instance -d $domain --includeapps --file $logDirectory/$composite.distributed.logs.tar.gz || die "sorry, could not get logs, $!"
+
+step "cancelling distributed application '$namespace.$composite' ..."
+jobs=$( streamtool lsjobs -i $instance -d $domain | grep $namespace::$composite | gawk '{ print $1 }' )
+streamtool canceljob -i $instance -d $domain --collectlogs ${jobs[*]} || die "sorry, could not cancel application, $!"
+
+step "closing window for TCP stream, if necessary ..."
+pids=$( ps -ef | grep "ncat .* $lookupPort" | grep -v grep | awk '{print $2}' | tr '\n' ' ' )
+[ -n "$pids" ] && echo "stopping ncat process IDs: $pids ..." && kill -SIGTERM $pids 
+
+exit 0

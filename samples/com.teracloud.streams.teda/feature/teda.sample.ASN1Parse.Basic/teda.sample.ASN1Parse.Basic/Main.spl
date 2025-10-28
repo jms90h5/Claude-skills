@@ -1,0 +1,113 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.ASN1Parse.Basic;
+
+use spl.time::strftime;
+use com.teracloud.streams.teda.parser.binary::ASN1Parse;
+
+/**
+ * Evaluate orders for sheets of paper, which are stored in ASN.1 format.
+ * Please refer to the makefile to see how the type definitions and the
+ * test data is generated.
+ * 
+ * Please call "make all run" to execute the sample from command line. 
+ * 
+ * You can generate the type definitions with one of the below commands:
+ * 1) make generate-types
+ * 2) spl-schema-from-asn1 --output teda.sample.ASN1Parse.Basic/Types.spl --namespace teda.sample.ASN1Parse.Basic etc/grammar.asn
+ * 
+ * You can generate the test data with one of the below commands:
+ * 1) make build-test-data
+ * 2) asn1-data-from-xml --grammar etc/grammar.asn --output data/input.bin data/*.xml
+ */
+composite Main
+{
+	graph
+		/**
+		 * Read each detected file in chunks of several bytes.
+		 */
+		stream<rstring filename, int64 blockNo, blob payload> DataBlocks as O = FileSource()
+		{
+			param
+				file: "input.bin";
+				format: block;
+				blockSize: 16u;
+			output O:
+				filename = FileName(),
+				blockNo = TupleNumber();
+		}
+
+		/**
+		 * Decode the ASN.1 binary data stream.
+		 */
+		(
+			stream<Order> Records as O
+		) as ParsedRecords = ASN1Parse(DataBlocks as I) 
+		{
+			param
+				payloadAttribute: payload;
+				structureDocument: "etc/grammar.asn";
+				trigger: "/orders";
+				checkConstraints: true;
+		}
+
+		/**
+		 * Transform the 'ordered' timestamp into a human-readable format
+		 * and add an 0-based index.
+		 */
+		stream<I, tuple<int32 index, rstring orderDateAndTime>> MoreDetailedRecords as O = Functor(Records as I)
+		{
+			logic
+			state:
+			{
+				mutable int32 _index = 0;
+				mutable rstring _value = "";
+			}
+			onTuple I:
+			{
+				mutable Sys.tm _tmp = {};
+				gmtime(I.ordered, _tmp);
+				_value = strftime(_tmp, "%Y-%m-%d %T");
+			}
+			onPunct I:
+			{
+				_index = 0;
+			}
+			output O:
+				index = _index++,
+				orderDateAndTime = _value;
+		}
+
+		/**
+		 * Save the generated data tuples.
+		 */
+		() as DataSink = FileSink(MoreDetailedRecords)
+		{
+			param
+				file: "records.txt";
+				format: txt;
+		}
+}

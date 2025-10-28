@@ -1,0 +1,102 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.ASN1Parse.Assignments;
+
+use com.teracloud.streams.teda.parser.binary::ASN1Parse;
+
+composite Main
+{
+	type
+		/**
+		 * This type is a full mapping of the ASN.1 fields (relative to the
+		 * trigger) to SPL attributes.
+		 */
+		Record = tuple
+		<
+			// The filename is taken from the input stream.
+			rstring filename,
+			// The block number is taken from the input attribute 'blockNo'.
+			int64 blockNumber,
+			// D is a SEQUENCE containing the UTF8String field 'string'.
+			// The SPL attribute is a list because C is a choice. The
+			// list will either be empty or will have exactly one element.
+			// The SEQUENCE requires that the list contains a tuple type.
+			// The name of the inner SPL attribute 'string' is identical
+			// to the name of the ASN.1 field.
+			list<tuple<rstring string>> d,
+			// E is a SEQUENCE containing the INTEGER field 'integer'
+			// and a SEQUENCE OF UTF8String, stored as field 'strings'.
+			// The SPL attribute is a list because C is a choice. The
+			// list will either be empty or will have exactly one element.
+			// The SEQUENCE requires that the list contains a tuple type.
+			// The names of the inner SPL attributes 'integer' and 'strings'
+			// are identical to the name of the ASN.1 fields.
+			// The SPL attribute 'strings' is a list because the ASN.1
+			// field 'strings' is repeating (SEQUENCE OF).
+			list<tuple<int64 integer, list<rstring> strings>> e
+		>;
+	
+	graph
+		/**
+		 * Read each detected file in chunks of several bytes.
+		 */
+		stream<rstring filename, int64 blockNo, blob payload> DataBlocks as O = FileSource()
+		{
+			param
+				file: "input.bin";
+				format: block;
+				blockSize: 128u;
+			output O:
+				filename = FileName(),
+				blockNo = TupleNumber();
+		}
+
+		/**
+		 * Decode the ASN.1 binary data stream.
+		 */
+		(
+			stream<Record> Records as O
+		) as ParsedRecords = ASN1Parse(DataBlocks as I) 
+		{
+			param
+				payloadAttribute: payload;
+				structureDocument: "etc/grammar.asn";
+				trigger: "/b/c";
+				checkConstraints: true;
+			output O:
+				blockNumber = fromInput(blockNo);
+		}
+
+		/**
+		 * Save the generated data tuples.
+		 */
+		() as DataSink = FileSink(Records)
+		{
+			param
+				file: "records.txt";
+				format: txt;
+		}
+}

@@ -1,0 +1,259 @@
+/* begin_generated_IBM_copyright_prolog                             */
+/*                                                                  */
+/* This is an automatically generated copyright prolog.             */
+/* After initializing,  DO NOT MODIFY OR MOVE                       */
+/* **************************************************************** */
+/* Licensed Materials - Property of IBM                             */
+/* 5724-Y95                                                         */
+/* (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      */
+/* US Government Users Restricted Rights - Use, duplication or      */
+/* disclosure restricted by GSA ADP Schedule Contract with          */
+/* IBM Corp.                                                        */
+/*                                                                  */
+/* end_generated_IBM_copyright_prolog                               */
+namespace <APPLICATION_NAMESPACE>.lookuptypes;
+
+/**
+ * This composite collects the tuple definitions of the common tuple types and customer specific tuple types
+ */
+public composite LookupMgrTypes {
+
+type
+	// ----- Common types -----
+/**
+The error IDs:
+ * **LM000** none error - default value
+ * **LM001** the command reader - command file FileSource exception
+ * **LM002** the command reader - command parser fault
+ * **LM003** the command reader - command type checker fault
+ * **LM004** the command reader - repository name fault
+ * **LM005** the command reader - command file empty
+ * **LM006** the source splitter - CSV data FileSource exception
+ * **LM007** the source splitter - CSV data parser fault
+ * **LM008** the source splitter - ODBC request fault like connection DB - Punct for Processed - it's like exception CSV  
+ * **LM009** the cache writer - Cache writer exceptions from shmLibrary.
+ * **LM010** the cache writer - If data content is not consistent then report.
+ * **LM011** the DB status checker - Errors reported by DB status checker.
+ */
+ 		static ErrorID = enum {
+			LM000,
+			LM001,
+			LM002,
+			LM003,
+			LM004,
+			LM005,
+			LM006,
+			LM007,
+			LM008,
+			LM009,
+			LM010,
+			LM011
+		};
+/**
+Tuple used to move the file by Move operator.
+* **filename:** name of the file
+* **destPath:** the destination path
+* 
+*/	
+	static FileMoveSchema = tuple<
+		rstring filename,
+		rstring destPath 
+	>;
+/**
+Tuple to provide the filename.
+* **filename:** name of the file
+* 
+*/	
+	static FileName = tuple<
+		rstring filename
+	>;
+ /**
+ This tuple provides filename and file line content. It will be used between FileSource and CSVParser
+ * **filename:** name of file
+ * **payload:** line content
+ *
+ */
+ 	static LookupMgrLineContent = tuple <
+ 		rstring payload,
+ 		rstring filename
+ 	>;
+ /**
+This is used for Acknowledge Streams reporting finalization of repository write processes.
+* **command:** used command
+* **finalFlag:** flag if finished write process
+* 
+*/	
+	static LookupMgrControlAck = tuple <
+		rstring command,
+		boolean finalFlag
+	>;
+/**
+This tuple definition provides number of commands read in the command file.
+* **filename:** name of the file
+* **sentCommands:** number of commands
+* 
+*/	
+	static LookupMgrCommandFileInfo = tuple<
+		rstring filename,
+		int32 sentCommands,
+		boolean readerError
+	>;
+/**
+The tuple includes the information of a command line in the command file. It provides information when the processing started.
+* **filename:** name of the file
+* **command:** used command
+* **repositoryName:** name of the segment
+* **commandStartedAt:** time stamp of process begin
+* 
+*/	
+	static LookupMgrCommandLine = tuple<
+		rstring filename,
+		rstring command,
+		rstring repositoryName,
+		rstring commandStartedAt
+	>;
+/**
+The tuple including statistics about processed repository write operation.
+* **repositoryname:** name of the segment
+* **lookupReserved:** bytes reserved for repository segment
+* **lookupFree:** free bytes in repository segment
+* **processedEntries:** number of processed tuples/entries at repository segment
+* 
+*/	
+	static LookupMgrSegmentStatistic = tuple<
+		rstring repositoryname,
+		uint64 lookupReserved,
+		uint64 lookupFree,
+		uint64 processedEntries
+	>;
+/**
+This tuple is used when repository segment process is finished on a host.
+* **repositoryname:** name of the segment.
+* **statistics:** the map collecting segment statistics by the name of segment used in repository definition.
+* 
+*/	
+	static SchemaRepositoryReady = tuple<
+		rstring repositoryname,
+		map<rstring, LookupMgrSegmentStatistic> statistics 
+	>;
+/**
+This tuple collects results of command processing on a host.
+* **command:** used command
+* **hostname:** name of the processing host.
+* **hostId:** unique channel of parallelism defining the host channel 
+* **nHosts:** number of hosts used for parallelism of repository distribution
+* **filename:** name of the file
+* **commandStartedAt:** time stamp of process begin
+* **SchemaRepositoryReady:** content of `SchemaRepositoryReady` tuple.
+* 
+*/	
+	static LookupMgrCommandResult = tuple<
+		tuple<rstring command>,
+		tuple<rstring hostname>,
+		tuple<int32 hostId>,
+		tuple<int32 nHosts>, // workaround: parallelism N in sub-composite
+		tuple<rstring filename>,
+		tuple<rstring commandStartedAt>,
+		SchemaRepositoryReady
+	>;
+/**
+This tuple provides list of segments involved in write processing.
+* **commandFilename:** name of the file
+* **command:** used command
+* **commandStartedAt:** time stamp of process begin
+* **nHosts:** number of hosts used for parallelism of repository distribution
+* **repositories:** list of segments/repositories.
+* 
+*/	
+	static LookupMgrCommandData = tuple<
+		rstring commandFilename,
+		rstring command,
+		rstring commandStartedAt,
+		int32 nHosts, // workaround: parallelism N in sub-composite
+		list<rstring> repositories
+	>;
+/**
+It provides statistics collected during write processing on a host.
+* **filename:** name of the file
+* **command:** used command
+* **commandStartedAt:** time stamp of process begin
+* **commandProcessedAt:** time stamp of process end
+* **hostStatistics:** list of statistics for each host.
+* 
+*/	
+	static LookupMgrStatisticsSchema = tuple<
+		rstring filename,
+		rstring command,
+		rstring commandStartedAt,
+		rstring commandProcessedAt,
+		list<rstring> hostStatistics
+	>;
+/**
+This tuple includes error information generated by ODBCRun operator.
+* **sqlcode:** Used SQL code.
+* **sqlmessage:** Error message.
+* **sqlstate:** SQL state information.
+* 
+*/	
+	static OdbcErrorOutput = tuple<
+		int32 sqlcode, 
+		rstring sqlmessage, 
+		rstring sqlstate
+	>;
+/**
+This tuple provides error information to subsequent composites and operators.
+* **filename:** name of the file
+* **command:** used command
+* **segment:** the name of repository segment
+* **errorId:** the error ID like exception type or sql code
+* **errorMessage:** the provided message output
+* **continueOnError:** resume state. If the value set to 'true' then the ITE file processing can be continued else it has to stay in STOPPED state 
+* 
+*/	
+	static LookupMgrErrorInfo = tuple<
+		rstring command,
+		rstring segment,
+		LookupMgrTypes.ErrorID errorId,
+		rstring errorMessage,
+		boolean continueOnError
+	>;
+
+ /**
+ This tuple provides exception information to statistics if any caught.
+ * **exceptionType:** the type of exception
+ * **exceptionText:** the text provided by the exception
+ * 
+ */	
+ 	static LookupMgrFileExceptionInfo = tuple<
+ 		rstring exceptionType,
+ 		rstring exceptionText
+ 	>;
+
+/**
+This tuple collects and provides the list of error information to the lookup manager collector.
+* **filename:** This is the name of the processed command file
+* **listOfErrors:** This is the list of errors defined by the 'LookupMgrErrorInfo'
+* 
+*/	
+	static LookupMgrErrorList = tuple<
+		rstring filename,
+		list<LookupMgrTypes.LookupMgrErrorInfo> listOfErrors
+	>;
+
+/**
+* This tuple schema describes DB connection
+* **dbConnactionMap:** The DB connection map, that can include following ODBCRun configuration parameter:
+* * **connection.database**
+* * **connection.user**
+* * **connection.password**
+* * **connection.reconnect**
+* * **connection.disconnect**
+* The map follows the <parameter-name,parameter-value> format. Please read the DB toolkit reference for more details.
+*/
+	static LookupMgrDbConnection = tuple<
+		map<rstring,rstring> dbConnactionMap
+	>;
+
+	// ----- Customized types -----
+<CUSTOM_STREAMS_SCHEMAS>
+}

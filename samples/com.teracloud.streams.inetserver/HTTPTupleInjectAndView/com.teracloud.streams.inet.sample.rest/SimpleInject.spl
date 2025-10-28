@@ -1,0 +1,101 @@
+/*
+# Licensed Materials - Property of IBM
+# Copyright IBM Corp. 2018, 2019 
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with
+# IBM Corp.
+*/
+namespace com.teracloud.streams.inet.sample.rest;
+
+use com.teracloud.streams.inet.rest::*;
+
+/**
+ * Simple example of an using `com.teracloud.streams.inet.rest.HTTPTupleInjection` to feed tuples
+ * into Stream InjectedTuples which are then visible through
+ * the windowed `com.teracloud.streams.ient.rest.HTTPTupleView` operator.
+ * 
+ * Open the browser and enter url [https://localhost:1443]
+ * 
+ * Tuples are injected using the form input at: [https://127.0.0.1:1443/InjectedTuples/ports/output/0/form]
+ * 
+ * or a POST to [https://127.0.0.1:1443/InjectedTuples/ports/output/0/inject]
+ * 
+ * And then are visible as a JSON object [https://127.0.0.1:1443/InjectView/ports/input/0/tuples]
+ * 
+ * This fixed URL shows information for all ports available through URLs
+ * in the HTTP server [https://127.0.0.1:1443/ports/info]
+ *
+ * These URLs show the meta data for the ports using a JSON object:
+ * * [https://127.0.0.1:1443/InjectedTuples/ports/output/0/info] - Output port for the injected tuples.
+ * * [https://127.0.0.1:1443/InjectView/ports/input/0/info] - Input port to `HTTPTupleView`.
+ * 
+ * To run this example execute:
+ * 
+ *     make
+ *     output/bin/standalone
+ *     Point browser to [https://localhost:1443] and accept the SEC_ERROR_UNKNOWN_ISSUER error and add an exception.
+ * 
+ * This sample is enabled to use a secure connection by default. The server key and self signed certificate are stored 
+ * in key store etc/keystore.jks.
+ * 
+ * To enable client authentication with client certificate add parameter `trustStore: "etc/cacerts.jks` to all three 
+ * rest operators and import the client key/certificate file `etc/client.pfx` into your browser certificate manager.
+ * 
+ * Alternatively the import of the key- and trust-material from an Streams application configuration is supported.
+ * Add parameter `sslAppConfigName: "streams-certs"` to all tree rest operators and remove `certificateAlias`, 
+ * `keyStore`, `keyPassword` and `trustStore`.
+ * Generate the application configuration:
+ * 		streamtool mkappconfig --description 'server cert and trust store' --property "server.jks=$(base64 --wrap=0 etc/keystore.jks)" --property "server.pass=changeit" --property "cacerts.jks=$(base64 --wrap=0 etc/cacerts.jks)" streams-certs
+ * 
+ */
+public composite SimpleInject {
+	
+	graph
+		stream<ustring a_ustring, rstring b_rstring, int32 c_int32, float32 d_float32> InjectedTuples = HTTPTupleInjection() {
+			param
+				port: 1443;
+				certificateAlias: "mykey";
+				keyStore: "etc/keystore.jks";
+				keyPassword: "changeit";
+				//trustStore: "etc/cacerts.jks";
+				//sslAppConfigName: "streams-certs";
+			config
+				// Ensure the operators are in a single PE to have a single web-server
+				placement: partitionColocation("jetty1443");
+		}
+	
+		() as InjectView = HTTPTupleView(InjectedTuples) {
+			window
+				InjectedTuples: sliding, count(10), count(1);
+			param
+				port: 1443;
+				certificateAlias: "mykey";
+				keyStore: "etc/keystore.jks";
+				keyPassword: "changeit";
+				//trustStore: "etc/cacerts.jks";
+				//sslAppConfigName: "streams-certs";
+				context: "state";
+				contextResourceBase: "opt/statetest";
+			config
+				// Ensure the operators are in a single PE to have a single web-server
+				placement: partitionColocation("jetty1443");
+		}
+	
+		() as WCT = WebContext() {
+			param
+				port: 1443;
+				certificateAlias: "mykey";
+				keyStore: "etc/keystore.jks";
+				keyPassword: "changeit";
+				//trustStore: "etc/cacerts.jks";
+				//sslAppConfigName: "streams-certs";
+				context: "wct";
+				contextResourceBase: "opt/wctest";
+			config
+				// Ensure the operators are in a single PE to have a single web-server
+				placement: partitionColocation("jetty1443");
+		}
+
+	config
+		restartable: false;
+}

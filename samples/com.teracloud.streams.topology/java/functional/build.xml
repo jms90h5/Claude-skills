@@ -1,0 +1,179 @@
+<project name="FunctionalSamples" default="all" basedir=".">
+    <description>
+        Build the functional samples.
+    </description>
+
+  <property environment="env"/>
+  <fail unless="env.STREAMS_INSTALL" message="STREAMS_INSTALL not set."/>
+  <property name="streams.install" value="${env.STREAMS_INSTALL}"/>
+
+  <!-- If the samples are at the same level as the toolkit
+       then use the jar from that toolkit (open source distribution)
+       otherwise assume they are in the product
+  -->
+  <property name="tk.lib.gen" value="com.teracloud.streams.topology/lib"/>
+  <property name="tk.jarname" value="com.teracloud.streams.topology.jar"/>
+  <property name="os.tk.lib" location="../../../${tk.lib.gen}"/>
+  <available file="${os.tk.lib}/${tk.jarname}"
+             property="tk.jar"
+             value="${os.tk.lib}/${tk.jarname}"/>
+  <property name="tk.jar"
+     location="${streams.install}/toolkits/${tk.lib.gen}/${tk.jarname}"/>
+
+  <property name="classes" location="classes"/>
+  <property name="jarname" value="functionalsamples.jar"/>
+
+  <path id="compile.classpath">
+    <pathelement location="${tk.jar}" />
+    <pathelement location="${streams.install}/lib/com.ibm.streams.operator.samples.jar" />
+  </path>
+
+  <path id="run.classpath">
+    <pathelement location="${jarname}" />
+    <path refid="compile.classpath"/>
+  </path>
+
+  <target name="all" depends="jar"/>
+
+ <target name="init">
+    <mkdir dir="${classes}"/>
+  </target>
+
+  <target name="compile" depends="init">
+    <javac debug="true" 
+	   srcdir="${basedir}/src" 
+	   destdir="${classes}"
+	   classpathref="compile.classpath"
+	   includeantruntime="no"
+	   />
+    <!--<ant dir="../../scala" target="all" useNativeBasedir="true" inheritAll="no"/>-->
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${jarname}" basedir="${classes}"/>
+  </target>
+
+  <target name="clean" >
+    <delete dir="${classes}"/>
+    <delete file="${jarname}"/>
+  </target>
+
+  <target name="run.helloworld">
+     <java classname="simple.HelloWorld" classpathref="run.classpath" fork="yes"/>
+  </target>
+
+  <target name="run.temperatureSensor.bundle">
+     <java classname="simple.TemperatureSensor" classpathref="run.classpath" fork="yes"/>
+  </target>
+
+  <target name="run.temperatureSensor">
+     <java classname="simple.TemperatureSensor" classpathref="run.classpath" fork="yes">
+       <arg value="STANDALONE"/>
+     </java>
+  </target>
+
+  <target name="run.echo">
+     <java classname="simple.Echo" classpathref="run.classpath" fork="yes">
+       <arg value="this is"/>
+       <arg value="being run"/>
+       <arg value="from ant!"/>
+     </java>
+  </target>
+     
+  <!-- Each word of this quote is a tuple in this example -->
+  <!--    It is not in the stars to hold our destiny but in ourselves -->
+  <!-- the output will only include destiny as the filter is starts with d -->
+  <target name="run.filterecho">
+  	 <echo message="Expect only 'destiny' to be output" />
+     <java classname="simple.FilterEcho" classpathref="run.classpath" fork="yes">
+       <arg value="It"/> <arg value="is"/> <arg value="not"/>
+       <arg value="in"/> <arg value="the"/> <arg value="stars"/>
+       <arg value="to"/> <arg value="hold"/> <arg value="our"/>
+       <arg value="destiny"/> <arg value="but"/> <arg value="in"/>
+       <arg value="ourselves"/>
+     </java>
+  </target>
+
+  <target name="run.vwap">
+     <java classname="vwap.Vwap" classpathref="run.classpath" fork="yes">
+       <arg value="STANDALONE"/>
+     </java>
+  </target>
+
+  <target name="run.vwap.distributed">
+     <fail unless="env.STREAMS_DOMAIN_ID" message="STREAMS_DOMAIN_ID not set."/>
+     <fail unless="env.STREAMS_INSTANCE_ID" message="STREAMS_INSTANCE_ID not set."/>
+     <echo message="Job will be submitted to Streams instance ${env.STREAMS_INSTANCE_ID} in domain ${env.STREAMS_DOMAIN_ID}" />
+     <java classname="vwap.Vwap" classpathref="run.classpath" fork="yes">
+       <arg value="DISTRIBUTED"/>
+     </java>
+  </target>
+
+  <target name="run.publish">
+     <java classname="topic.PublishBeacon" classpathref="run.classpath" fork="yes"/>
+  </target>
+  <target name="run.subscribe">
+     <java classname="topic.SubscribeBeacon" classpathref="run.classpath" fork="yes"/>
+  </target>
+
+  <target name="run.fizzbuzz">
+     <java classname="games.FizzBuzz" classpathref="run.classpath" fork="yes"/>
+  </target>
+
+  <!-- Run the trending example, assuming there is a set of text files with
+       tweets in csv format in $HOME/tweets
+  -->
+  <target name="run.twitter.trending">
+     <java classname="twitter.TwitterTrending" classpathref="run.classpath" fork="yes">
+     <arg value="EMBEDDED"/>
+     <arg value="${user.home}/tweets"/>
+     </java>
+  </target>
+
+  <target name="run.kafka">
+    <java classname="kafka.KafkaSample" classpathref="run.classpath" fork="yes">
+      <arg value="STANDALONE"/>
+    </java>
+  </target>
+
+  <target name="run.kafka.distributed">
+    <fail unless="env.STREAMS_DOMAIN_ID" message="STREAMS_DOMAIN_ID not set."/>
+    <fail unless="env.STREAMS_INSTANCE_ID" message="STREAMS_INSTANCE_ID not set."/>
+    <echo message="Job will be submitted to Streams instance ${env.STREAMS_INSTANCE_ID} in domain ${env.STREAMS_DOMAIN_ID}" />
+    <java classname="kafka.KafkaSample" classpathref="run.classpath" fork="yes">
+      <arg value="DISTRIBUTED"/>
+    </java>
+  </target>
+
+  <target name="run.mqtt">
+    <java classname="mqtt.MqttSample" classpathref="run.classpath" fork="yes">
+      <arg value="STANDALONE"/>
+    </java>
+  </target>
+
+  <target name="run.mqtt.distributed">
+    <fail unless="env.STREAMS_DOMAIN_ID" message="STREAMS_DOMAIN_ID not set."/>
+    <fail unless="env.STREAMS_INSTANCE_ID" message="STREAMS_INSTANCE_ID not set."/>
+    <echo message="Job will be submitted to Streams instance ${env.STREAMS_INSTANCE_ID} in domain ${env.STREAMS_DOMAIN_ID}" />
+    <java classname="mqtt.MqttSample" classpathref="run.classpath" fork="yes">
+      <arg value="DISTRIBUTED"/>
+    </java>
+  </target>
+
+  <target name="doc" depends="docAll" />
+
+  <target name="docAll">
+       <mkdir dir="javadoc"/>
+       <javadoc destdir="javadoc" classpathref="compile.classpath"
+          Overview="src/overview.html"
+          Windowtitle="Java Functional Samples"
+          Footer="streamsx.topology @ IBMStreams GitHub"
+          linksource="yes"
+          sourcepath="src"
+          source="8"
+          additionalparam="-Xdoclint:none"
+          >
+       </javadoc>
+  </target>
+
+</project>

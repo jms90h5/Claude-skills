@@ -1,0 +1,14 @@
+Overview: Ping will invoke the Pinger operator using the host specified by the
+command line parameter and print the results. 
+
+The Pinger operator is a primitive operator written in C++. It will run the
+'ping' utility and submit the resulting output as tuple.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./bin/standalone host=$HOSTNAME
+
+Notes:
+  - The command line parameter specifies the host name.

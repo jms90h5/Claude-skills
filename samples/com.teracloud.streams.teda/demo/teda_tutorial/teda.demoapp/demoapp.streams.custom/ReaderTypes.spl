@@ -1,0 +1,34 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace demoapp.streams.custom;
+
+use demoapp.streams::*;
+
+/**
+ * Defines the common record schema that is the superset of all required
+ * attributes across all parsing operators. For example, your application
+ * supports the ASN.1 and CSV input formats. Each input format has a large
+ * set of attributes but your business logic requires three attributes from
+ * the ASN.1 and four attributes from the CSV input only. Two attributes
+ * have the same semantic for both input formats. The common record schema
+ * has five attributes, two with the same semantic from both inputs, one
+ * attribute for ASN.1 inputs and two attributes for CSV inputs.
+ * 
+ * The ReaderRecordType type is part of the 
+ * <APPLICATION_NAMESPACE>.streams::TypesCommon.ReaderOutStreamType
+ * schema for the record output port of the 
+ * <APPLICATION_NAMESPACE>.chainprocessor.reader.custom::FileReaderCustom
+ * composite. 
+ */
+type ReaderRecordType = TypesCustom.MobileSampleMsgFlat, TypesCustom.TransformResultType;

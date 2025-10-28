@@ -1,0 +1,98 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+/**
+ * The sample demonstrates the usage of the ScheduledBeacon operator with
+ * a variable schedule that can be changed via the control port.
+ *
+ * The preset tuple submission schedule, that can be overridden with submission
+ * time values, produces 5 tuples in a minute at second 10, 20, 30, 40 and 50.
+ *
+ * Also an initial delay and an initial trigger tuple can be configured by
+ * providing submission time values.
+ */
+
+/*
+This sample sample uses the Schedule operator while the schedule is changed from an input stream.
+The initial schedule is defined with parameter month, wday, hour, minute. This produces never a trigger output.
+The schedule is changed 3 times and produces a trigger event at
+- tensec = 0,
+- tensec = 1,
+- tensec = 2
+*/
+
+namespace teda.sample.ScheduledBeacon.WithInput;
+
+use com.teracloud.streams.teda.utility::ScheduledBeacon;
+
+composite Main
+{
+graph
+
+	// Submit 3 different schedules.
+	stream<rstring hour, rstring tsec> ScheduleStream as O = Beacon()
+	{
+		param
+			initDelay : 20.0; //give time that the scheduler uses the initial schedule
+			iterations : 3;
+			period : 60.0;
+		output O: hour = "*", tsec = (rstring)IterationCount();
+	}
+
+	// Submit tuples at the configured schedule.
+	stream <uint64 count> TriggerStream as O = ScheduledBeacon(ScheduleStream as I)
+	{
+		param
+			month : "*";
+			wday : "*";
+			hour : "*";
+			minute : "*";
+			tensec : "*";
+			hourAttribute : hour;
+			tensecAttribute : tsec;
+			initialTrigger : true;
+		output O: count = IterationCount();
+	}
+
+	// Print the trigger tuples and the time stamp.
+	() as Sink = Custom(TriggerStream as I)
+	{
+		logic
+		state:
+		{
+			mutable boolean first = true;
+			timestamp startTime = getTimestamp();
+		}
+		onTuple I:
+		{
+			if (first)
+			{
+				printStringLn("Start at:" + ctime(startTime));
+				first = false;
+			}
+			printStringLn((rstring)I + " now:" + ctime(getTimestamp()));
+		}
+	}
+}

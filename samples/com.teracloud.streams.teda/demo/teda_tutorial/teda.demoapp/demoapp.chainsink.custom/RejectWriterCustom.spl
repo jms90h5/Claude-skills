@@ -1,0 +1,97 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainsink.custom;
+
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+use demoapp.functions::*;
+
+/**
+ * Implements a user-defined output format for rejected tuples. You might want
+ * to replace the spl.adapter::FileSink operator with another sink operator or
+ * you might want to, for example, send alarms.
+ *
+ * Turn the **ite.storage.rejectWriter.custom** parameter on to activate this
+ * composite operator.
+ * 
+ * Adapt the code blocks that are marked with "custom code begin" and "custom
+ * code end" if you want to change the output schema, for example.
+ * 
+ * Do not throw any exceptions here.
+ *
+ * @input InChainRejectStream
+ * Rejected tuples for Rejection File Sink
+ * It is possible that more than one window punctuation is received per file,
+ * because the InChainRejectStream is a combined stream from the many composites.
+ * The following composites have an output port for tuple rejection:
+ * <namespace>.chainsink::PostContextProcessorCore (if ite.businessLogic.transformation.postprocessing.custom=off)
+ * <namespace>.chainprocessor.reader.custom::RecordValidator
+ * <namespace>.chainprocessor.transfomer.custom::DataProcessor
+ * <namespace>.chainsink.custom::PostContextDataProcessor (if ite.businessLogic.transformation.postprocessing.custom=on)
+ *
+ * @param rejectedRecordsDir
+ * The absolute path of the rejected directory. Use this parameter
+ * to create files in the rejected directory.
+ */
+public composite RejectWriterCustom ( 
+	input 
+		InChainRejectStream
+)
+{
+	param
+		expression<rstring> $rejectedRecordsDir;
+
+	graph
+
+		// ------------------------------------------------
+		// custom code begin
+		// ------------------------------------------------
+		(stream<uint32 rejectreason, rstring rejectinfo, uint32 readerLinenumber, rstring filename, rstring date> RejectStream
+		) = Functor(InChainRejectStream) {
+			output RejectStream: date = getDateNow();
+		}
+		// ------------------------------------------------
+		// custom code end
+		// ------------------------------------------------	
+
+		() as RejSink = FileSink(RejectStream) {
+			logic
+				state : {
+					rstring dir = $rejectedRecordsDir; // prevents submission code to be called when using directory param
+					boolean dirOk = com.teracloud.streams.teda.internal.fileutils::createDir(dir);
+				}
+			param
+				file : dir + "/" + filename + ".rej.csv";
+				format: csv;
+				flushOnPunctuation: true;
+				closeMode: dynamic; // closeMode punct is not possible since there are many composites connected to this stream running in different threads. We accept many window punctuation here.
+				append: false;
+				quoteStrings : true;
+		}
+		
+}

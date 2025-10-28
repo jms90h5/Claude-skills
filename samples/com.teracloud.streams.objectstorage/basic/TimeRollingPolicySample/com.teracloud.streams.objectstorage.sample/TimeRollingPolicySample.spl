@@ -1,0 +1,148 @@
+/*
+** Copyright (C) 2018  International Business Machines Corporation
+** All Rights Reserved
+*/
+namespace com.teracloud.streams.objectstorage.sample;
+
+use com.teracloud.streams.objectstorage::ObjectStorageSink;
+
+
+/**
+ * The sample demonstrates object creation 
+ * on time basis
+ * 
+ * Additional purpose of the sample is to demonstrate how to configure the operators and functions with basic (HMAC) authentication.
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Optional parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param objectStorageURI 
+ * Set a bucket name and protocol in URI in 'cos://bucket/' or 's3a://bucket/' format
+ * 
+ * @param objectName
+ * Object name used by Sink operator
+ *
+ * @param timePerObject
+ * Time to keep an object name before closing
+ *
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ */
+public composite TimeRollingPolicySample {
+	param
+		expression<rstring> $accessKeyID : getSubmissionTimeValue("os-access-key-id");
+		expression<rstring> $secretAccessKey : getSubmissionTimeValue("os-secret-access-key");
+		expression<rstring> $endpoint : getSubmissionTimeValue("os-endpoint", "s3.us.cloud-object-storage.appdomain.cloud");
+		expression<rstring> $objectStorageURI: getSubmissionTimeValue("os-uri");
+	
+		expression<rstring> $objectName: getSubmissionTimeValue("objectName", "every30Sec_%TIME"); 
+		expression<float64> $timePerObject: (float64)getSubmissionTimeValue("timePerObject", "30.0");
+		expression<boolean> $sslEnabled: (boolean) getSubmissionTimeValue("sslEnabled", "true");
+
+	graph
+
+		stream<rstring result> SampleRes = TimeRollingPolicySampleBasic() {
+			param
+				accessKeyID: $accessKeyID;
+				secretAccessKey: $secretAccessKey;
+				objectStorageURI: $objectStorageURI;
+				endpoint: $endpoint;
+				objectName: $objectName;
+				timePerObject: $timePerObject;
+				sslEnabled: $sslEnabled;
+		}	
+}
+
+/**
+ * Composite used by TimeRollingPolicySample main composite and test application
+ *
+ * @param accessKeyID
+ * Object storage access key ID
+ * 
+ * @param secretAccessKey
+ * Object storage secret access key
+ * 
+ * @param endpoint
+ * Optional parameter to set an endpoint to connect to COS, default: s3.us.cloud-object-storage.appdomain.cloud
+ * \- Example endpoint for local MinIO server: 127.0.0.1:9000
+ *
+ * @param objectStorageURI 
+ * Set a bucket name and protocol in URI in 'cos://bucket/' or 's3a://bucket/' format
+ * 
+ * @param objectName
+ * Object name used by Sink operator
+ *
+ * @param timePerObject
+ * Time to keep an object name before closing
+ *
+ * @param sslEnabled
+ * Optional parameter to configure the connection to S3, default is SSL enabled and HTTPS is used.
+ *
+ * @output SampleResult
+ * This stream is evaluated by the tester.
+ */
+public composite TimeRollingPolicySampleBasic (output SampleResult) {
+	param
+		expression<rstring> $accessKeyID;
+		expression<rstring> $secretAccessKey;
+		expression<rstring> $objectStorageURI;
+		expression<rstring> $endpoint: "s3.us.cloud-object-storage.appdomain.cloud";
+	
+		expression<rstring> $objectName; 
+		expression<float64> $timePerObject;
+		expression<boolean> $sslEnabled: true;
+
+	graph
+		
+		stream<rstring tweetStr> Tweets = TweetsGenerator() {}	
+		
+		/** Write tweets to the object storage
+		 *  Close object every "timePerObject" 
+		 */
+		stream<rstring objectName, uint64 objectSize> ObjStSink = ObjectStorageSink(Tweets) {
+			param
+				objectStorageURI : $objectStorageURI;
+				objectStorageUser : $accessKeyID;
+				objectStoragePassword : $secretAccessKey;
+				objectName : $objectName;
+				endpoint : $endpoint;
+				timePerObject : $timePerObject;
+				sslEnabled: $sslEnabled;
+		}
+		
+		stream<rstring result> SampleResult = Custom(ObjStSink as I) {
+			logic 
+			onTuple I: {
+				submit ({result="ok"}, SampleResult);
+			}
+		}
+}
+
+composite TweetsGenerator(output FormattedTweets) {
+		
+	type
+		Tweet_t = rstring username, rstring tweet, uint64 tweettime;
+	
+	graph
+	
+		stream<Tweet_t> Tweets = Beacon() {
+			param
+				period: 0.5;
+			output
+				Tweets : username = "John", tweet = "Nice weather today! "
+ 					+(rstring) IterationCount(), tweettime = 1048298232ul + IterationCount() ;
+		}
+
+		stream<rstring tweetStr> FormattedTweets = Functor(Tweets) {
+			output
+				FormattedTweets : tweetStr = (rstring)Tweets;
+		}
+	
+}

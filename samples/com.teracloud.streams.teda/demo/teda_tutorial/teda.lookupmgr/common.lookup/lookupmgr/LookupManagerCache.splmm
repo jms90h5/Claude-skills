@@ -1,0 +1,771 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	### Header - begin
+	$| = 1;
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use Data::Dumper;
+	
+	use FindBin;
+	my $toProj=2;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $customizingXmlFile="$ENV{LOOKUP_CUSTOM_XML}";
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::LookupManager());
+
+	my $disableDbQuery = $configurator->isOff(Configurator::LM_DB());
+	
+	my $initCmdName="Init";
+	my $initCmdNameLc=lc($initCmdName);
+	my $updateCmdName="Update";
+	my $updateCmdNameLc=lc($updateCmdName);
+	my $deleteCmdName="Delete";
+	my $deleteCmdNameLc=lc($deleteCmdName);
+
+	### Repository segments - begin
+	my @sumRepositoryList;
+	if (-e ".mkrun") { # checks if makefile was called
+		@sumRepositoryList = CodeGenFrw::getSegmentStreamList($customizingXmlFile);
+	}
+	@sumRepositoryList = sort (@sumRepositoryList);
+	### Repository segments - end
+		
+	### application list - begin
+	my @appls;
+	if (-e ".mkrun") { # checks if makefile was called
+		CodeGenFrw::getAllApplications ($customizingXmlFile, \@appls);
+	}
+	my $applControlRespFile = "@appls";
+	$applControlRespFile =~ s/ /,/g;
+	print "// APPL RESP FILES: $applControlRespFile\n";
+	### application list - end
+
+	my $numOfSumRepositories = scalar (@sumRepositoryList);
+	if (-e ".mkrun") { # checks if makefile was called
+		if (0 == $numOfSumRepositories) {
+			print STDERR "Required query repositories ($numOfSumRepositories) not defined!\n";
+			exit 1;
+		}
+	}
+	### Repository segments - end
+	my $multiHost = $configurator->isOn(Configurator::GLOBAL_MULTIHOST());
+%>
+namespace common.lookup.lookupmgr;
+<%if (-e ".mkrun") { # checks if makefile was called%>
+<%unless ($disableDbQuery) {
+%>use com.teracloud.streams.db::*;<%}%>
+use common.lookup.lookuptypes::*;
+use com.teracloud.streams.teda.internal.shm::*;
+use com.teracloud.streams.teda.utility::ExceptionCatcher;
+use com.teracloud.streams.teda.utility::getSegmentPrefix;
+/**
+ * This **LookupManagerCache** operator writes the tuple date provided via *LookupMgrQueryInput\* ports to the repository on host specified by host-tag.
+@param hostId This parameter is the host specific ID. It will be set by UDP feature
+@param hostname This is the composite parameter storing the name of processing host. The value will be set internally.
+<%foreach my $repositoryShortName (@sumRepositoryList){
+%>@input LookupMgrQueryInput<%=$repositoryShortName%> The resulting data set tuple provided by query defined as '<%=$repositoryShortName%>' in 'connections.xml. Type: <Schema<%=$repositoryShortName%>>.'
+<%}%>
+@input CommandInfo The command data information required for command flow synchronization. *Type*: '<LookupMgrCommandData>'.
+@output ProcessedLookupMgrWrite The results and statistics of write process in the repository segment on one host. *Type*: '<LookupMgrCommandResult>'. 
+@output CacheErrorInfo The forwarded query error information. *Type*: '<LookupMgrErrorList>'.
+*  */
+public composite LookupManagerCache (
+	input <%foreach my $repositoryShortName (@sumRepositoryList){%>
+		LookupMgrQueryInput<%=$repositoryShortName%>,<%}%>
+		CommandInfo;
+	output
+		ProcessedLookupMgrWrite,
+		CacheErrorInfo
+	)
+{	
+	param
+		expression<rstring> $hostname: getShortHostName();
+		expression<int32> $hostId;
+		expression<rstring> $controlDirectory;
+		expression<rstring> $jobNameFile;
+		expression<int32> $numOfHosts;
+
+	type<%my %definedTypes;
+		foreach my $repositoryShortName (@sumRepositoryList) {
+		my $segmentName = CodeGenFrw::getSegmentStreamName($customizingXmlFile,$repositoryShortName);
+		if (!$segmentName) {
+			print STDERR "Segment not defined for $repositoryShortName in $customizingXmlFile\n";
+			exit 10;
+		}
+		foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+			next unless (CodeGenFrw::verifyStoreName(\%definedTypes, $storeName, $segmentName));
+		%>
+		static ValueType_<%=$segmentName%>_<%=$storeName%>_t = tuple <
+<%		my @valueAssignments = CodeGenFrw::getStoreValueAssignmentsNames($customizingXmlFile,$repositoryShortName,$storeName);
+		my $assignmentCount = 0;
+		foreach my $storeValueAttr (@valueAssignments) {
+			my $separator = ",";
+			$assignmentCount++;
+			if (scalar(@valueAssignments) eq scalar($assignmentCount)) {$separator = ""}
+%>			<%=CodeGenFrw::getStoreValueAssignmentsType($customizingXmlFile,$repositoryShortName,$storeName,$storeValueAttr)%> <%=$storeValueAttr%><%=$separator%>
+<%}
+%>		>;<%}
+		}#foreach%>
+	
+	graph
+	<%foreach my $repositoryShortName (@sumRepositoryList){
+		my $segmentName = CodeGenFrw::getSegmentStreamName($customizingXmlFile,$repositoryShortName);
+		%>
+/**
+ * This ExceptionCatcher operator catches  exceptions caused by call of shared memory functions  
+ */
+		(
+		stream<LookupMgrQueryInput<%=$repositoryShortName%>> ControlledLookupMgrQueryInput<%=$repositoryShortName%>;
+		stream<LookupMgrQueryInput<%=$repositoryShortName%>, LookupMgrTypes.LookupMgrFileExceptionInfo> <%=$repositoryShortName%>QueryToReject
+		) as <%=$repositoryShortName%>ShmLibraryExceptionCatcher = ExceptionCatcher(LookupMgrQueryInput<%=$repositoryShortName%>) {
+			output <%=$repositoryShortName%>QueryToReject: 
+				exceptionType = getExceptionType(), 
+				exceptionText = getExceptionText();
+		}
+
+		
+		(stream <LookupMgrTypes.SchemaRepositoryReady> Sink<%=$repositoryShortName%>;
+		stream <LookupMgrTypes.LookupMgrSegmentStatistic> Mertics<%=$repositoryShortName%>;
+		stream <LookupMgrTypes.LookupMgrErrorInfo> Errors<%=$repositoryShortName%>
+		)as <%=$repositoryShortName%>Sink = Custom(ControlledLookupMgrQueryInput<%=$repositoryShortName%>)
+		{
+			logic
+			state : {
+				mutable boolean isOK; // result value
+				mutable rstring errText;
+				mutable rstring rcvCommand;
+				mutable rstring realSegmentName = "";
+				mutable uint64 processedEntryCount = 0ul;
+				uint64 metricsCnt = 1000ul;
+				uint64 reserveSize = <%=CodeGenFrw::getMemSegmentSize($customizingXmlFile,$repositoryShortName)%>ul;
+				mutable map<rstring,uint64> lookupStoreHandler;<%
+				foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+					my $keyType = CodeGenFrw::getStoreKeyType($customizingXmlFile,$repositoryShortName,$storeName);
+				%>
+				mutable ValueType_<%=$segmentName%>_<%=$storeName%>_t tmpValue<%=$storeName%> = {};
+				mutable <%=$keyType%> tmpKey<%=$storeName%>; <%}%>
+			}
+			
+			onTuple ControlledLookupMgrQueryInput<%=$repositoryShortName%>:
+			{
+				if ("" == realSegmentName) {
+					realSegmentName = getSegmentPrefix($controlDirectory) + "<%=$segmentName%>";
+				}
+				isOK=true;
+				rcvCommand = lookup_cmd;
+				if (isTraceable(Trace.trace)) {
+					appTrc(Trace.trace, "Tuple received; "+(rstring)ControlledLookupMgrQueryInput<%=$repositoryShortName%>, "LookupManagerCustom");
+				}
+				// INITIAL COMMAND
+				if (rcvCommand == "<%=$initCmdNameLc%>") {
+					if (0 == spl.collection::size(lookupStoreHandler)) {
+						shmSegmentRemove(realSegmentName);
+						isOK= shmSegmentCreate(realSegmentName, reserveSize, createOnly, throwMode.noThrow);
+						if (true == isOK) {
+							mutable list<rstring> failedStores = [];<%
+							foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {%>
+							lookupStoreHandler["<%=$storeName%>"] = shmMapCreate("<%=$storeName%>", realSegmentName, tmpKey<%=$storeName%>, tmpValue<%=$storeName%>, createOnly, throwMode.noThrow);
+							if (0ul == lookupStoreHandler["<%=$storeName%>"]) {
+								isOK=false; // set result value to false because of failed creation of a map
+								// store creation failed
+								appendM(failedStores,"<%=$storeName%>");
+							}
+							<%}%>
+							if (0 != spl.collection::size(failedStores)) {
+								// prepare error report because of failed stores
+								errText = "Cannot create store(s) in segment '" + realSegmentName + "': " + (rstring)failedStores + ". Look for 'shmObjectCreate' error for more details in application trace";
+								appTrc(Trace.error, errText,"LookupManagerCustom");
+								clearM(failedStores);
+							}
+						}
+						else {
+							// cannot create segment
+							errText = "Cannot create segment '" + realSegmentName + "'. Look for 'shmSegmentCreate' error for more details in application trace";
+							appTrc(Trace.error, errText,"LookupManagerCustom");
+						}
+					}
+					if (true == isOK) {<%
+					foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+						my $keyType = CodeGenFrw::getStoreKeyType($customizingXmlFile,$repositoryShortName,$storeName);
+						my $keyExpression = CodeGenFrw::getStoreKeyExpression($customizingXmlFile,$repositoryShortName,$storeName);
+						## unquote key expression
+						my $keyExpressionString=$keyExpression;
+						$keyExpressionString =~s/\"/\\\"/g;
+						%>
+<%
+						my @valueAssignments = CodeGenFrw::getStoreValueAssignmentsNames($customizingXmlFile,$repositoryShortName,$storeName);
+						foreach my $storeValueAttr (@valueAssignments) {%>
+						tmpValue<%=$storeName%>.<%=$storeValueAttr%>=<%=CodeGenFrw::getStoreValueAssignmentsExpression($customizingXmlFile,$repositoryShortName,$storeName,$storeValueAttr)%>;<%}%>
+						tmpKey<%=$storeName%>=<%=$keyExpression%>;
+						isOK=shmMapInsert(lookupStoreHandler["<%=$storeName%>"],tmpKey<%=$storeName%>,tmpValue<%=$storeName%>);
+						if (!isOK){
+							errText = "The value not inserted for the key in segment '" + realSegmentName + "'. Reason: Duplicate of key found while inserting in Map(<%=$keyExpressionString%>)=" + (rstring)tmpKey<%=$storeName%> + ", in store <%=$storeName%>";
+							appTrc(Trace.error, errText,"LookupManagerCustom");
+	
+							// check if easy copy or value is different
+							mutable boolean easyCopyFlag = true;
+							mutable ValueType_<%=$segmentName%>_<%=$storeName%>_t testValue<%=$storeName%> = {};
+							shmMapFind(lookupStoreHandler["<%=$storeName%>"], tmpKey<%=$storeName%>, testValue<%=$storeName%>);<%
+							foreach my $storeValueAttr (@valueAssignments) {%>
+							if (tmpValue<%=$storeName%>.<%=$storeValueAttr%>!=testValue<%=$storeName%>.<%=$storeValueAttr%>) {
+								// different values
+								easyCopyFlag = false;
+								appTrc(Trace.error, "Existing value of '<%=$segmentName%>_<%=$storeName%>.<%=$storeValueAttr%>': '" + (rstring)testValue<%=$storeName%>.<%=$storeValueAttr%> + 
+								"' differs to new value: "+ (rstring) tmpValue<%=$storeName%>.<%=$storeValueAttr%>,"LookupManagerCustom");
+							}
+							<%}%>
+							
+							// send error report
+							mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {};
+							if (easyCopyFlag) {
+								errText += " The value is identical to the existing: " + (rstring)ControlledLookupMgrQueryInput<%=$repositoryShortName%>;
+								etuple.continueOnError = true;
+							}
+							else {
+								// differences in the tmpValue<%=$storeName%> detected
+								errText += " The value is different to the existing: " + (rstring)ControlledLookupMgrQueryInput<%=$repositoryShortName%>;
+								// if permissive : 
+								// etuple.continueOnError = true;
+								// else
+								etuple.continueOnError = false;
+							}
+							// if permissive : 
+							// appTrc(Trace.warn, "Duplicate key found while inserting in Map(<%=$keyExpressionString%>), store <%=$storeName%>: "+ (rstring) (<%=$keyExpression%>),"LookupManagerCustom");
+							// else
+							etuple.command = rcvCommand;
+	 						etuple.segment = "<%=$repositoryShortName%>";
+	 						etuple.errorId = LookupMgrTypes.LM010;
+							mutable list<rstring> errMsgParams = [rcvCommand,"<%=$repositoryShortName%>",$hostname,errText];
+					 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM010, errMsgParams);
+							submit(etuple,Errors<%=$repositoryShortName%>);
+							isOK=true; // reset OK flag to prohibit double error report
+						}
+<%}%>
+					}
+					processedEntryCount++;
+				}
+				// UPDATE COMMAND
+				if (rcvCommand == "<%=$updateCmdNameLc%>") {
+					if (0 == spl.collection::size(lookupStoreHandler)) {  
+						isOK= shmSegmentCreate(realSegmentName, reserveSize, createOrOpen, throwMode.noThrow);
+						if (true == isOK) {
+							mutable list<rstring> failedStores = [];<%
+							foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {%>
+							lookupStoreHandler["<%=$storeName%>"] = shmMapCreate("<%=$storeName%>", realSegmentName, tmpKey<%=$storeName%>, tmpValue<%=$storeName%>, createOrOpen, throwMode.noThrow);
+							if (0ul == lookupStoreHandler["<%=$storeName%>"]) {
+								isOK=false; // set result value to false because of failed creation of a map
+								// store creation failed
+								appendM(failedStores,"<%=$storeName%>");
+							}
+							<%}%>
+							if (0 != spl.collection::size(failedStores)) {
+								// prepare error report because of failed stores
+								errText = "Cannot open store(s) in segment '" + realSegmentName + "': " + (rstring)failedStores + ". Look for 'shmObjectCreate' error for more details in application trace";
+								appTrc(Trace.error, errText,"LookupManagerCustom");
+								clearM(failedStores);
+							}
+						}
+						else {
+							// cannot create segment
+							errText = "Cannot open segment '" + realSegmentName + "'. Look for 'shmSegmentCreate' error for more details in application trace";
+							appTrc(Trace.error, errText,"LookupManagerCustom");
+						}
+					}
+					if (true == isOK) {
+<%
+					foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+						my $keyType = CodeGenFrw::getStoreKeyType($customizingXmlFile,$repositoryShortName,$storeName);
+						my $keyExpression = CodeGenFrw::getStoreKeyExpression($customizingXmlFile,$repositoryShortName,$storeName);
+						my @valueAssignments = CodeGenFrw::getStoreValueAssignmentsNames($customizingXmlFile,$repositoryShortName,$storeName);
+						foreach my $storeValueAttr (@valueAssignments) {%>
+						tmpValue<%=$storeName%>.<%=$storeValueAttr%>=<%=CodeGenFrw::getStoreValueAssignmentsExpression($customizingXmlFile,$repositoryShortName,$storeName,$storeValueAttr)%>;<%}%>
+						tmpKey<%=$storeName%>=<%=$keyExpression%>;
+						shmMapPutAt(lookupStoreHandler["<%=$storeName%>"],tmpKey<%=$storeName%>,tmpValue<%=$storeName%>);
+<%}%>
+					}
+					processedEntryCount++;
+				}
+				// DELETE COMMAND
+				if (rcvCommand == "<%=$deleteCmdNameLc%>") {
+					mutable uint64 eraseRes = 0ul;
+					isOK= shmSegmentCreate(realSegmentName, reserveSize, createOrOpen, throwMode.noThrow);
+					if (true == isOK) {
+						mutable list<rstring> failedStores = [];<%
+						foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {%>
+						lookupStoreHandler["<%=$storeName%>"] = shmMapCreate("<%=$storeName%>", realSegmentName, tmpKey<%=$storeName%>, tmpValue<%=$storeName%>, createOrOpen, throwMode.noThrow);
+						if (0ul == lookupStoreHandler["<%=$storeName%>"]) {
+							isOK=false; // set result value to false because of failed creation of a map
+							// store creation failed
+							appendM(failedStores,"<%=$storeName%>");
+						}
+						<%}%>
+						if (0 != spl.collection::size(failedStores)) {
+							// prepare error report because of failed stores
+							errText = "Cannot open store(s) in segment '" + realSegmentName + "': " + (rstring)failedStores + ". Look for 'shmObjectCreate' error for more details in application trace";
+							appTrc(Trace.error, errText,"LookupManagerCustom");
+							clearM(failedStores);
+						}
+					}
+					else {
+						// cannot create segment
+						errText = "Cannot open segment '" + realSegmentName + "'. Look for 'shmSegmentCreate' error for more details in application trace";
+						appTrc(Trace.error, errText,"LookupManagerCustom");
+					}
+					if (true == isOK) {
+<%
+						foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {
+							my $keyType = CodeGenFrw::getStoreKeyType($customizingXmlFile,$repositoryShortName,$storeName);
+							my $keyExpression = CodeGenFrw::getStoreKeyExpression($customizingXmlFile,$repositoryShortName,$storeName);
+							## unquote key expression
+							my $keyExpressionString=$keyExpression;
+							$keyExpressionString =~s/\"/\\\"/g;
+						%>
+						tmpKey<%=$storeName%>=<%=$keyExpression%>;
+						eraseRes = shmMapErase(lookupStoreHandler["<%=$storeName%>"],tmpKey<%=$storeName%>);
+						if (0ul == eraseRes) {
+							appTrc(Trace.warn, "Erased data not found by key <%=$keyExpressionString%>: " + (rstring) (<%=$keyExpression%>), "LookupManagerCustom");
+						}
+<%}%>
+					}
+					processedEntryCount++;
+				}
+				if (false == isOK)  { // report failure of segment setup
+					mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {};
+					etuple.continueOnError = false;
+					etuple.command = rcvCommand;
+					etuple.segment = "<%=$repositoryShortName%>";
+					etuple.errorId = LookupMgrTypes.LM010;
+					mutable list<rstring> errMsgParams = [rcvCommand,"<%=$repositoryShortName%>",$hostname,errText];
+			 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM010, errMsgParams);
+					submit(etuple,Errors<%=$repositoryShortName%>);
+				}
+				if (0ul==(processedEntryCount % metricsCnt)) {
+					mutable uint64 lookupSgmntSize = getSegmentSize(lookupStoreHandler, realSegmentName, reserveSize);
+					mutable uint64 lookupSgmntFree = getSegmentFree(lookupStoreHandler, realSegmentName, reserveSize);
+					// send metrics of <%=$segmentName%>
+					Mertics<%=$repositoryShortName%> metricTuple = getSendMetrics ("<%=$repositoryShortName%>", lookupSgmntSize, lookupSgmntFree, processedEntryCount);
+					submit(metricTuple ,Mertics<%=$repositoryShortName%>);
+				}
+			}
+			onPunct ControlledLookupMgrQueryInput<%=$repositoryShortName%>:
+			{
+				if (isTraceable(Trace.debug)) {
+					appTrc(Trace.debug, "Punct received! for <%=$repositoryShortName%>", "LookupManagerCustom");
+				}
+				if ("" == realSegmentName) {
+					realSegmentName = getSegmentPrefix($controlDirectory) + "<%=$segmentName%>";
+				}
+				isOK = true;
+				mutable uint64 lookupSgmntSize = getSegmentSize(lookupStoreHandler, realSegmentName, reserveSize);
+				mutable uint64 lookupSgmntFree = getSegmentFree(lookupStoreHandler, realSegmentName, reserveSize);
+				// send metrics of <%=$segmentName%>
+				Mertics<%=$repositoryShortName%> metricTuple = getSendMetrics ("<%=$repositoryShortName%>", lookupSgmntSize, lookupSgmntFree, processedEntryCount);
+				submit(metricTuple ,Mertics<%=$repositoryShortName%>);
+				if (0 == spl.collection::size(lookupStoreHandler)) {
+					if (rcvCommand == "<%=$initCmdNameLc%>") {
+						shmSegmentRemove(realSegmentName);
+					}
+					isOK= shmSegmentCreate(realSegmentName, reserveSize, createOrOpen, throwMode.noThrow);
+					if (true == isOK) {
+						mutable list<rstring> failedStores = [];<%
+						foreach my $storeName (CodeGenFrw::getStores($customizingXmlFile,$repositoryShortName)) {%>
+						lookupStoreHandler["<%=$storeName%>"] = shmMapCreate("<%=$storeName%>", realSegmentName, tmpKey<%=$storeName%>, tmpValue<%=$storeName%>, createOrOpen, throwMode.noThrow);
+						if (0ul == lookupStoreHandler["<%=$storeName%>"]) {
+							isOK=false; // set result value to false because of failed creation of a map
+							// store creation failed
+							appendM(failedStores,"<%=$storeName%>");
+						}
+						<%}%>
+						if (0 != spl.collection::size(failedStores)) {
+							// prepare error report because of failed stores
+							errText = "Cannot open store(s) in segment '" + realSegmentName + "': " + (rstring)failedStores + ". Look for 'shmObjectCreate' error for more details in application trace";
+							appTrc(Trace.error, errText,"LookupManagerCustom");
+							clearM(failedStores);
+						}
+					}
+					else {
+						// cannot create segment
+						errText = "Cannot open segment '" + realSegmentName + "'. Look for 'shmSegmentCreate' error for more details in application trace";
+						appTrc(Trace.error, errText,"LookupManagerCustom");
+					}
+				}
+				if (false == isOK) { // report failure of segment setup
+					mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {};
+					etuple.continueOnError = true;
+					etuple.command = "";
+					etuple.segment = "<%=$repositoryShortName%>";
+					etuple.errorId = LookupMgrTypes.LM010;
+					mutable list<rstring> errMsgParams = [rcvCommand,"<%=$repositoryShortName%>",$hostname,errText];
+			 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM010, errMsgParams);
+					submit(etuple,Errors<%=$repositoryShortName%>);
+				}
+				
+				if (0 != spl.collection::size(lookupStoreHandler)) { 
+					releaseLookupMgrSegment(lookupStoreHandler, realSegmentName);
+					clearM(lookupStoreHandler);
+				}
+				Sink<%=$repositoryShortName%> outTuple = getSendOut ("<%=$repositoryShortName%>", realSegmentName, metricTuple);
+				submit(outTuple ,Sink<%=$repositoryShortName%>);
+				processedEntryCount=0ul;
+				rcvCommand="";
+				realSegmentName="";
+			}
+		}
+		<%}#foreach%>
+
+
+		// Command Collector
+		(stream <LookupMgrTypes.LookupMgrCommandResult> ProcessedLookupMgrWrite;
+		stream <LookupMgrTypes.LookupMgrErrorList> CacheErrorInfo
+		) as HostCommandCollector = Custom (<%
+		foreach  my $repositoryShortName (@sumRepositoryList){
+			%>
+		Sink<%=$repositoryShortName%>;
+		<%=$repositoryShortName%>QueryToReject;
+		Errors<%=$repositoryShortName%>;<%}%>
+		CommandInfo)
+		{
+			logic state : {
+					mutable rstring reqCmd;
+					mutable rstring reqFilename;
+					mutable rstring reqCommandStartedAt;
+					mutable boolean segmentsReadyFlag = false;
+					mutable boolean reqFlag = false;
+					
+					mutable list<rstring> [<%=$numOfSumRepositories%>] tempRepositoryNames;
+					mutable map<rstring,int32> requiredRepositoryNames;
+					mutable int32 nhosts = $numOfHosts;
+					mutable int32 idxRepository = 0;
+					mutable map<rstring, LookupMgrTypes.LookupMgrSegmentStatistic> segmentData;
+					<%foreach my $repositoryShortName (@sumRepositoryList){
+					%>mutable LookupMgrTypes.LookupMgrErrorList <%=$repositoryShortName%>CollectedErrors;
+					<%}
+				%>}
+				onTuple CommandInfo:
+				{
+					mutable boolean sendFlag = false;
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "receiving new request for '" + (rstring)CommandInfo + "'", "LookupManagerCustom");
+					}
+					if (reqFlag) { 
+						if (isTraceable(Trace.trace)) {
+							appTrc(Trace.trace, "Command file info synchronization - second file information received before acknowledge. Possible tuple lost?! Synch problem?!", "LookupManagerCustom");
+						}
+					}
+					reqFlag=true;  // command request information received
+					if (segmentsReadyFlag) {
+						// all required segments are ready - this command info tuple is last required information for acknowledge - send it out finally 
+						sendFlag = true; 
+					}
+					
+					reqCmd=CommandInfo.command;
+					reqFilename=CommandInfo.commandFilename;
+					reqCommandStartedAt=CommandInfo.commandStartedAt;
+					if (0 != spl.collection::size(CommandInfo.repositories)) {
+						// init required repositories
+						for (rstring tab in repositories) {
+							insertM(requiredRepositoryNames, tab, 0);
+						}
+						// check already received repositories
+						if (0 != spl.collection::size(tempRepositoryNames)) {
+							while (idxRepository<<%=$numOfSumRepositories%>) {
+								if (tempRepositoryNames[idxRepository] != "") {
+									rstring tabName = tempRepositoryNames[idxRepository];
+									if (spl.collection::has(requiredRepositoryNames,tabName)) {
+										requiredRepositoryNames[tabName]=1;
+									}
+									else {
+										appTrc(Trace.error, "Not required or unknown repository received - " + tabName, "LookupManagerCustom");
+									}
+									if (isTraceable(Trace.debug)) {
+										appTrc(Trace.debug, tempRepositoryNames[idxRepository] + " already responsed.", "LookupManagerCustom");
+									}
+								}
+								idxRepository++;
+							}
+							// reset temp repository list
+							while(idxRepository<<%=$numOfSumRepositories%>) {
+								tempRepositoryNames[idxRepository]="";
+								idxRepository++;
+							}
+						}
+						idxRepository = 0;
+						if (sendFlag) {	// check if all segments responded 
+							// reset flag
+							reqFlag = false;
+							segmentsReadyFlag = false;
+							
+							// submit response of the host
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "Sending response on '" + (rstring)reqCmd + "' from host '" + $hostname + "'", "LookupManagerCustom");
+							}
+							mutable ProcessedLookupMgrWrite outTuple = {};
+							outTuple.filename=reqFilename;
+							outTuple.commandStartedAt = reqCommandStartedAt;
+							outTuple.command=reqCmd;
+							outTuple.hostname=$hostname;
+							outTuple.hostId=$hostId;
+							outTuple.nHosts=nhosts;
+							// copy statistics
+							for (rstring sgmnt in segmentData) {
+								insertM(outTuple.statistics, sgmnt, segmentData[sgmnt]);
+							}
+							// send statistics
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "Submitting: " + (rstring)outTuple, "LookupManagerCustom");
+							}
+							submit (outTuple,ProcessedLookupMgrWrite);
+							
+							// reset collections
+							clearM(segmentData);
+							clearM(requiredRepositoryNames);
+	
+							if (isTraceable(Trace.trace)) {
+								appTrc(Trace.trace, "final clean-up of request cache repository", "LookupManagerCustom");
+							}
+							reqCmd="";
+							while(idxRepository<<%=$numOfSumRepositories%>) {
+								tempRepositoryNames[idxRepository]="";
+								idxRepository++;
+							}
+						}
+					}
+					else {
+						// this clause is required for synchronization in case of incorrect definition of all segments in the command. 
+						// The splitter handles this case printing error but the command request as request must be finalized correct.    
+						mutable ProcessedLookupMgrWrite outTuple = {};
+						outTuple.filename=reqFilename;
+						outTuple.commandStartedAt = reqCommandStartedAt;
+						outTuple.command=reqCmd;
+						outTuple.hostname=$hostname;
+						outTuple.hostId=$hostId;
+						outTuple.nHosts=nhosts;
+					}
+				}
+				<%my $tabIdx = 0;
+				foreach my $repositoryShortName (@sumRepositoryList){%>
+				onTuple Sink<%=$repositoryShortName%>: 
+				{
+					if (isTraceable(Trace.debug)) {
+						appTrc(Trace.debug, "Receiving " + (rstring)Sink<%=$repositoryShortName%>, "LookupManagerCustom");
+					}
+					mutable boolean sendFlag = false;
+					idxRepository = 0;
+					if (0 != spl.collection::size(<%=$repositoryShortName%>CollectedErrors.listOfErrors)) {
+						// The segment is finished - send collected errors if any
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "The segment '<%=$repositoryShortName%>' is finished - send collected errors", "LookupManagerCustom");
+						}
+						<%=$repositoryShortName%>CollectedErrors.filename=reqFilename;
+						submit(<%=$repositoryShortName%>CollectedErrors,CacheErrorInfo);
+						// clean-up error report
+						<%=$repositoryShortName%>CollectedErrors.filename = "";
+						clearM(<%=$repositoryShortName%>CollectedErrors.listOfErrors);
+					}
+					
+					// collect segment statistics
+					for (rstring sgmnt in statistics) {
+						insertM(segmentData, sgmnt, statistics[sgmnt]);
+					}
+					// set repository as responded
+					if (0 == spl.collection::size(requiredRepositoryNames)) {
+						if (isTraceable(Trace.info)) {
+							appTrc(Trace.info, "The required list of repositories not yet received", "LookupManagerCustom");
+						}
+						tempRepositoryNames[<%=$tabIdx%>]=repositoryname;
+						if (isTraceable(Trace.debug)) {
+							appTrc(Trace.debug, "Repository with index <%=$tabIdx%> called:" + tempRepositoryNames[<%=$tabIdx%>], "LookupManagerCustom");
+						}
+					}
+					else{
+						if (spl.collection::has(requiredRepositoryNames, repositoryname)) {
+							if (isTraceable(Trace.info)) {
+								appTrc(Trace.info, repositoryname + " responded.", "LookupManagerCustom");
+							}
+							requiredRepositoryNames[repositoryname] = 1;
+						}
+						else {
+							appTrc(Trace.error, "Not required or unknown repository received - " + repositoryname, "LookupManagerCustom");
+						}
+					}
+					// check repositories
+					segmentsReadyFlag = true;
+					for (rstring tab in requiredRepositoryNames) {
+						if (0 == requiredRepositoryNames[tab]) {
+							segmentsReadyFlag = false;
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "Repository "+ tab +" not responded! - check!", "LookupManagerCustom");
+							}
+						}
+						else {
+							if (isTraceable(Trace.debug)) {
+								appTrc(Trace.debug, "The repository '" + tab + "' checked!", "LookupManagerCustom");
+							}
+						}
+					}
+					// check if ready to send
+					if (reqFlag && segmentsReadyFlag) {
+						sendFlag = true;
+					}
+					else {
+						if (!reqFlag) { 
+							appTrc(Trace.warn, "All segments are ready but statistic data missing - send on tuple CommandInfo", "LookupManagerCustom");
+						}
+					}
+
+					if (sendFlag) {	// check if all segments responded 
+						// reset flag
+						reqFlag = false;
+						segmentsReadyFlag = false;
+						
+						// submit response of the host
+						if (isTraceable(Trace.info)) {
+							appTrc(Trace.info, "Sending response on '" + (rstring)reqCmd + "' from host '" + $hostname + "'", "LookupManagerCustom");
+						}
+						mutable ProcessedLookupMgrWrite outTuple = {};
+						outTuple.filename=reqFilename;
+						outTuple.commandStartedAt = reqCommandStartedAt;
+						outTuple.command=reqCmd;
+						outTuple.hostname=$hostname;
+						outTuple.hostId=$hostId;
+						outTuple.nHosts=nhosts;
+						// copy statistics
+						for (rstring sgmnt in segmentData) {
+							insertM(outTuple.statistics, sgmnt, segmentData[sgmnt]);
+						}
+						// send statistics
+						submit (outTuple,ProcessedLookupMgrWrite);
+						
+						// reset collections
+						clearM(segmentData);
+						clearM(requiredRepositoryNames);
+
+						if (isTraceable(Trace.trace)) {
+							appTrc(Trace.trace, "final clean-up of request cache repository", "LookupManagerCustom");
+						}
+						reqCmd="";
+						while(idxRepository<<%=$numOfSumRepositories%>) {
+							tempRepositoryNames[idxRepository]="";
+							idxRepository++;
+						}
+					}
+					
+				}
+				onTuple Errors<%=$repositoryShortName%>: {
+					if (isTraceable(Trace.trace)) {
+						appTrc(Trace.trace, "Error from <%=$repositoryShortName%>Sink " + (rstring)Errors<%=$repositoryShortName%>, "LookupManagerCustom");
+					}
+					appendM(<%=$repositoryShortName%>CollectedErrors.listOfErrors,Errors<%=$repositoryShortName%>);
+				}
+				onTuple <%=$repositoryShortName%>QueryToReject: {
+					appTrc(Trace.error, "Exception detected for <%=$repositoryShortName%>: on shared memory access." + (rstring)<%=$repositoryShortName%>QueryToReject, "LookupManagerCustom");
+					mutable LookupMgrTypes.LookupMgrErrorInfo etuple = {};
+					etuple.command = reqCmd;
+					etuple.segment = "<%=$repositoryShortName%>";
+					etuple.errorId = LookupMgrTypes.LM009;
+					mutable list<rstring> errMsgParams = [exceptionType,"<%=$repositoryShortName%>",exceptionText];
+			 		etuple.errorMessage = common.lookup.lookupmgr::getErrorMsg(LookupMgrTypes.LM009, errMsgParams);
+					// if permissive : 
+					// etuple.continueOnError = true;
+					// else
+					etuple.continueOnError = false;
+					appendM(<%=$repositoryShortName%>CollectedErrors.listOfErrors,etuple);
+
+				}<%$tabIdx++;
+				}%>
+			config placement:
+				<%if ($multiHost) {%>hostExlocation("COMMAND_PROCESSOR"),
+				partitionColocation("COMMAND_PROCESSOR_" + (rstring)$hostId)<%} else {%>partitionColocation("COMMAND_PROCESSOR")<%}%>, 
+				partitionExlocation("<%=CodeGenFrw::getConstant('PARTITION_EXLOCATION_LABEL')%>");
+		}
+		<%foreach my $repositoryShortName (@sumRepositoryList) {%>
+		() as <%=$repositoryShortName%>LookupMetrics = MetricsSink(Mertics<%=$repositoryShortName%> as LookupMetrics) {
+			param
+				metrics		: (int64)(lookupReserved/(uint64)(1024*1024)), (int64)(100ul-((lookupFree*100ul)/lookupReserved)), (int64) processedEntries;
+				names		: "reserved", "used level", "entries";
+				descriptions: "reserved repository space in MB", "used level (in percent)", "Entries processed in Lookup Manager";
+		}<%}%>
+
+}
+
+/**  The SPL function 'releaseLookupMgrSegment' releases the repository segment defined by `segmentName`
+@param storeHandlers - list of store handlers defined at creation
+@param segmentName - name of segment
+@return `uint64` reset value equal to '0' 
+
+*/
+public stateful uint64 releaseLookupMgrSegment (map<rstring,uint64> storeHandlers, rstring segmentName) {
+	if (spl.collection::size(storeHandlers) != 0) {
+		for (rstring storeName in storeHandlers) {
+			if (0ul != storeHandlers[storeName]) {
+				shmObjectRelease(storeHandlers[storeName]);
+			}
+		}
+	}
+	shmSegmentRelease(segmentName);
+	return 0ul;
+}
+/** The SPL function 'getSegmentSize' returns the size of segment
+@param storeHandlers - store handler's map defined at creation
+@param segmentName - name of segment
+@param reserved - pre-defined size
+@return `uint64` size - used segment size value
+
+*/
+public stateful uint64 getSegmentSize (map<rstring,uint64> storeHandlers, rstring segmentName, uint64 reserved) {
+	if (spl.collection::size(storeHandlers) != 0) {
+		mutable uint64 shmSgmntSize = shmSegmentSize(segmentName);
+		if (0ul != shmSgmntSize) {
+			return shmSgmntSize;
+		}
+	} 
+	return reserved;
+}
+/** The SPL function 'getSegmentFree' returns the free space of segment
+@param storeHandlers - store handler's map defined at creation
+@param segmentName - name of segment
+@param reserved - pre-defined size
+@return `uint64` size - free space size value
+*/
+public stateful uint64 getSegmentFree (map<rstring,uint64> storeHandlers, rstring segmentName, uint64 reserved) {
+	if (spl.collection::size(storeHandlers) != 0) {
+		mutable uint64 shmSgmntFree = shmSegmentFreeMem(segmentName);
+		if (0ul != shmSgmntFree) {
+			return shmSgmntFree;
+		}
+	} 
+	return reserved;
+}
+<%}#endif mkrun%>

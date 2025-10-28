@@ -1,0 +1,64 @@
+Overview: 
+ There are two sample applications illustrating the use of the application framework.
+    - teda.demoapp shows an example of ITE application for the ETL and Campaign Management use cases. 
+    - teda.lookupmgr shows an example Lookup Manager application preparing some lookup data for the teda.demoapp application.
+
+ If you do not want to use the lookup functionality, you need to set the parameter ite.businessLogic.transformation.lookup to off.
+ In this case, the ITE application runs independently of the Lookup Manager application.
+
+1. To build the sample application:
+  make
+
+2. To run the sample application:
+  streamtool submitjob -d yourDomain -i yourInstance output/ITEMain/demoapp.ITEMain.sab
+
+3. To process the sample input files:
+  Move the files from teda.demoapp/data/in/archive to teda.demoapp/data/in directory.
+
+4. Verify the result:
+  When input files are processed, you can find the output files teda.demoapp/data/out directory and subdirectories.
+
+
+High Availability:
+
+ If Processing Elements are stopped or the job has the state 'unhealthy', then the application is automatically restarted.
+ After job restart, the application is able to recover with the checkpoint files and resumes the file processing.
+ The operator <namespace>.tap.custom::JobStateCheck checks the job state
+ by calling the script check-job-state.sh in a 60-seconds interval:
+ The script check-job-state.sh writes a response file in the control directory.
+ If the response file content contains "restart [j=<jobID>][d=<domainID>][i=<instanceID>]",
+ then the JobStateCheck operator calls the script restart-job.sh.
+
+ Before testing the high availability feature, you should set the 
+ 'instance.restartPesOnResourceFailureWaitTime' property to 30.
+ This reduces the time that you have to wait for until the application is restarted.
+
+5. To inject failures:
+  5.1. Identify the host and process ID of a PE by using streamtool
+    streamtool lspes -d yourDomain -i yourInstance
+  5.2. Stop/kill a PE or shutdown a host
+    Alternative 1) Log into the reported host (Resource column) and kill the PE process using the value reported in the PID column.
+      ssh hostUsedByPE "kill -9 PePid"
+    Alternative 2) Stop a PE
+      streamtool stoppe PEID -d yourDomain -i yourInstance
+    Alternative 3) Shutdown a host if teda.demoapp runs in an instance that has least two hosts with the application tag applied.
+
+6. Repeat steps 3. and 4.
+
+
+Steps to support the high availability feature in your ITE application:
+
+- Set the configuration parameter ite.businessLogic.transformation.tap to on
+- Add the JobStateCheck composite in the graph of <namespace>.tap.custom::TransformerTap composite:
+  () as JSC = JobStateCheck() {}
+- Copy the teda.demoapp/demoapp.tap.custom/JobStateCheck.splmm file to your <namespace>.tap.custom directory
+- Copy the files of the teda.demoapp/etc/scripts directory to your project into etc/scripts.
+
+Customization for the high availability feature in your ITE application:
+
+- Edit the scripts check-job-state.sh and restart-job.sh in etc/scripts, if you need to specify additional parameters for the streamtool commands, like -User or --zkconnect options.
+  Note: You need to build the application, when you changed one of the scripts, because the scripts are part of the sab file.
+- The JobStateCheck writes an error trace, if the sab file cannot be found. In this case, the automatic job restart is disabled.
+  Hint: You can apply the sab file with the submission parameter ite.sabFile.
+ 
+ 

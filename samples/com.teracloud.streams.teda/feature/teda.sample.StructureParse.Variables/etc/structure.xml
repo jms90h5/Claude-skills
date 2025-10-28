@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                -->
+<!-- TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    -->
+<!-- EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   -->
+<!-- COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       -->
+<!-- AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   -->
+<!-- OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE -->
+<!-- RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  -->
+<!-- OF THIS SAMPLE CODE.                                             -->
+<!--                                                                  -->
+<!-- LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   -->
+<!-- PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   -->
+<!-- DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    -->
+<!-- THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  -->
+<!-- PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   -->
+<!-- ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                -->
+<!--                                                                  -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     -->
+<!-- All Rights reserved.                                             -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<structures
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ibm.com/software/data/infosphere/streams/parser StructureParserStructure.xsd"
+	xmlns="http://www.ibm.com/software/data/infosphere/streams/parser"
+>
+
+	<!-- This variable will store the current threshold value
+	     it is initialized with 0, so all compare records will pass
+	-->
+	<variable name="threshold" type="uint8" value="0"/>
+
+	<!-- on receipt of records with messageType=1, the threshold variable will be set
+		 to the value contained in the field messageContent (see action clause below).
+		 The fields of this structure also serve as base for the other structures.
+	-->
+	<structure name="setThreshold">
+		<condition>
+			<cmp op="equal">
+				<field name="messageType"/>
+				<value>1</value>
+			</cmp>
+		</condition>
+		<action>
+			<store field="messageContent" as="threshold"/>
+			<submit/>
+		</action>
+		<field name="messageType" type="uint8"/>
+		<field name="messageContent" type="uint8" />
+	</structure>
+
+	<!--if the messageType is 2, the value in the content field is compared to the current 
+		threshold value in the variable. If the value in the message is lower than the treshold
+		the record is ignored (empty action clause)
+	-->
+	<structure name="ignoreMessages">
+		<condition>
+			<logicOp op="and">
+				<cmp op="equal">
+					<field name="messageType"/>
+					<value>2</value>
+				</cmp>
+				<cmp op="lessThan">
+					<field name="messageContent"/> <!-- lhs -->				
+					<variable name="threshold"/>
+				</cmp>
+			</logicOp>
+		</condition>
+		<action>
+		</action>
+		<base name="setThreshold"/>
+	</structure>
+
+	<!-- this is the opposite of the above structure. If the value from the content field
+		 of a message with type 2 is greater or equal the threshold, the record is emitted
+	-->
+	<structure name="sendMessages">
+		<condition>
+			<logicOp op="and">		
+				<cmp op="equal">
+					<field name="messageType"/>
+					<value>2</value>
+				</cmp>
+				<cmp op="greaterOrEqual">
+					<field name="messageContent"/> <!-- lhs -->				
+					<variable name="threshold"/>
+				</cmp>
+			</logicOp>
+		</condition>
+		<action>
+			<submit/>
+		</action>
+		<base name="setThreshold"/>
+	</structure>
+
+	<!-- do not attempt any sync -->
+
+</structures>

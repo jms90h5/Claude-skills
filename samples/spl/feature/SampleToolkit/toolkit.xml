@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="7.2.0.1" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:ti="http://www.ibm.com/xmlns/prod/streams/spl/toolkitInfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <toolkit name="SampleToolkit" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>Sample demonstrating how to bundle several operators/functions into a toolkit</description>
+    <uriTable>
+      <uri index="4" value="sample/SampleGenericOp"/>
+      <uri index="3" value="sample/SampleCppOp"/>
+      <uri index="2" value="sample/SampleJavaOp"/>
+      <uri index="1" value="sample/native.function/function.xml"/>
+    </uriTable>
+    <namespace name="sample">
+      <primitiveOp language="Java" modelUriIndex="2" name="SampleJavaOp" public="true">
+        <parameter expressionMode="Constant" name="vmArg" optional="true" type="rstring">
+          <description>
+Specifies command-line arguments that are passed to the Java virtual machine that the operator runs within.
+</description>
+        </parameter>
+        <inputPort minNumPorts="0" optional="true" windowPunctInputMode="Oblivious">
+          <windowPolicy>NonWindowed</windowPolicy>
+        </inputPort>
+        <outputPort expressionMode="Nonexistent" minNumPorts="0" optional="true" windowPunctOutputMode="Generating"/>
+      </primitiveOp>
+      <primitiveOp language="Cpp" modelUriIndex="3" name="SampleCppOp" public="true">
+        <inputPort minNumPorts="0" optional="true" windowPunctInputMode="Oblivious">
+          <windowPolicy>NonWindowed</windowPolicy>
+        </inputPort>
+        <outputPort expressionMode="Nonexistent" minNumPorts="0" optional="true" windowPunctOutputMode="Generating"/>
+      </primitiveOp>
+      <primitiveOp language="Cpp" modelUriIndex="4" name="SampleGenericOp" public="true">
+        <inputPort minNumPorts="0" optional="true" windowPunctInputMode="WindowBound">
+          <windowPolicy>OptionallyWindowed</windowPolicy>
+        </inputPort>
+        <outputPort expressionMode="Expression" minNumPorts="0" optional="true" windowPunctOutputMode="Generating"/>
+      </primitiveOp>
+      <function modelUriIndex="1" name="incrementBy" native="true" public="true" returnType="void" uriIndex="0">
+        <prototype>public void incrementBy(mutable list&lt;int32&gt; l, int32 incr)</prototype>
+        <parameter mutable="true" name="l" type="list&lt;int32>"/>
+        <parameter name="incr" type="int32"/>
+      </function>
+      <function modelUriIndex="1" name="joinLists" native="true" public="true" returnType="list&lt;int32>" uriIndex="0">
+        <prototype>public list&lt;int32&gt; joinLists(list&lt;int32&gt; a, list&lt;int32&gt; b)</prototype>
+        <parameter name="a" type="list&lt;int32>"/>
+        <parameter name="b" type="list&lt;int32>"/>
+      </function>
+    </namespace>
+    <sabFiles>
+      <ti:include path="toolkit.xml" root="toolkitDir"/>
+      <ti:include path="impl/java/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/java/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/nl/*.dat" root="toolkitDir"/>
+      <ti:include path="etc/**" root="toolkitDir"/>
+      <ti:include path="lib/**" root="toolkitDir"/>
+      <ti:include path="nl/**" root="toolkitDir"/>
+      <ti:include path="opt/**" root="toolkitDir"/>
+    </sabFiles>
+  </toolkit>
+</toolkitModel>

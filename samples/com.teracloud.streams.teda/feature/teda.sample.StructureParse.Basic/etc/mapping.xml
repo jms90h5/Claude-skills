@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                -->
+<!-- TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    -->
+<!-- EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   -->
+<!-- COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       -->
+<!-- AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   -->
+<!-- OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE -->
+<!-- RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  -->
+<!-- OF THIS SAMPLE CODE.                                             -->
+<!--                                                                  -->
+<!-- LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   -->
+<!-- PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   -->
+<!-- DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    -->
+<!-- THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  -->
+<!-- PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   -->
+<!-- ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                -->
+<!--                                                                  -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     -->
+<!-- All Rights reserved.                                             -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.ibm.com/software/data/infosphere/streams/parser StructureParserMapping.xsd"
+                    xmlns="http://www.ibm.com/software/data/infosphere/streams/parser">
+
+<!-- the stream definition for reference:
+
+			uint8 	uintval8,
+			uint16 	uintval16,			
+			uint32 	uintval32,
+			uint64	uintval64,
+			int8	intval8,
+			int16	intval16,
+			int32	intval32,
+			int64	intval64,
+			uint16	uintval16_be,
+			uint32	uintval32_be,
+			float32	floatval32,
+			float64	floatval64,
+			rstring stringval1,
+			rstring stringconv1,
+			rstring stringconv2,
+			rstring stringconv3
+
+-->
+
+	<attribute name="uintval8">
+		<from structure="binaryRecord" field="uintval8" />
+	</attribute>
+	<attribute name="uintval16">
+		<from structure="binaryRecord" field="uintval16" />	
+	</attribute>
+	<attribute name="uintval32">
+		<from structure="binaryRecord" field="uintval32" />
+	</attribute>
+	<attribute name="uintval64">
+		<from structure="binaryRecord" field="uintval64" />
+	</attribute>
+
+	<attribute name="intval8">
+		<from structure="binaryRecord" field="intval8" />
+	</attribute>
+	<attribute name="intval16">
+		<from structure="binaryRecord" field="intval16" />	
+	</attribute>
+	<attribute name="intval32">
+		<from structure="binaryRecord" field="intval32" />
+	</attribute>
+	<attribute name="intval64">
+		<from structure="binaryRecord" field="intval64" />
+	</attribute>
+ 
+	<attribute name="uintval16_be">
+		<from structure="binaryRecord" field="uintval16_be" />
+	</attribute>
+	<attribute name="uintval32_be">
+		<from structure="binaryRecord" field="uintval32_be" />
+	</attribute>
+
+	<attribute name="floatval32">
+		<from structure="binaryRecord" field="floatval32" />
+	</attribute>
+	<attribute name="floatval64">
+		<from structure="binaryRecord" field="floatval64" />
+	</attribute>
+
+	<attribute name="stringval1">
+		<from structure="binaryRecord" field="stringval1" />	
+	</attribute>
+	
+	<!--  the following attributes are conversions from the intval32 integer field into strings -->
+	<attribute name="stringconv1">
+		<from structure="binaryRecord" field="intval32">
+			<!--  convert into a string with base 10 (this is the default) -->
+			<toString />
+		</from>	
+	</attribute>
+	<attribute name="stringconv2">
+		<from structure="binaryRecord" field="intval32">
+			<!--  convert into an octal string -->
+			<toString base="oct"/>
+		</from>	
+	</attribute>
+	<attribute name="stringconv3">
+		<from structure="binaryRecord" field="intval32">
+			<!--  convert into an hex string -->
+			<toString base="hex"/>
+		</from>	
+	</attribute>
+
+</mapping>

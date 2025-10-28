@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_copyright_prolog                             -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- 5724-Y95                                                         -->
+<!-- (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_copyright_prolog                               -->
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<operatorModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ibm.com/xmlns/prod/streams/spl/operator" xmlns:cmn="http://www.ibm.com/xmlns/prod/streams/spl/common" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/streams/spl/operator operatorModel.xsd">
+  <cppOperatorModel>
+    <context>
+      <description>
+        The MultiLookupOperator is a new design of the TEDA enrichment operation based on shared memory access. The operator is a primitive operator and is written in C++. 
+        It is a run time optimized version of the TEDA LookupCache operator for applications which require multiple enrichment operations in a sequence. 
+        The operator is able to perform multiple lookup operations in a single operator. Thus it avoids functional overhead. Additionally, the operator allows 
+        the definition of filter expressions for each lookup operation and the insertion of default values if there was not match found. 
+        The operator uses the shm store type definition of the TEDA internal shm library. This operator accesses the shm objects directly and bypasses 
+        the shm handle manager.
+      </description>
+      <metrics>
+        <metric>
+          <name>nHits</name>
+          <description>The number of key values found</description>
+          <kind>Counter</kind>
+        </metric>
+        <metric>
+          <name>nMisses</name>
+          <description>The number of key values not found</description>
+          <kind>Counter</kind>
+        </metric>
+      </metrics>
+      <customLiterals>
+        <enumeration>
+          <name>ShmReleaseMode</name>
+          <value>punct</value>
+          <value>always</value>
+          <value>never</value>
+        </enumeration>
+      </customLiterals>
+      <customOutputFunctions>
+        <customOutputFunction>
+          <name>LookupFunctions</name>
+          <function>
+            <description>Return the argument unchanged</description>
+            <prototype>&lt;any T> T AsIs(T)</prototype>
+          </function>
+          <function>
+            <description>Searches the store for an element with the key *key*. The function returns the found value from shm store or the empty value (default constructed value type) if not found. Parameter *store* must be a literal.</description>
+            <prototype>&lt;any K, any V> V Find(rstring store, K key)</prototype>
+          </function>
+          <function>
+            <description>Searches the store for an element with the key *key*. The function returns the found value from shm store or the value *default* if not found. Parameter *store* must be a literal.</description>
+            <prototype>&lt;any K, any V> V Find(rstring store, K key, V default)</prototype>
+          </function>
+          <function>
+            <description>If the filter expression is true, the function searches the store for an element with the key *key*. If the element was found the value is returned. The function returns the empty value (default constructed value type) if the element was not found or the filter expression was false. Parameter *store* must be a literal.</description>
+            <prototype>&lt;any K, any V> V FilterFind(rstring store, K key, boolean filter)</prototype>
+          </function>
+          <function>
+            <description>If the filter expression is true, the function searches the store for an element with the key *key*. If the element was fount the value is returned. The function returns the value *default* if the element was not found or the filter expression was false. Parameter *store* must be a literal.</description>
+            <prototype>&lt;any K, any V> V FilterFind(rstring store, K key, boolean filter, V default)</prototype>
+          </function>
+          <function>
+            <description>This function returns the indication whether the element was found in the store. There must be a corresponding *Find* function with equal store and key expression in output assignment section. This function produces **no** additional lookup operation it uses the result of the corresponding *Find* function.</description>
+            <prototype>&lt;any K> boolean Has(rstring store, K key)</prototype>
+          </function>
+          <function>
+            <description>If the filter expression is true, this function returns the indication whether the element was found in the store. It returns false otherwise. There must be a corresponding *FilterFind* function with equal store, key and filter expression in output assignment section. This function produces **no** additional lookup operation it uses the result of the corresponding *FilterFind* function.</description>
+            <prototype>&lt;any K> boolean FilterHas(rstring store, K key, boolean filter)</prototype>
+          </function>
+          <function>
+            <description>
+              This function searches the store for an element with the key *key*. It returns the indication whether the element exists in the store. 
+              If the element exists, the result is written to *value*. If the element does not exist the empty value (default constructed value type) 
+              is written into value. Finally the matching attributes from the value are assigned to the output stream (like a *assignFrom* function). 
+              Parameter *store* must be a literal.
+            </description>
+            <prototype>&lt;any K, tuple V> boolean FindAssign(rstring store, K key, mutable V value)</prototype>
+          </function>
+          <function>
+            <description>
+              This function searches the store for an element with the key *key*. It returns the indication whether the element exists in the store. 
+              If the element exists, the result is written to *value*. If the element does not exist the value *default* is written into value. 
+              Finally the matching attributes from the value are assigned to the output stream (like a *assignFrom* function). 
+              Parameter *store* must be a literal.
+            </description>
+            <prototype>&lt;any K, tuple V> boolean FindAssign(rstring store, K key, mutable V value, V default)</prototype>
+          </function>
+          <function>
+            <description>
+              If the filter expression is true, the function searches the store for an element with the key *key*. It returns the indication whether 
+              the element exists in the store. If the filter expression is false, the function returns false. If the element exists the result is 
+              written to *value*. If the element does not exist or the filter is false, the empty value (default constructed value type) is written into value. 
+              Finally the matching attributes from the value are assigned to the output stream (like a *assignFrom* function). 
+              Parameter *store* must be a literal.
+            </description>
+            <prototype>&lt;any K, tuple V> boolean FilterFindAssign(rstring store, K key, boolean filter, mutable V value)</prototype>
+          </function>
+          <function>
+            <description>
+              If the filter expression is true, the function searches the store for an element with the key *key*. It returns the indication whether 
+              the element exists in the store. If the filter expression is false, the function returns false. If the element exists the result is 
+              written to *value*. If the element does not exist or the filter is false, the value *default* is written into value. 
+              Finally the matching attributes from the value are assigned to the output stream (like a *assignFrom* function). 
+              Parameter *store* must be a literal.
+            </description>
+            <prototype>&lt;any K, tuple V> boolean FilterFindAssign(rstring store, K key, boolean filter, mutable V value, V default)</prototype>
+          </function>
+        </customOutputFunction>
+      </customOutputFunctions>
+      <libraryDependencies>
+        <library>
+          <cmn:description>shm library</cmn:description>
+          <cmn:managedLibrary>
+            <cmn:lib></cmn:lib>
+            <cmn:libPath></cmn:libPath>
+            <cmn:includePath>@STREAMS_INSTALL@/toolkits/com.teracloud.streams.teda/impl/include/libshm</cmn:includePath>
+          </cmn:managedLibrary>
+        </library>
+      </libraryDependencies>
+      <providesSingleThreadedContext>Always</providesSingleThreadedContext>
+      <allowCustomLogic>true</allowCustomLogic>
+      <splExpressionTree cppCode="true" output="true" param="true"/>
+    </context>
+    <parameters>
+      <allowAny>false</allowAny>
+      <parameter>
+        <name>storeSegmentPairs</name>
+        <description>
+          The list of shm store:segment pairs. Each used store must be assigned to a segment in shared memoy. All stores must be unique. 
+          Segments may contain more than one store.
+          Each list entry must be a rstring with a store:segment pair. The store must be the first entry followed by a colon and the segment name.
+        </description>
+        <optional>false</optional>
+        <rewriteAllowed>false</rewriteAllowed>
+        <expressionMode>Constant</expressionMode>
+        <type>rstring</type>
+        <cardinality>-1</cardinality>
+      </parameter>
+      <parameter>
+        <name>releaseMode</name>
+        <description>
+          The operation mode for the shared memory release. 
+          * *never*: the shm relation is released after final punctuation marker
+          * *punct*: the shm relation is released after a window punctuation marker or a final punctuation marker
+          * *always*: the shm relation is released after each tuple
+          Default is punct
+        </description>
+        <optional>true</optional>
+        <rewriteAllowed>false</rewriteAllowed>
+        <expressionMode>CustomLiteral</expressionMode>
+        <type>ShmReleaseMode</type>
+        <cardinality>1</cardinality>
+      </parameter>
+<!--
+      <parameter>
+        <name>useThreads</name>
+        <description>If this parameter is true, the operator spawns a separate thread for each search in the store. Default is *false*</description>
+        <optional>true</optional>
+        <rewriteAllowed>false</rewriteAllowed>
+        <expressionMode>Constant</expressionMode>
+        <type>boolean</type>
+        <cardinality>1</cardinality>
+      </parameter>
+-->
+      <parameter>
+        <name>segmentNamePrefix</name>
+        <description>This parameter defines a prefix for all segment names. Default is empty</description>
+        <optional>true</optional>
+        <rewriteAllowed>true</rewriteAllowed>
+        <expressionMode>AttributeFree</expressionMode>
+        <type>rstring</type>
+        <cardinality>1</cardinality>
+      </parameter>
+      <parameter>
+        <name>disableLookup</name>
+        <description>Lookup code is not called - no access to shared memory. Output function return results are as if not found. Default: *false*</description>
+        <optional>true</optional>
+        <rewriteAllowed>true</rewriteAllowed>
+        <expressionMode>AttributeFree</expressionMode>
+        <type>boolean</type>
+        <cardinality>1</cardinality>
+      </parameter>
+    </parameters>
+    <inputPorts>
+      <inputPortSet>
+        <description>
+          Input stream. Each input may trigger several lookup operations. The input tuple attributes are used in the output function as key 
+          values to trigger a search in a shm store. A input window punctuation marker may be used to release all references to shm stores and segments 
+          depending on parameter *releaseMode*.
+        </description>
+        <tupleMutationAllowed>true</tupleMutationAllowed>
+        <windowingMode>NonWindowed</windowingMode>
+        <windowPunctuationInputMode>Oblivious</windowPunctuationInputMode>
+        <cardinality>1</cardinality>
+        <optional>false</optional>
+      </inputPortSet>
+    </inputPorts>
+    <outputPorts>
+      <outputPortSet>
+        <description>
+          The output port stream is enriched with the results of the lookup operations. A lookup is triggered by a output function *Find*, *FilterFind*, *FindAssign* or *FilterFindAssign*. 
+          Matching attributes from the input stream are automatically forwarded to the output. The operator does not require complete assignment.
+        </description>
+        <expressionMode>Expression</expressionMode>
+        <!-- auto assignment is implemented manually in code generation, because automatic mode interferes with output function FindAssign and FilterFindAssing -->
+        <autoAssignment>false</autoAssignment>
+        <completeAssignment>false</completeAssignment>
+        <rewriteAllowed>true</rewriteAllowed>
+        <outputFunctions>
+          <default>AsIs</default>
+          <type>LookupFunctions</type>
+        </outputFunctions>
+        <windowPunctuationOutputMode>Preserving</windowPunctuationOutputMode>
+        <windowPunctuationInputPort>-1</windowPunctuationInputPort>
+        <tupleMutationAllowed>true</tupleMutationAllowed>
+        <cardinality>1</cardinality>
+        <optional>false</optional>
+      </outputPortSet>
+    </outputPorts>
+  </cppOperatorModel>
+</operatorModel>

@@ -1,0 +1,8 @@
+# bnd.bnd
+# Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.7))"
+version-build=1.0.0.${tstamp}
+Private-Package: com.ibm.streams.security.auth.module.xml.*
+Export-Package: com.ibm.streams.security.auth.module.xml
+Bundle-Activator: com.ibm.streams.security.auth.module.xml.Activator
+Bundle-Version: ${version-build} 
+Jaas-ModuleClass: com.ibm.streams.security.auth.module.xml.SimpleUserLoginModule

@@ -1,0 +1,90 @@
+<% 
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2010, 2012     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+%>
+<%
+    use TableMatchCommon;
+    TableMatchCommon::verify($model);
+    my $class = $model->getContext()->getClass();
+    my $inputPortLHS = $model->getInputPortAt(0);
+    my $inputPortRHS = $model->getInputPortAt(1);
+
+    my $readingTuple = $inputPortLHS->getCppTupleName();
+    my $queryTuple = $inputPortRHS->getCppTupleName();
+
+    my $match = $model->getParameterByName("match");
+    $match = $match->getValueAt(0)->getCppExpression();
+    my $threshold = $model->getParameterByName("threshold");
+    $threshold = $threshold->getValueAt(0)->getCppExpression();
+
+    my $window = $inputPortLHS->getWindow();
+    my $windowCppInitializer = SPL::CodeGen::getWindowCppInitializer($window, "IPort0Type*");
+
+    my $assignments = SPL::CodeGen::getOutputTupleCppInitializer($model->getOutputPortAt(0));
+%>
+
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+MY_OPERATOR::MY_OPERATOR()
+    : windowOfReadings_(<%=$windowCppInitializer%>),
+      windowHandler_(*this)
+{
+    windowOfReadings_.registerBeforeTupleEvictionHandler(&windowHandler_);
+}
+ 
+MY_OPERATOR::~MY_OPERATOR()
+{
+    windowOfReadings_.deleteWindowObjects();
+} 
+
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port)
+{
+    AutoPortMutex apm(mutex_, *this);
+    if(port==0) {
+        IPort0Type const & reading = static_cast<IPort0Type const&>(tuple);
+        windowOfReadings_.insert(new IPort0Type(reading));
+    } else {
+        AutoWindowDataAcquirer<IPort0Type*> awda(windowOfReadings_);
+        IPort1Type const & <%=$queryTuple%> = static_cast<IPort1Type const&>(tuple);
+        WindowType::DataType & content = windowOfReadings_.getWindowData();
+        for(WindowType::DataType::const_iterator it=content.begin(); it!=content.end(); ++it) {
+            IPort0Type const & <%=$readingTuple%> = **it;
+            if(<%=$match%>) {
+                OPort0Type otuple(<%=$assignments%>);
+                submit(otuple, 0);
+                uintptr_t ptr = reinterpret_cast<uintptr_t>(*it);
+                map<uintptr_t,uint32>::iterator mit = matchedReadings_.find(ptr);
+                if(mit==matchedReadings_.end())
+                    matchedReadings_.insert(std::make_pair(ptr,1));
+                else
+                    mit->second = mit->second+1;
+            }              
+        }
+    }
+}
+
+void MY_OPERATOR::evict(IPort0Type & reading)
+{
+    uintptr_t ptr = reinterpret_cast<uintptr_t>(&reading);
+    map<uintptr_t,uint32>::iterator mit = matchedReadings_.find(ptr);
+    if(mit!=matchedReadings_.end()) {        
+        uint32 numMatches = mit->second;
+        if(numMatches >= <%=$threshold%>)
+            submit(reading, 1);
+        matchedReadings_.erase(mit);
+    }
+    delete &reading;
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>

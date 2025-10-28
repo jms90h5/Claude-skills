@@ -1,0 +1,147 @@
+/* begin_generated_IBM_copyright_prolog                             */
+/*                                                                  */
+/* This is an automatically generated copyright prolog.             */
+/* After initializing,  DO NOT MODIFY OR MOVE                       */
+/* **************************************************************** */
+/* Licensed Materials - Property of IBM                             */
+/* 5724-Y95                                                         */
+/* (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.      */
+/* US Government Users Restricted Rights - Use, duplication or      */
+/* disclosure restricted by GSA ADP Schedule Contract with          */
+/* IBM Corp.                                                        */
+/*                                                                  */
+/* end_generated_IBM_copyright_prolog                               */
+<%
+unshift @INC, (reverse(glob(sprintf("%s/toolkits/com.teracloud.streams.teda*/impl/nl/include", $ENV{STREAMS_INSTALL}))))[0];
+require TedaToolkitResource;
+my $noutputstreams = $model->getNumberOfOutputPorts();
+my $ninputstreams = $model->getNumberOfInputPorts();
+%>
+
+/* Additional includes go here */
+
+<%SPL::CodeGen::implementationPrologue($model);%>
+
+// Constructor
+MY_OPERATOR::MY_OPERATOR()
+{
+}
+
+// Destructor
+MY_OPERATOR::~MY_OPERATOR()
+{
+}
+
+// Notify port readiness
+void MY_OPERATOR::allPortsReady()
+{
+}
+ 
+// Notify pending shutdown
+void MY_OPERATOR::prepareToShutdown()
+{
+}
+
+// Processing for source and threaded operators
+void MY_OPERATOR::process(uint32_t idx)
+{
+}
+
+// Tuple processing for mutating ports 
+void MY_OPERATOR::process(Tuple & tuple, uint32_t port)
+{
+    <%my $outputPort = $model->getOutputPortAt(0);%>
+    OPort0Type otuple;
+	std::ostringstream buffer_;
+
+    if (getPE().getShutdownRequested())
+    {   // do not create further files or write to file if shutdown is requested
+        return;
+    }
+
+    switch(port)
+    {
+        <% for (my $iPort = 0; $iPort < $ninputstreams; ++$iPort) { %>
+        case <%=$iPort%>: {
+            IPort<%=$iPort%>Type & ituple = static_cast<IPort<%=$iPort%>Type &>(tuple);
+
+            <% # forward input attributes if existing in output schema
+            my $inputPort = $model->getInputPortAt($iPort);
+            my $inTupleName = "ituple";
+            for my $attr (@{$outputPort->getAttributes()})
+            {
+                    if (defined ($inputPort->getAttributeByName($attr->getName())) && $inputPort->getAttributeByName($attr->getName())->getCppType() eq $attr->getCppType())
+                    {
+                           print "            otuple.set_".$attr->getName()."(".$inTupleName.".get_".$attr->getName()."());\n";
+                    }
+            }
+            %>
+
+            <%
+                my $istream = $model->getInputPortAt($iPort);
+                if (!(defined ($istream->getAttributeByName("tablename")))) {
+                    SPL::CodeGen::exitln("TableRowGenerator" . "(" . $model->getContext()->getClass() . "): " .
+                        TedaToolkitResource::TEDA_MISSING_ATTRIBUTE_INPUT_STREAM("tablename"));
+                }
+                my $sepChar = ",";
+                my $numAttrs = $istream->getNumberOfAttributes();
+                my $numAttrsToWrite = 0;
+                for (my $i = 0; $i < $numAttrs; ++$i)
+                {
+                        my $attr = $istream->getAttributeAt($i);
+                        my $attrName = $attr->getName();
+                        last if ('tablename' eq $attrName);
+                        ++$numAttrsToWrite;
+                }
+                for (my $i = 0; $i < $numAttrsToWrite; ++$i)
+                {
+                        my $attr = $istream->getAttributeAt($i);
+                        my $attrName = $attr->getName();
+
+                        if (SPL::CodeGen::Type::isString($attr->getSPLType())) {
+                                print "            SPL::serializeUnquoted(buffer_, ituple.get_", $attrName, "())";
+                        } else {
+                                print "            SPL::serializeWithPrecision(buffer_, ituple.get_", $attrName, "())";
+                        }
+
+                        if ($i != $numAttrsToWrite-1) {
+                                print " << '$sepChar';\n";
+                        }
+                        else {
+                                print ";\n;";
+                        }
+                };
+            %>
+            <%if (defined ($outputPort->getAttributeByName("tablerow"))) {%>
+            otuple.set_tablerow(buffer_.str());
+            <%} else {
+                SPL::CodeGen::exitln("TableRowGenerator" . "(" . $model->getContext()->getClass() . "): " .
+                    TedaToolkitResource::TEDA_MISSING_ATTRIBUTE_OUTPUT_STREAM("tablerow"));
+              }%>
+            break;
+        }
+        <%}%>
+    }
+
+    submit(otuple, 0); // submit to output port 0
+}
+
+// Tuple processing for non-mutating ports
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port)
+{
+}
+
+// Punctuation processing
+void MY_OPERATOR::process(Punctuation const & punct, uint32_t port)
+{
+    if(punct==Punctuation::WindowMarker) 
+    {
+        if (0 == port) 
+        {
+            submit(punct,0); // forward on punct 0 only
+        }
+    }
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

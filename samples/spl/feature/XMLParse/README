@@ -1,0 +1,11 @@
+Overview: XMLParse will demonstrate reading XML data and converting
+select XML attributes and elements into SPL tuples.
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+Notes: 
+  - The resulting output is written to the file 'data/Results.txt'.

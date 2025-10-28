@@ -1,0 +1,157 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace teda.sample.StructureParse.Metrics;
+
+use com.teracloud.streams.teda.parser.binary::StructureParse;
+
+/** Sample application to demonstrate the usage of output functions to get metrics from the StructureParse operator
+
+    To demonstrate the usage of the metrics, we will read 3 different types of input records from 2 input files.
+    The first file will contain 2 records of each type. The second file will contain 3 records of each type.
+    The tuples received and send metrics are of limited use when you need to determine how many records of each type
+    have been processed, therefore the operator has additional functions to retrieve statistics on a per record basis.
+    These are also shown in this sample. After running the sample, have a look at the metrics.txt file in the data directory. 
+*/
+composite Main
+{
+	type
+
+		// the data structure for the records is very simple. One byte containing the recordType
+		// and up to 3 additional bytes for values from the record fields
+		Data = tuple
+		<
+			uint8 recordType,
+			uint8 value1,
+			uint8 value2,
+			uint8 value3						
+		>;		
+
+		// the metrics and statistics we want to get from the parser
+		// we are using the full set of metrics and the additional per record counters (which are not available as Streams metrics)
+		Metric = tuple
+		<
+			// the input filename to see what input file the statistics belong to
+			rstring sourceFilename,
+		
+			// the first 4 counters (...Total) are over all files processed so far
+			// the next 4 are for the current file (to be precise, for everything received after the last punctuation)
+			uint64 nTuplesReceivedTotal,
+			uint64 nTuplesSentTotal,
+			uint64 nBytesReceivedTotal,
+			uint64 nBytesDroppedTotal,
+			uint64 nTuplesReceived,
+			uint64 nTuplesSent,
+			uint64 nBytesReceived,
+			uint64 nBytesDropped,
+			// this metrics contains the timestamp (in unix seconds) the last punctuation was received
+			// that is after the last data block for the input file was processed. By comparing this value to the 
+			// timestamp for the file processed before, you can get an idea how long the processing took		
+			uint64 latestPunctuation,
+			
+			// this one counts the number of records received for each record type (structure) since the last punctuation
+			map<rstring,uint64> recordCounts,
+			// this one counts the number of bytes received for each record type (structure) since the last punctuation			
+			map<rstring,uint64> byteCounts
+		>;
+
+	graph
+
+		/**
+		 * Scan the data directory for new input files with extension .bin
+		 */
+		stream<rstring fileName> BinaryFiles as O = DirectoryScan()
+		{
+			param
+				directory: ".";
+				pattern: "^.*\\.bin$";
+				sortBy : name;
+		}
+
+		/**
+		 * Read the binary data from the input files and output the data as blobs
+		 * Send the input filename along with the blobs, so it can be used later by the metrics output of the parser
+		 */
+		stream<rstring fileName, blob payload> SourceData as O = FileSource(BinaryFiles as I)
+		{
+			param
+				format: block;
+				blockSize: 1024u * 1024u;
+			output O:
+				fileName = FileName();
+		}
+		 
+		/**
+		 * Decode the binary records according to the configured mapping
+		 * For the second output port (metrics) we use most of the available output assignment functions
+		 * from the operator
+		 */
+		(stream<Data> Output as O; stream<Metric> Metrics as M) as Parse = StructureParse(SourceData as I)
+		{
+			param
+				payloadAttribute : payload;
+				structureDocument : "etc/structure.xml";
+				mappingDocument : "etc/mapping.xml";
+			output M:
+				sourceFilename = fromInput("fileName"),
+				nTuplesReceivedTotal = nTuplesReceivedTotal(),
+				nTuplesSentTotal = nTuplesSentTotal(),
+				nBytesReceivedTotal = nBytesReceivedTotal(),
+				nBytesDroppedTotal = nBytesDroppedTotal(),
+				nTuplesReceived = nTuplesReceived(),
+				nTuplesSent = nTuplesSent(),
+				nBytesReceived = nBytesReceived(),
+				nBytesDropped = nBytesDropped(),
+				latestPunctuation = latestPunctuation(),
+				recordCounts = getRecordCounts(),
+				byteCounts = getRecordByteCounts()				
+				;
+		}
+
+		/**
+		 * Write the decoded records to text files, one output file for each input file
+		 */
+		() as Sink = FileSink(Output as I)
+		{
+			param
+				closeMode : punct;
+				file: "output{id}.txt";
+			 	format: txt;
+			 	flush: 1u;
+		}
+		
+		/**
+		 * Write metrics to text file. One line for each file processed
+		 */
+		() as MetricsSink = FileSink(Metrics as I)
+		{
+			param
+				file: "metrics.txt";
+				format: txt;
+				flush: 1u;
+				writePunctuations: true;
+		}
+
+}

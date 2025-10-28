@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                -->
+<!-- TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    -->
+<!-- EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   -->
+<!-- COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       -->
+<!-- AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   -->
+<!-- OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE -->
+<!-- RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  -->
+<!-- OF THIS SAMPLE CODE.                                             -->
+<!--                                                                  -->
+<!-- LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   -->
+<!-- PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   -->
+<!-- DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    -->
+<!-- THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  -->
+<!-- PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   -->
+<!-- ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                -->
+<!--                                                                  -->
+<!-- (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2011, 2015     -->
+<!-- All Rights reserved.                                             -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<structures
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ibm.com/software/data/infosphere/streams/parser StructureParserStructure.xsd"
+	xmlns="http://www.ibm.com/software/data/infosphere/streams/parser"
+>
+
+	<!--
+		The variable is required to store the value of the field that holds the
+		version information.
+	-->
+	<variable name="version" type="uint16" value="99"/>
+
+	<!--
+		All structures that belong to version 0 are grouped.
+	-->
+	<group name="v0">
+		<condition>
+			<cmp op="equal">
+				<variable name="version"/>
+				<value>0</value>
+			</cmp>
+		</condition>
+	</group>
+
+	<!--
+		All structures that belong to version 1 are grouped.
+	-->
+	<group name="v1">
+		<condition>
+			<cmp op="equal">
+				<variable name="version"/>
+				<value>1</value>
+			</cmp>
+		</condition>
+	</group>
+
+	<!--
+		The header
+		The version information is stored in the above declared variable.
+	-->
+	<structure name="header">
+		<condition>
+			<logicOp op="and">
+				<cmp op="equal">
+					<field name="RECORD_TYPE"/>
+					<value>0</value> <!--header -->
+				</cmp>
+				<in>
+					<field name="VERSION"/> <!-- support two versions -->
+					<value>0</value>
+					<value>1</value>
+				</in>
+			</logicOp>
+		</condition>
+		<action>
+			<store field="VERSION" as="version"/>
+			<submit/>
+		</action>
+		<field name="RECORD_TYPE" type="uint8"/>
+		<field name="VERSION" type="uint16"/>
+	</structure>
+
+	<!--
+		Event A, version 0.
+	-->
+	<structure name="eventA_0" group="v0">
+		<condition>
+			<cmp op="equal">
+				<field name="RECORD_TYPE"/>
+				<value>1</value> <!-- event A -->
+			</cmp>
+		</condition>
+		<field name="RECORD_TYPE" type="uint8"/>
+		<field name="ORIG_ADDR" type="rstring" size="3"/>
+		<field name="DEST_ADDR" type="rstring" size="3"/>
+	</structure>
+
+	<!--
+		Event A, version 1.
+		It is derived from event A, version 0, and extended by additional fields.
+	-->
+	<structure name="eventA_1" group="v1">
+		<condition>
+			<cmp op="equal">
+				<field name="RECORD_TYPE"/>
+				<value>1</value> <!-- event A -->
+			</cmp>
+		</condition>
+		<base name="eventA_0"/>
+		<field name="IMSI_ADDR" type="rstring" size="3"/>
+	</structure>
+
+	<!--
+		Event B, version 0.
+	-->
+	<structure name="eventB_0" group="v0">
+		<condition>
+			<cmp op="equal">
+				<field name="RECORD_TYPE"/>
+				<value>2</value> <!-- event B -->
+			</cmp>
+		</condition>
+		<field name="RECORD_TYPE" type="uint8"/>
+		<field name="SMS_CENTRE" type="rstring" size="3"/>
+	</structure>
+
+	<!--
+		Event B, version 1.
+		It is derived from event B, version 0, and extended by additional fields.
+	-->
+	<structure name="eventB_1" group="v1">
+		<condition>
+			<cmp op="equal">
+				<field name="RECORD_TYPE"/>
+				<value>2</value><!-- event B -->
+			</cmp>
+		</condition>
+		<base name="eventB_0"/>
+		<field name="IMSI_ADDR" type="rstring" size="3"/>
+	</structure>
+
+	<!--
+		The trailer.
+		The above declared variable, which stores version information, is reset.
+	-->
+	<structure name="trailer">
+		<condition>
+			<logicOp op="and">
+				<cmp op="equal">
+					<field name="RECORD_TYPE"/>
+					<value>3</value> <!-- trailer -->
+				</cmp>
+				<in>
+					<variable name="version"/>
+					<value>0</value>
+					<value>1</value>
+				</in>
+			</logicOp>
+		</condition>
+		<action>
+			<set value="99" as="version"/>
+			<submit/>
+		</action>
+		<field name="RECORD_TYPE" type="uint8"/>
+	</structure>
+
+	<!--
+		Synchronize in case of failures.
+	-->
+	<sync>
+		<structure name="header"/>
+	</sync>
+
+</structures>

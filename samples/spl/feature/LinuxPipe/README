@@ -1,0 +1,18 @@
+Overview: LinuxPipe illustrates how to run Linux pipe commands in an SPL
+application. As part of this, it also includes a primitive operator that
+implements the basic functionality of running a Linux pipe command and
+retreiving the results (standard output and error in two different streams).
+
+1. To build the sample application:
+   make
+
+2. To run the sample application:
+   ./output/bin/standalone
+
+Notes: 
+  - The input file is 'data/in.txt'.
+  - The sample performs 2 sets of transformations on the input.
+  - The result of the 1st set of transformations is stored in 'data/outA.txt'.
+  - The result of the 2nd set of transformations is stored in 'data/outB.txt'.
+  - Any errors from the 2nd set of transformations is stored in 'data/errB.txt'.
+

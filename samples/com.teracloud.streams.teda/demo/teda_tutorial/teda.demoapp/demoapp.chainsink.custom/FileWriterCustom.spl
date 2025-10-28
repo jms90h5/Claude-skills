@@ -1,0 +1,213 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+
+namespace demoapp.chainsink.custom;
+
+use demoapp.streams::*;
+use demoapp.streams.custom::*;
+
+/**
+ * Implements one or more sink operators and any required distribution of a
+ * tuple to one or more of the sink operators. You can implement, for example,
+ * your own file name schema or other sink operators than the
+ * spl.adapter::FileSink operator.
+ *
+ * Set the **ite.storage.type** parameter to `custom` to activate this
+ * composite operator.
+ *
+ * @input  InRecords
+ * Records for file sink(s) or other sink(s)
+ *
+ * @input  InStat
+ * Statistic tuple received at end of file
+ *
+ * @output OutStat
+ * The tuple received InStat port must be forwarded on this port.
+ *
+ * @param outputDir
+ * The absolute path of the output directory. Use this parameter
+ * to create files in the output directory.
+ *
+ * @param $commitDir
+ * The absolute path of the commit directory. Use this parameter
+ * to create or moves files in the commit directory.
+ * For example move your files into this directory to be processed
+ * by downstream application.
+ * 
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ *
+ */
+public composite FileWriterCustom (
+	input 
+		stream<TypesCommon.ChainSinkStreamType> InRecords,
+		stream<TypesCommon.FileStatistics> InStat;
+	output
+		stream<TypesCommon.FileStatistics> OutStat
+)
+{
+	param
+		expression<rstring> $outputDir;
+		expression<rstring> $commitDir;
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+
+	graph
+
+		
+
+		(
+		stream<InRecords> TupleToWrite as Out;
+		
+		stream<InStat> OutStat
+		
+		) = Custom(InRecords; InStat) {
+			logic
+				state : {
+					rstring outputDir = $outputDir; // prevents submission code to be called when using directory param
+					rstring commitDir = $commitDir; // prevents submission code to be called when using directory param
+					
+					boolean ok = com.teracloud.streams.teda.internal.fileutils::createDir(commitDir);
+					mutable uint64 tuplesWritten = 0ul;
+					
+					mutable	boolean isPunctReceived = false;
+					mutable boolean isStatReceived = false;
+					
+					mutable InStat queuedStat = {};
+				}
+				onTuple InRecords: {
+					// Update Statistics here
+					
+					
+					tuplesWritten++;
+					
+
+					// forward to Sink
+					submit(InRecords, Out);
+				}
+				onPunct InRecords: {
+					if (currentPunct() == Sys.WindowMarker){
+						// flush/close table files
+						submit(Sys.WindowMarker, Out);
+
+						// send statistics if received before punct
+						if (isStatReceived) {
+							// commit before sending statistic tuple
+							if (0 == spl.collection::size(queuedStat.errors)) {
+								
+								if (0ul < tuplesWritten) {
+									if (0 != commitFile(queuedStat.filename, outputDir, commitDir)) {
+										appendM(queuedStat.errors, "COMMIT FAILED");
+									}
+								}
+								
+							}
+							
+							// forward statistic tuple
+							submit(queuedStat, OutStat);
+							
+							// reset
+							isPunctReceived = false;
+							isStatReceived = false;
+							tuplesWritten = 0ul;
+						}
+						else {
+							isPunctReceived = true;
+						}
+					}
+				}
+				onTuple InStat : {
+					// punct must be received before forwarding statistic tuple
+					if (isPunctReceived) {
+						// commit before sending statistic tuple
+						if (0 == spl.collection::size(InStat.errors)) {
+							
+							if (0ul < tuplesWritten) {
+								if (0 != commitFile(InStat.filename, outputDir, commitDir)) {
+									appendM(InStat.errors, "COMMIT FAILED");
+								}
+							}
+							
+						}
+						
+						// forward statistic tuple
+						submit(InStat, OutStat);
+						
+						// reset
+						isPunctReceived = false;
+						isStatReceived = false;
+						tuplesWritten = 0ul;
+					}
+					else {
+						// enqueue statistic tuple
+						queuedStat = InStat;
+						isStatReceived = true;
+						// do not forward statistic tuple here
+					}
+				}
+		}
+
+		
+		() as CustomFileSink = FileSink(TupleToWrite) {
+			logic
+				state : {
+					rstring outputDir = $outputDir; // prevents submission code to be called when using directory param
+				}
+			param
+				file :  outputDir + "/" + filename +".csv";
+				format: csv;
+				flushOnPunctuation: true;
+				closeMode: punct;
+				append: false;
+				quoteStrings : false;
+				suppress: filename, fileType, readerLinenumber, readerInvalidLineInd, readerInvalidPayload, readerInvalidMessage, chainPunct, groupId, chainId;
+		}
+		
+
+		
+}
+
+
+stateful int32 commitFile(rstring filename, rstring outputDir, rstring commitDir)
+{
+	mutable rstring stripFilename=com.teracloud.streams.teda.file.path::filename(filename);
+	mutable int32 err=0;
+	rstring sourcePath= outputDir + "/" + stripFilename+".csv";
+	rstring destPath = commitDir + "/" + stripFilename+".csv";
+	// rename dir
+	com.teracloud.streams.teda.file::rename(sourcePath, destPath, err);
+	if(err!=0) {
+		appTrc(Trace.error, "Could not rename file '" + sourcePath+"' to '"+destPath+"': " + (rstring)err);
+	}
+	return err;
+}
+
+
+

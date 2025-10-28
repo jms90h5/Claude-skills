@@ -1,0 +1,32 @@
+/*
+*******************************************************************************
+* Copyright (C) 2019, International Business Machines Corporation. 
+* All Rights Reserved. *
+*******************************************************************************
+*/
+
+namespace com.teracloud.streams.inet.http.sample;
+
+use com.teracloud.streams.inet.http::*;
+
+/**
+ * This sample connects to the specified URL and prints the streaming data.
+ */
+public composite HTTPStreamSample
+{
+  graph
+    stream<rstring data> Result = HTTPGetStream()
+    {
+
+      param 
+        url : getSubmissionTimeValue("url", "http://httpbin.org");
+
+    } 
+
+    () as Writer = Custom(Result)
+    {
+      logic
+        onTuple Result: println("result: " + (rstring)Result + "\n");
+        onPunct Result: println(currentPunct());
+    }
+}

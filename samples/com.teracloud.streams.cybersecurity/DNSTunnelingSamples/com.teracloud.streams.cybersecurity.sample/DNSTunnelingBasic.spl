@@ -1,0 +1,75 @@
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// THIS SAMPLE CODE IS PROVIDED ON AN "AS IS" BASIS.                
+// TERACLOUD APS AND IBM MAKES NO REPRESENTATIONS OR WARRANTIES,    
+// EXPRESS OR IMPLIED, CONCERNING  USE OF THE SAMPLE CODE, OR THE   
+// COMPLETENESS OR ACCURACY OF THE SAMPLE CODE. TERACLOUD APS       
+// AND IBM DOES NOT WARRANT UNINTERRUPTED OR ERROR-FREE OPERATION   
+// OF THIS SAMPLE CODE. TERACLOUD APS AND IBM IS NOT RESPONSIBLE FOR THE 
+// RESULTS OBTAINED FROM THE USE OF THE SAMPLE CODE OR ANY PORTION  
+// OF THIS SAMPLE CODE.                                             
+//                                                                  
+// LIMITATION OF LIABILITY. IN NO EVENT WILL IBM BE LIABLE TO ANY   
+// PARTY FOR ANY DIRECT, INDIRECT, SPECIAL OR OTHER CONSEQUENTIAL   
+// DAMAGES FOR ANY USE OF THIS SAMPLE CODE, THE USE OF CODE FROM    
+// THIS [ SAMPLE PACKAGE,] INCLUDING, WITHOUT LIMITATION, ANY LOST  
+// PROFITS, BUSINESS INTERRUPTION, LOSS OF PROGRAMS OR OTHER DATA   
+// ON YOUR INFORMATION HANDLING SYSTEM OR OTHERWISE.                
+//                                                                  
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights reserved.                                             
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+namespace com.teracloud.streams.cybersecurity.sample;
+
+use com.teracloud.streams.cybersecurity.analytics::DNSTunneling ;
+use com.teracloud.streams.cybersecurity.types::* ;
+use com.teracloud.streams.network.source::* ;
+use com.teracloud.streams.network.parse::* ;
+   
+public composite DNSTunnelingBasic
+{
+	graph
+		stream<blob dnsMessage> DNSPacketMessageStream = PacketFileSource()
+		{
+			param
+				pcapFilename : getThisToolkitDir() + "/opt/dnstunneling.pcap" ;
+				inputFilter : "udp port 53" ; // filter out non-dns traffic
+				metricsInterval : 0.0 ;
+			output
+				DNSPacketMessageStream : dnsMessage = PAYLOAD_DATA() ;
+		}
+
+		stream<DNSTunnelingInput_t> FullDNSResponseStream =
+			DNSMessageParser(DNSPacketMessageStream)
+		{
+			param
+				messageAttribute : dnsMessage ;
+				outputFilters : ! parseError() && DNS_RESPONSE_FLAG() && DNS_QUESTION_TYPE() == 16uh;
+			output
+				FullDNSResponseStream : questionName = DNS_QUESTION_NAME(), questionType =
+					DNS_QUESTION_TYPE(), answerData = DNS_ANSWER_DATA(),
+					answerTypes = DNS_ANSWER_TYPES();
+		}
+
+		(stream<tuple<rstring domain>, DNSTunnelingResult_t> TunnelledDomains) as DNSTunnelingOp =
+			DNSTunneling(FullDNSResponseStream)
+		{
+			output
+				TunnelledDomains : domain = questionName, predictedClass = getPredictedClass(), predictedClasses =
+					getPredictedClasses(), suspiciousText = getSuspiciousText(), benignText =
+					getBenignText(), suspiciousCount = getSuspiciousCount(), benignCount =
+					getBenignCount() ;
+		}
+
+		() as Printer = Custom(TunnelledDomains as I)
+		{
+			logic
+				onTuple I : println(I) ;
+		}
+
+}
+

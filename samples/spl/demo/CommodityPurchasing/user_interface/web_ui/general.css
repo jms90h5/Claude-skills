@@ -1,0 +1,91 @@
+/* begin_generated_IBM_Teracloud_ApS_copyright_prolog               */
+/*                                                                  */
+/* This is an automatically generated copyright prolog.             */
+/* After initializing,  DO NOT MODIFY OR MOVE                       */
+/* **************************************************************** */
+/* Licensed Materials - Property of IBM                             */
+/* (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2009, 2015     */
+/* All Rights Reserved.                                             */
+/* US Government Users Restricted Rights - Use, duplication or      */
+/* disclosure restricted by GSA ADP Schedule Contract with          */
+/* IBM Corp.                                                        */
+/*                                                                  */
+/* end_generated_IBM_Teracloud_ApS_copyright_prolog                 */
+# begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+#                                                                  
+# This is an automatically generated copyright prolog.             
+# After initializing,  DO NOT MODIFY OR MOVE                       
+# **************************************************************** 
+# Licensed Materials - Property of IBM                             
+# (C) Copyright Teracloud ApS 2024, 2024, IBM Corp. 2009, 2011     
+# All Rights Reserved.                                             
+# US Government Users Restricted Rights - Use, duplication or      
+# disclosure restricted by GSA ADP Schedule Contract with          
+# IBM Corp.                                                        
+#                                                                  
+# end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+body {
+	padding:2em !important;
+	background:url("background.gif") repeat-x top left #fff;
+}
+
+.oneThird {
+  width:320px;
+  margin: 5px 0 5px 0;
+  float:left;
+}
+
+.twoThirds {
+  width:640px;
+  margin: 5px 0 5px 0;
+  float:left;
+}
+
+.partsContainer {
+	background:#0055cc;	
+	padding:5px;
+	margin:0px 5px 0px 5px;
+	-webkit-box-shadow: 2px 8px 11px #888;
+}
+
+.partsContainer .gridContainer {
+	background:#fff;
+	height:350px;
+	/*border-top:1px solid #000;*/
+	/*border-left:1px solid #000;*/
+}
+
+.histContainer {
+	background:#fff;
+	border-top:2px solid #000;
+	border-bottom:2px solid #000;
+	border-left:2px solid #000;
+	border-right:2px solid #000;
+}
+
+.histContents {
+  height:auto;
+}
+
+h1 {
+	font-family:"Century Gothic", Verdana,Arial,Helvetica,sans-serif;
+	padding:5px 5px 5px 5px;
+	margin:0px 5px 0px 5px;
+	color:#fff;
+	background:#0055cc;
+	font-weight:normal;
+	-moz-border-radius-topleft:8px;
+	-moz-border-radius-topright:8px;
+	-webkit-border-top-left-radius:8px;
+	-webkit-border-top-right-radius:8px;
+	-webkit-box-shadow: 2px 2px 11px #888;
+}
+
+
+.dojoxGridSortNode{white-space:normal;}
+.dojoxGridColCaption{overflow:auto;}  
+
+
+
+
+

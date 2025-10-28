@@ -1,0 +1,359 @@
+// begin_generated_IBM_copyright_prolog                            
+//                                                                 
+// This is an automatically generated copyright prolog.            
+// After initializing,  DO NOT MODIFY OR MOVE                      
+// ****************************************************************
+// Licensed Materials - Property of IBM                            
+// 5724-Y95                                                        
+// (C) Copyright IBM Corp.  2011, 2025    All Rights Reserved.     
+// US Government Users Restricted Rights - Use, duplication or     
+// disclosure restricted by GSA ADP Schedule Contract with         
+// IBM Corp.                                                       
+//                                                                 
+// end_generated_IBM_copyright_prolog                              
+// begin_generated_IBM_Teracloud_ApS_copyright_prolog               
+//                                                                  
+// This is an automatically generated copyright prolog.             
+// After initializing,  DO NOT MODIFY OR MOVE                       
+// **************************************************************** 
+// Licensed Materials - Property of IBM                             
+// (C) Copyright Teracloud ApS 2024, 2025, IBM Corp. 2023, 2023     
+// All Rights Reserved.                                             
+// US Government Users Restricted Rights - Use, duplication or      
+// disclosure restricted by GSA ADP Schedule Contract with          
+// IBM Corp.                                                        
+//                                                                  
+// end_generated_IBM_Teracloud_ApS_copyright_prolog                 
+<% # Switch to Perl scripting mode
+	use integer;
+	use File::Basename ;
+	use File::Spec::Functions qw(catfile catdir) ;
+	use FindBin;
+	my $toProj=4;
+	my $projDir = dirname(__FILE__);
+	for (my $i = 0; $i<$toProj; $i++) {
+		$projDir=dirname($projDir);
+		$projDir=~s/\/$//;
+	}
+	unshift @INC, catdir($projDir,"scripts");
+	require Configurator;
+	require CodeGenFrw;
+	my $configurator = new Configurator(directory => "$projDir", selector => Configurator::ParameterSet::ITE());
+	my $curDir = $projDir;
+
+	my @dedupAttributeList;
+	@dedupAttributeList = ();
+
+	my $contextDisabled = $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP());
+	my $dedupDisabled = $contextDisabled || $configurator->isOff(Configurator::ITE_BUSINESSLOGIC_GROUP_DEDUPLICATION());
+
+	my $TRANSFORMER_OUTPUT_TYPE = $configurator->getEnum(Configurator::ITE_BUSINESSLOGIC_TRANSFORMATION_OUTPUTTYPE());
+
+	my $chainSinkRecordWriter = $configurator->isNotEqual(Configurator::ITE_STORAGE_TYPE(), Configurator::Enum::StorageType::tableFile());
+
+	my $ENABLE_CUSTOM_CODE = $configurator->isOff(Configurator::ITE_EMBEDDEDSAMPLECODE());
+	
+	my $useLookupTypeExtension = $configurator->isOn(Configurator::ITE_INGEST_READER_SCHEMAEXTENSIONFORLOOKUP());
+
+	my $PARALLELISM_FEATURE_ENABLED = $configurator->isOn(Configurator::ITE_INGEST_LOADDISTRIBUTION_UDP());
+	my $numChannelsTableRowGen=2; # change value here to have multiple channels creating table rows in parallel threads
+	my $numCustomChannels=$numChannelsTableRowGen;
+	$numCustomChannels=1 if (1 == $PARALLELISM_FEATURE_ENABLED);
+
+	my $schemaDir = "demoapp"."/streams/sample";
+	my $streamNameTransformerOut;
+	my $streamName = "InRec";
+%>
+
+namespace demoapp.chainprocessor.transformer.sample;
+
+<%if (0 == $ENABLE_CUSTOM_CODE) {%>
+use demoapp.streams::*;
+use demoapp.streams.sample::*;
+use com.teracloud.streams.teda.internal.shm::*;
+use demoapp.lookup::*;
+use demoapp.utility::*;
+use com.teracloud.streams.teda.internal::Functor2;
+use com.teracloud.streams.teda.utility::*;
+
+/**
+ * Implements the business logic that can consist of, for example, filtering,
+ * enrichment, calculations, or other transformations.
+ *
+ * This composite operator is the only one that must be adapted during the
+ * customization process. 
+ * 
+ * Exceptions raised in this operator result in rejected tuples
+ * if **ite.resilienceOptimization** parameter is on.
+ *
+ * @input  InRec
+ * Tuples received from the
+ * demoapp.chainprocessor.reader.custom::RecordValidator.
+ * You need to implement your custom business logic on InRec tuples, for example:
+ * a) Perform record transformations, like filtering or schema change for target tables.
+ * b) Enrich your records with lookup data.
+ * c) Prepare the hash codes for tuple deduplication.
+ * Ensure that you forward the basic file info attributes of the InRec tuple, because these attributes are required by downstream operators.
+ * In a Custom operator where you change the schema between input and output stream, you need to use the assignFrom() method to forward the basic file info attributes.
+ * The window punctuation received on InRec port must be forwarded to OutRec.
+ * At end of each file a window punctuation is received.
+ * You will not receive tuples from the different files between two window markers. 
+ * If you submit tuples to OutRej, then you need to forward the window punctuation to the OutRej output port.
+ *
+ * @input  InStat
+ * Statistic tuple received at end of file.
+ * It is required to forward this tuple to the OutStat port.
+ * You can update your custom statistic attributes before forwarding this tuple to the OutStat port.
+ * If you update the statistic tuple in this composite, then you need to wait for the window punctuation on InRec port.
+ * In this case, you should send the window punctuation to OutRec port before submitting the InStat tuple to the OutStat port.
+ *
+ * @output OutRec
+ * Tuples for the group or storage stage.
+ * Window punctuation received on InRec must be forwarded to this port.
+ * For variant A, the tuples sent on this port are received by the operator configured with the ite.storage.type parameter.
+ * In variant B or C this port is connected to the group composites in context namespace, for deduplication and/or custom correlation (<namespace>.context.custom::ContextDataProcessor).
+ * 
+ * @output OutStat
+ * The tuple received on InStat port must be forwarded to this port.
+ * You can update your custom statistic attributes in the InStat tuple before forwarding it to the OutStat port.
+ * 
+ * @output OutRej
+ * Tuples sent on this port are written to the rejected files.
+ * If you submit tuples to OutRej, then you need to forward the window punctuation from InRec port to the OutRej output port.
+ * 
+ * @output OutTap
+ * Tap stream to the <namespace>.tap.custom::PostContextDataProcessorTap composite.
+ * This stream is connected only if the **ite.businessLogic.group.tap** parameter is on.
+ *
+ * @param groupId
+ * The group identifier
+ *
+ * @param chainId
+ * The chain identifier
+ *
+ * @param reprocessDir
+ * The absolute path of the reprocess directory. Use this parameter
+ * to create files in the reprocess directory.
+ * 
+ * @param disableLookup
+ * If parameter is true then the lookup code must not be called.
+ * Pass this parameter to the LookupCache operator.
+ * 
+ * @param applControlDir
+ * The LookupCache operator requires this parameter that provides the path to the control directory.
+ * This directory provides the information about the name of the Lookup Manager job that 
+ * the LookupCache operator needs to specify the shared memory segment name 
+ */
+public composite DataProcessor (
+	input 
+		stream<TypesCommon.ReaderOutStreamType> InRec,
+		stream<TypesCommon.FileStatistics> InStat;
+	output
+		stream<TypesCommon.TransformerOutType> OutRec,
+		stream<TypesCommon.FileStatistics> OutStat,
+		stream<TypesCommon.RejectedDataStreamType> OutRej,
+		stream<TypesCommon.BundledTransformerOutputStreamType> OutTap // connected only if ite.businessLogic.transformation.tap=on
+) {
+
+	param
+		expression<rstring> $groupId;
+		expression<rstring> $chainId;
+		expression<rstring> $reprocessDir;
+		expression<boolean> $disableLookup;
+		expression<rstring> $applControlDir;
+
+	graph
+
+		<%if ($useLookupTypeExtension) {%>
+		@spl_category(name="sample")
+		stream<I> EnrichedRecords = LookupCache(InRec as I) {
+			param
+				segmentName: 	"segMaster2"; // The name of the physical memory segment
+				containerName: 	"MapName2"; // The name of the store
+				useMutex: 	false; // Don't protect data with mutex
+				mutexName: 	"";
+				key: 		I.attr10;
+				keyType:    rstring;           // SPL type of key
+				found: 		I.lookupFound;     // attribute that takes lookup success
+				valueType: 	TypesCustom.DSVCvalue_t; //type of lookup table value as also defined in LookupManager
+				disableLookup: 	$disableLookup;   // always pass through this parameter
+				applControlDir: 	$applControlDir;   // always pass through this parameter
+		}		
+		
+		<%$streamName="RecordEnhanced";%>
+		//Enrich Tuples after doing lookup.
+		@spl_category(name="sample")
+		(
+		 stream<I> <%=$streamName%> as O
+		) = Custom(EnrichedRecords as I) {
+			logic
+			onTuple I: {
+				if (I.lookupFound) {
+					I.Any_Lookup = I.SERVICE_CODE;
+				}
+				else {
+					I.Any_Lookup = "NF";
+				}
+				submit(I ,O);
+			}
+			onPunct I: { 
+				if (currentPunct() == Sys.WindowMarker) {
+					// forward punctuation
+					submit(Sys.WindowMarker, O);
+				}
+			}
+		}
+		<%} # endif useLookupTypeExtension %>
+
+		<%if ( (0 == $TRANSFORMER_OUTPUT_TYPE) || (1 == $TRANSFORMER_OUTPUT_TYPE) || ((0 == $chainSinkRecordWriter) && (2 == $TRANSFORMER_OUTPUT_TYPE)) ) { # TABLE OUTPUT%>
+		// map to table attributes
+		@spl_category(name="sample")
+		(stream<TypesCustom.MainTableStreamType> MainTableStream
+		) = Functor2(<%=$streamName%> as I) {
+			output MainTableStream :
+				COL1=I.attr3,
+				COL2="0",
+				COL3=I.attr1,
+				COL4=I.attr5,
+				COL5=I.attr2,
+				COL6=I.attr23,
+				COL7=I.attr12,
+				COL8=I.attr10,
+				COL9=I.attr19,
+				<%if ( ($useLookupTypeExtension) && (! $ENABLE_CUSTOM_CODE) ){%>
+				COL10=I.Any_Lookup,
+				<%} else {%>
+				COL10="-99",
+				<%}%>
+				tablename="FCT.FCT_SAMPLE";
+		}
+
+		<%$streamNameTransformerOut = "MainTableStreamWithHash";%>
+		// -----------------------------------------------------------
+		// Generate the Hash Code for each table
+		@spl_category(name="sample")
+		(stream<MainTableStream> <%=$streamNameTransformerOut%>
+		) as TableRowWithHash = Custom(MainTableStream) {
+			logic
+				state: {
+					mutable rstring tempStr;
+					mutable uint64 SeqCount=0;
+					mutable uint64 partitionID=0;
+					uint64 cdrsPerPartition = 50;
+				}
+			onTuple MainTableStream: {
+				<%if (0 == $dedupDisabled) {%>
+				// partition calculation
+				SeqCount++;
+				if (0ul == SeqCount%cdrsPerPartition) {
+					partitionID++;
+				}
+				MainTableStream.partitionId=(TypesCustom.PartitionIdType)partitionID;
+					<%
+					CodeGenFrw::getDedupAttributes("$curDir/$schemaDir/TypesCustom.splmm","FctTableStream",\@dedupAttributeList);
+					my $concatenatedAttributeStr;
+					foreach (@dedupAttributeList){
+						$concatenatedAttributeStr = $concatenatedAttributeStr . " + " . " \":\" "  . " + " . $_ if (defined $concatenatedAttributeStr);
+						$concatenatedAttributeStr = $_ if (!defined $concatenatedAttributeStr);
+					}
+					%>
+				tempStr = <%=$concatenatedAttributeStr%>;
+				MainTableStream.hashcode = sha2hash160(tempStr);<%
+				} # endif (0 == $dedupDisabled)%>
+				submit(MainTableStream,<%=$streamNameTransformerOut%>);
+			}
+			onPunct MainTableStream: {
+				if (currentPunct() == Sys.WindowMarker) {
+					submit(Sys.WindowMarker, <%=$streamNameTransformerOut%>);
+				}
+			}
+		}
+
+		<%if ((0 == $TRANSFORMER_OUTPUT_TYPE) || (1 == $TRANSFORMER_OUTPUT_TYPE)) {
+			$streamNameTransformerOut="TableDataStream";
+		%>
+		// Generates a single comma separated line of string of Table attributes.
+			<%if ($numCustomChannels>1) {%>@parallel(width = <%=$numCustomChannels%>)<%}%>
+		@spl_category(name="sample")
+		(stream<TypesCommon.TableStreamType> TableDataStream
+		) as TableRow = TableRowGenerator(MainTableStreamWithHash){}
+
+			<%if ($numCustomChannels>1) {
+				$streamNameTransformerOut="channelsMergedStream";
+			%>
+		@spl_category(name="sample")
+		(stream<I> channelsMergedStream) = PunctReduce(TableDataStream as I) { param numChannels: <%=$numCustomChannels%>;}
+			<%}%>
+		<%}%>	
+		<%} #endif TABLE OUTPUT%>
+
+		<%if ((2 == $TRANSFORMER_OUTPUT_TYPE) && (1 == $chainSinkRecordWriter)){ # #RECORD OUTPUT%>
+			<%$streamNameTransformerOut="TransformedRecordStream";%>
+		// transform some record attributes
+		@spl_category(name="sample")
+		(stream<I> <%=$streamNameTransformerOut%> as OutData
+		) as RecordTransformer = Custom(<%=$streamName%> as I) {
+			logic
+				state: {
+					mutable rstring tempStr;
+					mutable uint64 SeqCount=0;
+					mutable uint64 partitionID=0;
+					uint64 cdrsPerPartition = 50;
+				}
+				onTuple I: {
+					<%if (0 == $dedupDisabled) {%>
+					// partition calculation
+					SeqCount++;
+					if (0ul == SeqCount%cdrsPerPartition) {
+						partitionID++;
+					}
+					I.partitionId=(TypesCustom.PartitionIdType)partitionID;
+						<%
+						CodeGenFrw::getDedupAttributes("$curDir/$schemaDir/TypesCustom.splmm","SampleRecordBaseStream",\@dedupAttributeList);
+						my $concatenatedAttributeStr;
+						foreach (@dedupAttributeList){
+							$concatenatedAttributeStr = $concatenatedAttributeStr . " + " . " \":\" "  . " + " . $_ if (defined $concatenatedAttributeStr);
+							$concatenatedAttributeStr = $_ if (!defined $concatenatedAttributeStr);
+						}
+						%>
+					tempStr = <%=$concatenatedAttributeStr%>;
+					I.hashcode = sha2hash160(tempStr);<%
+					} # endif (0 == $dedupDisabled)%>
+					submit(I, OutData);
+				}
+				onPunct I: {
+					if (currentPunct() == Sys.WindowMarker) {
+						submit(Sys.WindowMarker, OutData);
+					}
+				}
+		}
+		<%} #endif RECORD OUTPUT%>
+
+		// -----------------------------------------------------------
+		// Final step - send to composite output ports
+		@spl_category(name="sample")
+		(
+		 stream<TypesCommon.TransformerOutType> OutRec as OutData;
+		 stream<TypesCommon.FileStatistics> OutStat;
+		 stream<TypesCommon.RejectedDataStreamType> OutRej;
+		 stream<TypesCommon.BundledTransformerOutputStreamType> OutTap // use only if ite.businessLogic.transformation.tap=on
+		 ) as TransformerOut = Custom(<%=$streamNameTransformerOut%> as TDS; InStat) {
+			logic
+				onTuple TDS: {
+					submit(TDS, OutData);
+				}
+				onTuple	InStat: {
+					submit(InStat,OutStat);
+				}
+				onPunct TDS: {
+					if (currentPunct() == Sys.WindowMarker) {
+						submit(Sys.WindowMarker, OutRec);
+						submit(Sys.WindowMarker, OutRej);
+						submit(Sys.WindowMarker, OutTap);
+					}
+				}
+		}
+
+
+}
+<%} #endif enabled%>

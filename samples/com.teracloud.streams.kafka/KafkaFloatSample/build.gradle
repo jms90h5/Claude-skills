@@ -1,0 +1,22 @@
+apply from: "${rootDir}/common.gradle"
+apply plugin: 'java'
+
+def toolkitPath = project(':com.teracloud.streams.kafka').projectDir
+def namespace = "com.teracloud.streams.kafka.sample"
+def mainComp = "KafkaFloatSample"
+
+task compile() {
+    dependsOn ':com.teracloud.streams.kafka:copyLibToImpl'
+    doLast {
+        compileApp(namespace, mainComp, toolkitPath)
+    }   
+}
+
+task cleanIt() {
+    doLast {
+        cleanApp(namespace, mainComp)
+    }
+}
+
+build.dependsOn compile
+clean.dependsOn cleanIt
