@@ -1,0 +1,773 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="An operator model can be used to describe a C++ primitive operator or a Java primitive operator. The set of elements that can be present in a Java operator model is a strict subset of the ones that ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_reference_operator_model"/><title>SPL Operator Model</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_reference_operator_model-d41691e71881"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_reference_operator_model" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_reference_operator_model"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html">SPL Operator Model</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li role="treeitem" class="active"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">SPL Operator Model</h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section" id="spldoc_reference_operator_model__overview" data-ofbid="spldoc_reference_operator_model__overview">
+<p class="- topic/p p">
+An operator model can be used to describe a C++ primitive operator or a Java primitive operator. The set of elements that can 
+be present in a Java operator model is a strict subset of the ones that can be present in a C++ operator model, with the 
+exception of a special element used for JVM related configurations.
+</p>
+</section>
+<section class="- topic/section section" id="spldoc_reference_operator_model__context" data-ofbid="spldoc_reference_operator_model__context"><h2 class="- topic/title title sectiontitle splhead-1">Context</h2>
+
+<p class="- topic/p p">
+The context element describes the properties that apply to the operator as a whole and are not associated
+with particular parameters or ports of the operator. It also includes common definitions that are referenced in 
+other places in the operator model. 
+</p>
+<dl class="- topic/dl dl">
+   
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__description" data-ofbid="spldoc_reference_operator_model__context__description">Description</dt>
+    <dd class="- topic/dd dd">The description element, which is optional, provides an overview of the operator.</dd>
+  
+   
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__metrics" data-ofbid="spldoc_reference_operator_model__context__metrics">Metrics</dt>
+    <dd class="- topic/dd dd">The metrics element, which is optional, contains the list of metrics exposed by the operator. 
+It is structured as a list of metric elements, where each metric element contains a name, a description, and a kind. 
+      <dl class="- topic/dl dl">
+         
+          <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__metrics_kind_counter" data-ofbid="spldoc_reference_operator_model__context__metrics_kind_counter">Kind: Counter</dt>
+          <dd class="- topic/dd dd">Represents metrics whose values are either non-decreasing or non-increasing.
+          </dd>
+        
+         
+          <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__metrics_kind_gauge" data-ofbid="spldoc_reference_operator_model__context__metrics_kind_gauge">Kind: Gauge</dt>
+          <dd class="- topic/dd dd">Represent metrics that can change their values freely, that is, they can go up or down.
+          </dd>
+        
+         
+          <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__metrics_kind_time" data-ofbid="spldoc_reference_operator_model__context__metrics_kind_time">Kind: Time</dt>
+          <dd class="- topic/dd dd">Represents metrics that denote a point in time.
+          </dd>
+        
+      </dl>
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__customliterals" data-ofbid="spldoc_reference_operator_model__context__customliterals">Custom Literals</dt>
+    <dd class="- topic/dd dd">The customLiterals element, which is optional, captures the identifiers that may appear in parameter 
+configurations of an operator. It is structured as a list of enumeration elements. For instance, a Source
+operator may support different source formats, in which case we can have an enumeration called FileFormat 
+that will contain values <span class="+ topic/ph hi-d/tt ph tt">{csv, xml, bin}</span>. 
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__customoutputfunctions" data-ofbid="spldoc_reference_operator_model__context__customoutputfunctions">Custom Output Functions (C++ only)</dt>
+    <dd class="- topic/dd dd">The customOutputFunctions element, which is optional, captures the output function prototypes used by an operator 
+in its output attribute assignments. It is structured as a list of customOutputFunction elements, where each enumeration 
+contains a name and a list of output function prototypes. For instance, an Aggregate operator may support relational 
+aggregations, in which case we can have an enumeration called RelationalAggs that will contain output functions 
+<span class="+ topic/ph hi-d/tt ph tt">{Min, Max, Avg, Sum, and so on}</span>.
+    </dd>
+  
+   
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__dependencies" data-ofbid="spldoc_reference_operator_model__context__dependencies">Dependencies (Optional)</dt>
+    <dd class="- topic/dd dd">A sequence of one or more library elements, each representing a library dependency. 
+The library element format is exactly the same as the one used for operator models.
+     <dl class="- topic/dl dl">
+        
+          <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__dependencies__description" data-ofbid="spldoc_reference_operator_model__context__dependencies__description">Description (Optional)</dt>
+          <dd class="- topic/dd dd">A description of the library
+          </dd>
+        
+        
+          <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__dependencies__managedlibrary" data-ofbid="spldoc_reference_operator_model__context__dependencies__managedlibrary">Managed Library</dt>
+          <dd class="- topic/dd dd">Specifies the details of the individual library artifacts. The paths can
+contain environment variables embedded between @ signs (for example: <span class="+ topic/ph hi-d/tt ph tt">@FOO_FFT_HOME@/lib</span>),
+which will be fully resolved by the SPL compiler at compile time.
+            <dl class="- topic/dl dl">
+              
+                <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__dependencies__managedlibrary__lib" data-ofbid="spldoc_reference_operator_model__context__dependencies__managedlibrary__lib">lib (Optional)</dt>
+                <dd class="- topic/dd dd">Specifies a name to be passed to C++ compiler's <span class="+ topic/ph hi-d/tt ph tt">-l</span> argument 
+(such as <span class="+ topic/ph hi-d/tt ph tt">fft</span> which will be translated into <span class="+ topic/ph hi-d/tt ph tt">-lfft</span> when passed to the linker)
+                </dd>
+              
+              
+                <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__dependencies__managedlibrary__libpath" data-ofbid="spldoc_reference_operator_model__context__dependencies__managedlibrary__libpath">libPath (Optional)</dt>
+                <dd class="- topic/dd dd">Specifies a path to be passed to C++ compiler's <span class="+ topic/ph hi-d/tt ph tt">-L</span> argument.
+                </dd>
+              
+              
+                <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__dependencies__managedlibrary__includepath" data-ofbid="spldoc_reference_operator_model__context__dependencies__managedlibrary__includepath">includePath (Optional)</dt>
+                <dd class="- topic/dd dd">Specifies a path to be passed to C++ compiler's <span class="+ topic/ph hi-d/tt ph tt">-I</span> argument. 
+                </dd>
+              
+              
+                <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__dependencies__managedlibrary__command" data-ofbid="spldoc_reference_operator_model__context__dependencies__managedlibrary__command">command (Optional)</dt>
+                <dd class="- topic/dd dd">A path to a program that will be executed to retrieve <span class="+ topic/ph hi-d/tt ph tt">includePath, libPath</span>, and <span class="+ topic/ph hi-d/tt ph tt">lib</span>
+information. If the path to the program is relative, it is assumed to be rooted at the directory of the
+operator model. The program is executed three times, each time with a different argument, namely <span class="+ topic/ph hi-d/tt ph tt">lib, 
+libPath</span>, and <span class="+ topic/ph hi-d/tt ph tt">includePath</span>. 1 The standard output from these executions will be read and each line 
+(trimmed of white spaces) will be added to one of the <span class="+ topic/ph hi-d/tt ph tt">lib, libPath</span>, and <span class="+ topic/ph hi-d/tt ph tt">includePath</span> elements, depending
+on the type of the execution. A line that begins with # will be ignored. Relative paths are assumed to
+be rooted at the directory where the operator model XML document resides.
+                </dd>
+              
+            </dl>
+          </dd>
+        
+    </dl>
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__providessinglethreadedexecutioncontext" data-ofbid="spldoc_reference_operator_model__context__providessinglethreadedexecutioncontext">Provides Single Threaded Execution Context (C++ only)</dt>
+    <dd class="- topic/dd dd"><div class="- topic/p p">The <span class="+ topic/ph hi-d/tt ph tt">providesSingleThreadedContext</span> element describes the threading semantics of the
+operator with respect to the flow of execution. An operator provides a single threaded execution context, 
+if and only if: 
+      <ul class="- topic/ul ul">
+        <li class="- topic/li li">It does not perform concurrent submit calls unless its process method(s) are called concurrently.</li>
+        <li class="- topic/li li">Its submit calls complete before the process call that triggered the submission completes.</li>
+      </ul>
+    </div>
+    <p class="- topic/p p">Both source and non-source operators have process methods, and the definition above applies
+globally. Based on this definition, if an operator has submit calls that are not triggered by a process
+call, such as those triggered by a time-based event, then that operator does not provide a single threaded
+execution context. Note that this definition does not require a submit call to execute under the same 
+thread that executes the process call which triggered the submission (even though in the common case 
+they execute under the same thread).
+    </p>
+    <div class="- topic/p p">There are several valid values for this property:
+<ul class="- topic/ul ul">
+  <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Never:</span> Instances of this operator never provide a single threaded execution context.</li>
+  <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Always:</span> Instances of this operator always provide a single threaded execution context.</li>
+  <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">WindowBound:</span> Instances of this operator that do not specify time-based window eviction
+policies or time-based window trigger policies provide a single threaded execution context.</li>
+  <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">WindowEvictionBound:</span> Instances of this operator that do not specify time-based window 
+eviction policies provide a single threaded execution context.</li>
+  <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">WindowTriggerBound:</span> Instances of this operator that do not specify time-based window trigger
+policies provide a single threaded execution context.</li>
+  <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">WindowPartitionEvictionBound:</span> Instances of this operator use a thread to implement 
+partition eviction. Use this setting if tuples are submitted from the onWindowPartitionEvictionSelection event.</li>
+</ul>
+    </div>
+<p class="- topic/p p">
+As an example, consider a <span class="+ topic/ph hi-d/tt ph tt">Filter</span> operator. Unless its process method is being called concurrently,
+the <span class="+ topic/ph hi-d/tt ph tt">Filter</span> operator does not make concurrent submit calls. Its submit calls are triggered by incoming
+tuples. When it receives a tuple via a process call, it makes a submit call if the received tuple passes the
+filter condition, and that submit call completes before the process call that triggered it is complete. As a
+result, all instances of a <span class="+ topic/ph hi-d/tt ph tt">Filter</span> operator provide a single threaded context and the setting
+<span class="+ topic/ph hi-d/tt ph tt">Always</span> is appropriate.
+</p>
+<p class="- topic/p p">
+Implementation note: The <span class="+ topic/ph hi-d/tt ph tt">providesSingleThreadedContext</span> element is used to enable the SPL runtime 
+to avoid unnecessary thread synchronization. While setting it to the value Never is safe for all operators, 
+it would prevent optimizations that reduce synchronization overhead when the operator does provide a single 
+threaded context. Specifying a value other than Never that is inconsistent with the threading semantics 
+implemented by the operator will result in undefined behavior.
+</p>
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__incrementalcompilationstrategy" data-ofbid="spldoc_reference_operator_model__context__incrementalcompilationstrategy">Incremental Compilation Strategy (C++ only)</dt>
+    <dd class="- topic/dd dd"><div class="- topic/p p">Specifies how the compiler should manage incremental compilation of operators. The choices are:
+       <ul class="- topic/ul ul">
+         <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">SourceDependent</span>: In this mode the compiler will only regenerate the operator source 
+         if it is out-of-date with the SPL source or the code generator 
+         for that operator. This is the default mode.</li>
+         <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">ResultDependent:</span> In this mode the compiler always generates the operator source, but 
+         only updates the source files if they differ from what exists prior to the compile. Use this 
+         mode if the operator code generator relies on external configurations that are not captured by the parameterization given in the SPL source.
+         </li>
+       </ul>
+    </div></dd>
+   
+   
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__allowCustomLogic" data-ofbid="spldoc_reference_operator_model__context__allowCustomLogic">Allow Custom Logic (C++ only)</dt>
+    <dd class="- topic/dd dd"><p class="- topic/p p">This optional element specifies whether or not the use of an operator is permitted to 
+have a logic clause specifying either state, <span class="+ topic/ph hi-d/tt ph tt">onTuple</span> or <span class="+ topic/ph hi-d/tt ph tt">onPunct</span> processing. When set to false no 
+logic clause may be specified for the given operator. The default, in the absence of this element, 
+is true.
+    </p></dd>
+   
+   
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__codetemplate" data-ofbid="spldoc_reference_operator_model__context__codetemplate">Code Template</dt>
+    <dd class="- topic/dd dd"><p class="- topic/p p">This optional element specifies one or more code templates for the operator. 
+These will show up in IDE's context sensitive content assist menus and SPLDOC documents. 
+Each code template has a name attribute that names it, a description element that describes it, 
+and a value element, which is a string that contains the boilerplate code for the template. 
+When the template is used in the IDE, the boilerplate code is embedded into the source code. 
+The parts of the code that are in the form ${name} are used to indicate the pieces that must be 
+customized by the user. The IDE will use the identifier specified within the ${} to indicate the customizable 
+portions. One example for the Barrier operator is as follows:
+</p>
+<div class="- topic/p p">
+
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;codeTemplates&gt;
+  &lt;codeTemplate name="Barrier"&gt;
+    &lt;description&gt;Basic Barrier template&lt;/description&gt;
+    &lt;template&gt;
+      &lt;![CDATA[ 
+        stream&lt;${schema}&gt; ${outputStream} = Barrier(${inputStream1};${inputStream2}) 
+        {
+          param
+            ${parameter}: ${parameterExpression};
+          output
+            ${outputStream}: ${outputExpression};
+          ${cursor} 
+        }
+      ]]&gt;
+    &lt;template&gt;
+  &lt;/codeTemplate&gt;
+&lt;/codeTemplates&gt;
+</code></pre>
+
+    </div></dd>
+   
+   
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__splexpressiontree" data-ofbid="spldoc_reference_operator_model__context__splexpressiontree">SPL Expression Tree (C++ only)</dt>
+    <dd class="- topic/dd dd"><p class="- topic/p p">An optional element that controls the generation of SPL expression trees for use in generic C++ 
+    primitive operators.</p>
+      <ul class="- topic/ul ul">
+      <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">param</span> - If set to <span class="+ topic/ph hi-d/tt ph tt">true</span>, the SPL Expression Trees are generated for parameters.</li>
+      <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">output</span> - If set to <span class="+ topic/ph hi-d/tt ph tt">true</span>, the SPL Expression Trees are generated for output.</li>
+      <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">cppCode</span> -  If set to <span class="+ topic/ph hi-d/tt ph tt">true</span>, each node in the generated operator instance XML is enhanced with C++ code using templates.
+This C++ code can be used to generate the C++ code for an SPL expression. For example, for the SPL code:
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+param predicates : {a = "a" == In.letter, b = "b" == In.letter};
+</code></pre>
+</div>
+<p class="- topic/p p">
+The generated SPL expression tree includes:
+</p>
+<div class="- topic/p p">
+
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;expressionTree cppCode="SPL::BeJwrMUoyTEwyTAIAC7UCCQ({attr:0}, {attr:1})"&gt;
+  &lt;literal cppCode="SPL::BeJwrMUoyTEwyTAIAC7UCCQ({attr:0}, {attr:1})" type="1"&gt;
+    &lt;tuple count="2" cppCode="SPL::BeJwrMUoyTEwyTAIAC7UCCQ({attr:0}, {attr:1})" type="1"&gt;
+      &lt;attr id="a"&gt;
+        &lt;value cppCode="({Lhs} == {Rhs})" type="2"&gt;
+          &lt;expn cppCode="({Lhs} == {Rhs})"&gt;
+            &lt;binary cppCode="({Lhs} == {Rhs})" op="==" type="2"&gt;
+              &lt;lhs cppCode="SPL::rstring("a")"&gt;
+                &lt;literal cppCode="SPL::rstring("a")" type="0"&gt;"a"&lt;/literal&gt;
+              &lt;/lhs&gt;
+              &lt;rhs cppCode="iport$0.get_letter()"&gt;
+                &lt;attribute attribute="letter" cppCode="iport$0.get_letter()" type="0"&gt;
+                  &lt;lhs cppCode="iport$0"&gt;
+                    &lt;stream cppCode="iport$0" name="In" port="0" type="3"/&gt;
+                  &lt;/lhs&gt;
+                &lt;/attribute&gt;
+              &lt;/rhs&gt;
+            &lt;/binary&gt;
+          &lt;/expn&gt;
+        &lt;/value&gt;
+      &lt;/attr&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">
+The templates (for example, <span class="+ topic/ph hi-d/tt ph tt">{Lhs}, {attr:0}</span>) are used to ensure that code replacement is well defined.
+</p>
+<p class="- topic/p p">
+These expressions represent the SPL expression, but are available in a form that can easily be walked. 
+Perl objects are derived from <span class="+ topic/ph hi-d/tt ph tt">SPL::Operator::Instance::ExpressionTree</span>, and have a kind, type, 
+and methods to access the fields of the expression. <span class="+ topic/ph hi-d/tt ph tt">ExpressionTreeVisitor</span> is a visitor pattern
+provided to allow easy walking of the expression tree. For more information, see the 
+<em class="+ topic/ph hi-d/i ph i">Streams Processing Language Code Generation API Documentation</em>.
+</p>
+      </li>
+      </ul>
+    </dd>
+      
+   
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__context__capability" data-ofbid="spldoc_reference_operator_model__context__capability">Operating System Capabilities (C++ only)</dt>
+    <dd class="- topic/dd dd"><p class="- topic/p p">This optional list of elements specifies special privileges for the
+operator. Streams supports the Linux capabilities model via the
+capability element. You can include any number of elements to specify
+the exact privileges your operator requires. For example,
+<span class="+ topic/ph hi-d/tt ph tt">&lt;capability&gt;CAP_NET_RAW+eip&lt;/capability&gt;</span>
+indicates that the operator
+needs permission to access raw sockets. Note that the Streams
+instance must be configured to allow PE processes to run with special
+operating system capabilities.
+    </p></dd>
+   
+</dl>
+</section>
+
+<section class="- topic/section section" id="spldoc_reference_operator_model__input_port_set" data-ofbid="spldoc_reference_operator_model__input_port_set"><h2 class="- topic/title title sectiontitle splhead-1">Input Port Set</h2>
+
+<p class="- topic/p p">
+Input ports are defined in terms of port sets. A port set is a fixed number of ports that share the same configuration. 
+This avoids repetition of the same configuration for different ports. A port set can be open, in which case it can 
+contain zero or more ports with the same configuration. An inputPorts element contains zero or more inputPortSet elements, 
+followed by an optional inputPortOpenSet element.
+</p>
+<dl class="- topic/dl dl">
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set__cardinality" data-ofbid="spldoc_reference_operator_model__input_port_set__cardinality">Cardinality</dt>
+    <dd class="- topic/dd dd">Defines the number of ports that the port set represents. This property applies to non-open port sets.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set__optional" data-ofbid="spldoc_reference_operator_model__input_port_set__optional">Optional</dt>
+    <dd class="- topic/dd dd">A boolean which specifies whether the input port set is optional.
+    </dd>
+  
+    
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set__controlport" data-ofbid="spldoc_reference_operator_model__input_port_set__controlport">Control Port</dt>
+    <dd class="- topic/dd dd">The optional controlPort element tells the compiler that tuples received on this port will be
+used only to control the operator, and no tuples will be submitted when tuples are processed on this port.
+If not specified, the value is false. The SPL compiler will emit warnings when loops are found in the 
+operator graph, as this can lead to deadlock or infinite recursion. Setting controlPort to true will tell 
+the compiler that this port will not submit further tuples, and that this is an expected (and harmless) 
+feedback loop, so no warning will be emitted for this port. 
+   </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set__windowingmode" data-ofbid="spldoc_reference_operator_model__input_port_set__windowingmode">Windowing Mode</dt>
+    <dd class="- topic/dd dd">The windowingMode element specifies the valid windowing configurations for the port. Options include NonWindowed, 
+Windowed, and OptionallyWindowed.
+   </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set__windowpunctuationinputmode" data-ofbid="spldoc_reference_operator_model__input_port_set__windowpunctuationinputmode">Window Punctuation Input Mode</dt>
+    <dd class="- topic/dd dd">
+The windowPunctuationInputMode element specifies the punctuation semantics of the input port. The valid options are:
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Expecting</span> - This port expects window punctuations in order for the operator to function correctly and thus must be fed a punctuated stream.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Oblivious</span> - This port does not require punctuations in order for the operator to work correctly and thus has no restrictions on the connections that can be attached to it.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">WindowBound</span> - This port is an Expecting port if it has a punctuation based window, and an Oblivious port otherwise.</li>
+</ul>
+   </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set__windowexpressionmode" data-ofbid="spldoc_reference_operator_model__input_port_set__windowexpressionmode">Window Expression Mode</dt>
+    <dd class="- topic/dd dd">This element tells the compiler what type of windowing expressions are valid. If not specified, the default is <span class="+ topic/ph hi-d/tt ph tt">Constant</span>. 
+    <ul class="- topic/ul ul">
+      <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Constant</span> - Expressions in <span class="+ topic/ph hi-d/tt ph tt">count</span>, <span class="+ topic/ph hi-d/tt ph tt">time</span>, and <span class="+ topic/ph hi-d/tt ph tt">delta</span> must be constants that can 
+    be evaluated at compile time, or if runtime expressions that do not reference 
+    input tuple attributes are valid.</li>
+      <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">AttributeFree</span> - Expressions cannot reference input tuple attributes. An expression such as time 
+<span class="+ topic/ph hi-d/tt ph tt">((int32) getSubmissionTimeValue("timeParam"))</span> can be used. For delta, only the second argument is allowed to be a runtime
+attribute-free expression. The first argument is still an attribute from the input stream.</li>
+    </ul>
+   </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set_rewriteallowedforwindowexpression" data-ofbid="spldoc_reference_operator_model__input_port_set_rewriteallowedforwindowexpression">Rewrite Allowed for Window Expression (C++ only)</dt>
+    <dd class="- topic/dd dd">If set to true, this boolean element tells the compiler that it may rewrite the window expression the same way
+the <span class="+ topic/ph hi-d/tt ph tt">rewriteAllowed</span> element rewrites the expressions that appear in the parameter values. For more information
+about the rewriteAllowed element, see <span class="+ topic/ph hi-d/tt ph tt">Parameters</span>. If the <span class="+ topic/ph hi-d/tt ph tt">rewriteAllowedForWindowExpression</span> element is not specified, 
+by default the value is set to false. <span class="+ topic/ph hi-d/tt ph tt">rewriteAllowedForWindowExpression</span> must be false (or omitted) if the 
+C++ primitive operator wants to examine the value as a literal.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__input_port_set__tuplemutationallowed" data-ofbid="spldoc_reference_operator_model__input_port_set__tuplemutationallowed">Tuple Mutation Allowed</dt>
+    <dd class="- topic/dd dd">The tupleMutationAllowed element defines whether the processing logic attached to the input port (this includes both
+the logic associated with the operator's process functions and the processing done as part of the onTuple clauses specified
+in the SPL code) can mutate an incoming tuple. It can be set to true for operators that desire to modify the tuples they receive.
+   </dd>
+  
+</dl>
+
+</section>
+<section class="- topic/section section" id="spldoc_reference_operator_model__output_port_set" data-ofbid="spldoc_reference_operator_model__output_port_set"><h2 class="- topic/title title sectiontitle splhead-1">Output Port Set</h2>
+  
+  <p class="- topic/p p">
+Output ports are defined in terms of port sets, just like input ports. A port set is a fixed number of ports that share 
+the same configuration. This avoids repetition of the same configuration for different ports. A port set can be open, in 
+which case it can contain zero or more ports with the same configuration. An outputPorts element contains zero or more 
+outputPortSet elements, followed by an optional outputPortOpenSet element.
+  </p>
+  <dl class="- topic/dl dl">
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__cardinality" data-ofbid="spldoc_reference_operator_model__output_port_set__cardinality">Cardinality</dt>
+    <dd class="- topic/dd dd">Defines the number of ports that the port set represents. This property applies to non-open port sets.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__optional" data-ofbid="spldoc_reference_operator_model__output_port_set__optional">Optional</dt>
+    <dd class="- topic/dd dd">A boolean which specifies whether the output port set is optional.
+    </dd>
+  
+    
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set_expressionmode" data-ofbid="spldoc_reference_operator_model__output_port_set_expressionmode">Expression Mode (C++ only)</dt>
+    <dd class="- topic/dd dd">
+The expressionMode element describes the valid syntax of the attribute assignments made on this port. 
+Note that an expressionMode value of CustomLiteral is not valid for output ports and will result in 
+a compilation error. Valid values for the expression mode are:
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Attribute:</span> This means that the assignments made to output attributes of this
+port need to be stream attributes. For example: output <span class="+ topic/ph hi-d/tt ph tt">Out : x = In.y;</span>, but not <span class="+ topic/ph hi-d/tt ph tt">x = In.y.z</span>.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">AttributeFree:</span> This means that the assignments made to output attributes of this port cannot reference 
+any input stream attributes. For example: output <span class="+ topic/ph hi-d/tt ph tt">Out : x = 3 + random(3);</span>, but not <span class="+ topic/ph hi-d/tt ph tt">x = In.x + 3</span>.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Constant:</span> This means that the assignments made to output attributes of this port need to be 
+compile-time evaluatable to a constant. For example: output <span class="+ topic/ph hi-d/tt ph tt">Out : x = 3 + pow(2, 3);</span>, but not <span class="+ topic/ph hi-d/tt ph tt">x = random(3)</span>.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Expression:</span> This is the most flexible expression mode, any SPL expression of correct type can appear as an assignment to the output attributes of this port. For example: output<span class="+ topic/ph hi-d/tt ph tt"> Out : x = A.y + B.z;</span>.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Nonexistent:</span> This means that output attribute assignments cannot be specified in the SPL source for this port.</li>
+</ul>
+    </dd>
+  
+    
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__autoassignment" data-ofbid="spldoc_reference_operator_model__output_port_set__autoassignment">Auto Assignment</dt>
+    <dd class="- topic/dd dd">
+The <span class="+ topic/ph hi-d/tt ph tt">autoAssignment</span> element defines whether unassigned attributes will be automatically assigned from the attributes of the input ports.
+If set to true, the SPL compiler will rewrite (at compile-time) the operator invocation as if the unassigned output attributes have 
+explicit assignments in the output section. For each output attribute that is missing an assignment, an input attribute that has 
+the same name and type,
+or that has the same name and type <span class="+ topic/ph hi-d/tt ph tt">T</span>,
+where the output attribute type is <span class="+ topic/ph hi-d/tt ph tt">optional&lt;T&gt;</span>,
+will be assigned to it.
+If there is no such input attribute or if there are more than one, an error is 
+reported at compile-time. Note that an expressionMode value of Constant is incompatible with an autoAssignment value of true. 
+This combination will result in a compilation error.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__completeassignment" data-ofbid="spldoc_reference_operator_model__output_port_set__completeassignment">Complete Assignment</dt>
+    <dd class="- topic/dd dd">
+The <span class="+ topic/ph hi-d/tt ph tt">completeAssignment</span> element defines if all the output port attributes need to be assigned in order to have a valid
+invocation of the operator. This is checked at compile-time. If an operator has this element set to true in its operator model
+and if not all output attributes have assignments after the auto-assignment step (if requested) for a given instance of this 
+operator, an error will be reported.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__rewriteallowed" data-ofbid="spldoc_reference_operator_model__output_port_set__rewriteallowed">Rewrite Allowed (C++ only)</dt>
+    <dd class="- topic/dd dd">
+The <span class="+ topic/ph hi-d/tt ph tt">rewriteAllowed</span> element specifies whether the compiler is allowed to rewrite the expressions that appear in the output
+attribute assignments for this port.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__outputfunctions" data-ofbid="spldoc_reference_operator_model__output_port_set__outputfunctions">Output Functions</dt>
+    <dd class="- topic/dd dd">
+The outputFunctions element defines the valid custom output functions that can appear in output attribute assignments. 
+It is optional. When present, it contains two sub-elements: the type element, which defines the name of the custom output
+function type, as in RelationalAggs; and the default element, which defines the default output function to be used when
+performing auto-assignment of output attributes. This value should be a valid function name for the custom output function
+type that is being used (as in Last for RelationalAggs). Note that if the user code specifies an output attribute assignment
+without an output function for a port that expects an output function,
+the default output function will be inserted automatically.
+    </dd>
+  
+    
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__finalpunctuationoutputscope" data-ofbid="spldoc_reference_operator_model__output_port_set__finalpunctuationoutputscope">Final Punctuation Port Scope</dt>
+    <dd class="- topic/dd dd">
+The <span class="+ topic/ph hi-d/tt ph tt">finalPunctuationPortScope</span> element, which is optional, specifies the set of input ports to be used by the SPL language
+runtime for final punctuation forwarding. By default, operators that have both input and output ports will automatically
+forward final punctuations from their input ports to their output ports. This is achieved by generating a final punctuation
+on an output port when a final punctuation is received on all input ports. The finalPunctuationPortScope can be used to
+limit the set of input ports to be used for forwarding the final punctuation. This element can also be used to turn off
+auto-forwarding of final punctuations, by setting the set of input ports to use for forwarding to the empty set. In this case, 
+the operator developer is responsible for ensuring that the output port gets a final punctuation.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__windowpunctuationoutputmode" data-ofbid="spldoc_reference_operator_model__output_port_set__windowpunctuationoutputmode">Window Punctuation Output Mode</dt>
+    <dd class="- topic/dd dd">
+The windowPunctuationOutputMode specifies the window punctuation semantics of the output port. The options are:
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Generating</span> - This port generates window punctuations.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Free</span> - This port is free of window punctuations.</li>
+<li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Preserving</span> - This port preserves the received window punctuations. If an operator has more than one
+input port, then the windowPunctuationInputPort element must be specified in order to identify which input port's
+punctuation is being preserved.</li>
+</ul>
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__tuplemutationallowed" data-ofbid="spldoc_reference_operator_model__output_port_set__tuplemutationallowed">Tuple Mutation Allowed</dt>
+    <dd class="- topic/dd dd">
+The <span class="+ topic/ph hi-d/tt ph tt">tupleMutationAllowed</span> element defines whether this operator permits the downstream operators to mutate the output
+tuples submitted to this port via the submit call. If set to true, then the processing logic of the operator should expect
+that the tuples it submits to this port are modified as a result of the submit call.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__windowpunctuationinputport" data-ofbid="spldoc_reference_operator_model__output_port_set__windowpunctuationinputport">Window Punctuation Input Port</dt>
+    <dd class="- topic/dd dd">
+As mentioned above, the <span class="+ topic/ph hi-d/tt ph tt">windowPunctuationInputPort</span> element associates an input port with a punctuation 
+preserving output port. This element may only be specified if the output port's window punctuation mode is Preserving. 
+The windowPunctuationInputPort can be set to -1, which has the same semantics as a missing windowPunctuationInputPort element. 
+It is important to note that punctuation forwarding for window punctuations is not performed automatically by the SPL 
+language runtime (unlike final punctuations) and the operator model is used to inform the SPL compiler about the behavior 
+that is being implemented by the operator. For more information, see the
+<em class="+ topic/ph hi-d/i ph i">Streams Processing Language Toolkit Development Reference</em>.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__output_port_set__outputassignmentportscope" data-ofbid="spldoc_reference_operator_model__output_port_set__outputassignmentportscope">Output Assignment Port Scope</dt>
+    <dd class="- topic/dd dd">
+ The <span class="+ topic/ph hi-d/tt ph tt">outputAssignmentPortScope</span> optionally limits which input port attributes may appear in output assignments on this port. 
+ If a scope is specified, only attributes from the ports specified by the scope
+ may appear in the output assignments for that port.   
+    </dd>
+  
+</dl>
+</section>
+
+<section class="- topic/section section" id="spldoc_reference_operator_model__parameters" data-ofbid="spldoc_reference_operator_model__parameters"><h2 class="- topic/title title sectiontitle splhead-1">Parameters</h2>
+
+<p class="- topic/p p">
+The parameters element describes the valid parameters an operator can be configured with. 
+It also describes the valid syntax for such parameter configurations.
+</p>
+<dl class="- topic/dl dl">
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__allowany" data-ofbid="spldoc_reference_operator_model__parameters__allowany">Allow Any</dt>
+    <dd class="- topic/dd dd">This element is a boolean flag that determines whether an operator can take arbitrary parameters, with no restrictions. 
+An operator can take arbitrary parameters, yet still specify additional parameters and associated restrictions.
+    </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter" data-ofbid="spldoc_reference_operator_model__parameters__parameter">Parameter</dt>
+    <dd class="- topic/dd dd"><p class="- topic/p p">Each parameter element contains several subelements.
+    </p>
+      <dl class="- topic/dl dl">
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__name" data-ofbid="spldoc_reference_operator_model__parameters__parameter__name">Name</dt>
+         <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">name</span> element is the name of the parameter as it will appear in the SPL source code. 
+For example, a <span class="+ topic/ph hi-d/tt ph tt">Functor</span> operator may have a <span class="+ topic/ph hi-d/tt ph tt">filter</span> parameter.</dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__description" data-ofbid="spldoc_reference_operator_model__parameters__parameter__description">Description</dt>
+         <dd class="- topic/dd dd">An optional description of this parameter.</dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__optional" data-ofbid="spldoc_reference_operator_model__parameters__parameter__optional">Optional</dt>
+         <dd class="- topic/dd dd">A boolean which specifies whether this parameter is optional. A value of false implies that the parameter 
+         must be specified in the SPL source code. </dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__rewriteallowed" data-ofbid="spldoc_reference_operator_model__parameters__parameter__rewriteallowed">Rewrite Allowed (C++ only)</dt>
+         <dd class="- topic/dd dd">This boolean parameter allows the compiler to rewrite the expressions that appear in this parameter's 
+values by substituting literals (including those resulting from compile-time evaluation step) with variables whose
+values are loaded at runtime. This enables the compiler to generate less code for operators that differ slightly
+in their parameter configurations. In certain cases, the operator code generators may want to look into the parameter
+value, in order to generate different code based on the particular value found or perform compile-time validation. 
+For example, <span class="+ topic/ph hi-d/tt ph tt">format: csv</span> may result in generating specialized code for a Source operator. In such cases, expression
+rewrite should be turned off.</dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__expressionmode" data-ofbid="spldoc_reference_operator_model__parameters__parameter__expressionmode">Expression Mode</dt>
+         <dd class="- topic/dd dd">
+           <ul class="- topic/ul ul">
+             <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Attribute</span> - Restricts the parameter values to stream attributes.</li>
+             <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">AttributeFree</span> - The parameter value is an expression that does not 
+contain a reference to a stream attribute.</li>
+             <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Constant (C++ only)</span> - The parameter values need to be compile-time evaluatable to a constant.</li>
+             <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">CustomLiteral</span> - Restricts the parameter values to valid values from one of the custom
+literal enumerations defined in the context section of the model</li>
+             <li class="- topic/li li"><span class="+ topic/ph hi-d/tt ph tt">Expression (C++ only)</span> - The most flexible expression mode, where any SPL expression of correct type
+can appear as a parameter value. </li>
+           </ul>
+         </dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__type" data-ofbid="spldoc_reference_operator_model__parameters__parameter__type">Type</dt>
+         <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">type</span> of a parameter is either the SPL type of its values (such as <span class="+ topic/ph hi-d/tt ph tt">list&lt;ustring&gt;</span>) 
+or a custom literal name (such as <span class="+ topic/ph hi-d/tt ph tt">SourceFormat</span>). The type can also be omitted, in which case any SPL type 
+will match. The type subelement of a parameter can have an empty value, which has the same semantics as a missing 
+type element.
+         </dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__cardinality" data-ofbid="spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</dt>
+         <dd class="- topic/dd dd">The maximum number of values the parameter accepts. If omitted or the value is -1, the number of values is 
+assumed to be unbounded. The number of parameter values must match the cardinality. The cardinality subelement can take a 
+value of -1, which has the same semantics as a missing cardinality element.
+         </dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__portscope" data-ofbid="spldoc_reference_operator_model__parameters__parameter__portscope">Port Scope (C++ only)</dt>
+         <dd class="- topic/dd dd">This element is used to limit the stream attributes that appear in a parameter value to a specific 
+input port or to a list of input ports. Port indices start from 0. When omitted, there are no restrictions on stream attributes.
+         </dd>
+       
+       
+         <dt class="- topic/dt dt dlterm" id="spldoc_reference_operator_model__parameters__parameter__customOutputFunction" data-ofbid="spldoc_reference_operator_model__parameters__parameter__customOutputFunction">Custom Output Function (C++ only)</dt>
+         <dd class="- topic/dd dd">This optional element of a parameter specifies the name of a custom output function set defined in the context
+element, and makes the functions defined in that set visible during the compilation of a parameter. It is the responsibility
+of the operator to generate correct C++ code that involves custom output functions with the parameter, in the same manner as
+it would be for a use in an output clause.
+         </dd>
+       
+      </dl>
+    </dd>
+  
+</dl> 
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

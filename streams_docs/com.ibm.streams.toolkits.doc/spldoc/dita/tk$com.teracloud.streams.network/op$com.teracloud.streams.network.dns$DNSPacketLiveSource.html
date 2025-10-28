@@ -1,0 +1,1025 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="DNSPacketLiveSource is an operator for the Streams product that captures live DNS packets from an ethernet interface, parses their network headers and the fields of the DNS message, and emits tuples ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_operator"/><title>Operator DNSPacketLiveSource</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_operator-d41691e67378"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketLiveSource.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_operator" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li><div class="topicref" data-id="spldoc_toolkit"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li><div class="topicref" data-id="spldoc_namespace"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.dns.html">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.dns</span></a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_operator"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketLiveSource.html">Operator <span class="ph tt" style="font-family: monospace">DNSPacketLiveSource</span></a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_page-d41691e67258" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network$1.html" id="spldoc_page-d41691e67258-link">Release notes</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67266" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Namespace.html" id="spldoc_index-d41691e67266-link">Namespaces: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67274" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Operator.html" id="spldoc_index-d41691e67274-link">Operators: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67282" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Function.html" id="spldoc_index-d41691e67282-link">Functions: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67290" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Type.html" id="spldoc_index-d41691e67290-link">Types: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67298" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67298-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.content.html" id="spldoc_namespace-d41691e67298-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.content</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67328" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67328-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.datetimeformat.html" id="spldoc_namespace-d41691e67328-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.datetimeformat</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_namespace-d41691e67348" class="topicref" data-id="spldoc_namespace" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_namespace-d41691e67348-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.dns.html" id="spldoc_namespace-d41691e67348-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.dns</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_operator-d41691e67358" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketDPDKSource.html" id="spldoc_operator-d41691e67358-link">Operator <span class="ph tt" style="font-family: monospace">DNSPacketDPDKSource</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_operator-d41691e67368" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketFileSource.html" id="spldoc_operator-d41691e67368-link">Operator <span class="ph tt" style="font-family: monospace">DNSPacketFileSource</span></a></div></div></li><li role="treeitem" class="active"><div data-tocid="spldoc_operator-d41691e67378" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketLiveSource.html" id="spldoc_operator-d41691e67378-link">Operator <span class="ph tt" style="font-family: monospace">DNSPacketLiveSource</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_functions-d41691e67388" class="topicref" data-id="spldoc_functions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.dns.html" id="spldoc_functions-d41691e67388-link">C++ Native Functions: <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.dns</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67398" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67398-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.domains.html" id="spldoc_namespace-d41691e67398-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.domains</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67428" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67428-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.enrichment.html" id="spldoc_namespace-d41691e67428-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.enrichment</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67469" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67469-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.filter.html" id="spldoc_namespace-d41691e67469-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.filter</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67499" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67499-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.geohash.html" id="spldoc_namespace-d41691e67499-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.geohash</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67519" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67519-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.ipv4.html" id="spldoc_namespace-d41691e67519-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.ipv4</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67539" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67539-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.ipv6.html" id="spldoc_namespace-d41691e67539-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.ipv6</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67559" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67559-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.location.html" id="spldoc_namespace-d41691e67559-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.location</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67589" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67589-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.mac.html" id="spldoc_namespace-d41691e67589-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.mac</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67609" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67609-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.misc.html" id="spldoc_namespace-d41691e67609-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.misc</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67629" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67629-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.parse.html" id="spldoc_namespace-d41691e67629-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.parse</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67689" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67689-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.rtp.html" id="spldoc_namespace-d41691e67689-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.rtp</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67709" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67709-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.sink.html" id="spldoc_namespace-d41691e67709-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.sink</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67729" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67729-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.source.html" id="spldoc_namespace-d41691e67729-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.source</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Operator <span class="+ topic/ph hi-d/tt ph tt">DNSPacketLiveSource</span></h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section splprimop">
+  <img class="- topic/image image" src="../../image/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketLiveSource.svg" width="872" height="112" alt="Primitive operator image not displayed. Problem loading file: ../../image/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketLiveSource.svg"/>
+</section>
+<section class="- topic/section section">
+
+<p class="- topic/p p">DNSPacketLiveSource is an operator for the Streams product that captures live DNS packets from an ethernet interface, parses their network headers and the fields of the DNS message, and emits tuples containing packet data.  The operator may be configured with one or more output ports, and each port may be configured to emit different tuples, as specified by output filters. The tuples may contain the entire packet, the payload portion of the packet, or individual fields from the network headers and DNS message, as specified by output attribute assignments.  
+</p>
+<p class="- topic/p p">The DNSPacketLiveSource operator  reads raw network packets from an ethernet adapter, selects DNS packets to process with an input filter, parses individual fields in the packet's network headers and DNS message,  selects messages to emit as output tuples with output filter expressions, and assigns values to them with output attribute assignment expressions.
+</p>
+<p class="- topic/p p">Input filters are PCAP filter expressions, as described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://www.tcpdump.org/manpages/pcap-filter.7.html" target="_blank" rel="external noopener">http://www.tcpdump.org/manpages/pcap-filter.7.html</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://linux.die.net/man/7/pcap-filter" target="_blank" rel="external noopener">http://linux.die.net/man/7/pcap-filter</a></li>
+</ul>
+</div>
+<p class="- topic/p p">Output filters and attribute assignments are SPL expressions. They may use any of the built-in SPL functions, and any of these functions, which are specific to the PacketFileSource operator: 
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.dns.html" target="_blank" rel="external noopener">network header parser result functions</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The DNSPacketLiveSource operator recognizes these types of packet encapsulation,  and steps quietly over their headers:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> Juniper Networks 'jmirror' encapsulation</li>
+<li class="- topic/li li"> Cisco Systems 'Encapsulated Remote Switch Port Analyzer (ERSPAN)' encapsulation</li>
+</ul>
+</div>
+<p class="- topic/p p">The DNSPacketLiveSource operator is part of the network toolkit. To use it in an application, include this statement in the SPL source file:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+use com.teracloud.streams.network.dns::*;
+</code></pre>
+
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Capabilities
+</h2>
+
+<p class="- topic/p p">The PacketLiveSource operator requires special privileges to receive 'raw' network packets from an ethernet interface.
+</p>
+<p class="- topic/p p">On machines where 'extended file attributes' (see <a class="- topic/xref xref" href="https://en.wikipedia.org/wiki/Extended_file_attributes" target="_blank" rel="external noopener">https://en.wikipedia.org/wiki/Extended_file_attributes</a>) are enabled in the Linux kernel, these Linux capabilities should be granted to a PE that includes the  PacketLiveSource operator:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> CAP_NET_RAW+eip</li>
+<li class="- topic/li li"> CAP_NET_ADMIN+eip</li>
+</ul>
+</div>
+<p class="- topic/p p">Linux capabilities can only be granted to an executable that resides on a local disk volume such as /tmp.
+</p>
+<p class="- topic/p p">For 'standalone' Streams applications (that is, SPL source files compiled with a 'standalone' configuration), the user must grant these capabilities to the program before executing it. This requires 'root' privileges. To do this:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> the SPL source must be compiled with the '--static-link' option</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> the 'application bundle' must be unpacked with the 'spl-app-info' command into a directory on a local disk volume such as /tmp
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> Linux capabilities must be granted to the unbundled program with this command:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+sudo setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' .../bin/standalone.exe
+</code></pre>
+
+</div></li>
+</ul>
+</div>
+<p class="- topic/p p">For 'distributed' Streams applications, (that is, SPL source files compiled with a 'distributed' configuration), the Streams runtime must grant these capabilities to the program before executing it. This requires 'root' privileges.  To do this:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> the Streams runtime must be installed as 'root'</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> the Streams domain must be registered as a Linux system service
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> the Streams instance must have the 'instance.canSetPeOSCapabilities=true' property
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> the Streams instance must have the 'instance.runAsUser=$USER' property
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> the Streams instance must have the 'instance.applicationBundlesPath=/tmp/...' property
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> the SPL source must be compiled with the '--static-link' option
+</p></li>
+</ul>
+</div>
+<p class="- topic/p p">On machines where 'extended file attributes' are not enabled in the Linux kernel, 'standalone' PEs that include the PacketLiveSource operator can be executed with 'root' privileges like this:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+sudo STREAMS_INSTALL=$STREAMS_INSTALL .../bin/standalone.exe
+</code></pre>
+
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Promiscuous Mode
+</h2>
+
+<p class="- topic/p p">Network interfaces normally ignore packets that are not addressed to them. However, when 'promiscious' mode is enabled on a network interface, it can capture all network packets on its ethernet segment, even those that are not addressed to it.  This is sometimes referred to as "network sniffing".  Modern ethernet switches normally send network interfaces only packets that are addressed to them; 'promiscious' mode is useful only when a switch has been specifically configured to send packets to a network interface that are not addressed to it. This is sometimes referred to as "mirroring".
+</p>
+<p class="- topic/p p">The DNSPacketLiveSource operator will enable 'promiscuous' mode in a ethernet interface when its 'promiscous' parameter is set to <span class="+ topic/ph hi-d/tt ph tt">true</span>.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Dependencies
+</h2>
+
+<p class="- topic/p p">The DNSPacketLiveSource operator depends upon the Linux 'packet capture library (libpcap)'.  The library must be installed on the machine where this operator executes. It is available as an installable 'repository package (RPM)' from the 'base' RHEL and CentOS repositories.  It can be installed with administrator tools such as 'yum'.  This requires root privileges, which can be acquired temporarily with administrator tools such as 'sudo'.
+</p>
+<p class="- topic/p p">To install <span class="+ topic/ph hi-d/tt ph tt">libpcap</span>, enter this command at a Linux command prompt:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+sudo yum install libpcap-devel
+</code></pre>
+
+</div>
+<p class="- topic/p p">Alternatively, you can download the source code for a newer version of <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> and build the library yourself. The new library can then be installed in system directories, or used where built without being installed.
+</p>
+<p class="- topic/p p">To do this, download the distribution package for the latest version of <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> from this address:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://www.tcpdump.org/" target="_blank" rel="external noopener">http://www.tcpdump.org/</a></li>
+</ul>
+</div>
+<p class="- topic/p p">To build libpcap from source code, open a 'terminal' window and type this at a command prompt:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+cd .../directory
+tar -xvf .../libpcap-X.Y.Z.tar.gz
+cd .../directory/libpcap-X.Y.Z
+./configure
+make
+</code></pre>
+
+</div>
+<p class="- topic/p p">To instruct the Streams compiler (that is, the 'sc' command) to use your version of <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> instead of the system version, set these environment variables before compiling an application that contains the DNSPacketLiveSource operator:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+export STREAMS_ADAPTERS_LIBPCAP_INCLUDEPATH=.../directory/libpcap-X.Y.Z
+export STREAMS_ADAPTERS_LIBPCAP_LIBPATH=.../directory/libpcap-X.Y.Z
+</code></pre>
+
+</div>
+<p class="- topic/p p">For more information on configuring, building, and installing <span class="+ topic/ph hi-d/tt ph tt">libpcap</span>, refer to its 'INSTALL.txt' file.
+</p>
+<p class="- topic/p p">This operator has been tested with these versions of <span class="+ topic/ph hi-d/tt ph tt">libpcap</span>:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> libpcap 0.9.4, included in RHEL/CentOS 5.x</li>
+<li class="- topic/li li"> libpcap 1.0.0, included in RHEL/CentOS 6.2</li>
+<li class="- topic/li li"> libpcap 1.4.0, included in RHEL/CentOS 6.5</li>
+<li class="- topic/li li"> libpcap 1.5.3, included in RHEL/CentOS 7.1</li>
+<li class="- topic/li li"> libpcap 1.6.1</li>
+<li class="- topic/li li"> libpcap 1.6.2</li>
+<li class="- topic/li li"> libpcap 1.7.4</li>
+</ul>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Tuning
+</h2>
+
+<p class="- topic/p p">The DNSPacketLiveSource operator is often used in applications that ingest packets at very high rates.  In these situations, the rate may be limited by the size of the Linux network buffers.  If so, you can increase the size of these buffers by setting Linux network configuration parameters.  Note that root privileges are required to do this.
+</p>
+<p class="- topic/p p">You can display the current values of the ethernet and IP configuration parameters by entering these commands at a Linux prompt:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+/sbin/sysctl net.core
+/sbin/sysctl net.ipv4
+</code></pre>
+
+</div>
+<p class="- topic/p p">For example, these are typical default values for Linux configuration parameters in RHEL/CentOS 5 and 6:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+net.core.wmem_default = 124928
+net.core.rmem_default = 124928
+net.core.rmem_max = 131071
+net.core.wmem_max = 131071
+net.core.netdev_max_backlog = 1000
+
+net.ipv4.tcp_rmem = 4096        87380   4194304
+net.ipv4.tcp_wmem = 4096        16384   4194304
+net.ipv4.tcp_window_scaling=1
+</code></pre>
+
+</div>
+<p class="- topic/p p">You can change the current values of Linux configuration parameters by executing these commands at a Linux prompt.  For example:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+# allow packet buffers to increase up to 64MB
+sudo /sbin/sysctl -w net.core.rmem_max=67108864
+sudo /sbin/sysctl -w net.core.wmem_max=67108864
+
+# increase the length of the processor input queue to 50,000
+sudo /sbin/sysctl -w net.core.netdev_max_backlog=50000
+
+# increase autotuning TCP buffer limit to 32MB
+sudo /sbin/sysctl -w net.ipv4.tcp_rmem=10240 87380 33554432
+sudo /sbin/sysctl -w net.ipv4.tcp_wmem=10240 87380 33554432
+</code></pre>
+
+</div>
+<p class="- topic/p p">Changes to Linux configuration parameters with <span class="+ topic/ph hi-d/tt ph tt">/sbin/sysctl</span> persist only for the current instance of Linux; they will revert to their default values when Linux is rebooted. To change the default values used when Linux boots, specify them in the Linux system file <span class="+ topic/ph hi-d/tt ph tt">/etc/sysctl.cfg</span>.
+</p>
+<p class="- topic/p p">For more information, refer to <a class="- topic/xref xref" href="http://fasterdata.es.net/host-tuning/linux/" target="_blank" rel="external noopener">http://fasterdata.es.net/host-tuning/linux/</a>.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Threads
+</h2>
+
+<p class="- topic/p p">The DNSPacketLiveSource operator contains a separate thread for running <span class="+ topic/ph hi-d/tt ph tt">libpcap</span>, which receives network packets from the operating system and produces tuples from them.
+</p>
+<p class="- topic/p p">The PacketLiveOperator contains a separate thread for reporting its metrics to the Streams runtime if the <span class="+ topic/ph hi-d/tt ph tt">metricsInterval</span> parameter is greater than zero.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Exceptions
+</h2>
+
+<p class="- topic/p p">The DNSPacketLiveSource operator will throw an exception and terminate in these situations:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> The parameter 'networkInterface' does not specify a network interface defined on the machine where the operator executes.</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> The 'inputFilter' and 'outputFilters' parameters do not specify a valid PCAP filter expression.
+</p></li>
+</ul>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Sample Applications
+</h2>
+
+<p class="- topic/p p">The network toolkit includes several sample applications that illustrate how to use this operator. See the samples directory in your Streams installation.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">References
+</h2>
+
+<p class="- topic/p p">The ethernet frame format is described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/Ethernet_frame" target="_blank" rel="external noopener">http://en.wikipedia.org/wiki/Ethernet_frame</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The IPv4 header and the fields it contains are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/IPv4" target="_blank" rel="external noopener">http://en.wikipedia.org/wiki/IPv4</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://www.ietf.org/rfc/rfc791.txt" target="_blank" rel="external noopener">http://www.ietf.org/rfc/rfc791.txt</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://linux.die.net/man/7/ip" target="_blank" rel="external noopener">https://linux.die.net/man/7/ip</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The IPv6 header and the fields it contains are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://en.wikipedia.org/wiki/IPv6_packet" target="_blank" rel="external noopener">https://en.wikipedia.org/wiki/IPv6_packet</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://tools.ietf.org/html/rfc2460" target="_blank" rel="external noopener">https://tools.ietf.org/html/rfc2460</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://linux.die.net/man/7/ipv6" target="_blank" rel="external noopener">https://linux.die.net/man/7/ipv6</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The UDP header and the fields it contains are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/User_Datagram_Protocol" target="_blank" rel="external noopener">http://en.wikipedia.org/wiki/User_Datagram_Protocol</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc768" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc768</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://linux.die.net/man/7/udp" target="_blank" rel="external noopener">https://linux.die.net/man/7/udp</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The TCP header and the fields it contains are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol" target="_blank" rel="external noopener">http://en.wikipedia.org/wiki/Transmission_Control_Protocol</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc793" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc793</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://linux.die.net/man/7/tcp" target="_blank" rel="external noopener">https://linux.die.net/man/7/tcp</a></li>
+</ul>
+</div>
+<p class="- topic/p p">DNS messages and the fields they contain are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/Domain_Name_System" target="_blank" rel="external noopener">http://en.wikipedia.org/wiki/Domain_Name_System</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/List_of_DNS_record_types" target="_blank" rel="external noopener">http://en.wikipedia.org/wiki/List_of_DNS_record_types</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc1035" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc1035</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc2308" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc2308</a> for SOA resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc2872" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc2872</a> for SRV resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc3403" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc3403</a> for NAPTR resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc3596" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc3596</a> for AAAA resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc4034" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc4034</a> for DS, RRSIG, NSEC, and DNSKEY resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc4408" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc4408</a> for SPF resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc5155" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc5155</a> for NSEC3 and NSEC3PARAM resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc6891" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc6891</a> for OPT resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc7208" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc7208</a> for SPF resource records</li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc7505" target="_blank" rel="external noopener">http://tools.ietf.org/html/rfc7505</a> for MX resource records</li>
+</ul>
+</div>
+<p class="- topic/p p">The Juniper Networks 'jmirror' encapsulation header is described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://wiki.wireshark.org/jmirror" target="_blank" rel="external noopener">http://wiki.wireshark.org/jmirror</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The Cisco Systems ''Encapsulated Remote Switch Port Analyzer (ERSPAN)' encapsulation headers are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://tools.ietf.org/html/draft-foschiano-erspan-00" target="_blank" rel="external noopener">https://tools.ietf.org/html/draft-foschiano-erspan-00</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The 'Generic Route Encapsulation (GRE)' headers used by Cisco ERSPAN encapsulation are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://tools.ietf.org/html/rfc2784" target="_blank" rel="external noopener">https://tools.ietf.org/html/rfc2784</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="https://tools.ietf.org/html/rfc1701" target="_blank" rel="external noopener">https://tools.ietf.org/html/rfc1701</a></li>
+</ul>
+</div>
+<p class="- topic/p p">Linux capabilities are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://linux.die.net/man/7/capabilities" target="_blank" rel="external noopener">http://linux.die.net/man/7/capabilities</a></li>
+</ul>
+</div>
+<p class="- topic/p p">For more information about using Linux capabilities with Streams applications, see the product documentation.
+</p>
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">libpcap</span> filter expressions,  which are used with the <span class="+ topic/ph hi-d/tt ph tt">inputFilter</span> parameter, are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://www.tcpdump.org/manpages/pcap-filter.7.html" target="_blank" rel="external noopener">http://www.tcpdump.org/manpages/pcap-filter.7.html</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://linux.die.net/man/7/pcap-filter" target="_blank" rel="external noopener">http://linux.die.net/man/7/pcap-filter</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The result functions that can be used in boolean expressions for the <span class="+ topic/ph hi-d/tt ph tt">outputFilters</span> parameter and in output attribute assignment expressions are described here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.dns.html" target="_blank" rel="external noopener">network header parser result functions</a>.  </li>
+</ul>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Summary</h2>
+
+<dl class="- topic/dl dl" compact="compact">
+ 
+  <dt class="- topic/dt dt dlterm">Ports</dt>
+  <dd class="- topic/dd dd">This operator has 0 input ports and 0 or more output ports.</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Windowing</dt>
+  <dd class="- topic/dd dd">This operator does not accept any windowing configurations.</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Parameters</dt>
+  <dd class="- topic/dd dd">This operator supports 13 parameters.
+<p class="- topic/p p"> Required: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__networkInterface">networkInterface</a>
+
+</p>
+<p class="- topic/p p"> Optional: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__bufferSize">bufferSize</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__initDelay">initDelay</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__inputFilter">inputFilter</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__jMirrorCheck">jMirrorCheck</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__maximumLength">maximumLength</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__metricsInterval">metricsInterval</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__outputFilters">outputFilters</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__processorAffinity">processorAffinity</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__promiscuous">promiscuous</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__rateLimit">rateLimit</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__timeout">timeout</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__timestampType">timestampType</a>
+
+</p></dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Metrics</dt>
+  <dd class="- topic/dd dd">This operator reports 4 metrics.</dd>
+ 
+</dl></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Properties</h2>
+
+<dl class="- topic/dl dl" compact="compact">
+ 
+  <dt class="- topic/dt dt dlterm">Implementation</dt>
+  <dd class="- topic/dd dd">C++</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__capability">Capabilities</a></dt>
+  <dd class="- topic/dd dd">CAP_NET_RAW+eip</dd>
+  <dd class="- topic/dd dd ddexpand">CAP_NET_ADMIN+eip</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__providessinglethreadedexecutioncontext">Threading</a></dt>
+  <dd class="- topic/dd dd"><span class="+ topic/ph hi-d/tt ph tt">Always</span> - Operator always provides a single threaded execution context.</dd>
+ 
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set">Output Ports</a></strong></p><dl class="- topic/dl dl">
+  
+     <dt class="- topic/dt dt dlterm">Assignments</dt>
+     <dd class="- topic/dd dd">This operator allows any SPL expression of the correct type to be assigned to output attributes.</dd>
+  
+</dl>
+<dl class="- topic/dl dl">
+  
+   <dt class="- topic/dt dt dlterm">Ports (0...)</dt>
+   <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The DNSPacketLiveSource operator requires one or more output ports:
+</p>
+<p class="- topic/p p">Each output port will produce one output tuple for each packet received (and passed by the input filter, if the <span class="+ topic/ph hi-d/tt ph tt">inputFilter</span> parameter is specified) if the corresponding expression in the <span class="+ topic/ph hi-d/tt ph tt">outputFilters</span> parameter evaluates <span class="+ topic/ph hi-d/tt ph tt">true</span>, or if no <span class="+ topic/ph hi-d/tt ph tt">outputFilters</span> parameter is specified. 
+</p>
+<p class="- topic/p p">Output attributes can be assigned values with any SPL expression that evaluates to the proper type, and the expressions may include any of the  <a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.source.html" target="_blank" rel="external noopener">DNSPacketLiveSource result functions</a>.   Output attributes that match input attributes in name and type are copied automatically.
+</p>
+   <p class="- topic/p p"></p>
+    <p class="- topic/p p"></p>
+   <dl class="- topic/dl dl">
+    
+      <dt class="- topic/dt dt dlterm">Properties</dt>
+      <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__tuplemutationallowed">TupleMutationAllowed</a>: false
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__windowpunctuationoutputmode">WindowPunctuationOutputMode</a>: Generating
+     </li>
+   </ul>
+</dd>    
+   </dl>
+   <p class="- topic/p p"></p>
+   </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters">Parameters</a></strong></p>
+
+<p class="- topic/p p"> Required: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__networkInterface">networkInterface</a>
+
+</p>
+<p class="- topic/p p"> Optional: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__bufferSize">bufferSize</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__initDelay">initDelay</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__inputFilter">inputFilter</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__jMirrorCheck">jMirrorCheck</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__maximumLength">maximumLength</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__metricsInterval">metricsInterval</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__outputFilters">outputFilters</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__processorAffinity">processorAffinity</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__promiscuous">promiscuous</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__rateLimit">rateLimit</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__timeout">timeout</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__timestampType">timestampType</a>
+
+</p><dl class="- topic/dl dl">
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__bufferSize" data-ofbid="spldoc_operator__parameter__bufferSize"><span class="+ topic/ph hi-d/tt ph tt">bufferSize</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">uint32</span> that specifies the size, in bytes, of the <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> buffer used for receiving packets.  The maximum value allowed is 2,147,483,647 (that is, 2**31-1).
+</p>
+<p class="- topic/p p">The default value of the <span class="+ topic/ph hi-d/tt ph tt">bufferSize</span> parameter is determined by <span class="+ topic/ph hi-d/tt ph tt">libpcap</span>.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: uint32
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__initDelay" data-ofbid="spldoc_operator__parameter__initDelay"><span class="+ topic/ph hi-d/tt ph tt">initDelay</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">float64</span> that specifies the number of seconds the operator will wait before it begins to produce tuples.  This parameter is allowed only when the <span class="+ topic/ph hi-d/tt ph tt">pcapFilename</span> parameter is also specified.
+</p>
+<p class="- topic/p p">The default value is '0.0'.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: float64
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__inputFilter" data-ofbid="spldoc_operator__parameter__inputFilter"><span class="+ topic/ph hi-d/tt ph tt">inputFilter</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">rstring</span> that specifies which input packets should be processed. The value of this string must be a valid PCAP filter expression, as defined here:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://www.tcpdump.org/manpages/pcap-filter.7.html" target="_blank" rel="external noopener">http://www.tcpdump.org/manpages/pcap-filter.7.html</a></li>
+<li class="- topic/li li"> <a class="- topic/xref xref" href="http://linux.die.net/man/7/pcap-filter" target="_blank" rel="external noopener">http://linux.die.net/man/7/pcap-filter</a></li>
+</ul>
+</div>
+<p class="- topic/p p">The default value is 'udp port 53', which causes only DNS packets received to be processed.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__jMirrorCheck" data-ofbid="spldoc_operator__parameter__jMirrorCheck"><span class="+ topic/ph hi-d/tt ph tt">jMirrorCheck</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type 'boolean' that specifies whether or not the operator should check for Juniper Networks 'jMirror' headers on packets, and step over them when found.
+</p>
+<p class="- topic/p p">The default value is 'false'.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__maximumLength" data-ofbid="spldoc_operator__parameter__maximumLength"><span class="+ topic/ph hi-d/tt ph tt">maximumLength</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">uint16</span> that specifies the maximum length in bytes of the packet data that will be produced by the operator.  This length includes all network headers; packets longer than the specified length will be truncated.
+</p>
+<p class="- topic/p p">The default value is 65,535 bytes.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: uint16
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__metricsInterval" data-ofbid="spldoc_operator__parameter__metricsInterval"><span class="+ topic/ph hi-d/tt ph tt">metricsInterval</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">float64</span> that specifies the interval, in seconds, for sending operator metrics to the Streams runtime. If the value is zero or less, the operator will not report metrics to the runtime, and the output assigment functions for <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> statistics will be zero.
+</p>
+<p class="- topic/p p">The default value is '10.0'.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: float64
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__networkInterface" data-ofbid="spldoc_operator__parameter__networkInterface"><span class="+ topic/ph hi-d/tt ph tt">networkInterface</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This required parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">rstring</span> that specifies which network interface the operator will capture packets from.  The value must be one of the network interface names configured in Linux on the machine where the operator will execute.  To display a list of configured network interface names, type this at a Linux command prompt:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+/sbin/ifconfig
+</code></pre>
+
+</div>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: false
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__outputFilters" data-ofbid="spldoc_operator__parameter__outputFilters"><span class="+ topic/ph hi-d/tt ph tt">outputFilters</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes a list of SPL expressions that specify which packets should be emitted by the corresponding output port. The number of expressions in the list must match the number of output ports, and each expression must evaluate to a <span class="+ topic/ph hi-d/tt ph tt">boolean</span> value.  The output filter expressions may include any of the <a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.dns.html" target="_blank" rel="external noopener">DNSPacketLiveSource result functions</a>.  
+</p>
+<p class="- topic/p p">The default value of the <span class="+ topic/ph hi-d/tt ph tt">outputFilters</span> parameter is an empty list, which causes all packets processed to be emitted by all output ports.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__processorAffinity" data-ofbid="spldoc_operator__parameter__processorAffinity"><span class="+ topic/ph hi-d/tt ph tt">processorAffinity</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">uint32</span> that specifies which processor core the operator's thread will run on.  The maximum value is <em class="+ topic/ph hi-d/i ph i">P-1</em>, where <em class="+ topic/ph hi-d/i ph i">P</em> is the number of processors on the machine where the operator will run.  If this parameter is specified, then the operator's thread will be dispatched only on the specified processor.  
+</p>
+<p class="- topic/p p">The default is to dispatch the operator's thread on any available processor.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: uint32
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__promiscuous" data-ofbid="spldoc_operator__parameter__promiscuous"><span class="+ topic/ph hi-d/tt ph tt">promiscuous</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">boolean</span> that specifies whether or not 'promiscuous' mode should be enabled on the network interface. If 'promiscious' mode is enabled, the operator must execute with special Linux capabilities, as described above.
+</p>
+<p class="- topic/p p">The default value is <span class="+ topic/ph hi-d/tt ph tt">false</span>.  However, some values of the <span class="+ topic/ph hi-d/tt ph tt">inputFilter</span> parameter, including the default value, require that 'promiscuous' mode be enabled on the network interface, even if the <span class="+ topic/ph hi-d/tt ph tt">promiscous</span> parameter is not specified, or set to <span class="+ topic/ph hi-d/tt ph tt">false</span>.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__rateLimit" data-ofbid="spldoc_operator__parameter__rateLimit"><span class="+ topic/ph hi-d/tt ph tt">rateLimit</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type 'float64' that specifies the maximum number of times per second the RATE_LIMITED() function returns false.  This can be used to limit the rate of packets sent to an output port when used in a filter expression.
+</p>
+<p class="- topic/p p">The default value is '1000.0'.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: float64
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__timeout" data-ofbid="spldoc_operator__parameter__timeout"><span class="+ topic/ph hi-d/tt ph tt">timeout</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes an expression of type <span class="+ topic/ph hi-d/tt ph tt">float64</span> that specifies a timeout for the <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> interface.  If this value is specified, the operator will call the <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> interface again whenever it times out, until the PE containing the operator receives a shutdown signal.
+</p>
+<p class="- topic/p p">The default is no timeout.  This may cause the thread that runs the <span class="+ topic/ph hi-d/tt ph tt">libpcap</span> interface to hang on shutdown until another packet is received.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: float64
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__timestampType" data-ofbid="spldoc_operator__parameter__timestampType"><span class="+ topic/ph hi-d/tt ph tt">timestampType</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">This optional parameter takes a value of 'host', 'adapter', or 'adapter_unsynced', which specifies which type of timestamp will be assigned to packets as they are received.
+</p>
+<p class="- topic/p p">The default value is 'host'.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: TimestampType
+ (<span class="+ topic/ph hi-d/tt ph tt">host, adapter, adapter_unsynced</span>)     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: CustomLiteral
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics">Metrics</a></strong></p><dl class="- topic/dl dl">
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nBytesProcessedCurrent</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">This metric counts number of bytes of packet data processed by the operator.  When an input filter is specified, this includes only packets that pass the filter.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nPacketsDroppedCurrent</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">This metric counts the number of packets dropped because there was no room in the operating system's buffer when they arrived, as counted by <span class="+ topic/ph hi-d/tt ph tt">libpcap</span>.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nPacketsProcessedCurrent</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">This metric counts number of packets processed by the operator.  When     an input filter is specified, this includes only packets that pass the     filter.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nPacketsReceivedCurrent</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">This metric counts the number of packets received by the network interface,  as counted by <span class="+ topic/ph hi-d/tt ph tt">libpcap</span>
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__dependencies">Libraries</a></strong></p><dl class="- topic/dl dl">
+ 
+  <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt"></span>  </dt>
+<dd class="- topic/dd dd"></dd>  <dd class="- topic/dd dd ddexpand"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__dependencies__managedlibrary__command">Command</a>: ../../impl/bin/libpcapPath.pl
+  </dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt"></span>  </dt>
+<dd class="- topic/dd dd"></dd>  <dd class="- topic/dd dd ddexpand"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__dependencies__managedlibrary__includepath">Include Path</a>: <span class="+ topic/ph hi-d/tt ph tt">../../impl/include</span></dd>
+ 
+</dl>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streams Python support &mdash; streamsx 3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="streamsx.topology" href="streamsx.topology.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            streamsx
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.html">streamsx.topology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.context.html">streamsx.topology.context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.schema.html">streamsx.topology.schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.state.html">streamsx.topology.state</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.tester.html">streamsx.topology.tester</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.tester_runtime.html">streamsx.topology.tester_runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.ec.html">streamsx.ec</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.spl.types.html">streamsx.spl.types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.spl.toolkit.html">streamsx.spl.toolkit</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.spl.spl.html">streamsx.spl.spl</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.rest.html">streamsx.rest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.rest_primitives.html">streamsx.rest_primitives</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scripts/extract.html">spl-python-extract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/info.html">streamsx-info</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pysetup.html">Streams Python setup</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="restrictions.html">Restrictions and known bugs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">streamsx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Streams Python support</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="streams-python-support">
+<h1>Streams Python support<a class="headerlink" href="#streams-python-support" title="Permalink to this heading"></a></h1>
+<p>Python APIs for use with on-premises Streams.</p>
+<section id="python-application-api-for-streams">
+<h2>Python Application API for Streams<a class="headerlink" href="#python-application-api-for-streams" title="Permalink to this heading"></a></h2>
+<p>Module that allows the definition and execution of streaming
+applications implemented in Python.
+Applications use Python code to process tuples and tuples are Python objects.</p>
+<p>SPL operators may also be invoked from Python applications to allow
+use of existing Streams toolkits.</p>
+<p>See <a class="reference internal" href="streamsx.topology.html#module-streamsx.topology" title="streamsx.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">topology</span></code></a></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="streamsx.topology.html#module-streamsx.topology" title="streamsx.topology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.topology</span></code></a></p></td>
+<td><p>Python application support for Streams.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="streamsx.topology.context.html#module-streamsx.topology.context" title="streamsx.topology.context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.topology.context</span></code></a></p></td>
+<td><p>Context for submission and build of topologies.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="streamsx.topology.schema.html#module-streamsx.topology.schema" title="streamsx.topology.schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.topology.schema</span></code></a></p></td>
+<td><p>Schemas for streams.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="streamsx.topology.state.html#module-streamsx.topology.state" title="streamsx.topology.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.topology.state</span></code></a></p></td>
+<td><p>Application state.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="streamsx.topology.tester.html#module-streamsx.topology.tester" title="streamsx.topology.tester"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.topology.tester</span></code></a></p></td>
+<td><p>Testing support for streaming applications.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="streamsx.topology.tester_runtime.html#module-streamsx.topology.tester_runtime" title="streamsx.topology.tester_runtime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.topology.tester_runtime</span></code></a></p></td>
+<td><p>Runtime tester functionality.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="streamsx.ec.html#module-streamsx.ec" title="streamsx.ec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.ec</span></code></a></p></td>
+<td><p>Access to the Streams execution context.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.spl.op</span></code></p></td>
+<td><p>Integration of SPL operators.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="streamsx.spl.types.html#module-streamsx.spl.types" title="streamsx.spl.types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.spl.types</span></code></a></p></td>
+<td><p>SPL type definitions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="streamsx.spl.toolkit.html#module-streamsx.spl.toolkit" title="streamsx.spl.toolkit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.spl.toolkit</span></code></a></p></td>
+<td><p>SPL toolkit integration.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="spl-primitive-python-operators">
+<h2>SPL primitive Python operators<a class="headerlink" href="#spl-primitive-python-operators" title="Permalink to this heading"></a></h2>
+<p>SPL primitive Python operators provide the ability
+to perform tuple processing using Python in an SPL application.</p>
+<p>A Python function or class is simply turned into an SPL primitive operator
+through provided decorators.</p>
+<p>SPL (Streams Processing Language) is a domain specific language for streaming
+analytics supported by Streams.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="streamsx.spl.spl.html#module-streamsx.spl.spl" title="streamsx.spl.spl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.spl.spl</span></code></a></p></td>
+<td><p>SPL Python primitive operators.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="streams-python-rest-api">
+<h2>Streams Python REST API<a class="headerlink" href="#streams-python-rest-api" title="Permalink to this heading"></a></h2>
+<p>Module that allows interaction with an running Streams instance or
+service through HTTPS REST APIs.</p>
+<hr class="docutils" />
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="streamsx.rest.html#module-streamsx.rest" title="streamsx.rest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.rest</span></code></a></p></td>
+<td><p>REST API bindings for Teracloud® Streams</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="streamsx.rest_primitives.html#module-streamsx.rest_primitives" title="streamsx.rest_primitives"><code class="xref py py-obj docutils literal notranslate"><span class="pre">streamsx.rest_primitives</span></code></a></p></td>
+<td><p>Primitive objects for REST bindings.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="scripts">
+<h2>Scripts<a class="headerlink" href="#scripts" title="Permalink to this heading"></a></h2>
+<p>The <cite>streamsx</cite> package provides a number of command line scripts.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scripts/extract.html">spl-python-extract</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scripts/extract.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts/extract.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts/extract.html#spl-python-primitive-operators">SPL Python primitive operators</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/info.html">streamsx-info</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scripts/info.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts/info.html#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="environments">
+<h2>Environments<a class="headerlink" href="#environments" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pysetup.html">Streams Python setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pysetup.html#developer-setup">Developer setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pysetup.html#streams-4-2-4-3">Streams 4.2, 4.3</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pysetup.html#distributed">Distributed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pysetup.html#standalone">Standalone</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pysetup.html#bundle-python-version-compatibility">Bundle Python version compatibility</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="restrictions-and-known-bugs">
+<h2>Restrictions and known bugs<a class="headerlink" href="#restrictions-and-known-bugs" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="restrictions.html">Restrictions and known bugs</a></li>
+</ul>
+</div>
+<section id="indices-and-tables">
+<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="streamsx.topology.html" class="btn btn-neutral float-right" title="streamsx.topology" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Teracloud ApS 2025, IBM Corp. 2015, 2020.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

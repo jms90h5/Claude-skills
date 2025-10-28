@@ -1,0 +1,370 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="description" content="A job configuration overlay file is a JSON file that contains name-value pairs for job configuration parameters. You can use a job configuration overlay file to define, save, and distribute the submission-time configuration or to change the configuration of a running job."/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/configuring-submission-time-params.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/jobs.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/startingjobs.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/submission_time_fusion.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/placement-scheme.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/threading-model.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/override-operator-props.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/create-host-pools.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/host-location.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/partition-location.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/override-app-settings.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="job_configuration_overlays"/><meta name="DC.language" content="en-us"/>        
+      <title>Job configuration overlays</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="job_configuration_overlays-d41691e3519"/><meta name="wh-source-relpath" content="com.ibm.streams.admin.doc/doc/job_configuration_overlays.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.admin.doc/doc/job_configuration_overlays.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="job_configuration_overlays" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="containeradmin"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li><div class="topicref" data-id="adminjobs"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/jobs.html">Jobs</a><div class="wh-tooltip"><p class="shortdesc">You can start and administer jobs by using <span class="keyword">Streams Console</span> or the <code class="ph codeph">streamtool</code> command-line interface.</p></div></div></div></li><li><div class="topicref" data-id="starting-jobs"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/startingjobs.html">Submitting jobs</a><div class="wh-tooltip"><p class="shortdesc">To start a <span class="keyword">stream application</span> in <span class="keyword">Teracloud® 					Streams</span>, you submit an application bundle to a started instance that creates a job.</p></div></div></div></li><li><div class="topicref" data-id="configuring-submission-time-params"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/configuring-submission-time-params.html">Configuring submission-time parameters to optimize job deployment</a><div class="wh-tooltip"><p class="shortdesc">You can specify submission-time parameters for a job before you deploy a <span class="keyword">stream application</span> to your environment. Typically, configuring the parameters enables you to improve the run-time performance of the application without recompiling it. </p></div></div></div></li><li class="active"><div class="topicref" data-id="job_configuration_overlays"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/job_configuration_overlays.html">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">A job configuration overlay file is a JSON file that contains name-value pairs for job configuration parameters. You can use a job configuration overlay file to define, save, and distribute the submission-time configuration or to change the configuration of a running job. </p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="admindomains-d41691e2724" class="topicref" data-id="admindomains" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action admindomains-d41691e2724-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/domains.html" id="admindomains-d41691e2724-link">Domains</a><div class="wh-tooltip"><p class="shortdesc">After you create a <span class="keyword">Teracloud® 					Streams</span> domain, you can administer it by using the   <span class="keyword">Streams Console</span> graphical user interface and the <span class="keyword cmdname">streamtool</span> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="adminresources-d41691e2839" class="topicref" data-id="adminresources" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action adminresources-d41691e2839-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/resources.html" id="adminresources-d41691e2839-link">Resources</a><div class="wh-tooltip"><p class="shortdesc">After you add resources to domains and instances, you can administer them by using the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-instance-main-d41691e2986" class="topicref" data-id="ibminfospherestreams-instance-main" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-instance-main-d41691e2986-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-main.html" id="ibminfospherestreams-instance-main-d41691e2986-link">Instances</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To create and manage instances, you can use the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="adminservices-d41691e3178" class="topicref" data-id="adminservices" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action adminservices-d41691e3178-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/services.html" id="adminservices-d41691e3178-link">Domain and instance services</a><div class="wh-tooltip"><p class="shortdesc">Before you can perform <span class="keyword">Teracloud® 					Streams</span> tasks, <span class="keyword">Teracloud 					Streams</span> domain and instance services need to be running on resources in the domain. Domain services are   started by starting the domain and instance services are started by starting the   instance.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="adminjobs-d41691e3310" class="topicref" data-id="adminjobs" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action adminjobs-d41691e3310-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/jobs.html" id="adminjobs-d41691e3310-link">Jobs</a><div class="wh-tooltip"><p class="shortdesc">You can start and administer jobs by using <span class="keyword">Streams Console</span> or the <code class="ph codeph">streamtool</code> command-line interface.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="jobids-d41691e3327" class="topicref" data-id="jobids" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/jobids.html" id="jobids-d41691e3327-link">Job names and identifiers</a><div class="wh-tooltip"><p class="shortdesc">A job name is a name that you specify when you submit a job. <span class="keyword">Teracloud® 					Streams</span> also assigns a job identifier (ID).</p></div></div></div></li><li role="treeitem"><div data-tocid="creating-secure-app-configs-d41691e3343" class="topicref" data-id="creating-secure-app-configs" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/creating-secure-app-configs.html" id="creating-secure-app-configs-d41691e3343-link">Using application configuration objects to access secure data</a><div class="wh-tooltip"><p class="shortdesc">You can use <dfn class="term">application configuration objects</dfn> to     access securely stored configuration data from your <span class="keyword">Teracloud® 					Streams</span> environment.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="starting-jobs-d41691e3362" class="topicref" data-id="starting-jobs" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action starting-jobs-d41691e3362-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/startingjobs.html" id="starting-jobs-d41691e3362-link">Submitting jobs</a><div class="wh-tooltip"><p class="shortdesc">To start a <span class="keyword">stream application</span> in <span class="keyword">Teracloud® 					Streams</span>, you submit an application bundle to a started instance that creates a job.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="configuring-submission-time-params-d41691e3381" class="topicref" data-id="configuring-submission-time-params" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action configuring-submission-time-params-d41691e3381-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/configuring-submission-time-params.html" id="configuring-submission-time-params-d41691e3381-link">Configuring submission-time parameters to optimize job deployment</a><div class="wh-tooltip"><p class="shortdesc">You can specify submission-time parameters for a job before you deploy a <span class="keyword">stream application</span> to your environment. Typically, configuring the parameters enables you to improve the run-time performance of the application without recompiling it. </p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="submission_time_fusion-d41691e3395" class="topicref" data-id="submission_time_fusion" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submission_time_fusion-d41691e3395-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/submission_time_fusion.html" id="submission_time_fusion-d41691e3395-link">Specifying how operators are fused when you submit a job</a><div class="wh-tooltip"><p class="shortdesc">When you submit a job, you may specify how the operators         in the application are fused into processing elements (PE). The fusion scheme that you use         can impact the runtime performance of the application.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="placement-scheme-d41691e3417" class="topicref" data-id="placement-scheme" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action placement-scheme-d41691e3417-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/placement-scheme.html" id="placement-scheme-d41691e3417-link">Specifying how PEs are distributed in a job</a><div class="wh-tooltip"><p class="shortdesc">You can specify how the PEs in a job are distributed         among the hosts in the instance. The placement scheme that you use can impact the runtime         performance of the application.</p></div></div></div></li><li role="treeitem"><div data-tocid="threading-model-d41691e3439" class="topicref" data-id="threading-model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/threading-model.html" id="threading-model-d41691e3439-link">Specifying how threads in a PE execute operators</a><div class="wh-tooltip"><p class="shortdesc"> Within a processing element (PE), <span class="keyword">Teracloud® Streams</span> can use threads to execute operators in parallel to achieve better performance. The         threading model of a PE determines how threads execute operators. When you submit a job, you         may change the threading model for all of the PEs in an application. </p></div></div></div></li><li role="treeitem"><div data-tocid="override-operator-props-d41691e3455" class="topicref" data-id="override-operator-props" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/override-operator-props.html" id="override-operator-props-d41691e3455-link">Overriding operator properties</a><div class="wh-tooltip"><p class="shortdesc">When you submit a job, you may override the properties         of the operators in your <span class="keyword">application bundle file</span>. For example, if you plan to fuse a set operators into the same PE, you might need to         change the <span class="keyword option">partitionIsolation</span> setting to <kbd class="ph userinput">false</kbd> for         all operators that you plan to fuse into the PE.</p></div></div></div></li><li role="treeitem"><div data-tocid="create-host-pools-d41691e3475" class="topicref" data-id="create-host-pools" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/create-host-pools.html" id="create-host-pools-d41691e3475-link">Creating host pools</a><div class="wh-tooltip"><p class="shortdesc">A host pool is a set of resources designated for a particular         purpose. For example, you can specify a set of hosts that are optimized to run a specific         type of analysis and assign operators that perform that analysis to the host         pool.</p></div></div></div></li><li role="treeitem"><div data-tocid="host-location-d41691e3486" class="topicref" data-id="host-location" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/host-location.html" id="host-location-d41691e3486-link">Creating host co-location and ex-location groups</a><div class="wh-tooltip"><p class="shortdesc">You can specify how the operators in an application are grouped on the hosts in the instance. You can group operators together on a host, or you can prevent operators from being grouped with other operators.</p></div></div></div></li><li role="treeitem"><div data-tocid="partition-location-d41691e3497" class="topicref" data-id="partition-location" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/partition-location.html" id="partition-location-d41691e3497-link">Creating partition co-location or ex-location groups</a><div class="wh-tooltip"><p class="shortdesc">You can specify how the operators in an application are grouped together into processing elements (PEs). You can group operators together in a PE (also called a partition), or prevent operators from being grouped with other operators.</p></div></div></div></li><li role="treeitem"><div data-tocid="override-app-settings-d41691e3508" class="topicref" data-id="override-app-settings" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/override-app-settings.html" id="override-app-settings-d41691e3508-link">Overriding application-wide settings </a><div class="wh-tooltip"><p class="shortdesc">When you submit a job, you may override several         application-wide settings. For example, you might want to ignore all of the constraints that         are specified in the bundle and define the appropriate constraints for your environment by         specifying a job configuration overlay file or by configuring submission-time configuration         parameters. </p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="job_configuration_overlays-d41691e3519" class="topicref" data-id="job_configuration_overlays" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/job_configuration_overlays.html" id="job_configuration_overlays-d41691e3519-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">A job configuration overlay file is a JSON file that contains name-value pairs for job configuration parameters. You can use a job configuration overlay file to define, save, and distribute the submission-time configuration or to change the configuration of a running job. </p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="preview-job-d41691e3530" class="topicref" data-id="preview-job" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/preview-job.html" id="preview-job-d41691e3530-link">Previewing a job before you deploy it</a><div class="wh-tooltip"><p class="shortdesc">Before you deploy an application to your runtime environment, you can run a preview to see how the job will be deployed.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-instance-jobscheduler-d41691e3541" class="topicref" data-id="ibminfospherestreams-instance-jobscheduler" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-jobscheduler.html" id="ibminfospherestreams-instance-jobscheduler-d41691e3541-link">Placement of PEs during job submission</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">application manager service</span> chooses resources in accordance with any requirements specified by the <span class="keyword">stream application</span> or by your job configuration overlays. </p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="changerunjobs-d41691e3558" class="topicref" data-id="changerunjobs" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action changerunjobs-d41691e3558-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/changerunjobs.html" id="changerunjobs-d41691e3558-link">Modifying running jobs</a><div class="wh-tooltip"><p class="shortdesc">You can change a running job by running the <code class="ph codeph">streamtool updateoperators</code>    command and supplying the parameters that you want to change either with the command options or    by specifying a job configuration overlay file that includes the parameters that you want to    change. You can also use <span class="keyword">Streams Console</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-job-status-d41691e3614" class="topicref" data-id="ibminfospherestreams-job-status" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-job-status.html" id="ibminfospherestreams-job-status-d41691e3614-link">Monitoring jobs</a><div class="wh-tooltip"><p class="shortdesc">Use the <span class="keyword">Streams Console</span> or <code class="ph codeph">streamtool</code> commands to view the status of application jobs in a <span class="keyword">Teracloud® 					Streams</span> instance.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-pe-status-d41691e3636" class="topicref" data-id="ibminfospherestreams-pe-status" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-pe-status.html" id="ibminfospherestreams-pe-status-d41691e3636-link">Monitoring processing elements</a><div class="wh-tooltip"><p class="shortdesc">Use the <span class="keyword">Streams Console</span> or <code class="ph codeph">streamtool</code> commands to view the status of processing elements (PEs) in a    <span class="keyword">Teracloud® 					Streams</span> instance.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-getjobtopology-command-d41691e3658" class="topicref" data-id="ibminfospherestreams-getjobtopology-command" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-getjobtopology-command.html" id="ibminfospherestreams-getjobtopology-command-d41691e3658-link">Capturing the job topology for offline viewing and analysis</a><div class="wh-tooltip"><p class="shortdesc">Use the <span class="keyword cmdname">streamtool getjobtopology</span> command to capture job topology    information that you can view and analyze offline.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-instance-jobscheduler-configure-host-load-d41691e3672" class="topicref" data-id="ibminfospherestreams-instance-jobscheduler-configure-host-load" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-jobscheduler-configure-host-load.html" id="ibminfospherestreams-instance-jobscheduler-configure-host-load-d41691e3672-link">Enabling resource load protection for <span class="keyword">Teracloud® Streams</span> instances</a><div class="wh-tooltip"><p class="shortdesc">The resource load protection option controls whether overload protection is enabled as determined by the values of three metrics: CPU utilization, memory utilization, and network bandwidth utilization. When you enable resource load protection, Streams prevents additional work (new PEs) from being placed on an overloaded resource. </p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="changeresourcethresholds-d41691e3688" class="topicref" data-id="changeresourcethresholds" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action changeresourcethresholds-d41691e3688-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/changeresourcethresholds.html" id="changeresourcethresholds-d41691e3688-link">Changing resource usage thresholds</a><div class="wh-tooltip"><p class="shortdesc">Each resource has a fixed capacity, for example CPU cores. If PEs are placed on a       resource that needs more CPU processing power than what is available, the resource becomes       overloaded and will have poor performance. You can use resource usage thresholds to identify       PE load balancing recommendations or, together with the <strong class="ph b">resourceLoadProtectionEnabled</strong>       instance property, to directly protect resources from being overloaded.</p></div></div></div></li><li role="treeitem"><div data-tocid="disable_rlp-d41691e3728" class="topicref" data-id="disable_rlp" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/disable_rlp.html" id="disable_rlp-d41691e3728-link">Disabling resource load protection for <span class="keyword">Teracloud® Streams</span>  </a><div class="wh-tooltip"><p class="shortdesc">You can disable resource load protection for the instance or you can override resource load protection for individual job submissions.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-instance-admin-queryingnameservice-d41691e3745" class="topicref" data-id="ibminfospherestreams-instance-admin-queryingnameservice" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-admin-queryingnameservice.html" id="ibminfospherestreams-instance-admin-queryingnameservice-d41691e3745-link">Viewing <span class="keyword">Teracloud® Streams</span> name service references for jobs</a><div class="wh-tooltip"><p class="shortdesc">Use the <code class="ph codeph">streamtool getnsentry</code> command to query the name service of a    <span class="keyword">Teracloud® 					Streams</span> instance. </p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-faulttolerance-main-d41691e3769" class="topicref" data-id="ibminfospherestreams-faulttolerance-main" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-faulttolerance-main-d41691e3769-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-faulttolerance-main.html" id="ibminfospherestreams-faulttolerance-main-d41691e3769-link">Recovery</a><div class="wh-tooltip"><p class="shortdesc">You can back up your <span class="keyword">Teracloud® 					Streams</span> system files and directories and then restore them later if necessary. In general, you can recover from application and runtime failures without restoring <span class="keyword">Teracloud 					Streams</span> from a backup.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-adminconsole-d41691e3881" class="topicref" data-id="ibminfospherestreams-adminconsole" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-adminconsole-d41691e3881-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-adminconsole.html" id="ibminfospherestreams-adminconsole-d41691e3881-link"><span class="keyword">Streams Console</span></a><div class="wh-tooltip"><p class="shortdesc">You can use the <span class="keyword">Streams Console</span> to monitor and manage the <span class="keyword">Teracloud® 					Streams</span> instances and applications in your domain from any computer that has HTTP connectivity to the server that is running the <span class="keyword">web management service</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-log-and-trace-managing-files-d41691e3942" class="topicref" data-id="ibminfospherestreams-log-and-trace-managing-files" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-log-and-trace-managing-files.html" id="ibminfospherestreams-log-and-trace-managing-files-d41691e3942-link">Logs and traces</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph"><span class="keyword">Teracloud® 					Streams</span> provides options that enable administrators, instance owners, and application developers to       manage log and trace data.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="accessingpathscompiletime-d41691e3958" class="topicref" data-id="accessingpathscompiletime" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/managemonitorstreamsapi.html" id="accessingpathscompiletime-d41691e3958-link">Managing and monitoring <span class="keyword">Teracloud® Streams</span> using management APIs</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides two API sets to manage and monitor Streams services and jobs.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="job_configuration_overlays__config-overlay-title">
+<h1 class="- topic/title title topictitle1" id="job_configuration_overlays__config-overlay-title">Job configuration overlays</h1>
+
+
+<div class="- topic/body concept/conbody body conbody" id="job_configuration_overlays__config-overlay-conbody"><p class="- topic/shortdesc shortdesc">A job configuration overlay file is a JSON
+file that contains name-value pairs for job configuration parameters. You can use a job
+configuration overlay file to define, save, and distribute the submission-time configuration or to
+change the configuration of a running job. </p>
+<p class="- topic/p p">If you want to modify a few settings, you can create a job configuration overlay
+file that includes only the relevant sections and parameters. Only the settings that are specified
+in the job configuration overlay file are changed. The settings in the job configuration overlay
+file overwrite any previously set values.</p>
+    <section class="- topic/section section" id="job_configuration_overlays__section_ah1_4q1_h2c" data-ofbid="job_configuration_overlays__section_ah1_4q1_h2c"><h2 class="- topic/title title sectiontitle">Structure of a job configuration overlay file</h2>
+      
+      <p class="- topic/p p">The following outline shows the order of the sections in a job configuration overlay
+        file:</p>
+      <pre class="+ topic/pre pr-d/codeblock pre codeblock" id="job_configuration_overlays__outline" data-ofbid="job_configuration_overlays__outline"><code>comment
+jobConfigOverlays
+     jobConfig
+          jobName
+          jobGroup
+          submissionParameters
+          dataDirectory
+          preloadApplicationBundles
+          tracing
+     deploymentConfig
+          fusionScheme
+          fusionTargetPeCount
+          placementScheme
+          threadingModel
+          dynamicThreadingThreadCount
+          dynamicThreadingElastic
+          parallelRegionConfig
+               fusionType
+          jobResourceSharing
+          proposedOperatorsPerResource
+     operatorConfigs
+          operators
+               nameSpec
+               restartable
+               relocatable
+               partitionIsolation
+               partitionGroupIsolation
+               hostIsolation
+               declaredHost
+          hostColocationGroups
+               groupName
+               members
+          hostExlocationGroups
+               groupName
+               members
+          partitionColocationGroups
+               groupName
+               members
+          partitionExplocationGroups
+               groupName
+               members
+          poolPlacementGroups
+               name
+               OperatorsInPool
+                    nameSpec
+                    inPoolIndex
+               membershipMode
+               size
+               tags
+               declaredHosts
+               numberOfResourcesToRequest
+     configInstructions
+          ignoreBundleRelationalPlacements
+          ignoreBundleHostPlacements
+          convertTagSet
+               originalTagSet
+               targetTagSet
+          changeThreadedPortSettings
+               queueSize
+          adjustmentSection
+               targetParallelRegion                    
+                    regionName
+                    newWidth
+               numberOfResourcesToBeAdded
+     operationConfig
+          overrideResourceLoadProtection 
+          forcePeStopped 
+          enableAutomaticAugmentation
+</code></pre>
+      <div class="- topic/note note note note_note" id="job_configuration_overlays__note_bh1_4q1_h2c" data-ofbid="job_configuration_overlays__note_bh1_4q1_h2c"><span class="note__title">Note:</span> This outline does not include the <code class="+ topic/ph pr-d/codeph ph codeph">results</code>
+        section. This content is generated when you preview how the job will be submitted to the
+        instance. </div>
+      <p class="- topic/p p">For information about the parameters that you can specify in a job configuration overlay
+        file, see <a class="- topic/xref xref" href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" title="You can specify or change configuration parameters when you use the submitjob or updateoperators operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the job configuration overlay file, the changes override any previously set values.">Job configuration overlays reference</a>.</p>
+    </section>
+    <section class="- topic/section section" id="job_configuration_overlays__section_r1p_4q1_h2c" data-ofbid="job_configuration_overlays__section_r1p_4q1_h2c"><h2 class="- topic/title title sectiontitle">Syntax of a job configuration overlay file</h2>
+      
+      <p class="- topic/p p">If you create or edit a job configuration overlay file, you must use the correct syntax.
+        Specifically, ensure that you include the commas in the correct locations and that you
+        include opening and closing braces, brackets, and double quotation marks.</p>
+      <p class="- topic/p p">The following code shows an example of a job configuration overlay file with
+        the correct syntax:</p>
+      <pre class="+ topic/pre pr-d/codeblock pre codeblock" id="job_configuration_overlays__codeblock_s1p_4q1_h2c" data-ofbid="job_configuration_overlays__codeblock_s1p_4q1_h2c"><code>{
+  "jobConfigOverlays": [
+    {
+      "jobConfig": {
+        "jobName": "myJob",
+        "jobGroup": "myJobGroup",
+        "dataDirectory": "myDataDir",
+        "submissionParameters": [          
+          { "name": "streams::pe.display", "value": "host_name:port_number" }
+        ]
+      },
+      "deploymentConfig": {
+        "placementScheme": "balancedInstance",
+        "fusionScheme": "automatic"
+      },
+      "operatorConfigs": {
+        "operators": [
+          { "nameSpec": "Op_1", "declaredHost": "hostB" },
+          { "nameSpec": "Op_2", "restartable": "true" },
+          { "nameSpec": "Op_3", "hostIsolation": "true" }
+        ],
+        "poolPlacementGroups": [
+          {
+            "name": "myPool",
+            "size": 10,
+            "tags": [ "tag1", "tag2" ],
+            "operatorsInPool": [
+              { "nameSpec": "Op_2" },
+              { "nameSpec": "Op_3" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}</code></pre>
+    </section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Previewing or submitting a job with the job configuration overlay file</h2>
+
+<p class="- topic/p p">You can manually create a job configuration overlay file, or you can generate a job configuration
+overlay file when you preview how a job will be submitted to your instance. For more information
+about generating a job configuration overlay file from a preview, see <a class="- topic/xref xref" href="preview-job.html" title="Before you deploy an application to your runtime environment, you can run a preview to see how the job will be deployed.">Previewing a job before you deploy it</a>.</p>
+<p class="- topic/p p">The job configuration overlay file that is generated when you run a preview includes all of the
+settings that were configured for the job. For complex applications, the job configuration overlay
+file might be long and contain many entries.</p>
+<p class="- topic/p p">A job configuration overlay file is one way that you can specify submission-time configuration
+        parameters for a job before you deploy a <span class="- topic/keyword keyword">stream application</span> to your environment. (Alternatively, you can specify submission-time configuration
+        parameters from the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams
+Console</span> or by using the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool submitjob</span> command.) However, unlike
+        manually specifying submission-time configuration parameters when you submit a job, a job
+        configuration overlay file enables you to reuse or share a configuration. It also reduces
+        the likelihood of entering information incorrectly if you want to specify submission-time
+        configuration parameters from the <span class="- topic/ph ph">interactive <code class="+ topic/ph pr-d/codeph ph codeph">streamtool</code>
+					interface</span>.</p>
+<p class="- topic/p p">For information about how you can use submission-time configuration parameters to improve the
+runtime performance of the application without recompiling it, see <a class="- topic/xref xref" href="configuring-submission-time-params.html" title="You can specify submission-time parameters for a job before you deploy a stream application to your environment. Typically, configuring the parameters enables you to improve the run-time performance of the application without recompiling it.">Configuring submission-time parameters to optimize job deployment</a>.</p>
+<p class="- topic/p p">You can use a job configuration overlay file when you preview or submit a job in the following
+ways:</p>
+<ul class="- topic/ul ul">
+        
+<li class="- topic/li li">From <span class="- topic/keyword keyword">Streams
+Console</span>, import the job configuration overlay file when you run or preview a job. You can
+          import it by clicking the <span class="+ topic/ph ui-d/uicontrol ph uicontrol">Import</span> icon at the top of the page and
+          selecting <span class="+ topic/ph ui-d/uicontrol ph uicontrol">Import job configuration file</span>.</li>
+<li class="- topic/li li">From the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> command-line interface, choose the appropriate option:<ul class="- topic/ul ul">
+            <li class="- topic/li li">To preview a job with a job configuration overlay file, run the
+                <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool submitjob</span> command with the <span class="+ topic/keyword pr-d/option keyword option">--preview</span>
+              option and specify the name of your job configuration overlay file, for
+                example:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>streamtool submitjob --preview -g jobConfigOverlay.json myAppBundle.sab</code></pre><div class="- topic/note note note note_note"><span class="note__title">Note:</span> When
+                you preview the job, a new job configuration overlay file in JSON format is
+                automatically generated. The default file name is
+                    <span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">appName</var>_config.json</span>, where
+                    <span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">appName</var></span> is the name of your application.
+                You can change the file name by using the <span class="+ topic/keyword pr-d/option keyword option">--out_jobConfig</span>
+                option.</div></li>
+            <li class="- topic/li li">To run a job with a job configuration overlay file, run the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+                submitjob</span> command and specify the name of your job configuration overlay
+              file:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>streamtool submitjob -g jobConfigOverlay.json myAppBundle.sab</code></pre></li>
+          </ul></li>
+</ul>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Modifying a running job with a job configuration overlay file</h2>
+
+<p class="- topic/p p">You can use the job configuration overlay file with the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+          updateoperators</span> command to change the width of a parallel region in a running
+        job. For example:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>streamtool updateoperators myjob -g jobConfigOverlay.json</code></pre>
+<div class="- topic/note note important note_important"><span class="note__title">Important:</span>  Changes to the width of multiple parallel regions at once is supported only
+        for a <span class="+ topic/keyword sw-d/cmdname keyword cmdname">submitjob</span> operation. For an <span class="+ topic/keyword sw-d/cmdname keyword cmdname">updateoperators</span>
+        operation, only one width change at a time is allowed. (You cannot change multiple widths of
+        a running job.)</div>
+
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relconcepts" xml:lang="en-us" lang="en-us"><strong>Related concepts</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/submission_time_fusion.html" title="When you submit a job, you may specify how the operators in the application are fused into processing elements (PE). The fusion scheme that you use can impact the runtime performance of the application.">Specifying how operators are fused when you submit a job</a></li></ul></div><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/placement-scheme.html" title="You can specify how the PEs in a job are distributed among the hosts in the instance. The placement scheme that you use can impact the runtime performance of the application.">Specifying how PEs are distributed in a job</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/threading-model.html" title="Within a processing element (PE), Teracloud Streams can use threads to execute operators in parallel to achieve better performance. The threading model of a PE determines how threads execute operators. When you submit a job, you may change the threading model for all of the PEs in an application.">Specifying how threads in a PE execute operators</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/override-operator-props.html" title="When you submit a job, you may override the properties of the operators in your application bundle file. For example, if you plan to fuse a set operators into the same PE, you might need to change the partitionIsolation setting to false for all operators that you plan to fuse into the PE.">Overriding operator properties</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/create-host-pools.html" title="A host pool is a set of resources designated for a particular purpose. For example, you can specify a set of hosts that are optimized to run a specific type of analysis and assign operators that perform that analysis to the host pool.">Creating host pools</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/host-location.html" title="You can specify how the operators in an application are grouped on the hosts in the instance. You can group operators together on a host, or you can prevent operators from being grouped with other operators.">Creating host co-location and ex-location groups</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/partition-location.html" title="You can specify how the operators in an application are grouped together into processing elements (PEs). You can group operators together in a PE (also called a partition), or prevent operators from being grouped with other operators.">Creating partition co-location or ex-location groups</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/override-app-settings.html" title="When you submit a job, you may override several application-wide settings. For example, you might want to ignore all of the constraints that are specified in the bundle and define the appropriate constraints for your environment by specifying a job configuration overlay file or by configuring submission-time configuration parameters.">Overriding application-wide settings</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

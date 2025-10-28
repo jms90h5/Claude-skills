@@ -1,0 +1,199 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="description" content="You change the level and format for logging and tracing with the setdbg command."/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/debuggingstreamsdebugger.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/dev-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/spldebugger-container.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="setconsolelogoptions"/><meta name="DC.language" content="en-us"/>        
+      <title>Setting console logging and tracing options</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="setconsolelogoptions-d41691e7877"/><meta name="wh-source-relpath" content="com.ibm.streams.dev.doc/doc/setconsolelogoptions.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.dev.doc/doc/setconsolelogoptions.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="setconsolelogoptions" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="dev-container"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li><div class="topicref" data-id="spldebugger-container"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/spldebugger-container.html">Debugging <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Debug stream applications using the interactive, command line-based <span class="keyword">Streams Debugger</span> (<code class="ph codeph">sdb</code>).</p></div></div></div></li><li><div class="topicref" data-id="debugstrmsdebuger"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/debuggingstreamsdebugger.html">Debugging with the <span class="keyword">Streams Debugger</span></a><div class="wh-tooltip"><p class="shortdesc">When the application is started either in stand-alone mode or distributed mode, the <span class="keyword">Streams Debugger</span> displays initial messages and presents a command line.</p></div></div></div></li><li class="active"><div class="topicref" data-id="setconsolelogoptions"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/setconsolelogoptions.html">Setting console logging and tracing options</a><div class="wh-tooltip"><p class="shortdesc">You change the level and format for logging and tracing with the <code class="ph codeph">setdbg</code>   command.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="streaming_application_basics-d41691e3994" class="topicref" data-id="streaming_application_basics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streaming_application_basics-d41691e3994-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/streaming_application_basics.html" id="streaming_application_basics-d41691e3994-link">Development concepts</a><div class="wh-tooltip"><p class="shortdesc">Development of stream applications consists of several components such as operators,         streams, tuples, Streams Processing Language, toolkits, and         more.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="writingapplications-d41691e4218" class="topicref" data-id="writingapplications" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action writingapplications-d41691e4218-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/writingapplications.html" id="writingapplications-d41691e4218-link">Developing <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Try out tutorials and explore details about stream application development, SPL features,     and best practices.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="creatingnativefunctions-d41691e5698" class="topicref" data-id="creatingnativefunctions" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creatingnativefunctions-d41691e5698-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingnativefunctions.html" id="creatingnativefunctions-d41691e5698-link"><span class="ph">Developing native functions</span></a><div class="wh-tooltip"><p class="shortdesc">Extend SPL's computational capabilities by creating native functions     written in C++ or Java.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="developing_operators-d41691e5772" class="topicref" data-id="developing_operators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action developing_operators-d41691e5772-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html" id="developing_operators-d41691e5772-link">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="creating_toolkits-d41691e7044" class="topicref" data-id="creating_toolkits" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creating_toolkits-d41691e7044-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creating_toolkits.html" id="creating_toolkits-d41691e7044-link">Developing custom toolkits</a><div class="wh-tooltip"><p class="shortdesc">Bundle and reuse custom functions and operators across several <span class="keyword">stream applications</span> by creating custom toolkits.</p></div></div></div></li><li role="treeitem"><div data-tocid="enabling-streams-application-service-d41691e7457" class="topicref" data-id="enabling-streams-application-service" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/enabling-streams-data-exchange.html" id="enabling-streams-application-service-d41691e7457-link">Enabling Streams data exchange</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides a data exchange REST API for inserting and retrieving tuples within a job to             easily integrate with other data services and external applications. Stream applications             can enable the data exchange feature by using one or more Endpoint             operators.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldebugger-container-d41691e7472" class="topicref" data-id="spldebugger-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldebugger-container-d41691e7472-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/spldebugger-container.html" id="spldebugger-container-d41691e7472-link">Debugging <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Debug stream applications using the interactive, command line-based <span class="keyword">Streams Debugger</span> (<code class="ph codeph">sdb</code>).</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="sampleillus-d41691e7492" class="topicref" data-id="sampleillus" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/sampleillustration.html" id="sampleillus-d41691e7492-link">Samples used for illustration</a><div class="wh-tooltip"><p class="shortdesc">The WordCount sample is used to illustrate the debugger features.</p></div></div></div></li><li role="treeitem"><div data-tocid="compileappdebug-d41691e7503" class="topicref" data-id="compileappdebug" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/compileappdebug.html" id="compileappdebug-d41691e7503-link">Compiling an application for debugging</a><div class="wh-tooltip"><p class="shortdesc">To compile a <span class="keyword">stream application</span> for debugging with the <span class="keyword">Streams Debugger</span> (<code class="ph codeph">sdb</code>), you must specify the <code class="ph codeph">-g</code>  option on the    <code class="ph codeph">sc</code> command.</p></div></div></div></li><li role="treeitem"><div data-tocid="debugstandaloneapp-d41691e7529" class="topicref" data-id="debugstandaloneapp" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/debugstandaloneapp.html" id="debugstandaloneapp-d41691e7529-link">Debugging an application in stand-alone mode</a><div class="wh-tooltip"><p class="shortdesc">The SPL compiler generates a stand-alone executable program that can be run without a    <span class="keyword">Teracloud® Streams instance</span>. </p></div></div></div></li><li role="treeitem"><div data-tocid="debugdistriapp-d41691e7545" class="topicref" data-id="debugdistriapp" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/debugdistributedapp.html" id="debugdistriapp-d41691e7545-link">Debugging an application in distributed mode</a><div class="wh-tooltip"><p class="shortdesc">A <span class="keyword">stream application</span> is debugged in a job that is submitted to a running <span class="keyword">Teracloud® Streams instance</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="debugstrmsdebuger-d41691e7564" class="topicref" data-id="debugstrmsdebuger" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action debugstrmsdebuger-d41691e7564-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/debuggingstreamsdebugger.html" id="debugstrmsdebuger-d41691e7564-link">Debugging with the <span class="keyword">Streams Debugger</span></a><div class="wh-tooltip"><p class="shortdesc">When the application is started either in stand-alone mode or distributed mode, the <span class="keyword">Streams Debugger</span> displays initial messages and presents a command line.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="streamdebugonoprtrport-d41691e7580" class="topicref" data-id="streamdebugonoprtrport" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/streamdebugoperports.html" id="streamdebugonoprtrport-d41691e7580-link">Stream debugging based on operator ports</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">Streams Debugger</span> provides a <dfn class="term">port-centric</dfn> view into the <span class="keyword">stream application</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="probepntids-d41691e7600" class="topicref" data-id="probepntids" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/probepointid.html" id="probepntids-d41691e7600-link">Probe points and probe point IDs</a><div class="wh-tooltip"><p class="shortdesc">Probe points include breakpoints, trace points, and inject points.</p></div></div></div></li><li role="treeitem"><div data-tocid="suspndexebrkpnts-d41691e7611" class="topicref" data-id="suspndexebrkpnts" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/suspendexecbreakpoints.html" id="suspndexebrkpnts-d41691e7611-link">Suspending execution with breakpoints</a><div class="wh-tooltip"><p class="shortdesc">You set a breakpoint with the <span class="keyword">Streams Debugger</span> to suspend execution of your application.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cntnexpstppdbrkpnt-d41691e7625" class="topicref" data-id="cntnexpstppdbrkpnt" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cntnexpstppdbrkpnt-d41691e7625-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/contexecstopbreakpoint.html" id="cntnexpstppdbrkpnt-d41691e7625-link">Continuing execution of a stopped breakpoint</a><div class="wh-tooltip"><p class="shortdesc">When you are stopped at a breakpoint, you continue execution with the <span class="keyword cmdname">(c)ontinue</span> command.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="chngattrivaluetuples-d41691e7664" class="topicref" data-id="chngattrivaluetuples" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action chngattrivaluetuples-d41691e7664-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/changeattvalsintuples.html" id="chngattrivaluetuples-d41691e7664-link">Changing attribute values in tuples</a><div class="wh-tooltip"><p class="shortdesc">With the <span class="keyword">Streams Debugger</span> you change values during a debugging session.</p></div></div></div></li><li role="treeitem"><div data-tocid="drppngtuplesfrmflow-d41691e7714" class="topicref" data-id="drppngtuplesfrmflow" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/droptuplesflow.html" id="drppngtuplesfrmflow-d41691e7714-link">Dropping tuples from flow</a><div class="wh-tooltip"><p class="shortdesc">You can drop a tuple or punctuation from a port while debugging.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="tracingtuplestracepoints-d41691e7725" class="topicref" data-id="tracingtuplestracepoints" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action tracingtuplestracepoints-d41691e7725-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/tracingtuplestracepoints.html" id="tracingtuplestracepoints-d41691e7725-link">Tracing tuples with trace points</a><div class="wh-tooltip"><p class="shortdesc">You can trace the flow of tuples and punctuation through the ports of an operator.</p></div></div></div></li><li role="treeitem"><div data-tocid="inserttuplesinjectpoints-d41691e7775" class="topicref" data-id="inserttuplesinjectpoints" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/inserttuplesinjectpoints.html" id="inserttuplesinjectpoints-d41691e7775-link">Inserting tuples with inject points</a><div class="wh-tooltip"><p class="shortdesc">You can insert new tuples and punctuation into a port with an inject point.</p></div></div></div></li><li role="treeitem"><div data-tocid="conditionalprobepoints-d41691e7786" class="topicref" data-id="conditionalprobepoints" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/conditionalprobepoints.html" id="conditionalprobepoints-d41691e7786-link">Conditional probe points</a><div class="wh-tooltip"><p class="shortdesc">To make probe (break or trace) points conditional, you add an expression predicate to the probe point.</p></div></div></div></li><li role="treeitem"><div data-tocid="debugsourcecodeusinggsb-d41691e7797" class="topicref" data-id="debugsourcecodeusinggsb" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/debugsourcecodeusinggsb.html" id="debugsourcecodeusinggsb-d41691e7797-link">Debugging source code using gdb</a><div class="wh-tooltip"><p class="shortdesc">When a breakpoint is stopped for an input port, you can use the <code class="ph codeph">gdb</code>   command to have the <span class="keyword">Streams Debugger</span> provide some commands for inspecting the application elements that can be observed while   debugging. Start the <code class="ph codeph">gdb</code> source code debugger for the operator process   method.</p></div></div></div></li><li role="treeitem"><div data-tocid="displaypoperportsschemainfo-d41691e7818" class="topicref" data-id="displaypoperportsschemainfo" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/displaypoperportsschemainfo.html" id="displaypoperportsschemainfo-d41691e7818-link">Displaying operators, ports, and schema information</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">Streams Debugger</span> provides some commands for inspecting the application elements that can be observed while debugging.</p></div></div></div></li><li role="treeitem"><div data-tocid="searchforatts-d41691e7832" class="topicref" data-id="searchforatts" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/searchforatts.html" id="searchforatts-d41691e7832-link">Searching for attributes</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword cmdname">find</span> command helps to locate attributes among all of the ports available in the debugger environment. You can search by attribute name, attribute type, or both with regular expression matching.</p></div></div></div></li><li role="treeitem"><div data-tocid="saveprobepointtuplestofile-d41691e7846" class="topicref" data-id="saveprobepointtuplestofile" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/saveprobepointtuplestofile.html" id="saveprobepointtuplestofile-d41691e7846-link">Saving probe point tuples to a file</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">save</code> command can be used to save the tuple data for a breakpoint or   trace point to a file for later use.</p></div></div></div></li><li role="treeitem"><div data-tocid="saveloaddebugconfig-d41691e7860" class="topicref" data-id="saveloaddebugconfig" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/saveloaddebugconfig.html" id="saveloaddebugconfig-d41691e7860-link">Saving and loading debug configuration</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">savecfg</code> and <code class="ph codeph">loadcfg</code> commands can be used to save         your debug session and reload it during a subsequent debug session.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="setconsolelogoptions-d41691e7877" class="topicref" data-id="setconsolelogoptions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/setconsolelogoptions.html" id="setconsolelogoptions-d41691e7877-link">Setting console logging and tracing options</a><div class="wh-tooltip"><p class="shortdesc">You change the level and format for logging and tracing with the <code class="ph codeph">setdbg</code>   command.</p></div></div></div></li><li role="treeitem"><div data-tocid="restrictdebugsplprog-d41691e7891" class="topicref" data-id="restrictdebugsplprog" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/restrictdebugsplprog.html" id="restrictdebugsplprog-d41691e7891-link">Restrictions debugging an SPL program</a><div class="wh-tooltip"><p class="shortdesc">There are restrictions when you debug an SPL program with the <span class="keyword">Streams Debugger</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="cmdgen-d41691e7905" class="topicref" data-id="cmdgen" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/streamsdebugger.html" id="cmdgen-d41691e7905-link">Streams debugger commands</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">Streams Debugger</span> provides a set of commands to help you debug your application.</p></div></div></div></li></ul></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="ariaid-title1">
+
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Setting console logging and tracing options</h1>
+
+<div class="- topic/body concept/conbody body conbody"><p class="- topic/shortdesc shortdesc">You change the level and format for logging and tracing with the <code class="+ topic/ph pr-d/codeph ph codeph">setdbg</code>
+  command.</p>
+<p class="- topic/p p">When the <span class="- topic/keyword keyword">Streams Debugger</span> starts
+up, it turns off console tracing for all debug output from the <span class="- topic/ph ph"><code class="+ topic/ph pr-d/codeph ph codeph">SPLAPPTRC</code></span> source macro. You change
+the level and format for logging and tracing as follows:</p>
+<div class="- topic/p p"><ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">setdbg loglevel <span class="+ topic/keyword pr-d/option keyword option">0|1|2|3</span></code>: Sets the log level. The values are
+       <span class="+ topic/ph pr-d/synph ph synph"><code class="+ topic/ph pr-d/codeph ph codeph">off|error|warn|info</code></span>.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">setdbg logformat <span class="+ topic/keyword pr-d/option keyword option">log|syslog</span></code>: Sets the log format.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">setdbg tracelevel <span class="+ topic/keyword pr-d/option keyword option">0|1|2|3|4|5</span></code>: Sets the trace level. The
+     values are <span class="+ topic/ph pr-d/synph ph synph"><code class="+ topic/ph pr-d/codeph ph codeph">off|error|warn|info|debug|trace</code></span>.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">setdbg traceformat <span class="+ topic/keyword pr-d/option keyword option">default|short|long</span></code>: Sets the trace
+     format.</li>
+</ul></div>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

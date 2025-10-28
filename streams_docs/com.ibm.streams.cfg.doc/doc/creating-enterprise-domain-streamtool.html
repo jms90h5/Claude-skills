@@ -1,0 +1,366 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="task"/><meta name="description" content="Use this procedure to create an enterprise domain by using the Teracloud Streams streamtool mkdomain command."/><meta name="DC.subject" content="domains,creating"/><meta name="keywords" content="domains, creating"/><meta name="indexterms" content="domains, creating"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/creating-enterprise-domain.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/planning-domaincontroller-options.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="creating-enterprise-domain-streamtool"/><meta name="DC.language" content="en-us"/>        
+      <title>Creating an enterprise domain by using the Teracloud Streams streamtool command-line interface</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="creating-enterprise-domain-streamtool-d41691e1738"/><meta name="wh-source-relpath" content="com.ibm.streams.cfg.doc/doc/creating-enterprise-domain-streamtool.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.cfg.doc/doc/creating-enterprise-domain-streamtool.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="creating-enterprise-domain-streamtool" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="ibminfospherestreams-containercfg"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li><div class="topicref" data-id="setting-up-enterprise-domain"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain.html">Setting up an enterprise domain on multiple resources</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">An <dfn class="term">enterprise domain</dfn> can have               multiple resources and users. This type of domain is typically used for production               environments. You can configure high availability to ensure that <span class="keyword">Teracloud® 					Streams</span> can               continue to run even if resources fail or are not available.</span></p></div></div></div></li><li><div class="topicref" data-id="creating-enterprise-domain"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/creating-enterprise-domain.html">Creating an enterprise domain</a><div class="wh-tooltip"><p class="shortdesc">You can create an enterprise domain by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interfaces or the <span class="keyword cmdname">streamtool</span> command-line interface.</p></div></div></div></li><li class="active"><div class="topicref" data-id="creating-enterprise-domain-streamtool"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/creating-enterprise-domain-streamtool.html">Creating a domain by using streamtool commands</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to create an enterprise domain by using the <span class="keyword">Teracloud® 					Streams</span> <span class="keyword cmdname">streamtool mkdomain</span> command.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="setting-up-basic-domain-d41691e1516" class="topicref" data-id="setting-up-basic-domain" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setting-up-basic-domain-d41691e1516-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-basic-domain.html" id="setting-up-basic-domain-d41691e1516-link">Setting up a basic domain on a single resource</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <dfn class="term">basic                 domain</dfn> has a single <span class="keyword">Teracloud® 					Streams</span> resource               and user. This type of domain is typically used for test or development environments. </span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="setting-up-enterprise-domain-d41691e1579" class="topicref" data-id="setting-up-enterprise-domain" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action setting-up-enterprise-domain-d41691e1579-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain.html" id="setting-up-enterprise-domain-d41691e1579-link">Setting up an enterprise domain on multiple resources</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">An <dfn class="term">enterprise domain</dfn> can have               multiple resources and users. This type of domain is typically used for production               environments. You can configure high availability to ensure that <span class="keyword">Teracloud® 					Streams</span> can               continue to run even if resources fail or are not available.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="setting-up-enterprise-domain-prereqs-d41691e1599" class="topicref" data-id="setting-up-enterprise-domain-prereqs" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setting-up-enterprise-domain-prereqs-d41691e1599-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain-prereqs.html" id="setting-up-enterprise-domain-prereqs-d41691e1599-link">Prerequisites</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Before you create an enterprise             domain, you must set up an <span class="keyword">external 				ZooKeeper</span> server for managing               <span class="keyword">Teracloud® 					Streams</span>.             You can set up either LDAP or PAM to use as the default user authentication method for             the             domain.</span> </p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="creating-enterprise-domain-d41691e1719" class="topicref" data-id="creating-enterprise-domain" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action creating-enterprise-domain-d41691e1719-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/creating-enterprise-domain.html" id="creating-enterprise-domain-d41691e1719-link">Creating an enterprise domain</a><div class="wh-tooltip"><p class="shortdesc">You can create an enterprise domain by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interfaces or the <span class="keyword cmdname">streamtool</span> command-line interface.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="creating-enterprise-domain-streamtool-d41691e1738" class="topicref" data-id="creating-enterprise-domain-streamtool" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/creating-enterprise-domain-streamtool.html" id="creating-enterprise-domain-streamtool-d41691e1738-link">Creating a domain by using streamtool commands</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to create an enterprise domain by using the <span class="keyword">Teracloud® 					Streams</span> <span class="keyword cmdname">streamtool mkdomain</span> command.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="setting-up-resources-d41691e1757" class="topicref" data-id="setting-up-resources" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setting-up-resources-d41691e1757-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-resources.html" id="setting-up-resources-d41691e1757-link">Setting up resources in an enterprise domain</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem"><div data-tocid="creating-enterprise-instance-d41691e1915" class="topicref" data-id="creating-enterprise-instance" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/creating-enterprise-instance.html" id="creating-enterprise-instance-d41691e1915-link">Creating an instance in an enterprise domain</a><div class="wh-tooltip"><p class="shortdesc">You can create an instance by using the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</p></div></div></div></li><li role="treeitem"><div data-tocid="configuring-dynamic-resources-d41691e1932" class="topicref" data-id="configuring-dynamic-resources" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/configuring-dynamic-resources.html" id="configuring-dynamic-resources-d41691e1932-link">Configuring an instance to use dynamic resource allocation</a><div class="wh-tooltip"><p class="shortdesc">You can configure an instance to dynamically allocate resources depending on the needs of the job. When a job is submitted, resources are acquired from the domain to support these jobs and are released when they are no longer needed.</p></div></div></div></li><li role="treeitem"><div data-tocid="allocatingresources-d41691e1943" class="topicref" data-id="allocatingresources" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/allocatingresources.html" id="allocatingresources-d41691e1943-link">Adding resources to instances</a><div class="wh-tooltip"><p class="shortdesc">You can assign resources to an instance statically when you create the instance or dynamically after the instance is created. The resources are allocated to the instance from the pool of resources in the domain.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="hacount-d41691e1954" class="topicref" data-id="hacount" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action hacount-d41691e1954-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/hacount.html" id="hacount-d41691e1954-link">Configuring high availability in an enterprise domain</a><div class="wh-tooltip"><p class="shortdesc">Both domains and instances have a high availability count property. This property indicates how many copies of management services are maintained by a domain, instance, or application repository. The extra copies (<dfn class="term">standby services</dfn>) allow for automatic failover if resources unexpectedly fail or become unavailable.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="streamssecurity-d41691e2011" class="topicref" data-id="streamssecurity" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streamssecurity-d41691e2011-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security.html" id="streamssecurity-d41691e2011-link">Configuring security</a><div class="wh-tooltip"><p class="shortdesc">Each <span class="keyword">Teracloud® 					Streams</span> domain and instance maintains its own security configuration.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-user-security-auditlogfile-d41691e2532" class="topicref" data-id="ibminfospherestreams-user-security-auditlogfile" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-user-security-auditlogfile-d41691e2532-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-auditlogfile.html" id="ibminfospherestreams-user-security-auditlogfile-d41691e2532-link">Configuring audit logging</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> supports comprehensive, multiple-level auditing of product and user operations. By default, audit logging is not enabled.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-transports-configuring-d41691e2602" class="topicref" data-id="ibminfospherestreams-transports-configuring" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-transports-configuring-d41691e2602-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-transports-configuring.html" id="ibminfospherestreams-transports-configuring-d41691e2602-link">Configuring transport mechanisms</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> supports several high-performance and configurable transport mechanisms for communicating   across processing elements (PEs). You can configure the transport mechanism by updating <span class="keyword">Teracloud 					Streams</span> properties.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-configuring-checkpoint-data-store-d41691e2681" class="topicref" data-id="ibminfospherestreams-configuring-checkpoint-data-store" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-configuring-checkpoint-data-store.html" id="ibminfospherestreams-configuring-checkpoint-data-store-d41691e2681-link">Configuring a checkpoint data store</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this procedure to configure a checkpoint data store for <span class="keyword">Teracloud® 					Streams</span> domains and                 instances.</span></p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic task/task topic task" role="article" aria-labelledby="ariaid-title1">
+
+
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Creating an enterprise domain by using the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> streamtool
+command-line interface</h1>
+
+
+
+<div class="- topic/body task/taskbody body taskbody"><p class="- topic/shortdesc shortdesc">Use this procedure to create an enterprise domain by using the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool mkdomain</span> command.</p>
+<section class="- topic/ol task/steps ol steps"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Procedure</h2></div><ol class="- topic/ol task/steps ol steps"><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">To set the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> ZooKeeper
+            connection string in an environment variable, enter the following command. This setting
+            eliminates the need to specify the connection string on subsequent commands.</span>
+    <div class="- topic/itemgroup task/stepxmp itemgroup stepxmp"><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>  export STREAMS_ZKCONNECT=<var class="+ topic/keyword sw-d/varname keyword varname">external-ZooKeeper-connection-string</var></code></pre>For
+            example:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>  export STREAMS_ZKCONNECT=192.168.1.100:2181,192.168.1.101:2182,192.168.1.103:2183</code></pre></div>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">To configure your local shell environment for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>, enter the
+            following command:</span>
+    <div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">
+            <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>  <kbd class="+ topic/ph sw-d/userinput ph userinput">source <var class="+ topic/keyword sw-d/varname keyword varname">product-installation-root-directory</var>/<span class="- topic/keyword keyword">7.2.0.0</span>/bin/streamsprofile.sh</kbd></code></pre>
+          </div>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">To complete this procedure in the <span class="- topic/ph ph">interactive <code class="+ topic/ph pr-d/codeph ph codeph">streamtool</code>
+					interface</span>,
+            enter the following command:</span>
+    <div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">
+            <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>    streamtool  </code></pre>
+          </div>
+    <div class="- topic/itemgroup task/info itemgroup info">Using the <span class="- topic/ph ph">interactive <code class="+ topic/ph pr-d/codeph ph codeph">streamtool</code>
+					interface</span>
+            saves you time. <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> caches some
+            command options and information so that you do not have to reenter them. Also, you do
+            not have to specify <kbd class="+ topic/ph sw-d/userinput ph userinput">streamtool</kbd> before each command. To exit the
+              <span class="- topic/ph ph">interactive <code class="+ topic/ph pr-d/codeph ph codeph">streamtool</code>
+					interface</span>, enter <kbd class="+ topic/ph sw-d/userinput ph userinput">exit</kbd> or <kbd class="+ topic/ph sw-d/userinput ph userinput">quit</kbd>.</div>
+   </li><li class="- topic/li task/step li step"><span class="- topic/ph task/cmd ph cmd">Create an enterprise domain by using the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+mkdomain</span> command.</span><div class="- topic/itemgroup task/info itemgroup info"><ul class="- topic/ul ul">
+<li class="- topic/li li">To create an enterprise domain that uses PAM for user authentication, enter the following
+        command:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>mkdomain -d <var class="+ topic/keyword sw-d/varname keyword varname">domain-id</var> --property domain.highAvailabilityCount=<var class="+ topic/keyword sw-d/varname keyword varname">number</var>   </code></pre><div class="- topic/note note note note_note" id="creating-enterprise-domain-streamtool__note_qwn_4bm_32c" data-ofbid="creating-enterprise-domain-streamtool__note_qwn_4bm_32c"><span class="note__title">Notes:</span> 
+        <ul class="- topic/ul ul" id="creating-enterprise-domain-streamtool__ul_rwn_4bm_32c" data-ofbid="creating-enterprise-domain-streamtool__ul_rwn_4bm_32c">
+         <li class="- topic/li li">To configure high availability in <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> enterprise domains, you must specify a
+           <span class="+ topic/keyword pr-d/parmname keyword parmname">domain.highAvailabilityCount</span> domain property value greater than 1.
+          For more information, see <a class="- topic/xref xref" href="hacount.html" title="Both domains and instances have a high availability count property. This property indicates how many copies of management services are maintained by a domain, instance, or application repository. The extra copies (standby services) allow for automatic failover if resources unexpectedly fail or become unavailable.">Configuring high availability for Teracloud Streams enterprise domains, instances, and application repositories</a>.<p class="- topic/p p"></p></li>
+         
+        </ul>
+       </div><p class="- topic/p p"></p></li>
+<li class="- topic/li li">To create an enterprise domain that uses LDAP for user authentication,
+enter the following command. When prompted, enter the LDAP password
+for the domain owner.<div class="- topic/p p"><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>mkdomain -d <var class="+ topic/keyword sw-d/varname keyword varname">domain-id</var> --ldap --server-url <var class="+ topic/keyword sw-d/varname keyword varname">URL</var> --user-dn <var class="+ topic/keyword sw-d/varname keyword varname">DN-pattern</var> --property domain.highAvailabilityCount=<var class="+ topic/keyword sw-d/varname keyword varname">number</var>   </code></pre>For
+example:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>mkdomain -d StreamsDomain --ldap --server-url <q class="- topic/q q">ldap://ldap.streams.com:389</q> --user-dn <q class="- topic/q q">uid=*,ou=people,dc=streams,dc=com</q> --property domain.highAvailabilityCount=3   </code></pre></div><div class="- topic/note note note note_note"><span class="note__title">Notes:</span> <ul class="- topic/ul ul">
+
+<li class="- topic/li li">The owner of the domain is the user who runs the command by default.
+To specify another owner, use the following command options: <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>  --owner <var class="+ topic/keyword sw-d/varname keyword varname">LDAP-user-ID</var></code></pre>If
+you specify another owner, enter the LDAP password of that owner when
+prompted. Otherwise, enter the LDAP password of the user who is running
+the command. The password prompt tells you which user is the owner.
+For example, if you specify <span class="+ topic/keyword pr-d/parmname keyword parmname">--owner tester1</span> on
+the command but <kbd class="+ topic/ph sw-d/userinput ph userinput">tester3</kbd> is creating the domain,
+the password prompt says <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">User tester1 LDAP password</samp>.<p class="- topic/p p"></p></li>
+<li class="- topic/li li">To configure high availability in <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> enterprise
+domains, you must specify a <span class="+ topic/keyword pr-d/parmname keyword parmname">domain.highAvailabilityCount</span> domain
+property value greater than 1. For more information, see <a class="- topic/xref xref" href="hacount.html" title="Both domains and instances have a high availability count property. This property indicates how many copies of management services are maintained by a domain, instance, or application repository. The extra copies (standby services) allow for automatic failover if resources unexpectedly fail or become unavailable.">Configuring high availability for Teracloud Streams enterprise domains, instances, and application repositories</a>.<p class="- topic/p p"></p></li>
+         
+         
+</ul></div></li>
+</ul></div></li><li class="- topic/li task/step li step">
+<span class="- topic/ph task/cmd ph cmd">To display the resources in the domain, enter the following command:</span>
+<div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>  lsavailablehosts</code></pre>
+</div>
+<div class="- topic/itemgroup task/info itemgroup info">As shown in the following example, there is one resource in the domain. You assign tags to
+this resource later in this
+procedure.<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>Resource                       Tags
+myhost1.ibm.com</code></pre></div>
+</li><li class="- topic/li task/step li step"><strong>Optional: </strong>
+<span class="- topic/ph task/cmd ph cmd">Set up automatic recovery from failures on this resource.</span>
+<div class="- topic/itemgroup task/info itemgroup info">
+<p class="- topic/p p">For high availability with automatic recovery from failures, the domain controller service must
+run as a registered Linux system service on this resource. You can set up the controller on
+additional resources when you add those resources to the domain.</p>
+<div class="- topic/p p">To set up the controller as a system service on this resource, enter the following
+command:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>streamtool registerdomainhost -d <var class="+ topic/keyword sw-d/varname keyword varname">domain-id</var> --zkconnect <var class="+ topic/keyword sw-d/varname keyword varname">host</var>:<var class="+ topic/keyword sw-d/varname keyword varname">port</var></code></pre></div>
+<ul class="- topic/ul ul">
+<li class="- topic/li li">You must have root authority to run this command.</li>
+<li class="- topic/li li"><span class="- topic/ph ph">The
+					<span class="+ topic/keyword pr-d/option keyword option">--zkconnect</span> option specifies the name of one or more host and
+				port pairs for the configured <span class="- topic/keyword keyword">external ZooKeeper
+					ensemble</span>. <span class="- topic/ph ph">If you specify multiple host and port pairs, separate each pair with
+					a comma.</span> This value is the <span class="- topic/keyword keyword">external ZooKeeper
+					connection string</span>.
+				To obtain this value, you can use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool getzk</span>
+				command.</span></li>
+</ul>
+</div>
+</li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd"><span class="- topic/ph ph"><strong class="+ topic/ph hi-d/b ph b">Optional</strong>: Change the default location for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> log and trace files.</span></span>
+    <div class="- topic/itemgroup task/info itemgroup info">
+     <div class="- topic/p p"><span class="- topic/ph ph" id="creating-enterprise-domain-streamtool__tmpdir-warning-properties-ph">The default root directory
+            for class cache, log, and trace files that are generated by <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> is the <span class="+ topic/ph sw-d/filepath ph filepath">/tmp</span> directory. If you use a system maintenance utility
+            such as <span class="+ topic/keyword sw-d/cmdname keyword cmdname">tmpwatch</span>, either modify the utility to exclude these files or
+            configure a different root directory by using the following <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domain properties:</span><ul class="- topic/ul ul" id="creating-enterprise-domain-streamtool__tmpdir-warning-properties-ul" data-ofbid="creating-enterprise-domain-streamtool__tmpdir-warning-properties-ul">
+            <li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">domain.fileStoragePath</span>: This property specifies the root
+              directory where <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> class cache and other temporary files are stored. <span class="- topic/ph ph" id="creating-enterprise-domain-streamtool__issue-removal-cachefiles">If the class cache files are removed, the <span class="- topic/keyword keyword">web management service</span> might fail and not recover correctly.</span><p class="- topic/p p"></p></li>
+            <li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">domainLog.path</span>: This property specifies the root directory
+              where <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> log and trace files are stored. If these files are removed, it might be difficult
+              to resolve <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> problems.<p class="- topic/p p"></p></li>
+          </ul> You can update these properties by using the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+            setdomainproperty</span>
+          command.</div>
+    </div>
+   </li><li class="- topic/li task/step li step">
+<span class="- topic/ph task/cmd ph cmd"><a class="- topic/xref xref" href="setting-up-resources.html#setting-up-resources">Set up additional resources in the
+domain</a>.</span>
+</li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd"><span class="- topic/ph ph">Complete
+      the following steps after you set up the resources in the domain:</span></span>
+    <ol type="a" class="- topic/ol task/substeps ol substeps">
+     <li class="- topic/li task/substep li substep substepexpand">
+      <span class="- topic/ph task/cmd ph cmd">Verify that the resources are added to the domain.</span>
+      <div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">For example, you can use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool lsavailablehosts</span> command.
+       The following command output example shows a domain that includes three <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams resources</span>. <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>Resource                          Tags
+myhost1.ibm.com
+myhost2.ibm.com
+myhost3.ibm.com</code></pre></div>
+     </li>
+     <li class="- topic/li task/substep li substep substepexpand">
+      <span class="- topic/ph task/cmd ph cmd">Assign management and application tags to the resources.</span>
+      <div class="- topic/itemgroup task/info itemgroup info">Assign at least two resources as management resources and the other resources as
+       application resources. Tag names are case-sensitive.</div>
+      <div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">For example, the following commands assign the management tag to host1 and host2, and
+       the application tag to host3:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>chhost --tags management host1,host2
+chhost --tags application host3</code></pre></div>
+      <div class="- topic/itemgroup task/info itemgroup info">For more information, see <a class="- topic/xref xref" href="../../com.ibm.streams.admin.doc/doc/assigningtags.html" title="You can specify the tags for a resource at domain creation time, when a resource is added to a domain, or any time thereafter.">Assigning tags
+        to resources in a domain</a>.</div>
+     </li>
+    </ol>
+   </li><li class="- topic/li task/step li step" id="creating-enterprise-domain-streamtool__start-domain-step" data-ofbid="creating-enterprise-domain-streamtool__start-domain-step">
+    <span class="- topic/ph task/cmd ph cmd">Start the domain by entering the following command:</span>
+    <div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">
+     <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>  startdomain</code></pre>
+    </div>
+    <div class="- topic/itemgroup task/info itemgroup info">When prompted, enter your domain ID and password. If another domain owner was specified on
+     the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">mkdomain</span> command, enter the ID and password of the owner.<div class="- topic/note note tip note_tip"><span class="note__title">Tip:</span> If the domain fails to start because a port is
+          in use, you can change the port number by using the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+            setdomainproperty</span> command. For example, if the domain fails to start because
+          one or more of the <span class="- topic/keyword keyword">JMX management API service</span>, <span class="- topic/keyword keyword">web management service</span>, and <span class="- topic/keyword keyword">REST management API service</span> ports are in
+          use, you can enter the following command. If you specify a value of <span class="+ topic/keyword pr-d/option keyword option">0</span> for
+          the port number, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> selects an available
+          port.<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>setdomainproperty jmx.port=0 sws.port=0 rest.port=0</code></pre>Dynamic
+          port allocation is not ideal, however, if you have applications that use the REST API or
+          JMX API or use tools (such as <span class="- topic/keyword keyword">Streams
+Console</span>) that access those services.</div></div>
+   </li><li class="- topic/li task/step li step"><span class="- topic/ph task/cmd ph cmd"><a class="- topic/xref xref" href="creating-enterprise-instance.html" title="You can create an instance by using the Streams Console or the streamtool command-line interface.">Create one or more instances for running <span class="- topic/keyword keyword">stream applications</span>.</a></span></li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">To manage and monitor the domain, you can use the
+              <span class="- topic/keyword keyword">Streams Console</span>.
+            The domain must be started to use the console.</span>
+    <div class="- topic/itemgroup task/info itemgroup info">
+            <p class="- topic/p p">To open the console:</p>
+            <ol class="- topic/ol ol" type="a">
+              <li class="- topic/li li">Enter <kbd class="+ topic/ph sw-d/userinput ph userinput">geturl</kbd> to display the URL for the console. For
+                example, if your resource is myhost.mydomain.com and the port number for the console
+                is 8440, this command displays the following
+                URL:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">https://myhost.mydomain.com:8440/streams/domain/console</samp></code></pre></li>
+              <li class="- topic/li li">Paste this URL into your browser.</li>
+            </ol>
+          </div>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">To exit the <span class="- topic/ph ph">interactive <code class="+ topic/ph pr-d/codeph ph codeph">streamtool</code>
+					interface</span>,
+            enter <kbd class="+ topic/ph sw-d/userinput ph userinput">exit</kbd> or <kbd class="+ topic/ph sw-d/userinput ph userinput">quit</kbd>.</span>
+   </li></ol></section>
+</div>
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relconcepts" xml:lang="en-us" lang="en-us"><strong>Related concepts</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.install.doc/doc/planning-domaincontroller-options.html" title="Options for setting up the domain controller service">Options for setting up the <span class="- topic/keyword keyword">domain controller service</span></a></li></ul></div><div class="- topic/linklist linklist relref" xml:lang="en-us" lang="en-us"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html" title="This reference section provides a description of each streamtool command, which includes details about command syntax and options. To obtain the help information for a specific command, enter streamtool man command-name.">Streamtool commands</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

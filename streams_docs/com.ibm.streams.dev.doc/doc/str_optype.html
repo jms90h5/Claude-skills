@@ -1,0 +1,300 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="description" content="When developing new operators, developers need to choose the kind of operator to implement based on the task they want to accomplish, the programming language they want to use and the trade-offs they are willing to make between generality and ease of implementation."/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/developing_operators.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/dev-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/str_optypespl.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/str_optypenative.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="choosingoperators"/><meta name="DC.language" content="en-us"/>        
+      <title>Types of operators</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="choosingoperators-d41691e5787"/><meta name="wh-source-relpath" content="com.ibm.streams.dev.doc/doc/str_optype.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.dev.doc/doc/str_optype.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="choosingoperators" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="dev-container"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li><div class="topicref" data-id="developing_operators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div></li><li class="active"><div class="topicref" data-id="choosingoperators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/str_optype.html">Types of operators</a><div class="wh-tooltip"><p class="shortdesc">  When developing new operators, developers need to choose the kind of operator to implement based on the task they want to accomplish, the programming language they want to use and the trade-offs they are willing to make between generality and ease of implementation.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="streaming_application_basics-d41691e3994" class="topicref" data-id="streaming_application_basics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streaming_application_basics-d41691e3994-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/streaming_application_basics.html" id="streaming_application_basics-d41691e3994-link">Development concepts</a><div class="wh-tooltip"><p class="shortdesc">Development of stream applications consists of several components such as operators,         streams, tuples, Streams Processing Language, toolkits, and         more.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="writingapplications-d41691e4218" class="topicref" data-id="writingapplications" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action writingapplications-d41691e4218-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/writingapplications.html" id="writingapplications-d41691e4218-link">Developing <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Try out tutorials and explore details about stream application development, SPL features,     and best practices.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="creatingnativefunctions-d41691e5698" class="topicref" data-id="creatingnativefunctions" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creatingnativefunctions-d41691e5698-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingnativefunctions.html" id="creatingnativefunctions-d41691e5698-link"><span class="ph">Developing native functions</span></a><div class="wh-tooltip"><p class="shortdesc">Extend SPL's computational capabilities by creating native functions     written in C++ or Java.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="developing_operators-d41691e5772" class="topicref" data-id="developing_operators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action developing_operators-d41691e5772-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html" id="developing_operators-d41691e5772-link">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true" class="active"><div data-tocid="choosingoperators-d41691e5787" class="topicref" data-id="choosingoperators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action choosingoperators-d41691e5787-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/str_optype.html" id="choosingoperators-d41691e5787-link">Types of operators</a><div class="wh-tooltip"><p class="shortdesc">  When developing new operators, developers need to choose the kind of operator to implement based on the task they want to accomplish, the programming language they want to use and the trade-offs they are willing to make between generality and ease of implementation.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="optypespl-d41691e5798" class="topicref" data-id="optypespl" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/str_optypespl.html" id="optypespl-d41691e5798-link">Operators implemented in SPL</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword apiname">Custom</span> operators provide an easy way to implement custom logic without leaving SPL. Composite operators provide a convenient way to group related operators.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="optypenative-d41691e5811" class="topicref" data-id="optypenative" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action optypenative-d41691e5811-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/str_optypenative.html" id="optypenative-d41691e5811-link">Operators implemented in a native language</a><div class="wh-tooltip"><p class="shortdesc">Operators that are implemented in a native language are called primitive operators. The native language options for implementing operators in SPL are C++ and Java™.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="developing_primitive_operators-d41691e5878" class="topicref" data-id="developing_primitive_operators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action developing_primitive_operators-d41691e5878-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_primitive_operators.html" id="developing_primitive_operators-d41691e5878-link">Developing primitive operators</a><div class="wh-tooltip"><p class="shortdesc"> You develop new primitive operators by implementing them in the C++ or Java™ language. You must define an operator model that describes the syntax and semantics of the operator and implement the operator logic by creating the header and implementation code generator templates.</p></div></div></div></li><li role="treeitem"><div data-tocid="creatingcpluslibraries-d41691e6715" class="topicref" data-id="creatingcpluslibraries" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingcpluslibraries.html" id="creatingcpluslibraries-d41691e6715-link">Creating C++ libraries for operators and native functions</a><div class="wh-tooltip"><p class="shortdesc">To enable operators and native functions, you must compile with the appropriate include file paths and options and link any shared libraries against the correct runtime libraries. </p></div></div></div></li><li role="treeitem"><div data-tocid="fusingmultiplejavaoperators-d41691e6726" class="topicref" data-id="fusingmultiplejavaoperators" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/fusingjavaoperators.html" id="fusingmultiplejavaoperators-d41691e6726-link">Fusing multiple Java™ operators into a single PE</a><div class="wh-tooltip"><p class="shortdesc">If multiple Java™ primitive operators and <span class="keyword apiname">JavaOp</span> operator invocations have compatible <span class="keyword parmname">vmArg</span> parameter lists, you can fuse them together into a single processing element (PE) or run them in stand-alone mode.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="best_practices_for_custom_operators-d41691e6749" class="topicref" data-id="best_practices_for_custom_operators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action best_practices_for_custom_operators-d41691e6749-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/best_practices_for_custom_operators.html" id="best_practices_for_custom_operators-d41691e6749-link">Best practices</a><div class="wh-tooltip"><p class="shortdesc">Use these tips to write operators that perform effectively in their application, and         in other applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="perfrecoforprimitiveoperatorimplementors-d41691e6978" class="topicref" data-id="perfrecoforprimitiveoperatorimplementors" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action perfrecoforprimitiveoperatorimplementors-d41691e6978-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/perf_rec_primitive_operatorimplementors.html" id="perfrecoforprimitiveoperatorimplementors-d41691e6978-link">Performance recommendations</a><div class="wh-tooltip"><p class="shortdesc">These tips help you to improve performance of your primitive operators in C++.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="creating_toolkits-d41691e7044" class="topicref" data-id="creating_toolkits" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creating_toolkits-d41691e7044-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creating_toolkits.html" id="creating_toolkits-d41691e7044-link">Developing custom toolkits</a><div class="wh-tooltip"><p class="shortdesc">Bundle and reuse custom functions and operators across several <span class="keyword">stream applications</span> by creating custom toolkits.</p></div></div></div></li><li role="treeitem"><div data-tocid="enabling-streams-application-service-d41691e7457" class="topicref" data-id="enabling-streams-application-service" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/enabling-streams-data-exchange.html" id="enabling-streams-application-service-d41691e7457-link">Enabling Streams data exchange</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides a data exchange REST API for inserting and retrieving tuples within a job to             easily integrate with other data services and external applications. Stream applications             can enable the data exchange feature by using one or more Endpoint             operators.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldebugger-container-d41691e7472" class="topicref" data-id="spldebugger-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldebugger-container-d41691e7472-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/spldebugger-container.html" id="spldebugger-container-d41691e7472-link">Debugging <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Debug stream applications using the interactive, command line-based <span class="keyword">Streams Debugger</span> (<code class="ph codeph">sdb</code>).</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Types of operators</h1>
+
+
+
+
+
+<div class="- topic/body concept/conbody body conbody"><p class="- topic/shortdesc shortdesc">
+When developing new operators,
+developers need to choose the kind of operator to implement based on the task they want to
+accomplish, the programming language they want to use and the trade-offs they are willing to make
+between generality and ease of implementation.</p>
+<p class="- topic/p p"><span class="- topic/keyword keyword">Streams Processing Language (SPL)</span> programmers can write many useful streaming applications without implementing their own
+   operators. Developers can build applications by assembling operators only from the SPL Standard
+   Toolkit or other available toolkits. However, SPL programmers eventually might want an operator
+   to perform new functions. Implementing a new operator is different from connecting existing
+   operators.</p>
+<p class="- topic/p p">When you choose the type of operator to implement, you must consider
+whether ease of development or implementation power is more important.
+ Implementing operators purely in SPL (<dfn class="- topic/term term">Custom</dfn> or <dfn class="- topic/term term">composite</dfn> operators)
+is easier because less friction is caused by shifting between different
+languages. However, the capabilities of the operators that programmers
+can implement in SPL are more limited. Choosing to implement an operator
+in a lower-level language such as C++ or <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span> (<dfn class="- topic/term term">primitive</dfn> operators)
+might be more appropriate. The taxonomy of operators is represented
+in the following figure, and is oriented by operator relationships.</p>
+<div class="- topic/p p">
+
+<figure class="- topic/fig fig fignone" id="choosingoperators__operator_taxonomy" data-ofbid="choosingoperators__operator_taxonomy"><figcaption data-caption-side="top" class="- topic/title title figcap"><span class="figtitleprefix fig--title-label">Figure<span class="fig--title-label-number"> 1</span><span class="fig--title-label-punctuation">. </span></span><span class="fig--title">Types of operators</span>. <span class="- topic/desc desc figdesc">
+<p class="- topic/p p summary">This figure shows that three boxes are in a row across the top, each
+specifying an operator type. The SPL box branches downward to custom and composite boxes. The C++
+box branches downward to a box named primitive that branches to non-generic and generic titled
+boxes.</p>
+</span></figcaption>
+
+
+<br/><img class="- topic/image image" src="../images/str_optaxonomy.jpg" alt="The Java box branches downward to two boxes titled JavaOp and primitive."/><br/>
+</figure>
+</div>
+<div class="- topic/p p">Developers can choose what type of operator to implement based
+on required function. Some tasks might allow a choice of operators,
+while other tasks require that you use a specific operator. The following
+table presents the operator types that are based on their capabilities,
+and can help developers choose which operator to implement. In the
+table: <ul class="- topic/ul ul">
+
+<li class="- topic/li li">The <span class="+ topic/keyword pr-d/apiname keyword apiname">Custom</span> row refers to using a <span class="+ topic/keyword pr-d/apiname keyword apiname">Custom</span> operator
+by itself.</li>
+<li class="- topic/li li">The <code class="+ topic/ph pr-d/codeph ph codeph">Composite and custom</code> row refers to the technique
+of wrapping a <span class="+ topic/keyword pr-d/apiname keyword apiname">Custom</span> operator inside of a composite
+operator.</li>
+</ul></div>
+<div class="table-container"><table class="- topic/table table table--pgwide-1 scale-90" data-cols="7"><caption></caption><colgroup><col style="width:14.864864864864865%"/><col style="width:14.864864864864865%"/><col style="width:10.81081081081081%"/><col style="width:12.162162162162163%"/><col style="width:14.864864864864865%"/><col style="width:16.216216216216218%"/><col style="width:16.216216216216218%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0 valign-top" id="choosingoperators__entry__1">Operator type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0 valign-top" id="choosingoperators__entry__2">Languages </th>
+<th class="- topic/entry entry colsep-0 rowsep-0 valign-top" id="choosingoperators__entry__3">Must define operator model </th>
+<th class="- topic/entry entry colsep-0 rowsep-0 valign-top" id="choosingoperators__entry__4">Is input/output port generic</th>
+<th class="- topic/entry entry colsep-0 rowsep-0 valign-top" id="choosingoperators__entry__5">Can use generated APIs</th>
+<th class="- topic/entry entry colsep-0 rowsep-0 valign-top" id="choosingoperators__entry__6">Can receive expressions
+as parameters</th>
+<th class="- topic/entry entry colsep-0 rowsep-0 valign-top" id="choosingoperators__entry__7">Reusable</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__1">Generic</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__2">C++, Perl</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__3">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__4">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__5">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__6">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__7">yes</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__1">Non-generic</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__2">C++</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__3">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__4">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__5">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__6">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__7">yes</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__1"><span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span> primitive </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__2"><span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__3">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__4">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__5">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__6">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__7">yes</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__1"><span class="+ topic/keyword pr-d/apiname keyword apiname">JavaOp</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__2"><span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__3">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__4">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__5">yes (with <code class="+ topic/ph pr-d/codeph ph codeph">generated</code> option;
+still uses reflection)</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__6">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__7">yes</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__1"><span class="+ topic/keyword pr-d/apiname keyword apiname">Custom</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__2">SPL</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__3">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__4">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__5">n/a</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__6">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__7">no</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">Composite and custom</code> </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__2">SPL</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__3">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__4">no</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__5">n/a</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__6">yes</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="choosingoperators__entry__7">yes</td>
+</tr>
+</tbody></table></div>
+</div>
+
+</article></main></div>
+                        
+                        <div class=" wh_child_links d-print-none "><nav aria-label="Child Links" role="navigation" class="- topic/related-links related-links"><ul class="ullinks"><li class="- topic/link link ulchildlink"><strong><a href="../../com.ibm.streams.dev.doc/doc/str_optypespl.html">Operators implemented in SPL</a></strong><div class="- topic/desc desc"><span class="+ topic/keyword pr-d/apiname keyword apiname">Custom</span> operators provide an easy way to implement custom logic without leaving SPL. Composite operators provide a convenient way to group related operators.</div></li><li class="- topic/link link ulchildlink"><strong><a href="../../com.ibm.streams.dev.doc/doc/str_optypenative.html">Operators implemented in a native language</a></strong><div class="- topic/desc desc">Operators that are implemented in a native language are called primitive operators. The native language options for implementing operators in SPL are C++ and <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span>.</div></li></ul></nav></div>
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

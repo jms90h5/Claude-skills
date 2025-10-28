@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="security" content="public" />
+<meta name="Robots" content="index,follow" />
+<meta name="DC.Type" content="task" />
+<meta name="DC.Title" content="Teracloud Streams REST Management APIs" />
+<meta name="abstract" content="You can use the REST management API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="Description" content="You can use the REST management API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="DC.subject" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="keywords" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="restapi-dev" />
+<meta name="DC.Language" content="en-us" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/rest.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+<title>Configuring security for the Streams REST management API</title>
+
+	 <link rel="shortcut icon" href="/streams/html/images/favicon_16.ico" type="image/vnd.microsoft.icon"/>
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png"/>
+
+</head>
+<body id="restapi-dev"><div role="main">
+<div class="rest-header">
+<!-- NLS_CHARSET=UTF-8 -->
+</div><div class="rest-left-column">
+<div class="button_back">
+<svg class="rest-arrow" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg>
+<a href="/external-reference/redoc-static.html">Streams REST API</a></div></div>
+<div class="rest-body">
+<h1 class="title topictitle1">Configuring security for the Streams REST management API</h1>
+<div class="body taskbody"><p class="shortdesc">When you are developing an application that uses the Streams REST management
+API, you must configure the access control lists, choose a method
+for authenticating users and handle the server certificate.</p>
+<div class="tasklabel"><h2 class="sectiontitle tasklabel" id="taskd45396e43">Procedure</h2></div><ol class="ol steps"><li class="li step stepexpand"><span class="ph cmd">Configure the access control lists for <span class="keyword">IBM
+Streams</span> resources.</span> <p class="p">To use the REST management API successfully, a user must be authorized to access Streams objects. You can
+configure the access control lists for domain and instance objects by using the <span class="keyword">Streams
+Console</span>, REST management API, or JMX management API.</p>
+</li>
+<!-- Take out for ICP4D since we use jwt tokens for authentiation mechanism -->
+<li class="li step stepexpand"><span class="ph cmd">Configure the method by which the application user is authenticated
+for access to Streams.</span> <ul class="ul choices">
+<li class="li choice">The Streams REST management API supports HTTP basic
+authentication. To use HTTP basic authentication, you must supply a user name and password in the
+HTTP Authorization request header. The user ID and password must be UTF-8 bytes that are encoded by
+using the MIME variant of Base64. <div class="note note"><span class="notetitle">Note:</span> Some browsers only support 8859-1 characters in HTTP
+headers. If you use a browser to access the Streams REST management API and the user or password contain characters outside the 8859-1 character set, the
+browser that you use must support UTF-8 characters in HTTP headers.</div>
+<p class="p"> If you are using the
+REST management API from a web browser, the browser prompts you for this information. The message includes a realm name, which is the URL-encoded name of IBM Streams. If you want to decode this realm name, use a URL decoder.</p>
+<p class="p"> For a code sample that
+uses HTTP basic authentication, see the example in <a class="xref" href="ProcessingRest.html" title="To access information from IBM Streams by using the REST management API, your application must send a valid HTTP request. The application must then handle the HTTP response.">Processing REST management API requests</a>.</p>
+</li>
+</ul>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">Validate the Streams certificate
+to determine whether the Streams server
+is trusted.</span> <p class="p">By default, Streams identifies
+itself to clients by using a self-signed certificate. You must store
+this certificate in a truststore on the client system. You can use
+the Streams Console, REST management API or JMX management API to export the keystore from the server and import into a client truststore to store
+the certificate. Your application must validate the certificate that
+it receives when it establishes the HTTPS connection to the Streams server.
+You can validate the certificate that you receive from the server
+by comparing it to the certificate in the truststore. In addition,
+since the Streams certificate
+is not specific to a single server, you must also provide a host name
+verifier to trust the certificate. For a code sample that provides
+a host name verifier, see the example in <a class="xref" href="ProcessingRest.html" title="To access information from Streams by using the REST management API, your application must send a valid HTTP request. The application must then handle the HTTP response.">Processing REST management API requests</a>.</p>
+</li>
+</ol>
+</div></div>
+<div class="rest-right-column"></div>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="description" content="The context element describes the properties that apply to the operator as a whole and are not associated with particular parameters or ports of the operator. It also includes common definitions that are referenced in other places in the operator model."/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/operatormodel.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/model-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/splexpressiontreevisitor.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="context"/><meta name="DC.language" content="en-us"/>        
+      <title>Context</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="context-d41691e63164"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/context.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/context.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="context" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="model-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li><div class="topicref" data-id="operatormodel"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatormodel.html"><span class="ph">C++ operator model</span></a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li class="active"><div class="topicref" data-id="context"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/context.html">Context</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">context</code> element describes the properties that apply to the operator as a whole and are not associated with particular parameters or ports of the operator. It also includes common definitions that are referenced in other places in the operator model.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="operatormodel-d41691e63152" class="topicref" data-id="operatormodel" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action operatormodel-d41691e63152-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatormodel.html" id="operatormodel-d41691e63152-link"><span class="ph">C++ operator model</span></a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="context-d41691e63164" class="topicref" data-id="context" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/context.html" id="context-d41691e63164-link">Context</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">context</code> element describes the properties that apply to the operator as a whole and are not associated with particular parameters or ports of the operator. It also includes common definitions that are referenced in other places in the operator model.</p></div></div></div></li><li role="treeitem"><div data-tocid="parameters-d41691e63178" class="topicref" data-id="parameters" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/parameters.html" id="parameters-d41691e63178-link">Parameters</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <code class="ph codeph">parameters</code> element describes the valid parameters that an operator can be configured with. It also describes the valid syntax for such parameter configurations.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="inputports-d41691e63193" class="topicref" data-id="inputports" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/inputports.html" id="inputports-d41691e63193-link">Input ports</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">inputPorts</code> element describes the input configurations of an operator.</p></div></div></div></li><li role="treeitem"><div data-tocid="outputports-d41691e63207" class="topicref" data-id="outputports" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/outputports.html" id="outputports-d41691e63207-link">Output ports</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">outputPorts</code> element describes the output configurations of an operator.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="javaoperatormodels-d41691e63221" class="topicref" data-id="javaoperatormodels" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action javaoperatormodels-d41691e63221-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/javaoperatormodels.html" id="javaoperatormodels-d41691e63221-link">Java™ operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator. You can use annotations in your Java™ source code to describe the operator model for Java operators. For more information about creating a Java operator model, see the API documentation for the <code class="ph codeph">com.ibm.streams.function.model</code> package.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Context</h1>
+
+<div class="- topic/body reference/refbody body refbody"><p class="- topic/shortdesc shortdesc">The <code class="+ topic/ph pr-d/codeph ph codeph">context</code> element describes the properties
+that apply to the operator as a whole and are not associated with
+particular parameters or ports of the operator. It also includes common
+definitions that are referenced in other places in the operator model.</p>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Listing 4: The context type</h2><p class="- topic/p p">Listing 4 gives
+the basic structure.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code> &lt;xs:complexTypename=contextType"&gt;
+   &lt;xs:sequence&gt; 
+     &lt;xs:element name="description" type="common:descriptionType" minOccurs="0" maxOccurs="1"/&gt;
+     &lt;xs:element name="iconUri" type="iconUriType" minOccurs="0" maxOccurs="unbounded"/&gt;
+     &lt;xs:element name="metrics" minOccurs="0" maxOccurs="1"/&gt;
+     &lt;xs:element name="customLiterals" type="enumerationsType" minOccurs="0" maxOccurs="1"/&gt;
+     &lt;xs:element name="customOutputFunctions" type="customOutputFunctionsType" 
+                 minOccurs="0" maxOccurs="1"/&gt;
+     &lt;xs:element name="libraryDependencies" type="libraryDependenciesType" 
+                 minOccurs="0" maxOccurs="1"/&gt;
+     &lt;xs:element name="providesSingleThreadedContext" type="singleThreadedContextType"/&gt;
+     &lt;xs:element name="incrementalCompilationStrategy" type="incrementalCompilationStrategyType" 
+                 minOccurs="0" maxOccurs="1"/&gt;
+     &lt;xs:element name="allowCustomLogic" type="xs:boolean" minOccurs="0" maxOccurs="1"/&gt;
+     &lt;xs:element name="codeTemplates" type="codeTemplatesType" minOccurs="0" maxOccurs="1"/&gt;
+     <span class="- topic/ph ph">&lt;xs:element name="splExpressionTree" type="splExpressionTreeType" 
+                 minOccurs="0" maxOccurs="1"/&gt;</span>
+     <span class="- topic/ph ph">&lt;xs:element name="capability" type="xs:string" 
+                 minOccurs="0" maxOccurs="unbounded"/&gt;</span>
+   &lt;/xs:sequence&gt;
+   <span class="- topic/ph ph">&lt;xs:attribute name="verificationModule" type="xs:token"/&gt;</span>
+ &lt;/xs:complexType&gt;
+          
+ &lt;xs:complexType name="iconUriType"&gt;
+   &lt;xs:simpleContent&gt;
+     &lt;xs:extension base="xs:string"&gt;
+       &lt;xs:attribute name="size" type="xs:int" use="required"/&gt;
+     &lt;/xs:extension&gt;
+   &lt;/xs:simpleContent&gt;
+ &lt;/xs:complexType&gt;
+          
+&lt;xs:complexType name="metricsType"&gt;
+   &lt;xs:sequence&gt;
+     &lt;xs:element name="description" type="common:descriptionType" minOccurs="0" maxOccurs="1"/&gt;
+     <span class="- topic/ph ph">&lt;xs:element name="metric" type="metricType" minOccurs="0" maxOccurs="unbounded"/&gt;</span>
+   &lt;/xs:sequence&gt;
+ &lt;/xs:complexType&gt;
+                
+ &lt;xs:complexType name="metricType"&gt;
+   &lt;xs:sequence&gt;
+     &lt;xs:element name="name" type="xs:string"/&gt;
+     &lt;xs:element name="description" type="common:descriptionType"/&gt;
+     &lt;xs:element name="kind" type="metricKindType"/&gt;
+     <span class="- topic/ph ph">&lt;xs:element name="dynamic" type="xs:boolean" minOccurs="0" maxOccurs="1"/&gt;</span>
+   &lt;/xs:sequence&gt;
+  &lt;/xs:complexType&gt;
+                  
+ &lt;xs:simpleType name="metricKindType"&gt;
+   &lt;xs:restriction base="xs:string"&gt;
+     &lt;xs:enumeration value="Counter"/&gt;
+     &lt;xs:enumeration value="Gauge"/&gt;
+     &lt;xs:enumeration value="Time"/&gt;
+   &lt;/xs:restriction&gt;
+ &lt;/xs:simpleType&gt;
+ 
+&lt;xs:complexType name="enumerationsType"&gt;
+   &lt;xs:sequence&gt;
+     &lt;xs:element name="enumeration" type="enumerationType" 
+                 minOccurs="0" maxOccurs="unbounded"/&gt;
+   &lt;/xs:sequence&gt;
+ &lt;/xs:complexType&gt;
+            
+ &lt;xs:complexType name="enumerationType"&gt;
+   &lt;xs:sequence&gt;
+     &lt;xs:element name="name" type="xs:string"/&gt;
+     &lt;xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/&gt;
+   &lt;/xs:sequence&gt;
+ &lt;/xs:complexType&gt;
+              
+ &lt;xs:complexType name="customOutputFunctionsType"&gt;
+  &lt;xs:sequence&gt;
+    &lt;xs:element name="customOutputFunction" type="customOutputFunctionSetType" 
+                minOccurs="0" maxOccurs="unbounded"/&gt;
+  &lt;/xs:sequence&gt;
+&lt;/xs:complexType&gt;
+&lt;xs:complexType name="customOutputFunctionSetType"&gt;
+  &lt;xs:sequence&gt;
+    &lt;xs:element name="name" type="xs:string"/&gt;
+    &lt;xs:element name="function" type="customOutputFunctionType" 
+                minOccurs="0" maxOccurs="unbounded"/&gt;
+  &lt;/xs:sequence&gt;
+&lt;/xs:complexType&gt;
+
+&lt;xs:complexType name="customOutputFunctionType"&gt;
+  &lt;xs:sequence&gt;
+    &lt;xs:element name="description" type="common:descriptionType" 
+                minOccurs="0" maxOccurs="1"/&gt;
+    &lt;xs:element name="prototype" type="xs:string"/&gt;
+  &lt;/xs:sequence&gt;
+  &lt;xs:attribute name="pseudoFunction" type="xs:boolean"/&gt;
+&lt;/xs:complexType&gt;
+                      
+ &lt;xs:complexType name="libraryDependenciesType"&gt;
+   &lt;xs:sequence&gt;
+     &lt;xs:element name="library" type="common:libraryType" 
+                 minOccurs="0" maxOccurs="unbounded"/&gt;
+   &lt;/xs:sequence&gt;
+ &lt;/xs:complexType&gt;
+                        
+ &lt;xs:simpleType name="singleThreadedContextType&gt;
+   &lt;xs:restriction base="xs:string"&gt;
+     &lt;xs:enumeration value="Never"/&gt;
+     &lt;xs:enumeration value="Always"/&gt;
+     &lt;xs:enumeration value="WindowBound"/&gt;
+     &lt;xs:enumeration value="WindowTriggerBound"/&gt;
+     &lt;xs:enumeration value="WindowEvictionBound"/&gt;
+     <span class="- topic/ph ph">&lt;xs:enumeration value="WindowPartitionEvictionBound"/&gt;</span>
+   &lt;/xs:restriction&gt;
+ &lt;/xs:simpleType&gt;
+
+&lt;xs:complexType name="codeTemplateType"&gt;
+  &lt;xs:sequence&gt;
+    &lt;xs:element name="description" type="common:descriptionType" 
+                minOccurs="0" maxOccurs="1"/&gt;
+    &lt;xs:element name="template" type="xs:string"/&gt;
+  &lt;/xs:sequence&gt;
+  &lt;xs:attribute name="name" type="xs:string" use="required"/&gt;
+&lt;/xs:complexType&gt;
+
+<span class="- topic/ph ph">&lt;xs:complexType name="splExpressionTreeType"&gt;</span>
+  <span class="- topic/ph ph">&lt;xs:attribute name="cppCode" type="xs:boolean" use="optional"/&gt;</span>
+  <span class="- topic/ph ph">&lt;xs:attribute name="param" type="xs:boolean" use="optional"/&gt;</span>
+  <span class="- topic/ph ph">&lt;xs:attribute name="output" type="xs:boolean" use="optional"/&gt;</span>
+ <span class="- topic/ph ph">&lt;/xs:complexType&gt;</span></code></pre><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">description</code> element, which
+is optional, provides a common description for the operator. </p><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">iconUri</code> element,
+which is optional, provides one or more URIs to an image file name
+to be used to represent the operator. Each URI must have a size attribute
+that specifies the size of the icon in pixels. The <code class="+ topic/ph pr-d/codeph ph codeph">iconUri</code> element
+supports <span class="+ topic/ph sw-d/filepath ph filepath">.gif</span> files, the image must be square,
+and users must provide both 16x16 and 32x32 icons. If both sizes are
+not provided, the graph view displays a default  icon in place of
+the missing icon. Listing 5 gives a sample XML segment for the icon
+URIs.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Listing 5: Sample icon URI XML segment</h2><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;iconUri size="16"&gt;file://path/to/file16.gif&lt;/iconUri&gt;
+&lt;iconUri size="32"&gt;file32.gif&lt;/iconUri&gt; </code></pre><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">metrics</code> element, which is optional, contains the list of metrics that are
+exposed by the operator. <span class="- topic/ph ph">It is structured as an
+optional description of all the metrics, followed by</span> a list of <code class="+ topic/ph pr-d/codeph ph codeph">metric</code>
+elements, where each metric element contains a <code class="+ topic/ph pr-d/codeph ph codeph">name</code>, a
+<code class="+ topic/ph pr-d/codeph ph codeph">description</code>, a <code class="+ topic/ph pr-d/codeph ph codeph">kind</code>, <span class="- topic/ph ph">and an optional <code class="+ topic/ph pr-d/codeph ph codeph">dynamic</code> element</span>. The kind is an enumeration that can be one
+of <code class="+ topic/ph pr-d/codeph ph codeph">Counter</code>, <code class="+ topic/ph pr-d/codeph ph codeph">Gauge</code>, or <code class="+ topic/ph pr-d/codeph ph codeph">Time</code>.
+<code class="+ topic/ph pr-d/codeph ph codeph">Counter</code> kind is used to represent metrics whose values are either non-decreasing or
+non-increasing, that is, they move in one direction. <code class="+ topic/ph pr-d/codeph ph codeph">Gauge</code> kind is used to
+represent metrics that can change their values freely, that is, they can go up or down.
+<code class="+ topic/ph pr-d/codeph ph codeph">Time</code> kind is used to represents metrics whose values represent a point in time. <span class="- topic/ph ph">The <code class="+ topic/ph pr-d/codeph ph codeph">dynamic</code> element is included and set
+to true for a metric that is created dynamically at run time by the operator instead of
+automatically by the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams
+instance</span>. This is useful, for example, if the operator creates a variable number of a certain type of
+metric, where the number is not known until run time, allowing the metric to be listed in the
+operator model and included in the operator documentation generated by spl-make-doc.</span></p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Listing 6: Sample metrics XML segment</h2><p class="- topic/p p">Listing
+6 gives a sample XML segment for the metrics.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;&lt;metrics&gt;
+  <span class="- topic/ph ph">&lt;description&gt;The metrics for this operator relate to tuples.&lt;/description&gt;</span>
+  &lt;metric&gt;
+    &lt;name&gt;nTuplesFailed&lt;/name&gt;
+    &lt;description&gt;Number of tuples failed&lt;/description&gt;
+    &lt;kind&gt;Counter&lt;/kind&gt;
+  &lt;/metric&gt;
+  &lt;metric&gt;
+    &lt;name&gt;lastTimeOfFailure&lt;/name&gt;
+    &lt;description&gt;The time of the last failure&lt;/description&gt;
+    &lt;kind&gt;Time&lt;/kind&gt;
+  &lt;/metric&gt;
+  &lt;metric&gt;
+    &lt;name&gt;nTuplesInTheQueue <span class="- topic/ph ph">(port N)</span>&lt;/name&gt;
+    <span class="- topic/ph ph">&lt;description&gt;Number of tuples currently in the queue for output port N&lt;/description&gt;</span>
+    &lt;kind&gt;Gauge&lt;/kind&gt;
+    <span class="- topic/ph ph">&lt;dynamic&gt;true&lt;/dynamic&gt;</span>
+  &lt;/metric&gt;
+&lt;/metrics&gt;
+</code></pre><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">customLiterals</code> element, which
+is optional, captures the identifiers that might appear in parameter
+configurations of an operator. It is structured as a list of <code class="+ topic/ph pr-d/codeph ph codeph">enumeration</code> elements.
+For instance, a <span class="+ topic/keyword pr-d/apiname keyword apiname">Source</span> operator might support different
+source formats, in which case you can have an enumeration that is
+called <code class="+ topic/ph pr-d/codeph ph codeph">FileFormat</code> that contains values {<code class="+ topic/ph pr-d/codeph ph codeph">csv</code>, <code class="+ topic/ph pr-d/codeph ph codeph">xml</code>, <code class="+ topic/ph pr-d/codeph ph codeph">bin</code>}.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Listing 7: Sample custom literal XML segment</h2><p class="- topic/p p">Listing
+7 gives a sample XML segment for the custom literals.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;customLiterals&gt;
+  &lt;enumeration&gt;
+    &lt;name&gt;FileFormat&lt;/name&gt;
+    &lt;value&gt;csv&lt;/value&gt;
+    &lt;value&gt;xml&lt;/value&gt;
+    &lt;value&gt;bin&lt;/value&gt;
+  &lt;/enumeration&gt;
+&lt;/customLiterals&gt;
+</code></pre><p class="- topic/p p">An example use in an SPL program is as follows, assuming
+that the <code class="+ topic/ph pr-d/codeph ph codeph">format</code> parameter of the <span class="+ topic/keyword pr-d/apiname keyword apiname">FileSource</span> operator
+is configured to be of type <code class="+ topic/ph pr-d/codeph ph codeph">FileFormat</code>.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>composite Main {                                                  //1
+  type TradeT = rstring ticker, uint32 volume, decimal64 value;   //2
+  graph                                                           //3
+    stream&lt;TradeT&gt; Trades = FileSource() {                        //4
+      param file   : "Trades.csv";                                //5
+            format : csv;                                         //6
+    }                                                             //7
+}                                                                 //8</code></pre><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">customOutputFunctions</code> element,
+which is optional, captures the output function prototypes that are
+used by an operator in its output attribute assignments. It is structured
+as a list of <code class="+ topic/ph pr-d/codeph ph codeph">customOutputFunctions</code> elements, where
+each enumeration contains a name and a list of output function definitions.
+Each definition consists of a prototype, a description, and an optional
+flag <code class="+ topic/ph pr-d/codeph ph codeph">pseudoFunction</code> of type <code class="+ topic/ph pr-d/codeph ph codeph">boolean</code>. Set <code class="+ topic/ph pr-d/codeph ph codeph">pseudoFunction</code> to <code class="+ topic/ph pr-d/codeph ph codeph">true</code> when
+the operator does complex processing of the output function arguments, when it
+treats the arguments as independent values, and not as one complex expression.</p><p class="- topic/p p">For example, an <span class="+ topic/keyword pr-d/apiname keyword apiname">Aggregate</span> operator might support relational aggregations, in which case it can have an enumeration called <code class="+ topic/ph pr-d/codeph ph codeph">RelationalAggs</code> that contains output functions {<code class="+ topic/ph pr-d/codeph ph codeph">Min</code>, <code class="+ topic/ph pr-d/codeph ph codeph">Max</code>, <code class="+ topic/ph pr-d/codeph ph codeph">Avg</code>, <code class="+ topic/ph pr-d/codeph ph codeph">Sum</code>, and so on}.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Listing 8: Sample custom output function XML segment</h2><p class="- topic/p p">Listing
+8 gives a sample XML segment for the custom output functions. The
+output functions are specified using the native function declaration
+syntax (with generics).</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;customOutputFunctions&gt;
+    &lt;customOutputFunction&gt;
+        &lt;name&gt;RelationalAggregation&lt;/name&gt;
+        &lt;function&gt;
+            &lt;description&gt;Pick attribute from any tuple&lt;/description&gt;
+            &lt;prototype&gt;&lt;![CDATA[ &lt;any T&gt; T Any (T v) ]]&gt;&lt;/prototype&gt;
+        &lt;/function&gt;
+        &lt;function&gt;
+            &lt;description&gt;Return average of given attribute&lt;/description&gt;
+            &lt;prototype&gt;&lt;![CDATA[ &lt;numeric T&gt; T Avg (T v) ]]&gt;&lt;/prototype&gt;
+        &lt;/function&gt;
+        &lt;function&gt;
+            &lt;description&gt;Return attributre from last tuple&lt;/description&gt;
+            &lt;prototype&gt;&lt;![CDATA[ &lt;any T&gt; T Last (T v) ]]&gt;&lt;/prototype&gt;
+        &lt;/function&gt;
+        &lt;function&gt;
+            &lt;description&gt;Return minimum of given attribute&lt;/description&gt;
+            &lt;prototype&gt;&lt;![CDATA[ &lt;ordered T&gt; T Min (T v) ]]&gt;&lt;/prototype&gt;
+        &lt;/function&gt;
+        &lt;function&gt;            
+            &lt;description&gt;Return maximum of given attribute&lt;/description&gt;
+            &lt;prototype&gt;&lt;![CDATA[ &lt;ordered T&gt; T Max (T v) ]]&gt;&lt;/prototype&gt;
+        &lt;/function&gt;
+        &lt;function&gt;
+            &lt;description&gt;Return sum of given attribute&lt;/description&gt;
+            &lt;prototype&gt;&lt;![CDATA[ &lt;numeric T&gt; T Sum (T v) ]]&gt;&lt;/prototype&gt;
+        &lt;/function&gt;
+        &lt;function&gt;
+            &lt;description&gt;Return count of given attribute&lt;/description&gt;
+            &lt;prototype&gt;&lt;![CDATA[ &lt;any T&gt; uint64 Count (T v) ]]&gt;&lt;/prototype&gt;
+        &lt;/function&gt;    
+     &lt;/customOutputFunction&gt;
+&lt;/customOutputFunctions&gt;</code></pre><div class="- topic/p p">An example use in an SPL
+program is as follows, assuming that the output attribute assignments
+of the <span class="+ topic/keyword pr-d/apiname keyword apiname">Aggregate</span> operator are configured to use
+output functions from the <code class="+ topic/ph pr-d/codeph ph codeph">RelationalAggregation</code> enumeration. <pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>composite Main {                                                                 //1
+  type TradeFilterT = decimal64 price, decimal64 volume, rstring ticker;         //2
+       PreVwapT = rstring ticker, decimal64 minprice, decimal64 maxprice,        //3
+                  decimal64 avgprice, decimal64 vwap, decimal64 sumvolume;       //4
+  graph                                                                          //5
+    stream&lt;TradeFilterT&gt; TradeFilter = Beacon(){}                               //6
+    stream&lt;PreVwapT&gt; PreVwap = Aggregate(TradeFilter) {                          //7
+      window TradeFilter : partitioned, sliding, count(4), count(1);             //8
+      param  partitionBy : ticker;                                               //9
+      output PreVwap     : ticker   = Any(ticker), vwap = Sum(price*volume),     //10
+                           minprice = Min(price),  maxprice = Max(price),        //12
+                           avgprice = Average(price),  sumvolume = Sum(volume);  //13
+    }                                                                            //14
+}                                                                                //15</code></pre></div></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Listing 9: The library type</h2><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;?xmlversion="1.0"encoding="UTF-8"?&gt;
+&lt;xs:schema
+  xmlns="http://www.ibm.com/xmlns/prod/streams/spl/common"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://www.ibm.com/xmlns/prod/streams/spl/common"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"&gt;
+          
+&lt;xs:complexType name="libraryType"&gt;
+  &lt;xs:elemen tname="description" type="common:descriptionType"/&gt;
+  &lt;xs:element name="managedLibrary" type="managedLibraryType"/&gt;
+&lt;/xs:complexType&gt;
+            
+&lt;xs:complexType name="managedLibraryType"&gt;
+  &lt;xs:sequence&gt;
+    &lt;xs:element name="lib" type="xs:string" minOccurs="0" maxOccurs="unbounded"/&gt;
+    &lt;xs:element name="libPath" type="xs:string" minOccurs="0" maxOccurs="unbounded"/&gt;
+    &lt;xs:element name="includePath" type="xs:string" minOccurs="0" maxOccurs="unbounded"/&gt;
+    &lt;xs:element name="command" type="xs:string" minOccurs="0" maxOccurs="1"/&gt;
+  &lt;/xs:sequence&gt;
+&lt;/xs:complexType&gt;
+&lt;/xs:schema&gt; </code></pre><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">libraryDependencies</code> element
+captures external library dependencies of an operator. For instance,
+a signal processing operator might use an external library for performing
+FFT transformations. The library type is specified in a separate <span class="+ topic/ph sw-d/filepath ph filepath">xsd</span> schema
+document. Each library has a <code class="+ topic/ph pr-d/codeph ph codeph">description</code> element,
+which describes the library (such as <code class="+ topic/ph pr-d/codeph ph codeph">Foo FFT Library</code>).
+Each library also has a <code class="+ topic/ph pr-d/codeph ph codeph">managedLibrary</code> element that
+specifies details of the individual library artifacts. In particular,
+it contains zero or more <code class="+ topic/ph pr-d/codeph ph codeph">lib</code> elements, where each
+one specifies a name to be passed to C++ compiler's <code class="+ topic/ph pr-d/codeph ph codeph">-l</code> argument
+(such as <code class="+ topic/ph pr-d/codeph ph codeph">fft</code> that is translated into <code class="+ topic/ph pr-d/codeph ph codeph">-lfft</code> when
+passed to the linker) zero or more <code class="+ topic/ph pr-d/codeph ph codeph">libPath</code> elements,
+where each one specifies a path to be passed to C++ compiler's <code class="+ topic/ph pr-d/codeph ph codeph">-L</code> argument;
+and zero or more <code class="+ topic/ph pr-d/codeph ph codeph">includePath</code> elements, where each
+one specifies a path to be passed to C++ compiler's <code class="+ topic/ph pr-d/codeph ph codeph">-I</code> argument.
+The paths can contain environment variables that are embedded between <code class="+ topic/ph pr-d/codeph ph codeph">@</code> signs
+(for example: <span class="+ topic/ph sw-d/filepath ph filepath">@FOO_FFT_HOME@/lib</span>), which are
+fully resolved by the SPL compiler at compile time.</p><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">managedLibrary</code> element
+also contains a <code class="+ topic/ph pr-d/codeph ph codeph">command</code> element, which gives the
+path to a program that is executed to retrieve <code class="+ topic/ph pr-d/codeph ph codeph">includePath</code>, <code class="+ topic/ph pr-d/codeph ph codeph">libPath</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">lib</code> information. If the path to the program is
+relative, it is assumed to be rooted at the directory of the operator
+model. The program is executed three times, each time with a different
+argument, namely <code class="+ topic/ph pr-d/codeph ph codeph">lib</code>, <code class="+ topic/ph pr-d/codeph ph codeph">libPath</code>, and <code class="+ topic/ph pr-d/codeph ph codeph">includePath</code>. <a name="fnsrc_1" href="#fntarg_1" class=" topic/fn-call fn-call "><sup>1</sup></a> The standard output from these executions is
+read and each line (trimmed of white spaces) is added to one of the <code class="+ topic/ph pr-d/codeph ph codeph">lib</code>, <code class="+ topic/ph pr-d/codeph ph codeph">libPath</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">includePath</code> elements, depending on the type of
+the execution. A line that begins with <strong class="+ topic/ph hi-d/b ph b">#</strong> is ignored. Relative
+paths are assumed to be rooted at the directory where the operator
+model XML document resides.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Listing 10: Sample library XML segment (user managed)</h2><p class="- topic/p p">Listing
+10 gives a sample XML segment for the library element.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;library&gt;
+  &lt;cmn:description&gt;FooFFTLibraries&lt;/cmn:description&gt;
+  &lt;cmn:managedLibrary&gt;
+    &lt;cmn:lib&gt;fft&lt;/cmn:lib&gt;
+    &lt;cmn:libPath&gt;@FOO_FFT_PATH@/lib&lt;/cmn:libPath&gt;
+    &lt;cmn:includePath&gt;@FOO_FFT_PATH@/include&lt;/cmn:includePath&gt;
+    &lt;cmn:command&gt;@HOME@/genOutput&lt;/cmn:command&gt;
+  &lt;/cmn:managedLibrary&gt;
+&lt;/library&gt;
+      </code></pre><div class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">providesSingleThreadedContext</code> element
+describes the threading semantics of the operator with respect to
+the flow of execution. An operator provides a single threaded execution
+context, if and only if:<ul class="- topic/ul ul">
+<li class="- topic/li li">It does not perform concurrent <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> calls unless
+its <code class="+ topic/ph pr-d/codeph ph codeph">process</code> methods are called concurrently.</li>
+<li class="- topic/li li">Its <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> calls complete before the <code class="+ topic/ph pr-d/codeph ph codeph">process</code> call
+that triggered the submission completes.</li>
+</ul></div><p class="- topic/p p">Both source and non-source operators have process methods, and the definition applies globally.
+Based on this definition, if an operator has submit calls that are not triggered by a process call,
+such as calls triggered by a time-based event, then that operator does not provide a single threaded
+execution context. This definition does not require a submit call to execute under the same thread
+that executes the process call that triggered the submission (even though in the common case they
+execute under the same thread).</p><div class="- topic/p p">There are several
+valid values for this property:<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">Never</code>: Instances of this operator never provide
+a single threaded execution context.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">Always</code>: Instances of this operator always provide
+a single threaded execution context.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">WindowBound</code>: Instances of this operator that
+do not specify time-based window eviction policies or time-based window
+trigger policies provide a single threaded execution context.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">WindowEvictionBound</code>: Instances of this operator
+that do not specify time-based window eviction policies provide a
+single threaded execution context.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">WindowTriggerBound</code>: Instances of this operator
+that do not specify time-based window trigger policies provide a single
+threaded execution context.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">WindowPartitionEvictionBound</code>: Instances
+of this operator use a thread to implement partition eviction. Use
+this setting if tuples are submitted from the <code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEvictionSelection</code> event.</li>
+</ul></div><p class="- topic/p p">As an example, consider a <span class="+ topic/keyword pr-d/apiname keyword apiname">Filter</span> operator.
+Unless its <code class="+ topic/ph pr-d/codeph ph codeph">process</code> method is being called concurrently,
+the <span class="+ topic/keyword pr-d/apiname keyword apiname">Filter</span> operator does not make concurrent <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> calls.
+Its <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> calls are triggered by incoming tuples. When
+it receives a tuple via a <code class="+ topic/ph pr-d/codeph ph codeph">process</code> call, it makes
+a <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> call if the received tuple passes the filter
+condition, and that <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> call completes before
+the <code class="+ topic/ph pr-d/codeph ph codeph">process</code> call that triggered it is complete. As
+a result, all instances of a <code class="+ topic/ph pr-d/codeph ph codeph">Filter</code> operator provide
+a single threaded context and the setting <span class="+ topic/keyword pr-d/option keyword option">Always</span> is
+appropriate.</p><p class="- topic/p p">Implementation note: The <code class="+ topic/ph pr-d/codeph ph codeph">providesSingleThreadedContext</code> element
+is used to enable the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams
+instance</span> to
+avoid unnecessary thread synchronization. Setting it to the value <code class="+ topic/ph pr-d/codeph ph codeph">Never</code> is
+safe for all operators. It would prevent optimizations that reduce
+synchronization processing when the operator does provide a single
+threaded context. Specifying a value other than <code class="+ topic/ph pr-d/codeph ph codeph">Never</code> that
+is inconsistent with the threading semantics implemented by the operator results
+in undefined behavior.</p><div class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">incrementalCompilationStrategy</code> element
+specifies how the compiler manages incremental compilation of operators.
+The two choices are:<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">SourceDependent</code>: In this mode, the compiler regenerates
+only the operator source if it is out-of-date with the SPL source
+or the code generator for that operator. This mode is the default.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">ResultDependent</code>: In this mode, the compiler always
+generates the operator source, but updates only the source files if
+they differ from what exists before the compile. Use this mode if
+the operator code generator relies on external configurations that
+are not captured by the parameterization that is given in the SPL
+source.</li>
+</ul></div><p class="- topic/p p">The optional <code class="+ topic/ph pr-d/codeph ph codeph">allowCustomLogic</code> element
+specifies whether the use of an operator is allowed to have a logic clause that
+specifies either <code class="+ topic/ph pr-d/codeph ph codeph">state</code>, <code class="+ topic/ph pr-d/codeph ph codeph">onTuple</code> or <code class="+ topic/ph pr-d/codeph ph codeph">onPunct</code> processing.
+When set to false, no logic clause can be specified for the operator.
+The default, in the absence of this element, is true.</p><p class="- topic/p p">The optional <code class="+ topic/ph pr-d/codeph ph codeph">codeTemplate</code> element specifies one or more code templates for the
+        operator. Each code template has a name attribute that names it, a description element that
+        describes it, and a <code class="+ topic/ph pr-d/codeph ph codeph">value</code> element, which is a string that contains the
+        boilerplate code for the template. The parts of the code that are in the form
+          <code class="+ topic/ph pr-d/codeph ph codeph">${name}</code> are used to indicate the pieces that must be customized by the
+        user. One example for the <span class="+ topic/keyword pr-d/apiname keyword apiname">Barrier</span> operator is as follows:</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;codeTemplates&gt;
+  &lt;codeTemplate name="Barrier"&gt;
+    &lt;description&gt;Basic Barrier template&lt;/description&gt;
+    &lt;template&gt;
+      &lt;![CDATA[ 
+        stream&lt;${schema}&gt; ${outputStream} = Barrier(${inputStream1};${inputStream2}) 
+        {
+          param
+            ${parameter}: ${parameterExpression};
+          output
+            ${outputStream}: ${outputExpression};
+          ${cursor} 
+        }
+      ]]&gt;
+    &lt;template&gt;
+  &lt;/codeTemplate&gt;
+&lt;/codeTemplates&gt;</code></pre><div class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">splExpressionTree</code> element controls the generation of SPL
+expression trees for use in generic C++ primitive operators. The valid values are
+<code class="+ topic/ph pr-d/codeph ph codeph">cppCode</code>, <code class="+ topic/ph pr-d/codeph ph codeph">param</code>, and <code class="+ topic/ph pr-d/codeph ph codeph">output</code>. If the
+<code class="+ topic/ph pr-d/codeph ph codeph">param</code> attribute is set to <code class="+ topic/ph pr-d/codeph ph codeph">true</code>, SPL expression trees are generated
+for parameters. If the <code class="+ topic/ph pr-d/codeph ph codeph">output</code> attribute is set to <code class="+ topic/ph pr-d/codeph ph codeph">true</code>, SPL
+expression trees are generated for output. If the <code class="+ topic/ph pr-d/codeph ph codeph">cppCode</code> attribute is set to
+<code class="+ topic/ph pr-d/codeph ph codeph">true</code>, each node in the generated operator instance XML is enhanced with C++ code
+using templates. This C++ code can be used to generate the C++ code for an SPL expression. For
+example, for the SPL
+code:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>param predicates : {a = "a" == In.letter, b = "b" == In.letter};</code></pre>The
+generated SPL expression tree
+includes:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-90"><code>&lt;expressionTree cppCode="SPL::BeJwrMUoyTEwyTAIAC7UCCQ({attr:0}, {attr:1})"&gt;
+  &lt;literal cppCode="SPL::BeJwrMUoyTEwyTAIAC7UCCQ({attr:0}, {attr:1})" type="1"&gt;
+    &lt;tuple count="2" cppCode="SPL::BeJwrMUoyTEwyTAIAC7UCCQ({attr:0}, {attr:1})" type="1"&gt;
+      &lt;attr id="a"&gt;
+        &lt;value cppCode="({Lhs} == {Rhs})" type="2"&gt;
+          &lt;expn cppCode="({Lhs} == {Rhs})"&gt;
+            &lt;binary cppCode="({Lhs} == {Rhs})" op="==" type="2"&gt;
+              &lt;lhs cppCode="SPL::rstring("a")"&gt;
+                &lt;literal cppCode="SPL::rstring("a")" type="0"&gt;"a"&lt;/literal&gt;
+              &lt;/lhs&gt;
+              &lt;rhs cppCode="iport$0.get_letter()"&gt;
+                &lt;attribute attribute="letter" cppCode="iport$0.get_letter()" type="0"&gt;
+                  &lt;lhs cppCode="iport$0"&gt;
+                    &lt;stream cppCode="iport$0" name="In" port="0" type="3"/&gt;
+                  &lt;/lhs&gt;
+                &lt;/attribute&gt;
+              &lt;/rhs&gt;
+            &lt;/binary&gt;
+          &lt;/expn&gt;
+        &lt;/value&gt;
+      &lt;/attr&gt;</code></pre>The
+templates (for example, <code class="+ topic/ph pr-d/codeph ph codeph">{Lhs}, {attr:0}</code>) are used to ensure that code replacement
+is well-defined.</div><p class="- topic/p p">These expressions represent the SPL expression, but
+are available in a form that can easily be walked. Perl objects are
+derived from <code class="+ topic/ph pr-d/codeph ph codeph">SPL::Operator::Instance::ExpressionTree</code>,
+and have a kind, type, and methods to access the fields of the expression. <code class="+ topic/ph pr-d/codeph ph codeph">ExpressionTreeVisitor</code> is
+a visitor pattern that is provided to allow easy walking of the expression
+tree. </p></section>
+<section class="- topic/section section">
+<p class="- topic/p p">The optional <code class="+ topic/ph pr-d/codeph ph codeph">capability</code> element defines special privileges for the operator. <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> supports the Linux capabilities model via the <code class="+ topic/ph pr-d/codeph ph codeph">capability</code> element. You can include any number of strings to specify the exact privileges your operator requires. For example, <code class="+ topic/ph pr-d/codeph ph codeph">&lt;capability&gt;CAP_NET_RAW+eip&lt;/capability&gt;</code> indicates that the operator needs permission to access raw sockets. Note that the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance must be configured to allow PE processes to run with special operating system capabilities.</p>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p">The optional <code class="+ topic/ph pr-d/codeph ph codeph">verificationModule</code> attribute is the path name of a Perl file (without the <span class="+ topic/ph sw-d/filepath ph filepath">.pm</span> suffix). This attribute can be used to check parameters, inputs, and outputs for an operator invocation. The path is relative to the operator model directory. The name is used in a Perl driver program, and the Perl <code class="+ topic/ph pr-d/codeph ph codeph">verify</code> routine is called with the Operator Instance Model as the parameter. Simplification of parameters and other expressions is done beforehand. No replacement of <code class="+ topic/ph pr-d/codeph ph codeph">getSubmissionTimeValue</code> or <code class="+ topic/ph pr-d/codeph ph codeph">lit$X</code> is done.</p>
+<p class="- topic/p p">The verification is performed for each operator in the SPL program that has <code class="+ topic/ph pr-d/codeph ph codeph">verificationModule</code> set in the associated operator model. <code class="+ topic/ph pr-d/codeph ph codeph">errorln</code> and <code class="+ topic/ph pr-d/codeph ph codeph">warnln</code> can be used from within <code class="+ topic/ph pr-d/codeph ph codeph">verify($model)</code>. If <code class="+ topic/ph pr-d/codeph ph codeph">errorln</code> is called, compilation of the SPL program will stop after all the operators are verified.</p>
+<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">verificationModule</code> can be used to perform compile time checking for all invocations, even if <code class="+ topic/ph pr-d/codeph ph codeph">rewriteAllowed</code> is <code class="+ topic/ph pr-d/codeph ph codeph">true</code> for a parameter, and similar operator invocations are merged into one at compile time.</p>
+</section>
+</div>
+
+<div class="- topic/fn fn"><a name="fntarg_1" href="#fnsrc_1"><sup>1</sup></a>  Future
+releases might pass additional arguments and thus the command should
+be tolerant of them.</div></article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relconcepts" xml:lang="en-us" lang="en-us"><strong>Related concepts</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.dev.doc/doc/splexpressiontreevisitor.html" title="An SPL expression tree represents the SPL expression for a parameter or output expression in a form that can be easily traversed in a C++ primitive operator.">Generating C++ code from an SPL expression tree</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

@@ -1,0 +1,203 @@
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="security" content="public"/>
+    <meta name="Robots" content="index,follow"/>
+    <meta name="DC.Type" content="task"/>
+    <meta name="DC.Title" content="Teracloud Streams REST ManagementAPIs"/>
+    <meta name="abstract" content="You can use the REST management API from any
+      application that can establish an HTTPS connection to the server
+      that is running the REST management APi service."/>
+    <meta name="Description" content="You can use the REST management API from any
+      application that can establish an HTTPS connection to the server
+      that is running the REST management API service."/>
+    <meta name="DC.subject" content="APIs, REST, developing
+      applications, application programming interfaces, applications,
+      developing, REST API"/>
+    <meta name="keywords" content="APIs, REST, developing applications,
+      application programming interfaces, applications, developing, REST
+      API"/>
+    <meta name="DC.Date" scheme="iso8601" content="2018-07-07"/>
+    <meta name="DC.Format" content="XHTML"/>
+    <meta name="DC.Identifier" content="restapi-dev"/>
+    <meta name="DC.Language" content="en-us"/>
+    <link rel="stylesheet" type="text/css"
+      href="/streams/html/css/rest.css"/>
+    <link rel="stylesheet" type="text/css"
+      href="/streams/html/css/swg_info_common.css"/>
+    <title>Streams Security</title>
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png"></head>  
+	<body id="restapi-dev">
+    <div role="main">
+<div class="rest-header">
+<!-- NLS_CHARSET=UTF-8 -->
+</div><div class="rest-left-column">
+<div class="button_back">
+<svg class="rest-arrow" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg>
+<a href="/external-reference/redoc-static.html">Streams REST API</a></div></div>
+<div class="rest-body">
+        <h1 class="title topictitle1"><span class="keyword"></span>Streams 
+          Security</h1>
+		  <div class="body taskbody">
+        <p>Streams manages security by principals (users, groups and
+        roles). Security objects protect Streams objects and
+        manages access to these objects. A user is granted
+        permission if:</p>
+        <ul>
+          <li>the user has specific permission to the object,</li>
+          <li>or if any of the groups the user belongs to has specific
+            permission to the object,</li>
+          <li>or if any of the roles the user has been assigned has
+            specific permission to the object,</li>
+          <li>or if any of the groups the user belongs to has assigned
+            roles that have specific permission to the object.<br>
+          </li>
+        </ul>
+		</div>
+        <div class="body taskbody">
+          <div class="tasklabel">
+            <h2 class="ibm-h2 ibm-bold"><a name="principals"></a>Principals</h2>
+            <h3 class="ibm-h3 ibm-regular">Users</h3>
+            <p>Users are defined by the back end authentication provider
+              Streams is configured to use, for example LDAP.&nbsp;
+              Streams does not manage users in this repository.&nbsp; In
+              order to manage the users such as adding, updating and
+              removing users, you must use the tools provided by the
+              provider.&nbsp; Streams is only aware of the users that
+              have specific Streams permissions.&nbsp; Listing users via the
+              REST management API will only return the list of users Streams is
+              aware of, not the complete list of users in the back end
+              store.<br>
+            </p>
+            <p>Users can be granted specific object permissions.&nbsp;
+              For example, "read" access to security object "job_0" for
+              user A grants user A access to information about the job with identifier 
+              0.&nbsp; A user can be assigned one or more roles.&nbsp;
+              Managing user access to Streams by roles is the
+              recommended approach.&nbsp; <br>
+            </p>
+            <h3 class="ibm-h3 ibm-regular">Groups</h3>
+            <p>Groups, like users, are defined by the back end authentication
+              provider Streams is configured to use.&nbsp; As with users, groups must be managed by
+              using the tools supplied by the provider.&nbsp; Streams is
+              only aware of groups that have explicit Streams
+              permissions.&nbsp; Listing groups via the REST management API will only
+              return the list of groups Streams is aware of, not the
+              complete list of groups in the back end store.<br>
+            </p>
+            <p>Groups can be granted specific object permissions.&nbsp;
+              For example, "read" access to security object "job_0" for
+              group A grants every user that belong to group A access to
+              information about the job with identifier 0.&nbsp; A group can be assigned
+              one or more roles.&nbsp; All users that belong to the
+              group would have the super set of all permissions for roles the
+              group has been assigned.<br>
+            </p>
+            <h3 class="ibm-h3 ibm-regular">Roles</h3>
+            <p>Roles are defined by Streams and can be used to group
+              permissions.&nbsp; Unlike users and groups, roles are
+              defined by Streams and can be managed by using the tools
+              provided by Streams.<br>
+            </p>
+            <p>Roles can be granted specific object permissions.&nbsp;
+              For example, "read" access to security object "job_0" for
+              role JOBUSER would grant every user that has been assigned
+              the role of JOBUSER, and any user that belongs to any group
+              that has been assigned the role of JOBUSER access to
+              information about the job with identifier 0.&nbsp; Roles is the recommended
+              way of managing access to Streams.<br>
+            </p>
+            <h2 class="ibm-h2 ibm-bold"><a name="securityobjects"></a>Security
+              Objects</h2>
+            <p>Streams uses security objects to manage access to Streams
+              objects. For exmple, you can manage access to the domain, instances, hosts and jobs.<br>
+            </p>
+            <h3 class="ibm-h3 ibm-regular"><a name="permissions"></a>Permissions</h3>
+            <p>The permission settings are the settings Streams checks
+              for access.&nbsp; For example, if security object job_0
+              has delete permission set for user A, then user A has the
+              ability to cancel the job with identifier 0.<br>
+            </p>
+            <p>
+            The following permissions are supported.
+            </p>    
+            <blockquote>
+                <dl>
+                  <dt>Search</dt>
+                  <dd>Controls the ablilty to list children
+                    objects. For example, "search" permission to a job
+                    group for user A allows user A to list the jobs
+                    submitted under that job group.<br>
+                  </dd>
+                  <dt>Add</dt>
+                  <dd>Controls the ability to add a child
+                    object.&nbsp; For example, "add" permission to a job
+                    group for user A allows user A to submit a job under
+                    that job group.<br>
+                  </dd>
+                  <dt>Delete</dt>
+                  <dd>Controls the ability to delete the
+                    object.&nbsp; For example, "delete" permission to
+                    job_0 for user A allows user A to cancel the job with identifier 0.<br>
+                  </dd>
+                  <dt>Read</dt>
+                  <dd>Controls the ability to access information
+                    about the object.&nbsp; For example, "read" permission
+                    to job_0 for user A allows user A to access job
+                    information and job data for the job with identifier 0.<br>
+                  </dd>
+                  <dt>Write</dt>
+                  <dd>Controls the ability to change the
+                    information about the object.&nbsp; For example,
+                    "write" permission to job_0 for user A allows user A
+                    to manage the job, such as stop and start PEs for 
+                    the job with identifier 0.<br>
+                  </dd>
+                  <dt>Own</dt>
+                  <dd>Grants the user special
+                    permission to the object. For example, "own"
+                    permission to job_0 for user A gives user A all
+                    access to the job with identifier 0, regardless of what the other
+                    permissions are for user A.</dd>
+                </dl>
+              </blockquote>
+            <h3 class="ibm-h3 ibm-regular"><a name="defaultpermissions"></a>Default
+              Permissions</h3>
+            <p>Default permissions are permissions that children objects
+              inherit when they are created.&nbsp; Default permissions
+              are not used for permission calculations.&nbsp; For
+              example, if security object for job group JOBGROUP1 has
+              default permissions of read, write and delete for user A,
+              when the first job is submitted to JOBGROUP1 (job identifier 0),
+              the security object job_0 would have permissions of read,
+              write and delete for user A.<br>
+            </p>
+            <h3 class="ibm-h3 ibm-regular"><a name="resolvedpermissions"></a>Resolved Permissions</h3>
+            <p>Resolved permissions are what the user has for
+              permissions after Streams has resolved the permissions
+              using all the groups to which the user belongs, all the roles
+              assigned to the user, and all the roles assigned to the
+              groups to which the user belongs.<br>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+	<div class="rest-right-column"></div>
+  </body>
+</html>

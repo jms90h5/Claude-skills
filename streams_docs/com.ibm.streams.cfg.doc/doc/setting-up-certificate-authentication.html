@@ -1,0 +1,390 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="task"/><meta name="abstract" content="Use this procedure to set up client certificate authentication for a Teracloud Streams domain by using X.509 certificates. Using client certificate authentication is optional."/><meta name="description" content="Use this procedure to set up client certificate authentication for a Teracloud Streams domain by using X.509 certificates. Using client certificate authentication is optional."/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/setting-up-userdefined-authentication.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authentication.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/setting-up-user-authentication.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html"/><meta name="DC.relation" content="../../com.ibm.streams.pd.doc/doc/clientcertauth-tstips-section.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="setting-up-certificate-authentication"/><meta name="DC.language" content="en-us"/>        
+      <title>Setting up client certificate authentication for Teracloud Streams users</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="setting-up-certificate-authentication-d41691e2341"/><meta name="wh-source-relpath" content="com.ibm.streams.cfg.doc/doc/setting-up-certificate-authentication.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.cfg.doc/doc/setting-up-certificate-authentication.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="setting-up-certificate-authentication" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="ibminfospherestreams-containercfg"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li><div class="topicref" data-id="streamssecurity"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security.html">Configuring security</a><div class="wh-tooltip"><p class="shortdesc">Each <span class="keyword">Teracloud® 					Streams</span> domain and instance maintains its own security configuration.</p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-user-security-authentication"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authentication.html">User authentication</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The default user             authentication method for <span class="keyword">Teracloud® 					Streams</span> domains is PAM or LDAP. For a basic domain, <span class="keyword">Teracloud 					Streams</span> uses PAM.             For an enterprise domain, you can specify either LDAP or PAM as the default method when             you create the domain, and then customize user authentication after the domain is             created.</span></p></div></div></div></li><li><div class="topicref" data-id="setting-up-userdefined-authentication"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-userdefined-authentication.html">Customizing user authentication</a><div class="wh-tooltip"><p class="shortdesc">When you create an enterprise domain, you must specify either LDAP or PAM as the default    user authentication method for <span class="keyword">Teracloud® 					Streams</span>. <span class="ph">After creating the domain, you can use login modules and client     certificates     to customize user authentication.</span></p></div></div></div></li><li class="active"><div class="topicref" data-id="setting-up-certificate-authentication"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-certificate-authentication.html">Setting up client certificate authentication</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to set up client certificate authentication for a <span class="keyword">Teracloud® 					Streams</span> domain by using X.509 certificates. Using client certificate authentication is optional.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="setting-up-basic-domain-d41691e1516" class="topicref" data-id="setting-up-basic-domain" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setting-up-basic-domain-d41691e1516-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-basic-domain.html" id="setting-up-basic-domain-d41691e1516-link">Setting up a basic domain on a single resource</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <dfn class="term">basic                 domain</dfn> has a single <span class="keyword">Teracloud® 					Streams</span> resource               and user. This type of domain is typically used for test or development environments. </span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="setting-up-enterprise-domain-d41691e1579" class="topicref" data-id="setting-up-enterprise-domain" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setting-up-enterprise-domain-d41691e1579-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain.html" id="setting-up-enterprise-domain-d41691e1579-link">Setting up an enterprise domain on multiple resources</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">An <dfn class="term">enterprise domain</dfn> can have               multiple resources and users. This type of domain is typically used for production               environments. You can configure high availability to ensure that <span class="keyword">Teracloud® 					Streams</span> can               continue to run even if resources fail or are not available.</span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="streamssecurity-d41691e2011" class="topicref" data-id="streamssecurity" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action streamssecurity-d41691e2011-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security.html" id="streamssecurity-d41691e2011-link">Configuring security</a><div class="wh-tooltip"><p class="shortdesc">Each <span class="keyword">Teracloud® 					Streams</span> domain and instance maintains its own security configuration.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-user-security-authorization-d41691e2027" class="topicref" data-id="ibminfospherestreams-user-security-authorization" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-user-security-authorization-d41691e2027-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authorization.html" id="ibminfospherestreams-user-security-authorization-d41691e2027-link">User authorization</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> uses access control lists (ACLs) to manage user authorization for domains and instances. An ACL contains the type of domain and instance objects to secure and the actions that a user or group is authorized to perform against the object. The ACLs are initialized when you create a domain or instance.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-user-security-authentication-d41691e2218" class="topicref" data-id="ibminfospherestreams-user-security-authentication" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-user-security-authentication-d41691e2218-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authentication.html" id="ibminfospherestreams-user-security-authentication-d41691e2218-link">User authentication</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The default user             authentication method for <span class="keyword">Teracloud® 					Streams</span> domains is PAM or LDAP. For a basic domain, <span class="keyword">Teracloud 					Streams</span> uses PAM.             For an enterprise domain, you can specify either LDAP or PAM as the default method when             you create the domain, and then customize user authentication after the domain is             created.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="order-authentication-checks-d41691e2240" class="topicref" data-id="order-authentication-checks" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/order-authentication-checks.html" id="order-authentication-checks-d41691e2240-link">Order of user authentication checks</a><div class="wh-tooltip"><p class="shortdesc">Your user authentication configuration determines how <span class="keyword">Teracloud® 					Streams</span> authenticates users.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="setting-up-userdefined-authentication-d41691e2256" class="topicref" data-id="setting-up-userdefined-authentication" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action setting-up-userdefined-authentication-d41691e2256-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-userdefined-authentication.html" id="setting-up-userdefined-authentication-d41691e2256-link">Customizing user authentication</a><div class="wh-tooltip"><p class="shortdesc">When you create an enterprise domain, you must specify either LDAP or PAM as the default    user authentication method for <span class="keyword">Teracloud® 					Streams</span>. <span class="ph">After creating the domain, you can use login modules and client     certificates     to customize user authentication.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="customizing-security-with-login-modules-d41691e2274" class="topicref" data-id="customizing-security-with-login-modules" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action customizing-security-with-login-modules-d41691e2274-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/customizing-security-with-login-modules.html" id="customizing-security-with-login-modules-d41691e2274-link">Setting up login module authentication</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph"><span class="keyword">Teracloud® 					Streams</span>             authenticates users by using a Java™ Authentication             and Authorization Service (JAAS). You can use the login modules that are included in the             product, or you can create your own to customize the security settings of your             domain.</span> Using login modules is optional.</p></div></div></div></li><li role="treeitem" aria-expanded="true" class="active"><div data-tocid="setting-up-certificate-authentication-d41691e2341" class="topicref" data-id="setting-up-certificate-authentication" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action setting-up-certificate-authentication-d41691e2341-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-certificate-authentication.html" id="setting-up-certificate-authentication-d41691e2341-link">Setting up client certificate authentication</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to set up client certificate authentication for a <span class="keyword">Teracloud® 					Streams</span> domain by using X.509 certificates. Using client certificate authentication is optional.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="verifying-certificates-d41691e2357" class="topicref" data-id="verifying-certificates" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/verifying-certificates.html" id="verifying-certificates-d41691e2357-link">Verifying certificates</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to verify that the X.509 certificates that you obtained from a certificate authority (CA) can be used to authenticate <span class="keyword">Teracloud® 					Streams</span> users.</p></div></div></div></li><li role="treeitem"><div data-tocid="creating-pkcs12-file-d41691e2373" class="topicref" data-id="creating-pkcs12-file" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/creating-pkcs12-file.html" id="creating-pkcs12-file-d41691e2373-link">Creating a <span class="keyword">PKCS #12</span> file</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to create a password protected <span class="keyword">PKCS #12</span> file that contains one or more certificates. </p></div></div></div></li><li role="treeitem"><div data-tocid="setting-up-certificate-revocation-d41691e2390" class="topicref" data-id="setting-up-certificate-revocation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-certificate-revocation.html" id="setting-up-certificate-revocation-d41691e2390-link">Setting up client certificate revocation checking</a><div class="wh-tooltip"><p class="shortdesc">A certificate authority (CA) that issues an X.509 client certificate can also revoke that certificate. If the CA revokes a certificate, user authentication fails. The <span class="keyword parmname">security.revocationMethod</span> domain property specifies the method that a <span class="keyword">Teracloud® 					Streams</span> domain uses to check whether a certificate is revoked. If you are not using client certificate authentication, this property is ignored.</p></div></div></div></li><li role="treeitem"><div data-tocid="setting-userid-pattern-certificate-authentication-d41691e2409" class="topicref" data-id="setting-userid-pattern-certificate-authentication" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-userid-pattern-certificate-authentication.html" id="setting-userid-pattern-certificate-authentication-d41691e2409-link">Setting the user ID pattern for certificate authentication</a><div class="wh-tooltip"><p class="shortdesc">Certificate authentication uses client authentication to authenticate the client connection, and then extracts information from the distinguished name (DN) of the client certificate to authenticate users. By default, <span class="keyword">Teracloud® 					Streams</span> checks for a user ID in the DN common name (cn) field.</p></div></div></div></li></ul></li></ul></li><li role="treeitem"><div data-tocid="ibminfospherestreams-user-security-authentication-rsa-d41691e2425" class="topicref" data-id="ibminfospherestreams-user-security-authentication-rsa" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authentication-rsa.html" id="ibminfospherestreams-user-security-authentication-rsa-d41691e2425-link">Generating authentication keys</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to generate public and private keys       for <span class="keyword">Teracloud® 					Streams</span>. <span class="ph">Generating public and private keys eliminates the need for <span class="keyword">Teracloud 					Streams</span> users to enter a         password when they run <span class="keyword cmdname">streamtool</span> commands.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-user-security-session-timeout-d41691e2451" class="topicref" data-id="ibminfospherestreams-user-security-session-timeout" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-session-timeout.html" id="ibminfospherestreams-user-security-session-timeout-d41691e2451-link">Security session timeout property</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The security session timeout is the number of seconds before a <span class="keyword">Teracloud® 					Streams</span> user session expires. This property setting is independent of the PAM or LDAP authentication service.</span></p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="ibminfospherestreams-user-security-run-authority-d41691e2468" class="topicref" data-id="ibminfospherestreams-user-security-run-authority" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-run-authority.html" id="ibminfospherestreams-user-security-run-authority-d41691e2468-link">Linux users and <span class="keyword">Teracloud® Streams</span> jobs</a><div class="wh-tooltip"><p class="shortdesc">To determine which Linux user has the authority to run the jobs for a <span class="keyword">Teracloud® 					Streams</span> instance, you must first determine which user is running the <span class="keyword">domain controller services</span> for your domain. The security implications of the <span class="keyword parmname">instance.runAsUser</span> and <span class="keyword parmname">instance.canSetPeOSCapabilities</span> property settings also need to be considered.</p></div></div></div></li><li role="treeitem"><div data-tocid="changingcrypto-d41691e2498" class="topicref" data-id="changingcrypto" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/changingcrypto.html" id="changingcrypto-d41691e2498-link">Changing the cryptographic protocol</a><div class="wh-tooltip"><p class="shortdesc">Many domain and instance services support connections that use Transport Layer Security    (TLS) cryptographic protocols. You can specify which cryptographic protocols the services use for    secure communication by setting domain and instance properties. <span class="ph">Starting with <span class="keyword">Teracloud® 					Streams Version 7.2.0</span>, the default protocol setting is TLSv1.3, which indicates that TLS 1.3 or later protocols are     used.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="securing-cluster-d41691e2516" class="topicref" data-id="securing-cluster" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/securing-cluster.html" id="securing-cluster-d41691e2516-link">Securing a <span class="keyword">Teracloud® Streams</span> cluster</a><div class="wh-tooltip"><p class="shortdesc">While applications are deployed into production environments with specific recommendations that apply to individual customers, enterprise organizations generally have security policies and procedures that must be met and followed. To meet enterprise requirements, a combination of product and environment configuration is needed. The following are some key features using the standard information security CIA triad.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-user-security-auditlogfile-d41691e2532" class="topicref" data-id="ibminfospherestreams-user-security-auditlogfile" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-user-security-auditlogfile-d41691e2532-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-auditlogfile.html" id="ibminfospherestreams-user-security-auditlogfile-d41691e2532-link">Configuring audit logging</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> supports comprehensive, multiple-level auditing of product and user operations. By default, audit logging is not enabled.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-transports-configuring-d41691e2602" class="topicref" data-id="ibminfospherestreams-transports-configuring" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-transports-configuring-d41691e2602-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-transports-configuring.html" id="ibminfospherestreams-transports-configuring-d41691e2602-link">Configuring transport mechanisms</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> supports several high-performance and configurable transport mechanisms for communicating   across processing elements (PEs). You can configure the transport mechanism by updating <span class="keyword">Teracloud 					Streams</span> properties.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-configuring-checkpoint-data-store-d41691e2681" class="topicref" data-id="ibminfospherestreams-configuring-checkpoint-data-store" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-configuring-checkpoint-data-store.html" id="ibminfospherestreams-configuring-checkpoint-data-store-d41691e2681-link">Configuring a checkpoint data store</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this procedure to configure a checkpoint data store for <span class="keyword">Teracloud® 					Streams</span> domains and                 instances.</span></p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic task/task topic task" role="article" aria-labelledby="ariaid-title1">
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Setting up client certificate authentication for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> users</h1>
+
+
+<div class="- topic/body task/taskbody body taskbody"><div class="- topic/abstract abstract">
+ <span class="- topic/shortdesc shortdesc">Use this procedure to set up client certificate authentication for a <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domain by using X.509 certificates. Using client certificate authentication is
+optional.</span>
+</div>
+<section class="- topic/section task/prereq section prereq"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Before you begin</h2></div>In the following procedure, the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">openssl</span> command is used to work with
+certificates. This command is included in the <span class="+ topic/ph sw-d/filepath ph filepath">openssl</span> package. To download this
+ package, go to the <a class="- topic/xref xref" href="https://www.openssl.org/" target="_blank" rel="external noopener">OpenSSL</a>
+website.</section>
+<section class="- topic/section task/context section context"><div class="tasklabel"><h2 class="sectiontitle tasklabel">About this task</h2></div>After you set up client certificate authentication, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> attempts to use X.509 certificate authentication when it authenticates a user to the domain.
+    <span class="- topic/ph ph" id="setting-up-certificate-authentication__certauth-order">If certificate authentication fails,
+     <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> uses the default authentication method for the domain, which is either LDAP or
+   PAM.</span></section>
+<section class="- topic/ol task/steps ol steps"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Procedure</h2></div><ol class="- topic/ol task/steps ol steps" id="setting-up-certificate-authentication__steps_d25_bwj_w2c" data-ofbid="setting-up-certificate-authentication__steps_d25_bwj_w2c"><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">Obtain X.509 certificates.</span>
+    <div class="- topic/itemgroup task/info itemgroup info">
+     <p class="- topic/p p">You can use certificates that are signed by a certificate authority (CA) or self-signed
+      certificates. <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> supports certificates in Distinguished Encoding Rules (DER) format or Privacy Enhanced Mail
+      (PEM) format.</p>
+    </div>
+    <ul class="- topic/ul task/choices ul choices">
+     <li class="- topic/li task/choice li choice">If you are using certificates that are signed by a CA, complete the following steps:<div class="- topic/p p">
+       <ol class="- topic/ol ol" type="a">
+        <li class="- topic/li li">Obtain the following files from the CA: <ul class="- topic/ul ul">
+          <li class="- topic/li li">Client certificate</li>
+          <li class="- topic/li li">CA certificate for the CA that issued the client certificate</li>
+          <li class="- topic/li li">Certificate Revocation List (CRL) of the CA that issued the client certificate</li>
+         </ul><p class="- topic/p p">The process for requesting certificates depends on the issuing CA. Typically, you
+          create a private key file and then create a certificate signing request (CSR) file that
+          you send to the CA to sign. For more information, contact your CA.</p><p class="- topic/p p"> If you receive a
+          certificate in PEM format, remove any text that is outside of the <code class="+ topic/ph pr-d/codeph ph codeph">-----BEGIN
+           CERTIFICATE-----</code> and <code class="+ topic/ph pr-d/codeph ph codeph">-----END CERTIFICATE-----</code> markers. You can
+          manually remove the text with an editor of your choice. This update ensures that only the
+          base64 encoded data remains. The following example shows a client certificate that
+          contains the correct text: </p><div class="- topic/p p">
+          <pre class="- topic/pre pre">-----BEGIN CERTIFICATE-----
+MIID+jCCA2OgAwIBAgICEA8wDQYJKoZIhvcNAQEFBQAwcTELMAkGA1UEBhMCVVMx
+CzAJBgNVBAgTAk1OMQwwCgYDVQQKEwNJQk0xEDAOBgNVBAsTB1N0cmVhbXMxEzAR
+Y29tMB4XDTE1MTAxNDE1NDkyN1oXDTE2MTAxMzE1NDkyN1owdzELMAkGA1UEBhMC
+VVMxCzAJBgNVBAgTAk1OMQwwCgYDVQQKEwNJQk0xEDAOBgNVBAsTB1N0cmVhbXMx
+FDASBgNVBAMTC3N0cmVhbXN1c2VyMSUwIwYJKoZIhvcNAQkBFhZzdHJlYW1zdXNl
+ckB1cy5pYm0uY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjaQlq1M5d
+YQP6puRLOTqmZdKFFngpuFnoIF6I7uwMJ8jNZx0Y9rkxVTGCqvmxnwvADG0GV5UR
+ilXFhTYJINo1ggo+Ohm819k7YVAESv34kryj+1f86yj00Tzq6ykefYMre7t8PIZo
+QW8QvjLZEdbjZnMgXyOGHWz1rAt+0376XwIDAQABo4IBmTCCAZUwKQYJYIZIAYb4
+QgENBBwWGk9wZW5TU0wgQ2xpZW50IENlcnRpZmljYXRlMEAGCCsGAQUFBwEBBDQw
+MjAwBggrBgEFBQcwAYYkaHR0cDovL3Nob2UucmNoLnN0Z2xhYnMuaWJtLmNvbTo5
+MDgwMIGWBgNVHSMEgY4wgYuAFBQ8NrJJ9ddVW4Z/LvDbtUvsC51UoXCkbjBsMQsw
+CQYDVQQGEwJVUzELMAkGA1UECBMCTU4xEjAQBgNVBAcTCVJvY2hlc3RlcjEMMAoG
+A1UEChMDSUJNMQwwCgYDVQQDEwNJQk0xIDAeBgkqhkiG9w0BCQEWEXNtc2hhb0B1
+cy5pYm0uY29tggFYMAkGA1UdEwQCMAAwPgYDVR0fBDcwNTAzoDGgL4YtaHR0cDov
+L3Nob2UucmNoLnN0Z2xhYnMuaWJtLmNvbS9jZXJ0cy9jcmwucGVtMA4GA1UdDwEB
+/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAjAdBgNVHQ4EFgQUJqFG/AckkKoB
+T8kRhyDCMNzmQ9gwDQYJKoZIhvcNAQEFBQADgYEAtqFIHeHakd1QAlxYRhKefqQg
+VW0X7VRVJe7IhUKHBe8DXwSJmIETdxUbhzwNhmxijJkGyBu055YSlCz4X+wNaSC8
+lDrO5g1ej3wh2cZFzVAYzyDhBo6urXiX9XEi94tc3/UBvwRHGP/MtmRJCbUyr5A7
+p3Xu6ZBlpTyRZ18KRpU=
+-----END CERTIFICATE-----</pre>
+         </div><p class="- topic/p p"></p></li>
+        <li class="- topic/li li">Verify the certificates by using the procedure in <a class="- topic/xref xref" href="verifying-certificates.html" title="Use this procedure to verify that the X.509 certificates that you obtained from a certificate authority (CA) can be used to authenticate Teracloud Streams users.">Verifying certificates for Teracloud Streams users</a>.<p class="- topic/p p"></p></li>
+       </ol>
+      </div><p class="- topic/p p">To authenticate users, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> interfaces can use a certificate or a password protected <span class="- topic/keyword keyword">PKCS #12</span> file that contains the certificate. You can obtain the <span class="- topic/keyword keyword">PKCS #12</span> file from a CA, or create this file by using the procedure in <a class="- topic/xref xref" href="creating-pkcs12-file.html" title="Use this procedure to create a password protected PKCS #12 file that contains one or more certificates.">Creating a password protected PKCS #12 file for certificates</a>.</p><p class="- topic/p p"></p></li>
+     <li class="- topic/li task/choice li choice">If you are using self-signed certificates, complete the following steps:<div class="- topic/p p">
+       <ol class="- topic/ol ol" type="a">
+        <li class="- topic/li li">Generate an RSA private key by using the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">openssl genpkey</span> command, for
+          example:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>openssl genpkey -algorithm RSA -out selfsigned.key</code></pre><div class="- topic/note note restriction note_restriction"><span class="note__title">Restriction:</span> If the domain is configured to use Transport Layer Security (TLS) 1.2,
+          you must include the <code class="+ topic/ph pr-d/codeph ph codeph">-pkeyopt rsa_keygen_bits:<em class="+ topic/ph hi-d/i ph i">numbits</em></code> option with
+           <code class="+ topic/ph pr-d/codeph ph codeph">numbits</code> set to 2048 or larger, for
+          example:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out
+ selfsigned.key</code></pre></div><p class="- topic/p p"></p></li>
+        <li class="- topic/li li">Generate a client certificate from the private key by using the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">openssl
+          req</span> command, for
+          example:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>openssl req -x509 -new -key selfsigned.key -out selfsigned.pem -subj '/C=CA/ST=MN/O=IBM/OU=Streams/CN=selfsigned/'</code></pre><div class="- topic/note note restriction note_restriction"><span class="note__title">Restriction:</span> If
+          the domain is configured to use Transport Layer Security (TLS) 1.2, you must include the
+           <code class="+ topic/ph pr-d/codeph ph codeph">-sha256</code> option, for
+          example:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>openssl req -x509 -sha256 -new -key selfsigned.key -out selfsigned.pem -subj '/C=CA/ST=MN/O=IBM/OU=Streams/CN=selfsigned/'</code></pre></div><p class="- topic/p p"></p></li>
+       </ol>
+      </div><p class="- topic/p p">To authenticate users, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> interfaces can use a certificate or a password protected <span class="- topic/keyword keyword">PKCS #12</span> file that contains the certificate. To create this file, use the procedure in <a class="- topic/xref xref" href="creating-pkcs12-file.html" title="Use this procedure to create a password protected PKCS #12 file that contains one or more certificates.">Creating a password protected PKCS #12 file for certificates</a>.</p><p class="- topic/p p"></p></li>
+    </ul>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">Add the trusted certificate to the <span class="- topic/keyword keyword">web management service</span> truststore.</span>
+    <div class="- topic/itemgroup task/info itemgroup info">
+     <div class="- topic/p p">
+      <ul class="- topic/ul ul">
+       <li class="- topic/li li">If you use certificates that are signed by a CA, the trusted certificate is the
+        certificate of the CA that issued the client certificate.<div class="- topic/note note attention note_attention"><span class="note__title">Attention:</span> If the
+         certificate revocation status is valid, all client certificates that are issued by that CA
+         can authenticate after you add the CA certificate to the <span class="- topic/keyword keyword">web management service</span> truststore. For more information about the certificate revocation status, see <a class="- topic/xref xref" href="setting-up-certificate-revocation.html" title="A certificate authority (CA) that issues an X.509 client certificate can also revoke that certificate. If the CA revokes a certificate, user authentication fails. The security.revocationMethod domain property specifies the method that a Teracloud Streams domain uses to check whether a certificate is revoked. If you are not using client certificate authentication, this property is ignored.">Setting up client certificate revocation checking for Teracloud Streams users</a>.</div><p class="- topic/p p"></p></li>
+       <li class="- topic/li li">If you use self-signed certificates, the trusted certificate is the self-signed
+        certificate.</li>
+      </ul>
+     </div>
+    </div>
+    <div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">
+     <div class="- topic/p p">To add the trusted certificate to the <span class="- topic/keyword keyword">web management service</span> truststore, enter the following <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>
+      <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span>
+      command:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-90"><code>streamtool addcertificate -d <var class="+ topic/keyword sw-d/varname keyword varname">domainid</var> --clientid <var class="+ topic/keyword sw-d/varname keyword varname">trustedcert</var> -f <var class="+ topic/keyword sw-d/varname keyword varname">trustedcert</var>.pem
+</code></pre></div>
+    </div>
+    <div class="- topic/itemgroup task/stepresult itemgroup stepresult">A message similar to the following example is
+      displayed:<pre class="+ topic/pre sw-d/msgblock pre msgblock scale-90">Trusted client certificate for <var class="+ topic/keyword sw-d/varname keyword varname">trustedcert</var> imported successfully for domain <var class="+ topic/keyword sw-d/varname keyword varname">domainid</var>.
+</pre><div class="- topic/note note note note_note"><span class="note__title">Notes:</span> 
+      <ul class="- topic/ul ul">
+       <li class="- topic/li li">You can specify a <span class="- topic/keyword keyword">PKCS #12</span> file that contains the trusted certificate on the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+         addcertificate</span> command. If specified, you are prompted for the <span class="- topic/keyword keyword">PKCS #12</span> password. If the <span class="- topic/keyword keyword">PKCS #12</span> file contains more than one trusted certificate, you are prompted to select a trusted
+         certificate.<p class="- topic/p p"></p></li>
+       <li class="- topic/li li">You can enter any name for the <kbd class="+ topic/ph sw-d/userinput ph userinput">clientid</kbd>, but the preferred
+        practice is to use a name that is associated with the trusted certificate. In the
+         <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> command example, the <kbd class="+ topic/ph sw-d/userinput ph userinput">clientid</kbd> of
+          <kbd class="+ topic/ph sw-d/userinput ph userinput"><var class="+ topic/keyword sw-d/varname keyword varname">trustedcert</var></kbd> is associated with the file name of
+        the trusted certificate. Another option is to use the subject CN of the trusted certificate,
+        as shown in the following
+        example:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-90"><code>openssl x509 -noout -subject -in trustedcert.pem 
+subject= /C=US/ST=MN/O=IBM/OU=Streams/CN=trustedcert/emailAddress=admin@example.com
+</code></pre></li>
+      </ul>
+     </div><div class="- topic/note note note note_note"><span class="note__title">Note:</span> You can enter any name for the
+       <kbd class="+ topic/ph sw-d/userinput ph userinput">clientid</kbd>, but the preferred practice is to use a name that is
+      associated with the trusted certificate. In the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> command example,
+      the <kbd class="+ topic/ph sw-d/userinput ph userinput">clientid</kbd> of <kbd class="+ topic/ph sw-d/userinput ph userinput"><var class="+ topic/keyword sw-d/varname keyword varname">trustedcert</var></kbd>
+      is associated with the file name of the trusted certificate. Another option is to use the
+      subject CN of the trusted certificate, as shown in the following
+      example:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-90"><code>openssl x509 -noout -subject -in trustedcert.pem 
+subject= /C=US/ST=MN/O=IBM/OU=Streams/CN=trustedcert/emailAddress=admin@example.com
+</code></pre></div><p class="- topic/p p"></p></div>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd"><span class="- topic/ph ph">Set up <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>
+            authorization for the certificate user.</span></span>
+    <div class="- topic/itemgroup task/info itemgroup info">
+     <div class="- topic/p p">By default, the certificate user is the subject CN of the client certificate. You can
+      display the client certificate subject information by entering the following
+       <span class="+ topic/keyword sw-d/cmdname keyword cmdname">openssl</span>
+      command:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-90"><code>openssl x509 -noout -subject -in /streamscertificates/streamsuser.pem 
+subject= /C=US/ST=MN/O=IBM/OU=Streams/CN=streamsuser/emailAddress=streamsuser@example.com
+
+</code></pre>In this example, the subject CN is <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">streamsuser</samp>. For
+      more information about the subject CN and other information in a client certificate, see <a class="- topic/xref xref" href="setting-userid-pattern-certificate-authentication.html" title="Certificate authentication uses client authentication to authenticate the client connection, and then extracts information from the distinguished name (DN) of the client certificate to authenticate users. By default, Teracloud Streams checks for a user ID in the DN common name (cn) field.">Setting the user ID pattern for certificate authentication</a>.</div>
+     <p class="- topic/p p"><span class="- topic/ph ph">You
+can configure permissions for a certificate user by using roles or
+by setting access permissions for the user. Groups do not apply to
+certificate users.</span> To configure permissions, see <a class="- topic/xref xref" href="ibminfospherestreams-security-shared-instance-setup.html" title="By default, Teracloud Streams domains and instances are private and can be accessed only by the user who creates the domain or instance. To set up a domain or instance that can be accessed by multiple users, you can use either the Teracloud Streams graphical user interfaces or streamtool commands.">Configuring user access to Teracloud Streams domains and instances</a>.</p>
+     <p class="- topic/p p"></p>
+    </div>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">If you are using certificates that are signed by a CA, you might need to modify the default
+     client revocation method that is used by <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>. For more information, see <a class="- topic/xref xref" href="setting-up-certificate-revocation.html" title="A certificate authority (CA) that issues an X.509 client certificate can also revoke that certificate. If the CA revokes a certificate, user authentication fails. The security.revocationMethod domain property specifies the method that a Teracloud Streams domain uses to check whether a certificate is revoked. If you are not using client certificate authentication, this property is ignored.">Setting up client certificate revocation checking for Teracloud Streams users</a>.</span>
+    <div class="- topic/itemgroup task/info itemgroup info"> Client certificate revocation checking does not apply to self-signed
+      certificates.<p class="- topic/p p"></p>
+    </div>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">Enable client certificate authentication for the domain.</span>
+    <div class="- topic/itemgroup task/info itemgroup info">
+     <p class="- topic/p p">The procedure to enable client certificate authentication depends on the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> interface that you use. </p>
+    </div>
+    <div class="simpletable-container"><table class="- topic/simpletable task/choicetable simpletable choicetable choicetableborder" id="setting-up-certificate-authentication__choicetable_e25_bwj_w2c" data-ofbid="setting-up-certificate-authentication__choicetable_e25_bwj_w2c"><colgroup><col style="width:19.047619047619047%"/><col style="width:80.95238095238095%"/></colgroup><thead><tr class="- topic/sthead task/chhead sthead chhead"><th scope="col" class="- topic/stentry task/choptionhd stentry choptionhd">Interface</th><th scope="col" class="- topic/stentry task/chdeschd stentry chdeschd">Procedure</th></tr></thead><tbody><tr class="- topic/strow task/chrow strow chrow">
+      <th scope="row" class="- topic/stentry task/choption stentry choption">streamtool</th>
+      <td class="- topic/stentry task/chdesc stentry chdesc">Set the <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_X509CERT</span> environment variable to the path of the
+       client certificate or a <span class="- topic/keyword keyword">PKCS #12</span> file that contains the certificate.<div class="- topic/p p">
+        <ul class="- topic/ul ul" id="setting-up-certificate-authentication__ul_pff_xjy_p2c" data-ofbid="setting-up-certificate-authentication__ul_pff_xjy_p2c">
+         <li class="- topic/li li">Client certificate
+          example<pre class="+ topic/pre pr-d/codeblock pre codeblock" id="setting-up-certificate-authentication__codeblock_qff_xjy_p2c" data-ofbid="setting-up-certificate-authentication__codeblock_qff_xjy_p2c"><code>export STREAMS_X509CERT=/streamscertificates/streamsuser.pem</code></pre></li>
+         <li class="- topic/li li"><span class="- topic/keyword keyword">PKCS #12</span> file
+          example<pre class="+ topic/pre pr-d/codeblock pre codeblock" id="setting-up-certificate-authentication__codeblock_rff_xjy_p2c" data-ofbid="setting-up-certificate-authentication__codeblock_rff_xjy_p2c"><code>export STREAMS_X509CERT=/streamscertificates/streamsuser.p12</code></pre></li>
+        </ul>
+       </div><div class="- topic/note note note note_note" id="setting-up-certificate-authentication__note_sff_xjy_p2c" data-ofbid="setting-up-certificate-authentication__note_sff_xjy_p2c"><span class="note__title">Notes:</span> 
+        <ul class="- topic/ul ul" id="setting-up-certificate-authentication__ul_tff_xjy_p2c" data-ofbid="setting-up-certificate-authentication__ul_tff_xjy_p2c">
+         <li class="- topic/li li">If you specify a <span class="- topic/keyword keyword">PKCS #12</span> file, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> prompts you for the <span class="- topic/keyword keyword">PKCS #12</span> password. If the <span class="- topic/keyword keyword">PKCS #12</span> file contains more than one certificate, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> prompts you to select a user certificate.<p class="- topic/p p"></p></li>
+         <li class="- topic/li li">You can disable certificate authentication by running the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">unset
+           STREAMS_X509CERT</span> command.</li>
+        </ul>
+       </div><p class="- topic/p p"></p></td>
+     </tr><tr class="- topic/strow task/chrow strow chrow">
+      <th scope="row" class="- topic/stentry task/choption stentry choption"><span class="- topic/keyword keyword">Streams Console</span></th>
+      <td class="- topic/stentry task/chdesc stentry chdesc">Complete the following steps:<div class="- topic/p p">
+        <ol class="- topic/ol ol" type="a">
+         <li class="- topic/li li" id="setting-up-certificate-authentication__enableauth-step1" data-ofbid="setting-up-certificate-authentication__enableauth-step1">Enable client authentication by setting the
+           <span class="+ topic/keyword pr-d/parmname keyword parmname">sws.clientAuthenticationEnabled</span> domain property to true. You can use
+          the
+           <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool setdomainproperty</span> command to set this
+           property.<p class="- topic/p p"></p></li>
+         <li class="- topic/li li" id="setting-up-certificate-authentication__enableauth-step2" data-ofbid="setting-up-certificate-authentication__enableauth-step2">For the changes to take effect, restart the
+           domain.<p class="- topic/p p"></p></li>
+         
+         <li class="- topic/li li">Create a <span class="- topic/keyword keyword">PKCS #12</span> file that contains the following files:<ul class="- topic/ul ul">
+           <li class="- topic/li li">User certificate</li>
+           <li class="- topic/li li">User private key file</li>
+           <li class="- topic/li li">CA certificate, if the user certificate is signed by a CA</li>
+          </ul>For instructions, see <a class="- topic/xref xref" href="creating-pkcs12-file.html" title="Use this procedure to create a password protected PKCS #12 file that contains one or more certificates.">Creating a password protected PKCS #12 file for certificates</a>.<p class="- topic/p p"></p></li>
+         <li class="- topic/li li">Import the <span class="- topic/keyword keyword">PKCS #12</span> file into your browser. For additional information, see the help for your browser.</li>
+        </ol>
+       </div></td>
+     </tr></tbody></table></div>
+   </li></ol></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.cfg.doc/doc/setting-up-user-authentication.html" title="Before you create a Teracloud Streams enterprise domain, use these guidelines to set up an LDAP server or the PAM authentication service for user authentication. After you create the domain, you can customize user authentication.">Setting up the default user authentication method for a Teracloud Streams enterprise domain</a></li></ul></div><div class="- topic/linklist linklist relref" xml:lang="en-us" lang="en-us"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html" title="This reference section provides a description of each streamtool command, which includes details about command syntax and options. To obtain the help information for a specific command, enter streamtool man command-name.">Streamtool commands</a></li></ul></div><div class="- topic/linklist linklist relinfo" xml:lang="en-us" lang="en-us"><strong>Related information</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.pd.doc/doc/clientcertauth-tstips-section.html" title="Troubleshooting client certificate authentication problems">Troubleshooting client certificate authentication problems</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

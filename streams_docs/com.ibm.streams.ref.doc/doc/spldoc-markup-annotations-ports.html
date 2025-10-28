@@ -1,0 +1,218 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="abstract" content="You can use annotation tags to specify the input and output ports of a composite operator."/><meta name="description" content="You can use annotation tags to specify the input and output ports of a composite operator."/><meta name="DC.subject" content="ports,SPLDOC markup"/><meta name="keywords" content="ports, SPLDOC markup"/><meta name="indexterms" content="ports, SPLDOC markup"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc-markup-annotations-ports"/><meta name="DC.language" content="en-us"/>        
+      <title>Ports</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="spldoc-markup-annotations-ports-d41691e72128"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-ports.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-ports.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="spldoc-markup-annotations-ports" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="spldoc-markup"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li><li><div class="topicref" data-id="spldocannotations"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations.html">Annotation tags</a><div class="wh-tooltip"><p class="shortdesc">You can use the SPLDOC annotation tags to document the interfaces that are exposed by the SPL composite operators and to exclude toolkit artifacts. <span class="ph">You can also use SPLDOC annotation tags to document SPL and native functions.</span></p></div></div></div></li><li class="active"><div class="topicref" data-id="spldoc-markup-annotations-ports"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-ports.html">Ports</a><div class="wh-tooltip"><p class="shortdesc">You can use annotation tags to specify the input and output ports of a composite operator.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc-quickref-d41691e71911" class="topicref" data-id="spldoc-quickref" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-quickref.html" id="spldoc-quickref-d41691e71911-link">Quick reference for SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">SPLDOC markup tags document SPL artifacts in a toolkit.</p></div></div></div></li><li role="treeitem"><div data-tocid="comments-d41691e71922" class="topicref" data-id="comments" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-comments.html" id="comments-d41691e71922-link">Comments</a><div class="wh-tooltip"><p class="shortdesc">This information describes the comment syntax for the SPL artifacts in SPL files. SPLDOC comments are delimited by the forward slash and asterisk characters.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoctextmarkup-d41691e71933" class="topicref" data-id="spldoctextmarkup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoctextmarkup-d41691e71933-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-textmarkup.html" id="spldoctextmarkup-d41691e71933-link">Text markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup to format text into pages, sections, paragraphs, lists, and blocks of code. You can also apply different typefaces, such as italics, bold, and monospace.</p></div></div></div></li><li role="treeitem"><div data-tocid="spldoc-markup-escape-d41691e72045" class="topicref" data-id="spldoc-markup-escape" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-escape.html" id="spldoc-markup-escape-d41691e72045-link">Escape</a><div class="wh-tooltip"><p class="shortdesc">To suppress interpretation by the <span class="keyword cmdname">spl-make-doc</span> command, precede the SPLDOC markup character by a backslash ( \ ), which is the escape character.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-links-d41691e72059" class="topicref" data-id="spldoc-markup-links" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-links-d41691e72059-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-links.html" id="spldoc-markup-links-d41691e72059-link">Links</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC to mark up different kinds of links.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldocannotations-d41691e72115" class="topicref" data-id="spldocannotations" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldocannotations-d41691e72115-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations.html" id="spldocannotations-d41691e72115-link">Annotation tags</a><div class="wh-tooltip"><p class="shortdesc">You can use the SPLDOC annotation tags to document the interfaces that are exposed by the SPL composite operators and to exclude toolkit artifacts. <span class="ph">You can also use SPLDOC annotation tags to document SPL and native functions.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="spldoc-markup-annotations-ports-d41691e72128" class="topicref" data-id="spldoc-markup-annotations-ports" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-ports.html" id="spldoc-markup-annotations-ports-d41691e72128-link">Ports</a><div class="wh-tooltip"><p class="shortdesc">You can use annotation tags to specify the input and output ports of a composite operator.</p></div></div></div></li><li role="treeitem"><div data-tocid="spldoc-markup-annotations-parameters-d41691e72139" class="topicref" data-id="spldoc-markup-annotations-parameters" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-parameters.html" id="spldoc-markup-annotations-parameters-d41691e72139-link">Parameters</a><div class="wh-tooltip"><p class="shortdesc">You can use annotation tags to document the parameters of composite operators, <span class="ph">SPL functions, and native functions</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="spldoc-markup-annotations-returnvalues-d41691e72153" class="topicref" data-id="spldoc-markup-annotations-returnvalues" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-returnvalues.html" id="spldoc-markup-annotations-returnvalues-d41691e72153-link">Return values</a><div class="wh-tooltip"><p class="shortdesc">You can use annotation tags to describe the value that is returned by an SPL <span class="ph">or native</span> function.</p></div></div></div></li><li role="treeitem"><div data-tocid="spldoc-markup-annotations-throws-d41691e72167" class="topicref" data-id="spldoc-markup-annotations-throws" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-throws.html" id="spldoc-markup-annotations-throws-d41691e72167-link">Exceptions</a><div class="wh-tooltip"><p class="shortdesc">You can use annotation tags to describe exceptions that are thrown by native functions. </p></div></div></div></li><li role="treeitem"><div data-tocid="spldoc-markup-annotations-include-exclude-d41691e72178" class="topicref" data-id="spldoc-markup-annotations-include-exclude" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-include-exclude.html" id="spldoc-markup-annotations-include-exclude-d41691e72178-link">Exclude artifacts</a><div class="wh-tooltip"><p class="shortdesc">You can use annotation tags to exclude toolkit artifacts from the generated documentation.</p></div></div></div></li><li role="treeitem"><div data-tocid="spldoc-markup-annotations-samples-d41691e72189" class="topicref" data-id="spldoc-markup-annotations-samples" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-markup-annotations-samples.html" id="spldoc-markup-annotations-samples-d41691e72189-link">Samples</a><div class="wh-tooltip"><p class="shortdesc">You can use an annotation tag to document sample toolkits. Sample toolkits contain examples of how to use other toolkits.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-images-d41691e72200" class="topicref" data-id="spldoc-images" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-images-d41691e72200-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rimages.html" id="spldoc-images-d41691e72200-link">Images</a><div class="wh-tooltip"><p class="shortdesc">You can embed image files in the generated document by specifying the image file name and a label for the image.</p></div></div></div></li><li role="treeitem"><div data-tocid="spldoc-formatconventions-d41691e72239" class="topicref" data-id="spldoc-formatconventions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-formatconventions.html" id="spldoc-formatconventions-d41691e72239-link">Formatting conventions</a><div class="wh-tooltip"><p class="shortdesc">By following the formatting conventions when you mark up the toolkit artifacts, you ensure that the <span class="keyword cmdname">spl-make-doc</span> command interprets the markup correctly and generates the expected results.</p></div></div></div></li></ul></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Ports</h1>
+
+
+<div class="- topic/body reference/refbody body refbody"><div class="- topic/abstract abstract"><p class="- topic/shortdesc shortdesc">You can use annotation tags to specify the input
+and output ports of a composite operator.</p><p class="- topic/p p">The
+input port and output port tags are supported in SPL files only. These
+tags are not supported for primitive operators. The port and other
+tags can be positioned in any order.</p></div>
+<section class="- topic/section section"><dl class="- topic/dl dl">
+<dt class="- topic/dt dt dlterm">@input &lt;port name&gt; &lt;description&gt;</dt>
+<dd class="- topic/dd dd">Denotes an input port for a composite operator. The generated
+documentation includes this input port only if the corresponding composite
+is defined with a port of the same name. If an input port is not annotated
+in the SPLDOC for the composite, the generated document includes the
+input port without a description.</dd>
+
+<dt class="- topic/dt dt dlterm">@output &lt;port name&gt; &lt;description&gt;</dt>
+<dd class="- topic/dd dd">Denotes an output port for a composite operator. The generated
+documentation includes this output port only if the corresponding
+composite is defined with a port of the same name. If an output port
+is not annotated in the SPLDOC for the composite, the generated document
+includes the output port without a description.</dd>
+</dl></section>
+<div class="- topic/bodydiv reference/refbodydiv bodydiv refbodydiv">
+<div class="- topic/example example">The following example shows extracted code from the SPLDOC documentation of a composite
+operator
+port.<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>/** 
+...
+@input Orders Customer orders 
+@output Revenue Revenue from orders
+...
+*/
+composite ParallelAggregator(output Revenue; input Orders) { ...</code></pre><p class="- topic/p p">The
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">spl-make-doc</span> command generates documentation.</p><div class="- topic/p p">
+<br/><img class="- topic/image image" src="../images/spldoc_ports.jpg" height="172" width="408" alt="An image of the generated documentation for the composite operator ports."/><br/>
+</div></div>
+</div>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

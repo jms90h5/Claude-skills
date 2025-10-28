@@ -1,0 +1,295 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="description" content="The SPL annotation @eventTime specifies that all the output ports of operators where the annotation is in effect emit a stream with event-time values and watermarks. An event-time graph starts from the output port of an event-time source operator. The event-time source operator inserts watermarks into the output stream from time to time."/><meta name="DC.subject" content="annotations,eventTime,eventTime annotation"/><meta name="keywords" content="annotations, eventTime, eventTime annotation"/><meta name="indexterms" content="annotations, eventTime, eventTime annotation"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/annotations.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spl-container.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="eventtimeannotation"/><meta name="DC.language" content="en-us"/>        
+      <title>EventTime annotation</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="eventtimeannotation-d41691e63558"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/eventtimeannotation.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/eventtimeannotation.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="eventtimeannotation" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="spl-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li><div class="topicref" data-id="annotations"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/annotations.html">Annotations</a><div class="wh-tooltip"><p class="shortdesc">Operators can be annotated. Annotations influence the run time behavior of <span class="keyword">stream applications</span>.</p></div></div></div></li><li class="active"><div class="topicref" data-id="eventtimeannotation"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/eventtimeannotation.html">EventTime annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <code class="ph codeph">@eventTime</code> specifies that all the output ports of operators where the annotation is in effect emit a stream with event-time values and watermarks. An event-time graph starts from the output port of an event-time source operator. The event-time source operator inserts watermarks into the output stream from time to time.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="langoverview-d41691e63305" class="topicref" data-id="langoverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/langoverview.html" id="langoverview-d41691e63305-link">Language overview</a><div class="wh-tooltip"><p class="shortdesc">SPL contains types, expressions, statements, functions, clauses, and other elements of a programming language.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammarnotation-d41691e63316" class="topicref" data-id="grammarnotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammarnotation.html" id="grammarnotation-d41691e63316-link">Grammar notation</a><div class="wh-tooltip"><p class="shortdesc">This language specification adopts a flavor of Backus-Naur Form (BNF) to describe the syntax of language features.</p></div></div></div></li><li role="treeitem"><div data-tocid="lexicalsyntax-d41691e63327" class="topicref" data-id="lexicalsyntax" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/lexicalsyntax.html" id="lexicalsyntax-d41691e63327-link">Lexical syntax</a><div class="wh-tooltip"><p class="shortdesc">SPL defines a set of rules to determine the syntax of a program.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammaroverview-d41691e63338" class="topicref" data-id="grammaroverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammaroverview.html" id="grammaroverview-d41691e63338-link">Grammar overview</a><div class="wh-tooltip"><p class="shortdesc">Here is the SPL grammar syntax, with references to the sections that contain the semantics.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="expressionlanguage-d41691e63349" class="topicref" data-id="expressionlanguage" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action expressionlanguage-d41691e63349-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/expressionlanguage.html" id="expressionlanguage-d41691e63349-link">Expression language</a><div class="wh-tooltip"><p class="shortdesc">Though SPL is a streaming language, there are many places where it uses expressions that are found in traditional imperative or functional languages.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="annotations-d41691e63482" class="topicref" data-id="annotations" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action annotations-d41691e63482-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/annotations.html" id="annotations-d41691e63482-link">Annotations</a><div class="wh-tooltip"><p class="shortdesc">Operators can be annotated. Annotations influence the run time behavior of <span class="keyword">stream applications</span>.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="autonomousannotation-d41691e63497" class="topicref" data-id="autonomousannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/autonomousannotation.html" id="autonomousannotation-d41691e63497-link">Autonomous annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <code class="ph codeph">@autonomous</code> defines autonomous regions and can be applied to an operator or operators in an application graph to remove those operators from a consistent region.</p></div></div></div></li><li role="treeitem"><div data-tocid="catchannotation-d41691e63511" class="topicref" data-id="catchannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/catchannotation.html" id="catchannotation-d41691e63511-link">Catch annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <code class="ph codeph">@catch</code> indicates that exceptions of a specified type that are thrown by an operator while processing tuples are caught.</p></div></div></div></li><li role="treeitem"><div data-tocid="consistentannotation-d41691e63525" class="topicref" data-id="consistentannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/consistentannotation.html" id="consistentannotation-d41691e63525-link">Consistent annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <code class="ph codeph">@consistent</code> that defines consistent regions can be configured according to how and when the regions are drained, and the maximum amount of time that a region is allotted for a drain or reset process to complete.</p></div></div></div></li><li role="treeitem"><div data-tocid="endpointannotation-d41691e63539" class="topicref" data-id="endpointannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/endpointannotation.html" id="endpointannotation-d41691e63539-link">Endpoint annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <span class="keyword parmname">@endpoint</span> provides documentation to             augment generated API documentation for a particular endpoint of the data exchange API             that is associated with a <span class="keyword">Teracloud® 					Streams</span> job.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="eventtimeannotation-d41691e63558" class="topicref" data-id="eventtimeannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/eventtimeannotation.html" id="eventtimeannotation-d41691e63558-link">EventTime annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <code class="ph codeph">@eventTime</code> specifies that all the output ports of operators where the annotation is in effect emit a stream with event-time values and watermarks. An event-time graph starts from the output port of an event-time source operator. The event-time source operator inserts watermarks into the output stream from time to time.</p></div></div></div></li><li role="treeitem"><div data-tocid="udpparallelannotation-d41691e63572" class="topicref" data-id="udpparallelannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/udpparallelannotation.html" id="udpparallelannotation-d41691e63572-link">Parallel annotation</a><div class="wh-tooltip"><p class="shortdesc"> To take advantage of data-parallelism, apply the <code class="ph codeph">@parallel </code>annotation to invocations of primitive or composite operators. Data-parallelism means replicating copies of operators and splitting streams so that different tuples go to each set of replicas.</p></div></div></div></li><li role="treeitem"><div data-tocid="serviceannotation-d41691e63586" class="topicref" data-id="serviceannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/serviceannotation.html" id="serviceannotation-d41691e63586-link">Service annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <code class="ph codeph">@service</code> provides documentation to augment             generated API documentation for the data exchange API that is associated with a <span class="keyword">Teracloud® 					Streams</span> job.</p></div></div></div></li><li role="treeitem"><div data-tocid="threadingannotation-d41691e63605" class="topicref" data-id="threadingannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/threadingannotation.html" id="threadingannotation-d41691e63605-link">Threading annotation</a><div class="wh-tooltip"><p class="shortdesc"> The SPL <code class="ph codeph">@threading</code> annotation determines the threading model to use for the operators inside of a composite operator. </p></div></div></div></li><li role="treeitem"><div data-tocid="viewannotation-d41691e63619" class="topicref" data-id="viewannotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/viewannotation.html" id="viewannotation-d41691e63619-link">View annotation</a><div class="wh-tooltip"><p class="shortdesc">The SPL annotation <code class="ph codeph">@view</code> specifies that a view is to be created when the streams application is run.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="types-d41691e63633" class="topicref" data-id="types" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action types-d41691e63633-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/types.html" id="types-d41691e63633-link">Types</a><div class="wh-tooltip"><p class="shortdesc">SPL has several primitive types that are tailored for streaming, and a few composite types that are inspired by scripting languages but statically checked. The following topics describe the types, how to define them, and how to convert values between different types.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="operators_1-d41691e63757" class="topicref" data-id="operators_1" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operators_1-d41691e63757-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html" id="operators_1-d41691e63757-link">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="programstructure-d41691e64106" class="topicref" data-id="programstructure" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action programstructure-d41691e64106-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/programstructure.html" id="programstructure-d41691e64106-link">Program structure</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="config-container-d41691e64163" class="topicref" data-id="config-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action config-container-d41691e64163-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/config-container.html" id="config-container-d41691e64163-link">Operator config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds an operator invocation, or how the runtime system runs it. </p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="splbinaryandcharacterencoding-d41691e64361" class="topicref" data-id="splbinaryandcharacterencoding" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action splbinaryandcharacterencoding-d41691e64361-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html" id="splbinaryandcharacterencoding-d41691e64361-link">SPL binary and character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary and character encoding for serializing and deserializing data. This encoding is used for the <code class="ph codeph">FileSource</code>, <code class="ph codeph">TCPSource</code>, and <code class="ph codeph">UDPSource</code> operators, as well as the <code class="ph codeph">FileSink</code>, <code class="ph codeph">TCPSink</code>, and <code class="ph codeph">UDPSink</code> operators.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">EventTime annotation</h1>
+
+
+
+<div class="- topic/body reference/refbody body refbody"><p class="- topic/shortdesc shortdesc">The SPL annotation <code class="+ topic/ph pr-d/codeph ph codeph">@eventTime</code> specifies that all the output ports of
+operators where the annotation is in effect emit a stream with event-time values and watermarks. An
+event-time graph starts from the output port of an event-time source operator. The event-time source
+operator inserts watermarks into the output stream from time to time.</p>
+<section class="- topic/section section"><p class="- topic/p p">When the <code class="+ topic/ph pr-d/codeph ph codeph">@eventTime</code> annotation is applied to a primitive operator, it
+indicates that the operator and all the downstream operators which are connected using event-time
+streams participate in an event-time graph. </p>The <code class="+ topic/ph pr-d/codeph ph codeph">@eventTime</code> annotation applies
+to the annotated operator and all the downstream operators within a connected graph which contain
+the <code class="+ topic/ph pr-d/codeph ph codeph">eventTimeAttribute</code> in their input tuple schemas with the type specified by the
+annotated operator output schema:<ul class="- topic/ul ul">
+<li class="- topic/li li">The event-time graph is contiguous.</li>
+<li class="- topic/li li">Event-time connectivity extends only downstream. If, for example, the annotated operator's
+output is merged with another stream at the input port of the downstream operator, the other stream
+is not part of the event-time graph, even though it has an equivalent schema.</li>
+<li class="- topic/li li">The event-time graph ends at a sink or at an operator which does not output the event-time
+attribute.<div class="- topic/note note note note_note"><span class="note__title">Note:</span> The primitive operator must have an output port. This output port must have a schema
+that has an attribute with one of the accepted event-time tuple types (uint64, int64, timestamp).
+Otherwise the <code class="+ topic/ph pr-d/codeph ph codeph">@eventTime</code> annotation is not valid.</div></li>
+</ul><figure class="- topic/fig fig fignone"><div class="- topic/figgroup figgroup syntaxdiagram-piece"><div class="- topic/figgroup figgroup span"><object data="../../svgobject/oc2Fdoc2Feventtimeannotation.dita_d36180e73.svg" type="image/svg+xml"><span><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+1   @eventTime ( eventTimeAttribute = <em class="+ topic/ph hi-d/i ph i">name</em>?  , resolution = <em class="+ topic/ph hi-d/i ph i">resolution-value</em>?  , lag = <em class="+ topic/ph hi-d/i ph i">lag-valueSeconds</em>?  , minimumGap = <em class="+ topic/ph hi-d/i ph i">minimumGap-valueSeconds</em>  )</code></pre></span></object></div></div></figure></section>
+<section class="- topic/section section">
+<p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">@eventTime</code> annotation can be applied to primitive operators, only.</p>
+<dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/parmname keyword parmname">eventTimeAttribute</span></dt>
+<dd class="- topic/dd dd">Specifies the <var class="+ topic/keyword sw-d/varname keyword varname">name</var> of the tuple attribute which represents the event time of
+the tuple. The following attribute types are supported: <dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/option keyword option">timestamp</span></dt>
+<dd class="- topic/dd dd">Represents a point in time measured in nanoseconds since the Unix Epoch. The only legal
+resolution value is nanoseconds. The machine identifier in an SPL timestamp (and its Java/C++
+representations) is ignored for any event-time calculations.</dd>
+
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/option keyword option">uint64</span></dt>
+<dd class="- topic/dd dd">Represents the number of time units since the Unix Epoch.</dd>
+
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/option keyword option">int64</span></dt>
+<dd class="- topic/dd dd">Represents the number of time units since the Unix Epoch.</dd>
+
+</dl><div class="- topic/note note note note_note"><span class="note__title">Note:</span> 
+<ul class="- topic/ul ul">
+<li class="- topic/li li">If the attribute name exists on multiple output ports, all attributes must have the same
+type.</li>
+<li class="- topic/li li">Optional data types are not supported as event-time attributes.</li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">eventTimeAttribute</span> and <span class="+ topic/keyword pr-d/parmname keyword parmname">resolution</span> indicate how the
+event-time values are represented in the SPL graph.</li>
+</ul>
+</div></dd>
+
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/parmname keyword parmname">resolution</span></dt>
+<dd class="- topic/dd dd">Specifies the resolution of the event-time attribute in:<ul class="- topic/ul ul">
+<li class="- topic/li li">Milliseconds. This is the default value for the event-time attribute of type
+<span class="+ topic/keyword pr-d/option keyword option">int64</span> or <span class="+ topic/keyword pr-d/option keyword option">uint64</span> if the resolution element is not specified.</li>
+<li class="- topic/li li">Microseconds.</li>
+<li class="- topic/li li">Nanoseconds. If the event-time attribute is of type SPL <span class="+ topic/keyword pr-d/option keyword option">timestamp</span>, the default
+resolution value is nanoseconds. <div class="- topic/note note note note_note"><span class="note__title">Note:</span> A compiler error is issued if the resolution element does not
+specify nanoseconds.</div></li>
+</ul><div class="- topic/note note note note_note"><span class="note__title">Note:</span> <span class="+ topic/keyword pr-d/parmname keyword parmname">eventTimeAttribute</span> and <span class="+ topic/keyword pr-d/parmname keyword parmname">resolution</span> indicate how
+the event-time values are represented in the SPL graph.</div>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/parmname keyword parmname">lag</span></dt>
+<dd class="- topic/dd dd">Defines the duration in seconds between the maximum event-time of submitted tuples and the value
+of the watermark to submit. The operator watermark (wm) is:
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>wm = max(event_time_of_input stream) - lag</code></pre>The
+<var class="+ topic/keyword sw-d/varname keyword varname">lag-valueSeconds</var> is specified as <code class="+ topic/ph pr-d/codeph ph codeph">float64</code>. If it is not
+specified, the default value is <code class="+ topic/ph pr-d/codeph ph codeph">0.0</code>.<div class="- topic/note note note note_note"><span class="note__title">Note:</span> <span class="+ topic/keyword pr-d/parmname keyword parmname">lag</span> and
+<span class="+ topic/keyword pr-d/parmname keyword parmname">minimumGap</span> specify how watermarks are generated.</div></dd>
+
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/parmname keyword parmname">minimumGap</span></dt>
+<dd class="- topic/dd dd">Defines the minimum event-time duration in seconds between subsequent watermarks. The
+<var class="+ topic/keyword sw-d/varname keyword varname">minimumGap-valueSeconds</var> is specified as <code class="+ topic/ph pr-d/codeph ph codeph">float64</code>. If it is not
+specified, the default value is <code class="+ topic/ph pr-d/codeph ph codeph">0.1(100 milliseconds)</code>.
+<div class="- topic/note note note note_note"><span class="note__title">Note:</span> <span class="+ topic/keyword pr-d/parmname keyword parmname">lag</span> and <span class="+ topic/keyword pr-d/parmname keyword parmname">minimumGap</span> specify how watermarks are
+generated.</div></dd>
+
+</dl>
+</section>
+<div class="- topic/example example"><h2 class="sectiontitle">Example 1 - Emit watermarks on all output ports</h2>
+<p class="- topic/p p">The following example shows how to specify an event-time source which emits watermarks on all the
+output ports that have an <span class="+ topic/keyword pr-d/parmname keyword parmname">eventTimeAttribute</span> n <code class="+ topic/ph pr-d/codeph ph codeph">readingTime</code> of
+an accepted event-time type. The attribute <var class="+ topic/keyword sw-d/varname keyword varname">resolution-value</var> represents
+milliseconds of event-time.</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>@eventTime(eventTimeAttribute=readingTime, resolution=Milliseconds)</code></pre>
+</div>
+<div class="- topic/example example"><h2 class="sectiontitle">Example 2 - Emit watermarks as specified by the annotation elements</h2>
+<p class="- topic/p p">The following example shows how to specify an event-time source which emits watermarks as
+specified by the annotation elements. The watermark <code class="+ topic/ph pr-d/codeph ph codeph">lag</code> has a default value
+specified at compile time as value <code class="+ topic/ph pr-d/codeph ph codeph">defaultLag</code> and is overwritten at submission time
+by value <code class="+ topic/ph pr-d/codeph ph codeph">watermarkLag</code>. The <code class="+ topic/ph pr-d/codeph ph codeph">minimumGap</code> element can be specified at
+submission time by value <code class="+ topic/ph pr-d/codeph ph codeph">minimumGap</code>.</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-60"><code>
+@eventTime(eventTimeAttribute=readingTime, resolution=Milliseconds, 
+         lag=(float64)getSubmissionTimeValue("watermarkLag"), minimumGap=(float64)getSubmissionTimeValue("minimumGap"))</code></pre>
+</div>
+<div class="- topic/example example"><h2 class="sectiontitle">Example 3 - An operator creates two event-time streams with error</h2>
+<p class="- topic/p p">The following example shows how an operator creates two event-time streams. <code class="+ topic/ph pr-d/codeph ph codeph">Out1</code>
+has an event time of type <var class="+ topic/keyword sw-d/varname keyword varname">timestamp</var>, <code class="+ topic/ph pr-d/codeph ph codeph">Out2</code> has an event time of
+type <code class="+ topic/ph pr-d/codeph ph codeph">int64</code>. In this case the SPL compiler returns an error because the two streams
+use event-time attributes with the same name (<code class="+ topic/ph pr-d/codeph ph codeph">et</code>) but with different data
+types.</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>@eventTime(eventTimeAttribute=et, resolution=Milliseconds)
+    (stream&lt;uint32 b, uint64 et&gt; Out1; stream&lt;uint32 b, int64 et&gt; Out2) = MySource()
+    { . . . }</code></pre>
+</div>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

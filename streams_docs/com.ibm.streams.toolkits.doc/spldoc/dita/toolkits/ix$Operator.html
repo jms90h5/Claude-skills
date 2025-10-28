@@ -1,0 +1,954 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="Operators ARIMA2 The ARIMA2 operator implements the autoregressive integrated moving average (ARIMA) modeling algorithm. ASN1Encode The ASN1Encode operator creates ASN.1 DER-encoded data from XML ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_index"/><title>Operators: Toolkits</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_index-d41691e64470"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_index" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_index"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html">Operators: Toolkits</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem" class="active"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Operators: Toolkits</h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Operators</h2>
+  
+<dl class="- topic/dl dl">
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$ARIMA2.html">ARIMA2</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">ARIMA2</span> operator implements the autoregressive integrated moving average (ARIMA) modeling algorithm.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.encoder.binary$ASN1Encode.html">ASN1Encode</a></dt>
+  <dd class="- topic/dd dd">The ASN1Encode operator creates ASN.1 DER-encoded data from XML documents that fit to the provided ASN.1 specification. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.binary$ASN1Parse.html">ASN1Parse</a></dt>
+  <dd class="- topic/dd dd">The ASN1Parse operator parses a binary data stream that contains ASN.1-encoded data, extracts parts of the data, and sends the data as tuples to downstream operators.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.relational$Aggregate.html">Aggregate</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Aggregate</span> operator is used to compute user-specified aggregations over tuples that are gathered in a window.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$AnomalyDetector.html">AnomalyDetector</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">AnomalyDetector</span> operator can detect anomalous subsequences in an incoming data stream.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$AutoForecaster2.html">AutoForecaster2</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">AutoForecaster2</span> operator is a forecasting operator, which detects the algorithm that best suits the input time series data in real time and forecasts future time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.avro/op$com.teracloud.streams.avro$AvroToJSON.html">AvroToJSON</a></dt>
+  <dd class="- topic/dd dd">This operator converts binary Avro messages and optionally message keys into a JSON string.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$BATS.html">BATS</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">BATS</span> operator is a forecasting operator, which can be used to do long-term forecasting of regular time series with complex seasonality by using the BATS algorithms.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cybersecurity/op$com.teracloud.streams.cybersecurity.tagging$BWListTagger.html">BWListTagger</a></dt>
+  <dd class="- topic/dd dd">The BWListTagger operator loads lists of domains and IP addresses into a lookup table.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Barrier.html">Barrier</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Barrier</span> operator is used to synchronize tuples from two or more streams.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Beacon.html">Beacon</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Beacon</span> operator is a utility source that generates tuples on an ad hoc basis.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.utility$BloomFilter.html">BloomFilter</a></dt>
+  <dd class="- topic/dd dd">The BloomFilter operator detects duplicate tuples in a memory-efficient way.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$BoundedAnomalyDetector.html">BoundedAnomalyDetector</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">BoundedAnomalyDetector</span> operator detects anomalys (outliers) in a timeseries.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.topology/spl$com.teracloud.streams.topology.topic$connect.html#spldoc_compilationunit__composite_operator__Buffered">Buffered</a></dt>
+  <dd class="- topic/dd dd">Connect subscriber to publisher using a buffer.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.text$CSVParse.html">CSVParse</a></dt>
+  <dd class="- topic/dd dd">The CSVParse operator parses an input line of <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/Comma-separated_values" target="_blank" rel="external noopener">comma-separated values (CSV)</a> that is received in an <span class="+ topic/ph hi-d/tt ph tt">rstring</span> type input tuple attribute, splits the line into fields (also called items), and assigns the field values to attributes in the output port schema.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$CharacterTransform.html">CharacterTransform</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">CharacterTransform</span> operator is used to convert from one encoding in blob to another encoding in blob.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Compress.html">Compress</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Compress</span> operator is used to compress data in a blob and generate blob output.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.control$ControlNotificationSource.html">ControlNotificationSource</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">ControlNotificationSource</span> operator provides a connector between control events and data streams by turning control notifications into tuples.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$CrossCorrelate2.html">CrossCorrelate2</a></dt>
+  <dd class="- topic/dd dd">In signal processing, cross-correlation is a measure of similarity of two time series as a function of a time-lag applied to one of them.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$CrossCorrelateMulti.html">CrossCorrelateMulti</a></dt>
+  <dd class="- topic/dd dd">In signal processing, cross-correlation is a measure of similarity of two time series as a function of a time-lag applied to one of them.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.crossdcfailover/spl$com.teracloud.streams.crossdc.failover$CrossDataCenterFailover.html#spldoc_compilationunit__composite_operator__CrossDataCenterFailover">CrossDataCenterFailover</a></dt>
+  <dd class="- topic/dd dd"></dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Custom.html">Custom</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Custom</span> operator is a special logic-related operator that can receive  and send any number of streams and does not do anything by itself.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.parse$DHCPMessageParser.html">DHCPMessageParser</a></dt>
+  <dd class="- topic/dd dd">DHCPMessageParser is an operator for the Streams product that parses individual fields of DHCP messages received in input tuples,  and emits tuples containing message data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.parse$DNSMessageParser.html">DNSMessageParser</a></dt>
+  <dd class="- topic/dd dd">DNSMessageParser is an operator for the Streams product that parses individual fields of DNS messages received in input tuples,  and emits tuples containing message data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketDPDKSource.html">DNSPacketDPDKSource</a></dt>
+  <dd class="- topic/dd dd">DNSPacketDPDKSource is an operator for the Streams product that receives network packets from a supported ethernet adapter.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketFileSource.html">DNSPacketFileSource</a></dt>
+  <dd class="- topic/dd dd">DNSPacketFileSource is an operator for the Streams product that reads prerecorded DNS packets from 'packet capture (PCAP)' files, parses the network headers and the fields of the DNS message, and emits tuples containing packet data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketLiveSource.html">DNSPacketLiveSource</a></dt>
+  <dd class="- topic/dd dd">DNSPacketLiveSource is an operator for the Streams product that captures live DNS packets from an ethernet interface, parses their network headers and the fields of the DNS message, and emits tuples containing packet data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cybersecurity/op$com.teracloud.streams.cybersecurity.analytics$DNSTunneling.html">DNSTunneling</a></dt>
+  <dd class="- topic/dd dd">The DNSTunneling operator analyzes DNS response traffic and reports suspicious behaviour that may indicate the presence of DNS tunneling in the network.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.dps/op$com.teracloud.streams.store.distributed$DPSAux.html">DPSAux</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">DPSAux</strong> operator's purpose is to support primitive Java operators that desire to use the DPS toolkit Java APIs.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$DSPFilter2.html">DSPFilter2</a></dt>
+  <dd class="- topic/dd dd">The Digital Signal Processing (DSP) filter operator performs a digital filtering operation on an input time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$DSPFilterFinite.html">DSPFilterFinite</a></dt>
+  <dd class="- topic/dd dd">The Digital Signal Processing (DSP) filter operator performs a digital filtering operation on an input time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$DWT2.html">DWT2</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">DWT2</span> operator applies a discrete wavelet transform (DWT) on a vector time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$DeDuplicate.html">DeDuplicate</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">DeDuplicate</span> operator suppresses duplicate tuples that are seen within a specified time period.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Decompress.html">Decompress</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Decompress</span> operator decompresses data in blob input and generates blob output that contains the decompressed data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Delay.html">Delay</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Delay</span> operator is used to delay a stream by an amount while it keeps the inter-arrival times of tuples and punctuation intact.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.util$Deserializer.html">Deserializer</a></dt>
+  <dd class="- topic/dd dd">      De-Serialization operator.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.topology/spl$com.teracloud.streams.topology.topic$connect.html#spldoc_compilationunit__composite_operator__Direct">Direct</a></dt>
+  <dd class="- topic/dd dd">Directly connect subscriber to publisher.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$DirectoryScan.html">DirectoryScan</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">DirectoryScan</span> operator watches a directory, and generates file names on the output, one for each file that is found in the directory.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.adapter$DirectoryWatch.html">DirectoryWatch</a></dt>
+  <dd class="- topic/dd dd">					The DirectoryWatch operator monitors configured directories and reports changes in them.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$Distribution.html">Distribution</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Distribution</span> operator calculates the quartile distribution for an input time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cybersecurity/op$com.teracloud.streams.cybersecurity.analytics$DomainProfiling.html">DomainProfiling</a></dt>
+  <dd class="- topic/dd dd">The DomainProfiling operator analyzes DNS response traffic and reports whether or not the behaviour of the domain is suspicious.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.dps/spl$com.teracloud.streams.store.distributed$DpsGetTTLWithReconnect.html#spldoc_compilationunit__composite_operator__DpsGetTTLWithReconnect">DpsGetTTLWithReconnect</a></dt>
+  <dd class="- topic/dd dd">Uses the dpsGetTTL function to read key-value pairs from DPS (of any type).</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.dps/spl$com.teracloud.streams.store.distributed$DpsPutTTLWithReconnect.html#spldoc_compilationunit__composite_operator__DpsPutTTLWithReconnect">DpsPutTTLWithReconnect</a></dt>
+  <dd class="- topic/dd dd">Uses the dpsPutTTL function to write key-value pairs to Redis (of any type).</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$DynamicFilter.html">DynamicFilter</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">DynamicFilter</span> is a version of the <span class="+ topic/ph hi-d/tt ph tt">Filter</span> operator that can decide at run time  which input tuples are passed through, based on control input it receives.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.elasticsearch/op$com.teracloud.streams.elasticsearch$ElasticsearchIndex.html">ElasticsearchIndex</a></dt>
+  <dd class="- topic/dd dd">The ElasticsearchIndex operator receives incoming tuples and stores the tuple attributes name-value pairs as JSON documents in a specified index of an Elasticsearch database.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.endpoint$EndpointSink.html">EndpointSink</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">EndpointSink</span> operator enables data exchange between a Streams job and external clients.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.endpoint$EndpointSource.html">EndpointSource</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">EndpointSource</span> operator enables data exchange between a Streams job and external clients.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.utility$ExceptionCatcher.html">ExceptionCatcher</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">DEPRECATED</strong>: The <span class="+ topic/ph hi-d/tt ph tt">com.teracloud.streams.teda.ExceptionCatcher</span> operator is deprecated and the @catch annotation should be used instead. The deprecated operator might be removed in a future release. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$Export.html">Export</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Export</span> operator sends a stream from the current application,  making it available to <span class="+ topic/ph hi-d/tt ph tt">Import</span> operators of applications that are running in the same streaming middleware instance.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.domains$ExtractDomain.html">ExtractDomain</a></dt>
+  <dd class="- topic/dd dd">This operator extracts the domain+tld portion of a fqdn in a tuple, and sets a pre-existing field in the tuple to that value.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$FFT.html">FFT</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FFT</span> operator applies a transformation of a time series from time domain into frequency domain.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$FMPFilter.html">FMPFilter</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FMPFilter</span> operator is an adaptive faded-memory polynomial filter.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.ftp$FTPCommand.html">FTPCommand</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FTPCommand</span> operator can run an <strong class="+ topic/ph hi-d/b ph b">ftp</strong> command at a remote host by using the FTP, FTPS, or SFTP protocols.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.ftp$FTPPutFile.html">FTPPutFile</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FTPPutFile</span> operator can put a local file on a remote host by using FTP, FTPS, or SFTP protocols.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.ftp$FTPReader.html">FTPReader</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FTPReader</span> operator is a source operator that can scan a directory at a remote host or receive files from a remote host by using the FTP, FTPS, or SFTP protocols.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$FileSink.html">FileSink</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FileSink</span> operator writes tuples to a file.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$FileSource.html">FileSource</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FileSource</span> operator reads data from a file and produces tuples as a result.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.relational$Filter.html">Filter</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Filter</span> operator removes tuples from a stream by passing along only those tuples that satisfy a user-specified condition.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.topology/spl$com.teracloud.streams.topology.topic$topicsfilter.html#spldoc_compilationunit__composite_operator__FilteredSubscribe">FilteredSubscribe</a></dt>
+  <dd class="- topic/dd dd">Filtered subscribe to a topic.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$FlightPathEncounter.html">FlightPathEncounter</a></dt>
+  <dd class="- topic/dd dd">This operator tracks flying objects and calculates possible encounters between the objects in the future.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Format.html">Format</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Format</span> operator is similar to the <span class="+ topic/ph hi-d/tt ph tt">FileSink</span>, <span class="+ topic/ph hi-d/tt ph tt">TCPSink</span>, and <span class="+ topic/ph hi-d/tt ph tt">UDPSink</span> operators,  in that it converts SPL tuples into formatted data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$FunctionEvaluator.html">FunctionEvaluator</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">FunctionEvaluator</span> operator applies a function to each value in a time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.relational$Functor.html">Functor</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Functor</span> operator is used to transform input tuples into output ones, and optionally filter them as in a <span class="+ topic/ph hi-d/tt ph tt">Filter</span> operator.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$GAMLearner.html">GAMLearner</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">GAMLearner</span> operator applies the generalized additive model (GAM) algorithm to categorical or continuous time series data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$GAMScorer.html">GAMScorer</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">GAMScorer</span> operator applies a generalized additive model to score the input time series values.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$GMM.html">GMM</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">GMM</span> operator uses a Gaussian mixture model to estimate the probability density function (a smoothed histogram) of a time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Gate.html">Gate</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Gate</span> operator is used to control the rate at which tuples are passed through.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.generators$Generator.html">Generator</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Generator</span> operator generates a sine, triangular, sawtooth, or a pulse train representation of a time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$Geofence.html">Geofence</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Geofence</span> operator is used to manage user-defined geographical regions called geofences and provide information as entities move in and out of of these regions.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$GeometryMapMatcher.html">GeometryMapMatcher</a></dt>
+  <dd class="- topic/dd dd">The GeometryMapMatcher operator calculates edges of a road network that are within reach of a given area of interest (AOI).</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hbase/op$com.teracloud.streams.hbase$HBASEDelete.html">HBASEDelete</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">HBASEDelete</span> operator deletes an entry, an entire row, a columnFamily in a row, or a columnFamily, columnQualifier pair in a row from an HBase table.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hbase/op$com.teracloud.streams.hbase$HBASEGet.html">HBASEGet</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">HBASEGet</span> operator gets tuples from an HBase table and puts the result in the output stream attribute specified in the <strong class="+ topic/ph hi-d/b ph b">outAttrName</strong> parameter.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hbase/op$com.teracloud.streams.hbase$HBASEIncrement.html">HBASEIncrement</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">HBASEIncrement</span> operator increments the specified HBase entry.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hbase/op$com.teracloud.streams.hbase$HBASEPut.html">HBASEPut</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">HBASEPut</span> operator puts tuples into an HBase table.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hbase/op$com.teracloud.streams.hbase$HBASEScan.html">HBASEScan</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">HBASEScan</span> operator scans an HBase table.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hdfs/op$com.teracloud.streams.hdfs$HDFS2DirectoryScan.html">HDFS2DirectoryScan</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">HDFS2DirectoryScan</strong> operator scans a Hadoop Distributed File System directory for new or modified files.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hdfs/op$com.teracloud.streams.hdfs$HDFS2FileCopy.html">HDFS2FileCopy</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">HDFS2FileCopy</strong> operator copies files from a HDFS file system to the local disk and also in the opposite direction from a local disk to the HDFS file system.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hdfs/op$com.teracloud.streams.hdfs$HDFS2FileSink.html">HDFS2FileSink</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">HDFS2FileSink</strong> operator writes files to a Hadoop Distributed File System.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.hdfs/op$com.teracloud.streams.hdfs$HDFS2FileSource.html">HDFS2FileSource</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">HDFS2FileSource</strong> operator reads files from a Hadoop Distributed File System (HDFS) </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$HTTPBLOBInjection.html">HTTPBLOBInjection</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">NOTE</strong>: <strong class="+ topic/ph hi-d/b ph b">Deprecated</strong> as of version 5.0.0 (Streams version 7.2).  Use the <span class="+ topic/ph hi-d/tt ph tt">EndpointSource</span> operator from the SPL toolkit instead. Embeds a Jetty web server to allow HTTP or HTTPS POST requests to submit a tuple on its output ports. Each output port corresponds to a unique URL comprising the operator name and the port index. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.http$HTTPGetJSONContent.html">HTTPGetJSONContent</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">This operator is deprecated.</strong> Use HTTPRequest operator instead. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.http$HTTPGetStream.html">HTTPGetStream</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">This operator is deprecated.</strong> Use HTTPRequest operator instead. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.http$HTTPGetXMLContent.html">HTTPGetXMLContent</a></dt>
+  <dd class="- topic/dd dd">Periodically connects to an HTTP endpoint to GET XML content as a single tuple.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$HTTPJSONInjection.html">HTTPJSONInjection</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">NOTE</strong>: <strong class="+ topic/ph hi-d/b ph b">Deprecated</strong> as of version 5.0.0 (Streams version 7.2).  Use the <span class="+ topic/ph hi-d/tt ph tt">EndpointSource</span> operator from the SPL toolkit instead. Embeds a Jetty web server to allow HTTP or HTTPS POST requests with mime type <span class="+ topic/ph hi-d/tt ph tt">application/json</span> to submit a tuple on its output ports. Each output port corresponds to a unique URL comprising the operator name and the port index. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/spl$com.teracloud.streams.inet.http$HTTPParallelRequest.html#spldoc_compilationunit__composite_operator__HTTPParallelRequest">HTTPParallelRequest</a></dt>
+  <dd class="- topic/dd dd">The operator HTTPParallelRequest issues HTTP requests in parallel asynchronously from the input stream.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.http$HTTPPost.html">HTTPPost</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">This operator is deprecated.</strong> Use HTTPRequest operator instead. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.http$HTTPRequest.html">HTTPRequest</a></dt>
+  <dd class="- topic/dd dd">Issue an HTTP request of the specified method for each input tuple.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$HTTPRequestProcess.html">HTTPRequestProcess</a></dt>
+  <dd class="- topic/dd dd">Operator accepts a web request and generates corresponding response.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$HTTPTupleInjection.html">HTTPTupleInjection</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">NOTE</strong>: <strong class="+ topic/ph hi-d/b ph b">Deprecated</strong> as of version 5.0.0 (Streams version 7.2).  Use the <span class="+ topic/ph hi-d/tt ph tt">EndpointSource</span> operator from the SPL toolkit instead. Embeds a Jetty web server to allow HTTP or HTTPS POST requests to submit a tuple on its output ports. Each output port corresponds to a unique URL comprising the operator name and the port index. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$HTTPTupleView.html">HTTPTupleView</a></dt>
+  <dd class="- topic/dd dd">REST HTTP or HTTPS API to view tuples from windowed input ports.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$HTTPXMLInjection.html">HTTPXMLInjection</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">NOTE</strong>: <strong class="+ topic/ph hi-d/b ph b">Deprecated</strong> as of version 5.0.0 (Streams version 7.2).  Use the <span class="+ topic/ph hi-d/tt ph tt">EndpointSource</span> operator from the SPL toolkit instead. Embeds a Jetty web server to allow HTTP or HTTPS POST requests to submit a tuple on its output ports. Each output port corresponds to a unique URL comprising the operator name and the port index. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$HTTPXMLView.html">HTTPXMLView</a></dt>
+  <dd class="- topic/dd dd">REST API to view tuples from input ports.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$Hangout.html">Hangout</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Hangout</span> operator is used to detect a basic pattern about a moving entity's location called a <em class="+ topic/ph hi-d/i ph i">hangout</em>.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$HoltWinters2.html">HoltWinters2</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">HoltWinters2</span> operator is a forecasting operator, which uses the Holt-Winters algorithm to do long-term forecasting.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$HoltWinters3.html">HoltWinters3</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">HoltWinters3</span> operator is a forecasting operator, which can be used to do long-term forecasting of seasonal regular time series by using different variants of the Holt-Winters algorithms.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cybersecurity/op$com.teracloud.streams.cybersecurity.analytics$HostProfiling.html">HostProfiling</a></dt>
+  <dd class="- topic/dd dd">The HostProfiling operator analyzes DNS response traffic and reports whether or not the behaviour of the hosts are suspicious.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.websocket/op$com.teracloud.streams.websocket.op$HttpPost.html">HttpPost</a></dt>
+  <dd class="- topic/dd dd">This operator posts/sends the incoming tuple's text or binary content to a HTTP or HTTPS persistent (Keep-Alive) or non-persistent endpoint specified in the operator parameter named url.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.enrichment$IPASNEnricher.html">IPASNEnricher</a></dt>
+  <dd class="- topic/dd dd">This operator enriches IPv4 and IPv6 addresses with ASN data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.location$IPAddressLocation.html">IPAddressLocation</a></dt>
+  <dd class="- topic/dd dd">IPAddressLocation is an operator for the Streams product that finds the geographical location of IP addresses received in input tuples, based on the subnets they are part of, and emits output tuples containing the country, state or province, city, latitude, and longitude of the subnets.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.parse$IPFIXMessageParser.html">IPFIXMessageParser</a></dt>
+  <dd class="- topic/dd dd">IPFIXMessageParser is an operator for the Streams product that  parses individual fields of IPFIX messages received in input tuples,  and emits tuples containing message data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.filter$IPFilter.html">IPFilter</a></dt>
+  <dd class="- topic/dd dd">This operator filters IPv4 addresses based on a list of IPv4 addresses input in CIDR format.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.enrichment$IPSpatialEnricher.html">IPSpatialEnricher</a></dt>
+  <dd class="- topic/dd dd">This operator enriches IPv4 and IPv6 addresses with geospatial data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$Import.html">Import</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Import</span> operator receives tuples from streams that are made available by <span class="+ topic/ph hi-d/tt ph tt">Export</span> operators  of applications that are running in the same streaming middleware instance.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.preprocessing$IncrementalInterpolate.html">IncrementalInterpolate</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">IncrementalInterpolate</span> operator calculates missing values in a time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet$InetSource.html">InetSource</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">InetSource</span> operator periodically retrieves data from network servers and generates a stream from those contents.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.jdbc/op$com.teracloud.streams.jdbc$JDBCRun.html">JDBCRun</a></dt>
+  <dd class="- topic/dd dd">The JDBCRun operator runs a user-defined SQL statement that is based on an input tuple.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.jms/op$com.teracloud.streams.jms$JMSSink.html">JMSSink</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">JMSSink</span> operator creates messages from Streams tuples and writes the messages to a WebSphere MQ or an Apache Active MQ queue or topic.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.jms/op$com.teracloud.streams.jms$JMSSource.html">JMSSource</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">JMSSource</span> operator reads data from a WebSphere MQ or an Apache Active MQ queue or a topic and creates tuples from the read data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.avro/op$com.teracloud.streams.avro$JSONToAvro.html">JSONToAvro</a></dt>
+  <dd class="- topic/dd dd">This operator converts JSON strings into binary Avro messages.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.json/op$com.teracloud.streams.json$JSONToTuple.html">JSONToTuple</a></dt>
+  <dd class="- topic/dd dd">Converts JSON strings into SPL tuples.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$JavaOp.html">JavaOp</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">JavaOp</span> operator is used to call out to operators implemented in Java by using the Java Operator API.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/spl$spl.control$control.html#spldoc_compilationunit__composite_operator__JobControlPlane">JobControlPlane</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">JobControlPlane</span> composite operator must be added to any application with a consistent region.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.relational$Join.html">Join</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Join</span> operator is used to correlate tuples from two streams that are based on user-specified match predicates and window configurations.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$KMeansClustering.html">KMeansClustering</a></dt>
+  <dd class="- topic/dd dd">Cluster analysis is a popular technique used to find natural grouping of a set of objects.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaConsumer.html">KafkaConsumer</a></dt>
+  <dd class="- topic/dd dd">The KafkaConsumer operator is used to consume messages from Kafka topics.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaProducer.html">KafkaProducer</a></dt>
+  <dd class="- topic/dd dd">The KafkaProducer operator is used to produce messages on Kafka topics.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$Kalman.html">Kalman</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Kalman</span> operator runs an adaptive filter on a time series and can used for tracking, smoothing, adaptation.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$LPC.html">LPC</a></dt>
+  <dd class="- topic/dd dd">The Linear Predictive Coding (<span class="+ topic/ph hi-d/tt ph tt">LPC</span>) operator uses an autoregressive (AR) model to predict values in a time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.mqtt/op$com.teracloud.streams.mqtt$MQTTSink.html">MQTTSink</a></dt>
+  <dd class="- topic/dd dd">The MQTTSink operator creates a message for every tuple it receives on its input port and publishes the message to an MQTT server.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.mqtt/op$com.teracloud.streams.mqtt$MQTTSource.html">MQTTSource</a></dt>
+  <dd class="- topic/dd dd">The MQTTSource operator subscribes to MQTT topics and receives messages when they are published to subscribed topics.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$MapStore.html">MapStore</a></dt>
+  <dd class="- topic/dd dd">The MapStore operator stores geometry data for the edge network in a shared map store, which the <a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$PointMapMatcher.html">PointMapMatcher</a> operator can access.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cep/op$com.teracloud.streams.cep$MatchRegex.html">MatchRegex</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">MatchRegex</span> operator matches a regular expression pattern over the sequence of input tuples to detect composite events.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.messagehub/op$com.teracloud.streams.messagehub$MessageHubConsumer.html">MessageHubConsumer</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">MessageHubConsumer</strong> operator is used to consume records from the IBM Event Streams cloud service.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.messagehub/op$com.teracloud.streams.messagehub$MessageHubProducer.html">MessageHubProducer</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">MessageHubProducer</strong> operator is used to consume records from the IBM Event Streams cloud service.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$MetricsSink.html">MetricsSink</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">MetricsSink</span> operator reads tuples and populates metrics with the values.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.parse$NetflowMessageParser.html">NetflowMessageParser</a></dt>
+  <dd class="- topic/dd dd">NetflowMessageParser is an operator for the Streams product that  parses individual fields of Netflow messages received in input tuples,  and emits tuples containing message data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$Normalize.html">Normalize</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Normalize</span> operator incrementally estimates the means and variance and can normalize the time series to zero means and unit variance.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$OSMCorrelator.html">OSMCorrelator</a></dt>
+  <dd class="- topic/dd dd">The OSMCorrelator correlates information read by the OSMXMLGeometrySource to map generated edge IDs back to the original Way ID from the OpenStreetMaps map (.osm file).</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/spl$com.teracloud.streams.geospatial$OSMPointMapMatcher.html#spldoc_compilationunit__composite_operator__OSMPointMatcher">OSMPointMatcher</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">OSMPointMapMatcher</span> composite analyzes time based object location data to heuristically project points on a network of roads specified by an OpenStreetMaps XML map file.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$OSMXMLGeometrySource.html">OSMXMLGeometrySource</a></dt>
+  <dd class="- topic/dd dd">OSMXMLGeometrySource reads in an OSM XML map file (.osm file) and generates geometry tuples for consumption by the PointMapMatcher and PathMapMatcher operators.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.objectstorage/op$com.teracloud.streams.objectstorage$ObjectStorageScan.html">ObjectStorageScan</a></dt>
+  <dd class="- topic/dd dd">Scans for specified key name pattern on a object storage.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.objectstorage/op$com.teracloud.streams.objectstorage$ObjectStorageSink.html">ObjectStorageSink</a></dt>
+  <dd class="- topic/dd dd">Operator writes objects to S3 compliant object storage.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.objectstorage/op$com.teracloud.streams.objectstorage$ObjectStorageSource.html">ObjectStorageSource</a></dt>
+  <dd class="- topic/dd dd">Operator reads objects from S3 compliant object storage.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.pmml/op$com.teracloud.streams.pmml$PMMLScoring.html">PMMLScoring</a></dt>
+  <dd class="- topic/dd dd">The PMMLScoring operator scores tuple data it receives on the first input port against a previously loaded PMML model.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$PSAX.html">PSAX</a></dt>
+  <dd class="- topic/dd dd">The PSAX operator is capable of providing a symbolic representation of real-valued time series data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.content$PacketContentAssembler.html">PacketContentAssembler</a></dt>
+  <dd class="- topic/dd dd">PacketContentAssembler is an operator for the Streams product that reassembles application flows (such as SMTP, FTP, HTTP, and SIP) and files (such as GIF, JPEG, HTML, and and PDF) from raw network packets received in input tuples,  and emits tuples containing the reassembled content.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.source$PacketDPDKSource.html">PacketDPDKSource</a></dt>
+  <dd class="- topic/dd dd">PacketDPDKSource is an operator for the Streams product that receives network packets from a supported ethernet adapter.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.sink$PacketFileSink.html">PacketFileSink</a></dt>
+  <dd class="- topic/dd dd">PacketFileSink is an operator for the Streams product that writes network packets into 'packet capture (PCAP)' files.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.source$PacketFileSource.html">PacketFileSource</a></dt>
+  <dd class="- topic/dd dd">PacketFileSource is an operator for the Streams product that reads prerecorded network packets from 'packet capture (PCAP)' files, parses the network headers, and emits tuples containing packet data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.source$PacketLiveSource.html">PacketLiveSource</a></dt>
+  <dd class="- topic/dd dd">PacketLiveSource is an operator for the Streams product that captures live network packets from an ethernet interface, parses their network headers, and emits tuples containing packet data.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Pair.html">Pair</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Pair</span> operator is used to pair tuples from two or more streams.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Parse.html">Parse</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Parse</span> operator is similar to the <span class="+ topic/ph hi-d/tt ph tt">FileSource</span>, <span class="+ topic/ph hi-d/tt ph tt">TCPSource</span>, and <span class="+ topic/ph hi-d/tt ph tt">UDPSource</span> operators,  in that it transforms input data in a raw form into well-structured SPL tuples.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$PointMapMatcher.html">PointMapMatcher</a></dt>
+  <dd class="- topic/dd dd">The PointMapMatcher operator analyzes time based object location data to heuristically project points on a network of edges, as the original data may be imprecise.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cybersecurity/spl$com.teracloud.streams.cybersecurity.analytics$PredictiveBlocklisting.html#spldoc_compilationunit__composite_operator__PredictiveBlocklisting">PredictiveBlocklisting</a></dt>
+  <dd class="- topic/dd dd">The PredictiveBlocklisting operator analyzes the feature vector produced by the PredictiveBlocklistingFE operator using an SPSS model.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cybersecurity/op$com.teracloud.streams.cybersecurity.extractors$PredictiveBlocklistingFE.html">PredictiveBlocklistingFE</a></dt>
+  <dd class="- topic/dd dd">The PredictiveBlocklistingFE operator ingests DNS response traffic and outputs a feature vector that is used by the PredictiveBlocklisting operator.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.topology/spl$com.teracloud.streams.topology.topic$topics.html#spldoc_compilationunit__composite_operator__Publish">Publish</a></dt>
+  <dd class="- topic/dd dd">Publish a stream to a topic.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.relational$Punctor.html">Punctor</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Punctor</span> operator is used to transform input tuples into output ones and add window punctuation to the output.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$PythonOp.html">PythonOp</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">PythonOp</span> operator is used to call out to operators implemented in Python by using the Python Operator API.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.cybersecurity/op$com.teracloud.streams.cybersecurity.adapters$QRadarSink.html">QRadarSink</a></dt>
+  <dd class="- topic/dd dd">This operator allows Streams applications to send syslog messages to a QRadar host.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$RLSFilter.html">RLSFilter</a></dt>
+  <dd class="- topic/dd dd">The Recursive Least Squares (RLS) is linear regression estimation algorithm that learns to predict a target time series, given inputs.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.rproject/op$com.teracloud.streams.rproject$RScript.html">RScript</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">RScript</span> operator maps input tuple attributes to objects that can be used in R commands.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.rabbitmq/op$com.teracloud.streams.rabbitmq$RabbitMQSink.html">RabbitMQSink</a></dt>
+  <dd class="- topic/dd dd">This operator acts as a RabbitMQ producer, sending messages to a RabbitMQ broker.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.rabbitmq/op$com.teracloud.streams.rabbitmq$RabbitMQSource.html">RabbitMQSource</a></dt>
+  <dd class="- topic/dd dd">This operator acts as a RabbitMQ consumer, pulling messages from a RabbitMQ broker.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.preprocessing$ReSample.html">ReSample</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">ReSample</span> operator changes the sampling rate of a time series.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.mail/op$com.teracloud.streams.mail$ReadMail.html">ReadMail</a></dt>
+  <dd class="- topic/dd dd">The ReadMail operator reads e-mails from an imap server and ingests one tuple for each received e-mail.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$RegionMatch.html">RegionMatch</a></dt>
+  <dd class="- topic/dd dd">The RegionMatch operator stores geographical regions (also called Geofences) together with a set of attributes per region.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/spl$spl.utility$ReplayableStart.html#spldoc_compilationunit__composite_operator__ReplayableStart">ReplayableStart</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">ReplayableStart</span> operator forwards tuples and punctuations from its input port to its output port.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.rtp$RtpDecode.html">RtpDecode</a></dt>
+  <dd class="- topic/dd dd">      The RtpDecode Operator converts an input blob with 8 bit mylaw encoded PCM samples into uncompressed 16 bit samples.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.objectstorage/op$com.teracloud.streams.objectstorage.s3$S3ObjectStorageScan.html">S3ObjectStorageScan</a></dt>
+  <dd class="- topic/dd dd">Operator scans for specified key name pattern on a S3 compliant object storage.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.objectstorage/op$com.teracloud.streams.objectstorage.s3$S3ObjectStorageSink.html">S3ObjectStorageSink</a></dt>
+  <dd class="- topic/dd dd">Operator writes objects to S3 compliant object storage.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.objectstorage/op$com.teracloud.streams.objectstorage.s3$S3ObjectStorageSource.html">S3ObjectStorageSource</a></dt>
+  <dd class="- topic/dd dd">Operator reads objects from S3 compliant object storage.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.analysis$STD2.html">STD2</a></dt>
+  <dd class="- topic/dd dd">The <strong class="+ topic/ph hi-d/b ph b">S</strong>easonal <strong class="+ topic/ph hi-d/b ph b">T</strong>rend <strong class="+ topic/ph hi-d/b ph b">D</strong>ecomposition (<span class="+ topic/ph hi-d/tt ph tt">STD</span>) operator uses the Loess algorithm to decompose an input time series into three components: the season, the trend and the residuals.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.utility$ScheduledBeacon.html">ScheduledBeacon</a></dt>
+  <dd class="- topic/dd dd">The ScheduledBeacon operator is a utility source that generates tuples on-the-ﬂy.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.mail/op$com.teracloud.streams.mail$SendMail.html">SendMail</a></dt>
+  <dd class="- topic/dd dd">This operator sends out an e-mail, when a tuple arrives at the input port.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inet/op$com.teracloud.streams.inet.util$Serializer.html">Serializer</a></dt>
+  <dd class="- topic/dd dd">      Serialization operator.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/spl$com.teracloud.streams.network.domains$SimpleExtractDomain.html#spldoc_compilationunit__composite_operator__SimpleExtractDomain">SimpleExtractDomain</a></dt>
+  <dd class="- topic/dd dd">Composite to fill TLD of ExtractDomain operator with files scanned in tldsDir </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.relational$Sort.html">Sort</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Sort</span> operator is used to order tuples that are based on user-specified ordering expressions and window configurations.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$SpatialGridIndex.html">SpatialGridIndex</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">SpatialGridIndex</span> operator stores objects and their location.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.geospatial/op$com.teracloud.streams.geospatial$SpatialRouter.html">SpatialRouter</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">SpatialRouter</span> operator is used to split an input stream that contains geographical data into two or more output streams, based on the geographic location specified by each  tuple.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Split.html">Split</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Split</span> operator is used to split a stream into one or more output streams,  which are based on a user-specified split condition.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.binary$StructureParse.html">StructureParse</a></dt>
+  <dd class="- topic/dd dd">The StructureParse operator parses a binary data stream, which contains fixed-size structures; therefore, the data is passed in using a <span class="+ topic/ph hi-d/tt ph tt">blob</span> attribute.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.topology/spl$com.teracloud.streams.topology.topic$topics.html#spldoc_compilationunit__composite_operator__Subscribe">Subscribe</a></dt>
+  <dd class="- topic/dd dd">Subscribe to topics using a topic filter.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Switch.html">Switch</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Switch</span> operator is used to temporarily stop tuples from flowing.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$TCPSink.html">TCPSink</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">TCPSink</span> operator writes data to a TCP socket in the form of tuples.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$TCPSource.html">TCPSource</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">TCPSource</span> operator reads data from a TCP socket and creates tuples out of it.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.preprocessing$TSWindowing.html">TSWindowing</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">TSWindowing</span> operator can be used to isolate a portion of the signal in a specified duration.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.network/op$com.teracloud.streams.network.filter$TextFilter.html">TextFilter</a></dt>
+  <dd class="- topic/dd dd">This operator filters text (e.g. domain names) based on a list of text input.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$ThreadedSplit.html">ThreadedSplit</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">ThreadedSplit</span> operator splits tuples across multiple output ports to improve concurrency.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Throttle.html">Throttle</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Throttle</span> operator is used to pace a stream to make it flow at a specified rate.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.avro/op$com.teracloud.streams.avro$TupleToAvro.html">TupleToAvro</a></dt>
+  <dd class="- topic/dd dd">This operator converts Streams tuples into binary Avro messages.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.json/op$com.teracloud.streams.json$TupleToJSON.html">TupleToJSON</a></dt>
+  <dd class="- topic/dd dd">Converts incoming tuples to JSON Strings.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$UDPSink.html">UDPSink</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">UDPSink</span> operator writes data to a UDP socket in the form of tuples (and punctuation).</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.adapter$UDPSource.html">UDPSource</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">UDPSource</span> operator reads data from a UDP socket and creates tuples and punctuation out of it.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.utility$Union.html">Union</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">Union</span> operator merges the streams that are connected to multiple input ports into a single stream.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.timeseries/op$com.teracloud.streams.timeseries.modeling$VAR2.html">VAR2</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">VAR2</span> operator tracks data movement and predicts the next expected time series by using a multivariate autoregressive model.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.rest$WebContext.html">WebContext</a></dt>
+  <dd class="- topic/dd dd">Embeds a Jetty web server to provide HTTP or HTTPS REST access to files defined by the <span class="+ topic/ph hi-d/tt ph tt">context</span> and <span class="+ topic/ph hi-d/tt ph tt">contextResourceBase</span> parameters.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.wsserver$WebSocketInject.html">WebSocketInject</a></dt>
+  <dd class="- topic/dd dd"> <strong class="+ topic/ph hi-d/b ph b">NOTE</strong>: <strong class="+ topic/ph hi-d/b ph b">Deprecated</strong> as of version 5.0.0 (Streams version 7.2).  Use the <span class="+ topic/ph hi-d/tt ph tt">WebSocketSource</span> operator from the <strong class="+ topic/ph hi-d/b ph b">com.teracloud.streams.websocket</strong> toolkit instead. Operator recieves messages from WebSocket clients and generates a tuple which is sent to streams. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.inetserver/op$com.teracloud.streams.inet.wsserver$WebSocketSend.html">WebSocketSend</a></dt>
+  <dd class="- topic/dd dd"><strong class="+ topic/ph hi-d/b ph b">NOTE</strong>: <strong class="+ topic/ph hi-d/b ph b">Deprecated</strong> as of version 5.0.0 (Streams version 7.2). Use the <span class="+ topic/ph hi-d/tt ph tt">WebSocketSink</span> operator from the <strong class="+ topic/ph hi-d/b ph b">com.teracloud.streams.websocket</strong> toolkit instead. Operator transmits tuples received on the input port via WebSocket protocol to connected clients. </dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.websocket/op$com.teracloud.streams.websocket.op$WebSocketSendReceive.html">WebSocketSendReceive</a></dt>
+  <dd class="- topic/dd dd">The client-based WebSocketSendReceive operator is designed to serve a dual purpose of simultaneously sending data to and receiving data from a remote WebSocket server.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.websocket/op$com.teracloud.streams.websocket.op$WebSocketSink.html">WebSocketSink</a></dt>
+  <dd class="- topic/dd dd">The server-based WebSocketSink operator is designed to send data to the remote  WebSocket clients that are connected at any given time to the WebSocket server running inside of this operator.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$com.teracloud.streams.websocket/op$com.teracloud.streams.websocket.op$WebSocketSource.html">WebSocketSource</a></dt>
+  <dd class="- topic/dd dd">The server-based WebSocketSource operator is designed to receive  text (plain text, JSON or XML) or binary data from the remote WebSocket and HTTP clients.</dd>
+
+
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../tk$spl/op$spl.XML$XMLParse.html">XMLParse</a></dt>
+  <dd class="- topic/dd dd">The <span class="+ topic/ph hi-d/tt ph tt">XMLParse</span> operator accepts a single input stream and generates tuples as a result.</dd>
+
+</dl>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

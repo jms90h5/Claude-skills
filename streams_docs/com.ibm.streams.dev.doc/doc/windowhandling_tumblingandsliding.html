@@ -1,0 +1,1087 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="topic"/><meta name="description" content="The SPL language supports tumbling and sliding windows to store tuples while they preserve the order of arrival, but differ in how they handle tuple evictions."/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/windowhandling.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/dev-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/developing_operators.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/developing_primitive_operators.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/advancedoperatorimplementationtopics.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="windowhandling"/><meta name="DC.language" content="en-us"/>        
+      <title>Tumbling and sliding windows</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="windowhandling-d41691e6047"/><meta name="wh-source-relpath" content="com.ibm.streams.dev.doc/doc/windowhandling_tumblingandsliding.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.dev.doc/doc/windowhandling_tumblingandsliding.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="windowhandling" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="dev-container"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li><div class="topicref" data-id="developing_operators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div></li><li><div class="topicref" data-id="developing_primitive_operators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_primitive_operators.html">Developing primitive operators</a><div class="wh-tooltip"><p class="shortdesc"> You develop new primitive operators by implementing them in the C++ or Java™ language. You must define an operator model that describes the syntax and semantics of the operator and implement the operator logic by creating the header and implementation code generator templates.</p></div></div></div></li><li><div class="topicref" data-id="creatingprimitiveoperators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html">Developing C++ primitive operators</a><div class="wh-tooltip"><p class="shortdesc">The SPL language supports writing two styles of primitive operators, namely: generic operators and non-generic operators.</p></div></div></div></li><li><div class="topicref" data-id="advancedoperatorimplementationtopics"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/advancedoperatorimplementationtopics.html">Advanced operator implementation</a><div class="wh-tooltip"><p class="shortdesc">Advanced operator implementation techniques provide additional runtime operator control.</p></div></div></div></li><li><div class="topicref" data-id="windowhandling"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/windowhandling.html">Window handling</a><div class="wh-tooltip"><p class="shortdesc">The SPL language run time provides APIs for building window-based operators. </p></div></div></div></li><li class="active"><div class="topicref" data-id="windowhandling"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/windowhandling_tumblingandsliding.html">Tumbling and sliding windows</a><div class="wh-tooltip"><p class="shortdesc">The SPL language supports tumbling and sliding windows to store tuples while they preserve the order of arrival, but differ in how they handle tuple evictions.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="streaming_application_basics-d41691e3994" class="topicref" data-id="streaming_application_basics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streaming_application_basics-d41691e3994-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/streaming_application_basics.html" id="streaming_application_basics-d41691e3994-link">Development concepts</a><div class="wh-tooltip"><p class="shortdesc">Development of stream applications consists of several components such as operators,         streams, tuples, Streams Processing Language, toolkits, and         more.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="writingapplications-d41691e4218" class="topicref" data-id="writingapplications" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action writingapplications-d41691e4218-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/writingapplications.html" id="writingapplications-d41691e4218-link">Developing <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Try out tutorials and explore details about stream application development, SPL features,     and best practices.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="creatingnativefunctions-d41691e5698" class="topicref" data-id="creatingnativefunctions" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creatingnativefunctions-d41691e5698-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingnativefunctions.html" id="creatingnativefunctions-d41691e5698-link"><span class="ph">Developing native functions</span></a><div class="wh-tooltip"><p class="shortdesc">Extend SPL's computational capabilities by creating native functions     written in C++ or Java.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="developing_operators-d41691e5772" class="topicref" data-id="developing_operators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action developing_operators-d41691e5772-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html" id="developing_operators-d41691e5772-link">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="choosingoperators-d41691e5787" class="topicref" data-id="choosingoperators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action choosingoperators-d41691e5787-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/str_optype.html" id="choosingoperators-d41691e5787-link">Types of operators</a><div class="wh-tooltip"><p class="shortdesc">  When developing new operators, developers need to choose the kind of operator to implement based on the task they want to accomplish, the programming language they want to use and the trade-offs they are willing to make between generality and ease of implementation.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="developing_primitive_operators-d41691e5878" class="topicref" data-id="developing_primitive_operators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action developing_primitive_operators-d41691e5878-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_primitive_operators.html" id="developing_primitive_operators-d41691e5878-link">Developing primitive operators</a><div class="wh-tooltip"><p class="shortdesc"> You develop new primitive operators by implementing them in the C++ or Java™ language. You must define an operator model that describes the syntax and semantics of the operator and implement the operator logic by creating the header and implementation code generator templates.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="creatingprimitiveoperators-d41691e5892" class="topicref" data-id="creatingprimitiveoperators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action creatingprimitiveoperators-d41691e5892-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html" id="creatingprimitiveoperators-d41691e5892-link">Developing C++ primitive operators</a><div class="wh-tooltip"><p class="shortdesc">The SPL language supports writing two styles of primitive operators, namely: generic operators and non-generic operators.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="operatorimplementation-d41691e5903" class="topicref" data-id="operatorimplementation" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operatorimplementation-d41691e5903-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/operatorimplementation.html" id="operatorimplementation-d41691e5903-link">Operator implementation</a><div class="wh-tooltip"><p class="shortdesc">You use skeleton template files that are generated by the <span class="keyword cmdname">spl-make-operator</span> script as the basis for operator implementations.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="advancedoperatorimplementationtopics-d41691e5953" class="topicref" data-id="advancedoperatorimplementationtopics" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action advancedoperatorimplementationtopics-d41691e5953-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/advancedoperatorimplementationtopics.html" id="advancedoperatorimplementationtopics-d41691e5953-link">Advanced operator implementation</a><div class="wh-tooltip"><p class="shortdesc">Advanced operator implementation techniques provide additional runtime operator control.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="blockingshutdownhandling-d41691e5964" class="topicref" data-id="blockingshutdownhandling" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/blockingshutdownhandling.html" id="blockingshutdownhandling-d41691e5964-link">Blocking and shutdown handling</a><div class="wh-tooltip"><p class="shortdesc">SPL provides functions to block and shut down operator processing elements safely.</p></div></div></div></li><li role="treeitem"><div data-tocid="punctuationprocessing-d41691e5975" class="topicref" data-id="punctuationprocessing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/punctuationprocessing.html" id="punctuationprocessing-d41691e5975-link">Punctuation processing</a><div class="wh-tooltip"><p class="shortdesc">Punctuation markers in SPL create boundaries. Window punctuation create boundaries within a stream that can be used for creating user-defined windows. Final punctuation is used to mark the end of streams.</p></div></div></div></li><li role="treeitem"><div data-tocid="dynamicstreamimportingexporting-d41691e5986" class="topicref" data-id="dynamicstreamimportingexporting" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dynamicstreamimportingexporting.html" id="dynamicstreamimportingexporting-d41691e5986-link">Dynamic stream importing and exporting</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword apiname">Export</span> operator exports a stream using a set of export properties, which can be modified at run time. Similarly, the <span class="keyword apiname">Import</span> operator is used to import a stream using an import subscription that is defined over the export properties. Import subscriptions can also be changed at run time.</p></div></div></div></li><li role="treeitem"><div data-tocid="logging-d41691e6003" class="topicref" data-id="logging" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/logging.html" id="logging-d41691e6003-link">Logging and tracing</a><div class="wh-tooltip"><p class="shortdesc">When developing C++ primitive operators and native functions, use the    <code class="ph codeph">SPLAPPLOG</code> macro to write messages to the <span class="keyword">Teracloud® 					Streams</span> product log location. Use the <code class="ph codeph">SPLAPPTRC</code> macro to create a trace in the PE   trace files. </p></div></div></div></li><li role="treeitem"><div data-tocid="checkpointing-d41691e6025" class="topicref" data-id="checkpointing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/checkpointing.html" id="checkpointing-d41691e6025-link">Checkpointing</a><div class="wh-tooltip"><p class="shortdesc">Checkpointing is the process of persisting operator state at run time to allow recovery         from a failure. In case of failure, the operator can be restarted by resetting from the         checkpointed state. </p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="windowhandling-d41691e6036" class="topicref" data-id="windowhandling" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action windowhandling-d41691e6036-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/windowhandling.html" id="windowhandling-d41691e6036-link">Window handling</a><div class="wh-tooltip"><p class="shortdesc">The SPL language run time provides APIs for building window-based operators. </p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="windowhandling-d41691e6047" class="topicref" data-id="windowhandling" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/windowhandling_tumblingandsliding.html" id="windowhandling-d41691e6047-link">Tumbling and sliding windows</a><div class="wh-tooltip"><p class="shortdesc">The SPL language supports tumbling and sliding windows to store tuples while they preserve the order of arrival, but differ in how they handle tuple evictions.</p></div></div></div></li><li role="treeitem"><div data-tocid="windowhandling-d41691e6058" class="topicref" data-id="windowhandling" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/windowhandling_timeinterval.html" id="windowhandling-d41691e6058-link">TimeInterval windows</a><div class="wh-tooltip"><p class="shortdesc">The SPL language supports timeInterval windows which collect tuples into window panes specified by event-time intervals.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="multithreadingandoperatorfusion-d41691e6069" class="topicref" data-id="multithreadingandoperatorfusion" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/multithreadingandoperatorfusion.html" id="multithreadingandoperatorfusion-d41691e6069-link">Multi-threading and operator fusion considerations</a><div class="wh-tooltip"><p class="shortdesc">SPL  operators can potentially run in a multi-threaded context, where the process functions of the operators are invoked concurrently. SPL provides a set of utility classes that  handle threads, locks, and conditional variables to protect against concurrent access.</p></div></div></div></li><li role="treeitem"><div data-tocid="metricaccess-d41691e6080" class="topicref" data-id="metricaccess" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/metricaccess.html" id="metricaccess-d41691e6080-link">Metrics access</a><div class="wh-tooltip"><p class="shortdesc"><dfn class="term">Metrics</dfn> are simple counters that are maintained at run time, which can be read from outside of a running job to monitor statistics. </p></div></div></div></li><li role="treeitem"><div data-tocid="accessingpathsruntime-d41691e6093" class="topicref" data-id="accessingpathsruntime" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/accessingpathsruntime.html" id="accessingpathsruntime-d41691e6093-link">Accessing paths at run time</a><div class="wh-tooltip"><p class="shortdesc">The SPL runtime APIs provide functions to access special paths at run time. These functions are provided as part of the <code class="ph codeph">SPL::ProcessingElement</code> class.</p></div></div></div></li><li role="treeitem"><div data-tocid="usingreflectivetypesystem-d41691e6107" class="topicref" data-id="usingreflectivetypesystem" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/usingreflectivetypesystem.html" id="usingreflectivetypesystem-d41691e6107-link">Using the reﬂective type system</a><div class="wh-tooltip"><p class="shortdesc">The types <code class="ph codeph">ValueHandle</code> and <code class="ph codeph">Meta:BaseType</code> provide support for reflection. The former type is a handle to a value of an SPL type. The latter type is a meta-type that represents an SPL type.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="advancedcodegenerationtopics-d41691e6124" class="topicref" data-id="advancedcodegenerationtopics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action advancedcodegenerationtopics-d41691e6124-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/advancedcodegenerationtopics.html" id="advancedcodegenerationtopics-d41691e6124-link">Advanced code generation</a><div class="wh-tooltip"><p class="shortdesc">When you create generic operators, you can use advanced code generation techniques for more operator customization and control.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="javaprimitiveoperators-d41691e6281" class="topicref" data-id="javaprimitiveoperators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action javaprimitiveoperators-d41691e6281-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/javaprimitiveoperators.html" id="javaprimitiveoperators-d41691e6281-link">Developing Java™ primitive operators</a><div class="wh-tooltip"><p class="shortdesc">To create a Java™ primitive operator inside an SPL toolkit, you must provide an operator model. The process is similar to how you provide operator models for C++ primitive operators.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev_python_prim_oper-d41691e6594" class="topicref" data-id="dev_python_prim_oper" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev_python_prim_oper-d41691e6594-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-python-prim-oper.html" id="dev_python_prim_oper-d41691e6594-link">Developing Python primitive operators</a><div class="wh-tooltip"><p class="shortdesc">To create a Python primitive operator inside an SPL toolkit, you must provide an         operator model. The process is similar to how you provide operator models for C++ primitive         operators.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="creatingcpluslibraries-d41691e6715" class="topicref" data-id="creatingcpluslibraries" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingcpluslibraries.html" id="creatingcpluslibraries-d41691e6715-link">Creating C++ libraries for operators and native functions</a><div class="wh-tooltip"><p class="shortdesc">To enable operators and native functions, you must compile with the appropriate include file paths and options and link any shared libraries against the correct runtime libraries. </p></div></div></div></li><li role="treeitem"><div data-tocid="fusingmultiplejavaoperators-d41691e6726" class="topicref" data-id="fusingmultiplejavaoperators" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/fusingjavaoperators.html" id="fusingmultiplejavaoperators-d41691e6726-link">Fusing multiple Java™ operators into a single PE</a><div class="wh-tooltip"><p class="shortdesc">If multiple Java™ primitive operators and <span class="keyword apiname">JavaOp</span> operator invocations have compatible <span class="keyword parmname">vmArg</span> parameter lists, you can fuse them together into a single processing element (PE) or run them in stand-alone mode.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="best_practices_for_custom_operators-d41691e6749" class="topicref" data-id="best_practices_for_custom_operators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action best_practices_for_custom_operators-d41691e6749-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/best_practices_for_custom_operators.html" id="best_practices_for_custom_operators-d41691e6749-link">Best practices</a><div class="wh-tooltip"><p class="shortdesc">Use these tips to write operators that perform effectively in their application, and         in other applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="perfrecoforprimitiveoperatorimplementors-d41691e6978" class="topicref" data-id="perfrecoforprimitiveoperatorimplementors" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action perfrecoforprimitiveoperatorimplementors-d41691e6978-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/perf_rec_primitive_operatorimplementors.html" id="perfrecoforprimitiveoperatorimplementors-d41691e6978-link">Performance recommendations</a><div class="wh-tooltip"><p class="shortdesc">These tips help you to improve performance of your primitive operators in C++.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="creating_toolkits-d41691e7044" class="topicref" data-id="creating_toolkits" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creating_toolkits-d41691e7044-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creating_toolkits.html" id="creating_toolkits-d41691e7044-link">Developing custom toolkits</a><div class="wh-tooltip"><p class="shortdesc">Bundle and reuse custom functions and operators across several <span class="keyword">stream applications</span> by creating custom toolkits.</p></div></div></div></li><li role="treeitem"><div data-tocid="enabling-streams-application-service-d41691e7457" class="topicref" data-id="enabling-streams-application-service" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/enabling-streams-data-exchange.html" id="enabling-streams-application-service-d41691e7457-link">Enabling Streams data exchange</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides a data exchange REST API for inserting and retrieving tuples within a job to             easily integrate with other data services and external applications. Stream applications             can enable the data exchange feature by using one or more Endpoint             operators.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldebugger-container-d41691e7472" class="topicref" data-id="spldebugger-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldebugger-container-d41691e7472-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/spldebugger-container.html" id="spldebugger-container-d41691e7472-link">Debugging <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Debug stream applications using the interactive, command line-based <span class="keyword">Streams Debugger</span> (<code class="ph codeph">sdb</code>).</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic topic" role="article" aria-labelledby="windowhandling__windowhandling_tumblingandsliding">
+
+
+
+<h1 class="- topic/title title topictitle1" id="windowhandling__windowhandling_tumblingandsliding">Tumbling and sliding windows</h1>
+
+<div class="- topic/body body"><p class="- topic/shortdesc shortdesc">The SPL language supports tumbling and sliding windows to store tuples while they
+preserve the order of arrival, but differ in how they handle tuple evictions.</p>
+<section class="- topic/section section">
+<p class="- topic/p p">Rather than keeping all the tuples ever inserted, windows are configured to evict expired tuples.
+In this respect, tumbling windows operate in batches. When a <dfn class="- topic/term term">tumbling</dfn> window fills up,
+all the tuples in the window are evicted. This process is called a window <dfn class="- topic/term term">flush</dfn>. </p>
+<p class="- topic/p p">Conversely, sliding windows operate in an incremental fashion. When a <dfn class="- topic/term term">sliding</dfn> window
+fills up, the future tuple insertions result in evicting the oldest tuples in the window. </p>
+<p class="- topic/p p">The details of tuple eviction are defined by the eviction policy. There are different eviction
+policies. Consider a count-based eviction policy of size <code class="+ topic/ph pr-d/codeph ph codeph">c</code>. A tumbling window that
+is configured in this way flushes whenever the number of tuples in the window reaches
+<code class="+ topic/ph pr-d/codeph ph codeph">c</code>. A similarly configured sliding window will evict the ﬁrst tuple when
+<code class="+ topic/ph pr-d/codeph ph codeph">c+1</code><sup class="+ topic/ph hi-d/sup ph sup">th</sup> tuple is received and each new tuple after that evicts the oldest
+tuple in the window. </p>
+</section>
+<div class="- topic/example example">The following are examples of tumbling and sliding windows that are configured with a
+count-based eviction policy of size
+4.<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>Tumbling window:
+() -&gt; (1) -&gt; (2, 1) -&gt; (3, 2, 1) -&gt; (4, 3, 2, 1) -&gt; () -&gt; (5) -&gt; (6, 5) -&gt; ...
+
+Sliding Window:
+() -&gt; (1) -&gt; (2, 1) -&gt; (3, 2, 1) -&gt; (4, 3, 2, 1) -&gt; (5, 4, 3, 2) -&gt; (6, 5, 4, 3) -&gt; ...
+</code></pre></div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">The trigger policy</h2>
+
+<p class="- topic/p p">Another important way in which tumbling and sliding windows differ is with how they trigger.
+Window <dfn class="- topic/term term">triggers</dfn> are events that indicate that the window is ready for processing. What
+the term processing means is application specific. In the context of an <span class="+ topic/keyword pr-d/apiname keyword apiname">Aggregate</span>
+operator, it might be the computation of an aggregation function, for a <span class="+ topic/keyword pr-d/apiname keyword apiname">Sort</span>
+operator it might be the sorting of the window. The window trigger event is the same as the window
+flush event for tumbling windows. </p>
+<p class="- topic/p p">For a sliding window, the <dfn class="- topic/term term">trigger policy</dfn> deﬁnes when the window triggers. Consider
+the simple case of a count-based trigger policy of size <code class="+ topic/ph pr-d/codeph ph codeph">c</code>. The window will trigger
+after <code class="+ topic/ph pr-d/codeph ph codeph">c</code> new tuples are received since the last trigger.</p>
+</section>
+<div class="- topic/example example">The following is an example of a sliding window with a count-based eviction policy of size
+4 and a count-based trigger policy of size 2. The <code class="+ topic/ph pr-d/codeph ph codeph">*</code> is used to mark the window
+trigger
+events.<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>Sliding Window:
+() -&gt; (1) -&gt; *(2, 1) -&gt; (3, 2, 1) -&gt; *(4, 3, 2, 1) -&gt; (5, 4, 3, 2) -&gt; *(6, 5, 4, 3) -&gt; ...</code></pre></div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Partitioned variants of sliding and tumbling windows</h2>
+
+<p class="- topic/p p">The SPL language also supports partitioned variants of sliding and tumbling windows. For<dfn class="- topic/term term">
+partitioned</dfn> windows, eviction and trigger policies apply to individual partitions,
+independent of other partitions. Each tuple that is inserted into the window is associated with a
+user-specified partition. In effect, each partition has its own subwindow and all the windowing
+configurations apply to the subwindows, independently. As a result, window events such as evictions
+and triggers have partitions that are associated with them. </p>
+<p class="- topic/p p">For tumbling windows, the subwindows that are associated with the partitions are removed when the
+windows are flushed. Conversely, for sliding windows the subwindows that are associated with the
+partitions might never become empty in certain cases. For example, consider a count or delta-based
+eviction policy; when the window is already partially populated, it can never become empty. It is
+important to understand this distinction, as it has implications on the memory usage. </p>
+</section>
+<div class="- topic/example example">The following is an example that shows a partitioned window, where the numbers represent
+tuples and letters represent partitions. As in the previous example, a count-based eviction policy
+of size 4 is
+used.<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>Data Items with Partitions:
+1a 2b 3a 4b 5b, 6b, 7a, 8a, 9b, 10b, 11a, 13a
+
+Tumbling Partitioned Window:
+a: () -&gt; (1) -&gt; (3, 1) -&gt; (7, 3, 1) -&gt; (8, 7, 3, 1) -&gt; () -&gt; (11) -&gt; (13, 11) -&gt; ...
+b: () -&gt; (2) -&gt; (4, 2) -&gt; (5, 4, 2) -&gt; (6, 5, 4, 2) -&gt; () -&gt; (9) -&gt; (10, 9) -&gt; ...
+
+Sliding Partitioned Window:
+a: () -&gt; (1) -&gt; (3, 1) -&gt; (7, 3, 1) -&gt; (8, 7, 3, 1) -&gt; (11, 8, 7, 3) -&gt; (13, 11, 8, 7) -&gt; ...
+b: () -&gt; (2) -&gt; (4, 2) -&gt; (5, 4, 2) -&gt; (6, 5, 4, 2) -&gt; (9, 6, 5, 4) -&gt; (10, 9, 6, 5) -&gt; ...
+
+</code></pre></div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Eviction and trigger policies</h2>
+
+<div class="- topic/p p">The following types of eviction and trigger policies are available:<dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm">Count-based</dt>
+<dd class="- topic/dd dd"><dfn class="- topic/term term">Count-based</dfn> window policies are configured with a size parameter. An example is
+<code class="+ topic/ph pr-d/codeph ph codeph">CountWindowPolicy policy(5);</code>. For a tumbling window, when used to characterize an
+eviction policy, the size deﬁnes the number of tuples that constitute a full window. When a new
+tuple is received, it is inserted into the window. After the insertion, if the number of tuples in
+the window is equal to the specified size (a full window), then the whole window is flushed (mass
+eviction).<div class="- topic/p p">For a sliding window, when used to characterize:<ul class="- topic/ul ul">
+<li class="- topic/li li">An eviction policy, the size deﬁnes the number of tuples to be kept in the window, as it slides.
+When a new tuple is received, if the number of existing tuples in the window is equal to the size
+specified, then the oldest tuple is evicted from the window. The new tuple is inserted into the
+window after the eviction (if any) is performed.</li>
+<li class="- topic/li li">A trigger policy, the size deﬁnes the number of tuples to be received since the last trigger,
+before triggering the window again. When a new tuple is received, the number of tuples that are
+received since the last trigger is updated. If this number is equal to the specified size, then the
+window is triggered again. The trigger policy (count-based) processing takes place after the
+eviction policy (count-based or delta-based) processing.</li>
+</ul>
+</div></dd>
+
+
+<dt class="- topic/dt dt dlterm">Delta-based</dt>
+<dd class="- topic/dd dd"><dfn class="- topic/term term">Delta-based</dfn> window policies are configured with a size parameter and an attribute.
+For instance, consider a tuple of type <code class="+ topic/ph pr-d/codeph ph codeph">TType</code> and an attribute that is named
+<code class="+ topic/ph pr-d/codeph ph codeph">age</code> in that tuple. Here is how a window policy for <code class="+ topic/ph pr-d/codeph ph codeph">delta(age, 15)</code>
+is created in
+C++:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>DeltaWindowPolicy&lt;TType, // tuple type
+  TType::age_type, // attribute type
+  &amp;TType::get_age  // function to get the attribute
+&gt; policy(15);
+</code></pre><p class="- topic/p p">If
+pointers to tuples are to be stored in the window, instead of tuples, the example can be changed
+to:</p><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>DeltaWindowPolicy&lt;TType *, // tuple type
+  TType::age_type, // attribute type
+  &amp;TType::get_age  // function to get the attribute
+&gt; policy(15);
+</code></pre><p class="- topic/p p">For
+a tumbling window, when used to characterize an eviction policy, the size deﬁnes the boundary of a
+full window in the units of the eviction policy attribute. When a new tuple is received, if the
+delta between its eviction policy attribute value and that of the oldest tuple in the window is
+larger than the eviction policy size, then the whole window is flushed (mass eviction). The new
+tuple is inserted into the window after the flush operation (if any) is performed.</p><div class="- topic/p p">For a
+sliding window, when used to characterize:<ul class="- topic/ul ul">
+<li class="- topic/li li">An eviction policy, the size deﬁnes the boundary of the window, as it slides, in the units of
+the eviction policy attribute. When a new tuple is received, existing tuples in the window for which
+the delta between the eviction policy attribute value of the new tuple and that of the existing
+tuple is greater than the eviction policy size are evicted. The new tuple is inserted into the
+window after the evictions (if any) are performed.</li>
+<li class="- topic/li li">A trigger policy, the size deﬁnes the boundary of the sequence of tuples that are received since
+the last trigger that triggers the window again. When a new tuple is received, if the value of its
+trigger attribute is larger than the trigger attribute of the last tuple that triggered the window
+plus the trigger policy size, the window is triggered again. The trigger policy (delta-based)
+processing takes place before the eviction policy (count or delta-based) processing. </li>
+</ul></div></dd>
+
+
+<dt class="- topic/dt dt dlterm">Time-based</dt>
+<dd class="- topic/dd dd"><dfn class="- topic/term term">Time-based</dfn> window policies are configured with a time period parameter (in
+seconds). An example is <code class="+ topic/ph pr-d/codeph ph codeph">TimeWindowPolicy policy(5);</code><p class="- topic/p p">For a tumbling window, when
+used to characterize an eviction policy, the time period deﬁnes the boundary of a full window in
+units of real time. When a new tuple is received, it is inserted into the window. When the time
+elapsed since the last flush event exceeds the specified time period, then the whole window is
+flushed (mass eviction). Window flushes take place independently of tuple insertions.</p><div class="- topic/p p">For a
+sliding window, when used to characterize:<ul class="- topic/ul ul">
+<li class="- topic/li li">An eviction policy, the time period deﬁnes the boundary of the window, as it slides, in units of
+real time. When a new tuple is received, it is inserted into the window. Tuples that are in the
+window longer than the specified time period are evicted. Tuple evictions take place independently
+of tuple insertions.</li>
+<li class="- topic/li li">A trigger policy, the time period deﬁnes the inter-arrival time for successive trigger events.
+When the time elapsed since the last trigger event exceeds the specified time period, a new trigger
+is generated. The trigger policy (time-based) processing takes place independently of the eviction
+policy processing.</li>
+</ul></div></dd>
+
+
+<dt class="- topic/dt dt dlterm">Punctuation-based</dt>
+<dd class="- topic/dd dd"><dfn class="- topic/term term">Punctuation-based</dfn> window policies have no configuration options. An example is
+<code class="+ topic/ph pr-d/codeph ph codeph">PunctWindowPolicy policy();</code><p class="- topic/p p">A tumbling window with punctuation-based eviction
+policy is considered full when a punctuation is received. When a tuple is received, it is inserted
+into the window. When a punctuation is received, the whole window flushes (mass
+eviction).</p><p class="- topic/p p">Sliding windows cannot have punctuation-based eviction or trigger
+policies.</p></dd>
+
+</dl></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Partition eviction policies</h2>
+
+<p class="- topic/p p">Partitioned windows are used to group related tuples for processing. Each partition
+contains <code class="+ topic/ph pr-d/codeph ph codeph">0</code> to <code class="+ topic/ph pr-d/codeph ph codeph">n</code> tuples. In partitioned windows, tuples might never
+be evicted from a partition. For example, consider an <span class="+ topic/keyword pr-d/apiname keyword apiname">Aggregate</span> operator with a
+partitioned tumbling window that has a trigger policy of <code class="+ topic/ph pr-d/codeph ph codeph">count(100)</code>. If the
+application generates only 99 tuples in each partition, the partitions would never trigger, and the
+memory usage of the window would continue to increase. Sometimes, the application requirements
+specify that if no tuples are generated during a specific duration, the existing tuples in the
+window are not useful. In such situations, you must delete partitions and recover memory that is
+allocated to the tuples.</p>
+<div class="- topic/p p">SPL supports the following partition eviction polices for partitioned windows: <dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm"><code class="+ topic/ph pr-d/codeph ph codeph">partitionAge(float64 n)</code></dt>
+<dd class="- topic/dd dd">If a tuple is not inserted in a partition for <code class="+ topic/ph pr-d/codeph ph codeph">n</code> seconds, the partition is
+deleted.</dd>
+
+
+<dt class="- topic/dt dt dlterm"><code class="+ topic/ph pr-d/codeph ph codeph">partitionCount(uint32 c)</code></dt>
+<dd class="- topic/dd dd">If the number of partitions exceeds a count of <code class="+ topic/ph pr-d/codeph ph codeph">c</code>, partitions are deleted until
+the partition count is equal to c.</dd>
+
+
+<dt class="- topic/dt dt dlterm"><code class="+ topic/ph pr-d/codeph ph codeph">tupleCount(uint32 t)</code></dt>
+<dd class="- topic/dd dd">If the total number of tuples across all partitions exceeds a count of <code class="+ topic/ph pr-d/codeph ph codeph">t</code>,
+partitions are deleted until the tuple count is less than or equal to <code class="+ topic/ph pr-d/codeph ph codeph">t</code>.</dd>
+
+</dl></div>
+<div class="- topic/p p">The operator can select the partitions to evict by setting one of the following
+policies: <dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm"><code class="+ topic/ph pr-d/codeph ph codeph">OperatorDefined</code></dt>
+<dd class="- topic/dd dd">Implement and register an event handler to select the partitions to evict.</dd>
+
+
+<dt class="- topic/dt dt dlterm"><code class="+ topic/ph pr-d/codeph ph codeph">LRU</code></dt>
+<dd class="- topic/dd dd">Use the default event handler to evict the oldest partitions. A time-ordered list of existing
+partitions and the time when the last tuple was inserted is maintained to identify the least
+recently used partition.</dd>
+
+</dl><div class="- topic/note note note note_note"><span class="note__title">Note:</span> The list of partitions is maintained for both <code class="+ topic/ph pr-d/codeph ph codeph">OperatorDefined</code> and
+<code class="+ topic/ph pr-d/codeph ph codeph">LRU</code> policies.</div>After partitions to be evicted are selected, the operator is
+notified which partitions will be removed with an event. This event allows the operator to take an
+action (such as deleting objects) before the partitions are removed.</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Execution order of events</h2>
+
+<p class="- topic/p p">The executions of the window events are set off by the <code class="+ topic/ph pr-d/codeph ph codeph">insert</code> calls made on the
+window object. The insertion, eviction, and trigger events are run in a certain order when the
+<code class="+ topic/ph pr-d/codeph ph codeph">insert</code> call is made. As an exception, for time-based window policies, the eviction
+and trigger processing might proceed independently of the insertion, depending on the specific
+time-based policies used. The specific order that is used for delivering window events depends on
+the window policies specified. Two tables, one for tumbling windows  (<a class="- topic/xref xref" href="#windowhandling__tbl_tumbling_win">Table 1</a>) and another for sliding windows (<a class="- topic/xref xref" href="#windowhandling__tbl_sliding_win" title="(a | b is used to indicate that events a and b are executed independently, whereas a → b is used to indicate that events a and b are executed serially)">Table 2</a>) summarize the execution order of the window
+events for different eviction and trigger policies.</p>
+<div class="table-container"><table class="- topic/table table" id="windowhandling__tbl_tumbling_win" data-ofbid="windowhandling__tbl_tumbling_win" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Execution order of window events for tumbling windows</span></caption><colgroup><col style="width:26.595744680851062%"/><col style="width:73.40425531914893%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="windowhandling__tbl_tumbling_win__entry__1">Eviction policy</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="windowhandling__tbl_tumbling_win__entry__2">Order of execution</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__1">Count-based</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__2">ﬁrst insert tuple into window, then perform eviction</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__1">Delta-based</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__2">ﬁrst perform eviction, then insert tuple into window</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__1">Time-based</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__2">perform evictions independently of tuple insertions</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__1">Punctuation-based</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_tumbling_win__entry__2">perform eviction when a punctuation is received</td>
+</tr>
+</tbody></table></div>
+<p class="- topic/p p">Notice the order of insertion and eviction are different for count-based and delta-based eviction
+policies. This difference is because for a count-based tumbling window of size <code class="+ topic/ph pr-d/codeph ph codeph">n</code>,
+the window is full when the <code class="+ topic/ph pr-d/codeph ph codeph">n</code><sup class="+ topic/ph hi-d/sup ph sup">th</sup> tuple is received. Whereas for a
+delta-based window of size <code class="+ topic/ph pr-d/codeph ph codeph">delta-n</code>, the window is full when a tuple that increases
+the delta value beyond <code class="+ topic/ph pr-d/codeph ph codeph">n</code> is received. In the latter case, the tuples are first
+evicted from the window and then the newly received tuple is inserted into the emptied window.</p>
+<div class="table-container"><table class="- topic/table table scale-80" id="windowhandling__tbl_sliding_win" data-ofbid="windowhandling__tbl_sliding_win" data-cols="4"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 2</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Execution order of window events for sliding windows </span><span class="- topic/desc desc tabledesc">(a | b is used to indicate that events a and b are executed independently, whereas a → b is
+used to indicate that events a and b are executed serially)</span></caption><colgroup><col style="width:20.11173184357542%"/><col style="width:27.932960893854748%"/><col style="width:27.932960893854748%"/><col style="width:24.022346368715084%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="windowhandling__tbl_sliding_win__entry__1">Eviction\Trigger</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="windowhandling__tbl_sliding_win__entry__2">Count-based</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="windowhandling__tbl_sliding_win__entry__3">Delta-based</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="windowhandling__tbl_sliding_win__entry__4">Time-based</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__1">Count-based</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__2">evict → insert → trigger</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__3">trigger → evict → insert</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__4">evict → insert | trigger</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__1">Delta-based</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__2">evict → insert → trigger</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__3">trigger → evict → insert</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__4">evict → insert | trigger</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__1">Time-based</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__2">insert → trigger | evict</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__3">trigger → insert | evict</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="windowhandling__tbl_sliding_win__entry__4">insert | evict | trigger</td>
+</tr>
+</tbody></table></div>
+<p class="- topic/p p">For sliding windows that do not involve time-based policies, eviction always precedes insertion,
+since evictions are needed to make room for the new tuple that arrives. However, the trigger
+processing might come ﬁrst or last depending on whether there are count-based or delta-based trigger
+policies. For count-based trigger policies, the triggering happens at the end because the newly
+inserted tuple is part of the contents of the window that needs to be triggered. For instance, for a
+count-based trigger policy of size <code class="+ topic/ph pr-d/codeph ph codeph">n</code>, the <code class="+ topic/ph pr-d/codeph ph codeph">n</code><sup class="+ topic/ph hi-d/sup ph sup">th</sup> tuple
+that is received since the last trigger results in a new trigger and that
+<code class="+ topic/ph pr-d/codeph ph codeph">n</code><sup class="+ topic/ph hi-d/sup ph sup">th</sup> tuple is part of the triggered window, meaning that the trigger
+succeeds the insertion. However, the delta-based windows are different because the newly received
+tuple is not part of the contents of the window that needs to be triggered. For instance, for a
+delta-based trigger policy of size <code class="+ topic/ph pr-d/codeph ph codeph">delta-n</code>, the tuple that increases the delta
+value beyond <code class="+ topic/ph pr-d/codeph ph codeph">n</code> since the last trigger results in a new trigger and that tuple is
+not part of the triggered window, meaning that the trigger precedes both the insertion and the
+eviction. For time-based eviction policies, the eviction happens independently of other events, and
+similarly, for time-based trigger policies, the trigger happens independently of other events.</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Defining tumbling and sliding windows</h2>
+
+<div class="- topic/p p">Tumbling and sliding windows are represented by the <code class="+ topic/ph pr-d/codeph ph codeph">TumblingWindow</code> and
+<code class="+ topic/ph pr-d/codeph ph codeph">SlidingWindow</code> template classes. They both extend from the common
+<code class="+ topic/ph pr-d/codeph ph codeph">Window</code> class and have the same template parameters as <code class="+ topic/ph pr-d/codeph ph codeph">Window</code>. The
+common base class for tumbling and sliding windows template is as
+follows:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>template &lt;class TupleType,
+          class PartitionType=int32_t,
+          class DataType=std::deque&lt;TupleType&gt;,
+          class StorageType=std::tr1::
+            unordered_map&lt;PartitionType,DataType&gt;  &gt;
+class Window;
+</code></pre></div>
+<p class="- topic/p p indent">The types that are involved in the template are:</p>
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">TupleType</code> is the type of items that are stored in the window. It can be a
+pointer or non-pointer type.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">PartitionType</code> is the type of the window partitioning attribute.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">DataType</code> is the type of the structure that holds the tuples for each
+partition.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">StorageType</code> is the type of the structure that holds the data that is associated
+with all the partitions. It is a mapping from the partition attribute to the data for that
+partition.</li>
+</ul>
+<p class="- topic/p p">All of these types are also defined within the <code class="+ topic/ph pr-d/codeph ph codeph">Window</code>,
+<code class="+ topic/ph pr-d/codeph ph codeph">TumblingWindow</code>, and <code class="+ topic/ph pr-d/codeph ph codeph">SlidingWindow</code> classes as typedefs. In general,
+the developers customize only <code class="+ topic/ph pr-d/codeph ph codeph">TupleType</code> and <code class="+ topic/ph pr-d/codeph ph codeph">PartitionType</code>. The
+following are some example templates.</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>class TumblingWindow&lt;TType&gt;;
+class SlidingWindow&lt;TType *, float32&gt;; // partitioned window
+</code></pre>
+<p class="- topic/p p">For windows that store pointers to tuples, the memory management responsibilities belong to the
+user.</p>
+<p class="- topic/p p">Tumbling window constructors take three parameters, a reference to the operator that contains the
+window, an index to the input port that this window is associated with, and the eviction policy for
+the window. Sliding windows are similar, but they also take the trigger policy, as the last
+parameter. The constructor signatures are given as follows:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>TumblingWindow(Operator &amp; oper, uint32_t port,
+               WindowPolicy const &amp; evictionPolicy);
+SlidingWindow(Operator &amp; oper, uint32_t port,
+              WindowPolicy const &amp; evictionPolicy,
+              WindowPolicy const &amp; triggerPolicy);
+</code></pre>
+<p class="- topic/p p">The following are some example window configurations:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>CountWindowPolicy pC5(5), pC2(2); // count-based policies
+PunctWindowPolicy pP; // punctuation-based policy
+DeltaWindowPolicy&lt;TT,TT::age_type,&amp;TT::get_age&gt; pDage2(2), pDage0(0); // delta-based policy
+DeltaWindowPolicy&lt;TT,TT::time_type,&amp;TT::get_time&gt; pDtime2(2.0); // delta-based policy
+TimeWindowPolicy pT8(8.0), pT2(2.0); // time-based policy
+
+TumblingWindow&lt;TT&gt; wT_C5(op, 0, pC5); // tumbling, count(5)
+TumblingWindow&lt;TT&gt; wT_P(op, 0, pP); // tumbling, punct()
+TumblingWindow&lt;TT&gt; wT_Dage2(op, 0, pDage2); // tumbling, delta(age,2)
+TumblingWindow&lt;TT&gt; wT_T8(op, pT8); // tumbling, time(8)
+
+SlidingWindow&lt;TT&gt; wS_C5_C2(op, 0, pC5, pC2); // sliding, count(5), count(2)
+SlidingWindow&lt;TT&gt; wS_C5_Dage2(op, 0, pC5, pDage2); // sliding, count(5), delta(age, 2)
+SlidingWindow&lt;TT&gt; wS_Dage2_C5(op, 0, pDage2, pC5); // sliding, delta(age, 2), count(5)
+SlidingWindow&lt;TT&gt; wS_Dage2_Dage0(op, 0, pDage2, pDage0); // sliding, delta(age, 2), delta(age, 0)
+SlidingWindow&lt;TT&gt; wS_Dage2_T2(op, 0, pDage2, pT2); // sliding, delta(age, 2), time(2)
+SlidingWindow&lt;TT&gt; wS_T8_C5(op, 0, pT8, pC5); // sliding, time(8), count(5)
+SlidingWindow&lt;TT&gt; wS_T8_Dage2(op, 0, pT8, pDage2); // sliding, time(8), delta(age, 2)
+SlidingWindow&lt;TT&gt; wS_T8_T2(op, 0, pT8, pT2); // sliding, time(8), time(2)
+</code></pre>
+</section>
+<section class="- topic/section section" id="windowhandling__whandle_insertingtuples" data-ofbid="windowhandling__whandle_insertingtuples"><h2 class="- topic/title title sectiontitle">Inserting tuples</h2>
+
+<p class="- topic/p p">SPL run time has an event-driven windowing API. Except for certain events that are fired based on
+time-based eviction and trigger polices, most window events fire as a result of tuples or
+punctuation being inserted into the window. The following are the signatures of the two window
+functions available for inserting tuples and punctuation into the window.</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>void insert(TupleType const &amp; tuple,
+            PartitionType const &amp; partition=PartitionType());
+void insert(Punctuation const &amp; punct);
+</code></pre>
+<p class="- topic/p p">The partition parameter of the tuple insertion function is optional. For non-partitioned windows,
+it can be omitted. A non-partitioned window has a single default partition with a default partition
+attribute type <code class="+ topic/ph pr-d/codeph ph codeph">(int32_t)</code> and value (<code class="+ topic/ph pr-d/codeph ph codeph">0</code>).</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Evicting partitions</h2>
+
+<p class="- topic/p p">If a partition eviction policy is defined for a window, each time a tuple is
+inserted into a partition, the window is checked to see whether partition eviction is required. If
+partition eviction is required and the <code class="+ topic/ph pr-d/codeph ph codeph">LRU</code> option is selected, the default
+<code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEvictionSelection</code> event handler is called to select the partitions
+to evict. The oldest partitions are selected for eviction from a time-ordered list of partitions. If
+partition eviction is required and the <code class="+ topic/ph pr-d/codeph ph codeph">OperatorDefined</code> option is selected, the
+user-defined <code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEvictionSelection</code> event handler is called to allow
+the operator to select partitions for eviction.</p>
+<p class="- topic/p p">If partitions are selected for eviction and the
+<code class="+ topic/ph pr-d/codeph ph codeph">onwindowPartitionEvicition</code> event handler is registered, it is called to take
+user-defined actions before it deletes the partitions. For example, you can delete the tuples in a
+partition to recover the memory that is allocated to the tuples before you delete the
+partitions.</p>
+<div class="- topic/p p">The following section describes how an operator developer implements partition eviction:<ul class="- topic/ul ul">
+<li class="- topic/li li">Evict partitions to control memory use:<ul class="- topic/ul ul">
+<li class="- topic/li li">The developer must edit the <code class="+ topic/ph pr-d/codeph ph codeph">&lt;oper-name&gt;_cpp.cgt</code> file to use the
+<code class="+ topic/ph pr-d/codeph ph codeph">getPartitionedWindowCppInitializer</code> function with the
+<span class="+ topic/keyword pr-d/parmname keyword parmname">selectionType</span> parameter set to <code class="+ topic/ph pr-d/codeph ph codeph">LRU</code>.</li>
+<li class="- topic/li li">The developer can implement and register the <code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEviction</code> function
+to delete tuples for windows that store pointers to tuples.</li>
+</ul></li>
+<li class="- topic/li li">Evict partitions with user-defined actions:<ul class="- topic/ul ul">
+<li class="- topic/li li">The developer must edit the <code class="+ topic/ph pr-d/codeph ph codeph">&lt;oper-name&gt;_cpp.cgt</code> file to use the
+<code class="+ topic/ph pr-d/codeph ph codeph">getPartitionedWindowCppInitializer</code> function with the
+<span class="+ topic/keyword pr-d/parmname keyword parmname">selectionType</span> parameter set to <code class="+ topic/ph pr-d/codeph ph codeph">LRU</code>.</li>
+<li class="- topic/li li">The developer must implement and register the <code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEviction</code>
+function to get notification of partitions that are selected for eviction and to define the action
+to take before the partitions are evicted.</li>
+</ul></li>
+<li class="- topic/li li">Select partitions for eviction:<ul class="- topic/ul ul">
+<li class="- topic/li li">The developer must edit the <code class="+ topic/ph pr-d/codeph ph codeph">&lt;oper-name&gt;_cpp.cgt</code> file to use the
+<code class="+ topic/ph pr-d/codeph ph codeph">getPartitionedWindowCppInitializer</code> function with the
+<span class="+ topic/keyword pr-d/parmname keyword parmname">selectionType</span> parameter set to <code class="+ topic/ph pr-d/codeph ph codeph">OperatorDefined</code>.</li>
+<li class="- topic/li li">The developer must implement and register the
+<code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEvictionSelection</code> function to select the partitions to evict with
+the <code class="+ topic/ph pr-d/codeph ph codeph">markForRemoval()</code> function of the <code class="+ topic/ph pr-d/codeph ph codeph">PartitionSelectionIterator</code>
+class.</li>
+<li class="- topic/li li">The developer can implement and register the <code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEviction</code> function
+to delete tuples for windows that store pointers to tuples or to take specific action when
+partitions are evicted.</li>
+</ul></li>
+</ul></div>
+</section>
+<div class="- topic/example example">
+<p class="- topic/p p">The following example shows a sample <code class="+ topic/ph pr-d/codeph ph codeph">&lt;oper-name&gt;_cpp.cgt</code>
+file.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>&lt;%
+  my $inputPort = $model-&gt;getInputPortAt(0); 
+  my $outputPort = $model-&gt;getOutputPortAt(0);
+  my $inTupleName = $inputPort-&gt;getCppTupleName(); 
+  my $inTupleType = $inputPort-&gt;getCppTupleType();
+  my $outTupleType = $outputPort-&gt;getCppTupleType();
+  my $partitionByParam = $model-&gt;getParameterByName("partitionBy");
+  my $partitionByInitializer = SPL::CodeGen::getParameterCppInitializer($partitionByParam);
+  my $window = $inputPort-&gt;getWindow();
+  my $windowCppInitializer = SPL::CodeGen::getPartitionedWindowCppInitializer($window,
+                                                                              "IPort0Type*",
+                                                                              "OperatorDefined");
+%&gt;
+
+&lt;%SPL::CodeGen::implementationPrologue($model);%&gt;
+
+MY_OPERATOR::MY_OPERATOR()
+  : MY_BASE_OPERATOR(), _window(&lt;%=$windowCppInitializer%&gt;)
+{
+&lt;%if($window-&gt;hasPartitionEvictionPolicy()) {%&gt;
+    _window.registerOnWindowPartitionEviction(this);
+    _window.registerOnWindowPartitionEvictionSelection(this);
+&lt;%}%&gt;
+}
+
+MY_OPERATOR::~MY_OPERATOR()
+{
+  // Delete any remaining tuples in the window
+  _window.deleteWindowObjects();
+}
+
+void MY_OPERATOR::process(Tuple const &amp; tuple, uint32_t port)
+{
+  AutoPortMutex apm(_mutex, *this);
+  IPort0Type const &amp; &lt;%=$inTupleName%&gt; = static_cast&lt;IPort0Type const&amp;&gt;(tuple);
+  PartitionByType partition(&lt;%=$partitionByInitializer%&gt;);
+  _window.insert(new IPort0Type(&lt;%=$inTupleName%&gt;), partition);
+}
+
+&lt;%if($window-&gt;hasPartitionEvictionPolicy()) {%&gt;
+// We will get called when the partition eviction criteria has been reached.
+// This can be partitionAge, partitionCount, or tupleCount.  For this example,
+// We will just select all the least recently used partitions that have no tuples in
+// them, and then select one that still contains tuples.
+// If that isn't enough to satisfy the criteria, we will be re-invoked to do more.
+// We could use examine the partition eviction kind and expressions if we wanted to be more
+// precise.
+void MY_OPERATOR::onWindowPartitionEvictionSelection(WindowEventType::WindowType &amp; window,
+                                   WindowEventType::PartitionSelectionIterator const&amp; begin,
+                                   WindowEventType::PartitionSelectionIterator const&amp; end)
+{
+  // Remove all the old empty partitiones, and one non-empty one
+  for (PartitionSelectionIterator it = begin; it != end; it++) {
+    if (window.getWindowData(it.partition()).size() == 0) {
+            it.markForRemoval();
+    } else {
+            // this window isn't empty
+            it.markForRemoval();
+            break;
+    }
+  }
+}
+
+// For this oper, we are storing pointers to Tuples in the partitioned windows. When
+// a partition is being evicted, we have to delete all the allocated tuples in that partition.
+void MY_OPERATOR::onWindowPartitionEviction(WindowEventType::WindowType &amp; window,
+                                            WindowEventType::PartitionIterator const&amp; begin,
+                                            WindowEventType::PartitionIterator const&amp; end)
+{
+  // We have a window being evicted.   Clean up
+  WindowEventType::PartitionIterator it;
+  for (it = begin; it != end; it++) {
+    // delete the tuples
+    WindowEventType::PartitionType const &amp; partition = it.partition();
+    WindowType::DataType &amp; data = window.getWindowData(partition);
+    for(uint32_t i=0, iu=data.size(); i&lt;iu; ++i)
+      delete data[i];
+  }
+}
+
+&lt;%}%&gt;
+
+&lt;%SPL::CodeGen::implementationEpilogue($model);%&gt;</code></pre></div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Tumbling window summarizer</h2>
+
+<p class="- topic/p p">A tumbling window summarizer can be used to remove the need for the Windowing
+library to retain all tuples in a tumbling window. If your operator would like to use the facilities
+of the windowing library to group and partition tuples, but just needs to look at incoming tuples
+once, a tumbling window summarizer can be used. An example is the <code class="+ topic/ph pr-d/codeph ph codeph">Sum()</code> function in
+<code class="+ topic/ph pr-d/codeph ph codeph">Aggregate</code> for a tumbling window.</p>
+</section>
+<div class="- topic/example example">
+<p class="- topic/p p">Here is the definition of the <code class="+ topic/ph pr-d/codeph ph codeph">TumblingWindowSummarizer</code> class.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>/// Inherit from this class and override select methods to implement
+/// summarizers for tumbling windows.
+template &lt;class T, class G=int32_t&gt;
+class TumblingWindowSummarizer
+{
+  public:
+    typedef T TupleType; //!&lt; tuple type
+    typedef G PartitionType; //!&lt; partition type
+
+    /// Destructor. The destructor is called immediately after the
+    /// afterWindowFlushEvent window event.
+    virtual ˜TumblingWindowSummarizer() {}
+
+    /// This event is fired when a new window is opened.
+    /// A new window is opened when the first tuple that is part of the new
+    /// window is received. The construction happens after the
+    /// beforeTupleInsertionEvent window event and before the
+    /// afterTupleInsertionEvent window event.
+    /// @param partition the partition for which the summarizer is created
+    virtual void onOpenWindowEvent(PartitionType const &amp; partition) {}
+
+    /// This event is fired when a new tuple is added to the window
+    /// corresponding to this summarizer. This event is delivered after the
+    /// beforeTupleInsertionEvent window event and before the
+    /// afterTupleInsertionEvent window event.
+    /// @param tuple the tuple that was inserted
+    virtual void onTupleInsertionEvent(TupleType const &amp; tuple) {}
+    
+    /// This event is fired when the current window is closed. An existing
+    /// window is closed after the last tuple that is part of that window is
+    /// received. This event is delivered before the beforeWindowFlushEvent.
+    virtual void onCloseWindowEvent() {}
+};
+</code></pre>
+<p class="- topic/p p">To use a <code class="+ topic/ph pr-d/codeph ph codeph">TumblingWindowSummarizer</code>, it must be registered with the
+windowing library, using
+<code class="+ topic/ph pr-d/codeph ph codeph">_window.registerWindowSummarizer&lt;<var class="+ topic/keyword sw-d/varname keyword varname">derivedTumblingWindowSummarizer</var>&gt;()</code>.
+This registration causes the windowing library to instantiate a
+<var class="+ topic/keyword sw-d/varname keyword varname">derivedTumblingWindowSummarizer</var> object for each partition in the tumbling window.
+The constructor of the object is passed a <code class="+ topic/ph pr-d/codeph ph codeph">SPL::Operator&amp;</code> as the argument. As
+tuples are inserted into the window, the <code class="+ topic/ph pr-d/codeph ph codeph">onTupleInsertionEvent</code> is invoked on the
+proper summarizer. When the <code class="+ topic/ph pr-d/codeph ph codeph">beforeWindowFlushEvent</code> is called when the tumbling
+window flushes, the summarizer for the window can be accessed with this code:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>    WindowType&amp; twindow = static_cast&lt;WindowType&amp;&gt;(window); 
+    // WindowType must be a tumbling window class.
+    <var class="+ topic/keyword sw-d/varname keyword varname">derivedTumblingWindowSummarizer&amp;</var> summarizer =
+      *static_cast&lt;<var class="+ topic/keyword sw-d/varname keyword varname">derivedTumblingWindowSummarizer*</var>&gt;(twindow.getSummarizer(partition));</code></pre></div>
+<p class="- topic/p p">The information in the summarizer can then be used
+to generate a tuple, or any other action.</p>
+<p class="- topic/p p">Here is an example that shows the use of a tumbling
+window summarizer to implement a Sum operation:</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>#define MY$OP MY_OPERATOR_SCOPE::MY_OPERATOR
+// Assumes $sumType and $sumArg are already set with the C++ type and C++ expression to be summed.
+// $sumArg must use 
+// SPL::CodeGen::prefixLiteralsAndStatesInCppExpressions($somArg-&gt;getCppExpression(), "_oper.");
+// to ensure that all literals and state variables are prefixed by _oper. to allow the C++ 
+// expression to access the necessary information in the primitive operator.
+// The summarize class must then provide a _oper object to resolve the references.
+struct Sum : public SPL::TumblingWindowSummarizer&lt;MY$OP::IPort0Type*,MY$OP::PartitionByType&gt;{
+  MY$OP&amp; _oper;           // Needed to ensure access to literals in C++ code
+  uint64_t _count;        // Used to check if the partition is empty (optional)
+  &lt;%=$sumType%&gt; _sum;     // incremental sum to be accumulated
+  Sum (SPL::Operator&amp; oper) : _oper(static_cast&lt;My$OP &amp;&gt;(oper)), _count(0), _sum(0)  {}
+
+  // Will be invoked for each tuple in a partition
+  void onTupleInsertionEvent(MY$OP::IPort0Type* const&amp; tuple) {
+    _count++;          // Keep a running count of the tuples seen in this window
+    // Establish the needed name for the incoming tuple
+    MY$OP::IPort0Type const &amp;&lt;%=$inTupleName%&gt; = *static_cast&lt;MY$OP::IPort0Type const*&gt;(tuple);
+    // finally, do the actual sum
+    sum += &lt;%=$sumArg%&gt;
+  }
+};
+
+MY_OPERATOR::MY_OPERATOR()
+: _window(&lt;%=$windowCppInitializer%&gt;)
+{
+  _window.registerBeforeWindowFlushHandler(this);
+  _window.registerWindowSummarizer&lt;Sum&gt;();
+  ...
+}
+
+void MY_OPERATOR::beforeWindowFlushEvent(
+  WindowEventType::WindowType &amp; window,
+  WindowEventType::PartitionType const &amp; partition)
+{
+  WindowType&amp; twindow = static_cast&lt;WindowType&amp;&gt;(window);
+  Sum&amp; summarizer = *static_cast&lt;Sum*&gt;(twindow.getSummarizer(partition));
+  if (summarizer._count == 0) {
+    // optional: take action for empty windows
+    // return;
+  }
+  // Window has data - use the value in the summarizer
+  OPort0Type otuple (summarizer._sum);
+  submit (otuple, 0);
+}</code></pre></div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Window events</h2>
+
+<p class="- topic/p p">Various events that are fired by windows are captured through the <code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code>
+template class. <code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code> has the same template form as the window classes
+themselves. Window classes also include a typedef that is called <code class="+ topic/ph pr-d/codeph ph codeph">WindowEventType</code>
+that identifies the window event class for the particular window. To handle window events, register
+a class that derives from <code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code> with the window at hand. Two events are
+common to both tumbling and sliding windows. They are listed here as they appear in the
+<code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code> class:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>virtual void beforeTupleInsertionEvent(
+    WindowType &amp; window, TupleType const &amp; tuple, PartitionType const &amp; partition) {}
+virtual void afterTupleInsertionEvent(
+    WindowType &amp; window, TupleType &amp; tuple, PartitionType const &amp; partition) {}
+</code></pre>
+<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">beforeTupleInsertionEvent</code> is ﬁred right before a tuple is inserted into the
+window, whereas <code class="+ topic/ph pr-d/codeph ph codeph">afterTupleInsertionEvent</code> is ﬁred right after a tuple is inserted
+into the window.</p>
+<p class="- topic/p p">Three events are specific to the tumbling windows. They are listed here as they appear in the
+<code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code> class:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>virtual void beforeWindowFlushEvent(WindowType &amp; window, PartitionType const &amp; partition) {}
+virtual void afterWindowFlushEvent(WindowType &amp; window, PartitionType const &amp; partition) {}
+virtual void onEmptyWindowPunctEvent(WindowType &amp; window) {}
+</code></pre>
+<p class="- topic/p p nopar"><code class="+ topic/ph pr-d/codeph ph codeph">beforeWindowFlushEvent</code> is ﬁred right before a tumbling
+window is flushed, whereas <code class="+ topic/ph pr-d/codeph ph codeph">afterWindowFlushEvent</code> is ﬁred right after a tumbling
+window is flushed. <span class="- topic/ph ph"><code class="+ topic/ph pr-d/codeph ph codeph">onEmptyWindowPunctEvent</code> is fired when a
+tumbling window has trigger <code class="+ topic/ph pr-d/codeph ph codeph">punct</code>, and a punctuation is received when there are no
+tuples in the window. The operator detects that this situation occurs and takes an action (such as
+submitting a Window punctuation).</span></p>
+<p class="- topic/p p">Four events are specific to the sliding windows. They are listed here as they appear in the
+<code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code> class:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>virtual void beforeTupleEvictionEvent(
+     WindowType &amp; window, TupleType &amp; tuple, PartitionType const &amp; partition) {}
+virtual void afterTupleEvictionEvent(
+    WindowType &amp; window, TupleType &amp; tuple, PartitionType const &amp; partition) {}
+virtual void onWindowTriggerEvent(
+    WindowType &amp; window, PartitionType const &amp; partition) {}
+virtual void onWindowInitialFullEvent(
+    WindowType &amp; window, PartitionType const &amp; partition) {}
+</code></pre>
+<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">beforeTupleEvictionEvent</code> is ﬁred right before a tuple is evicted from a sliding
+window, whereas <code class="+ topic/ph pr-d/codeph ph codeph">afterTupleEvictionEvent</code> is ﬁred right after a tuple is evicted from
+a sliding window. <code class="+ topic/ph pr-d/codeph ph codeph cmtt-10">onWindowTriggerEvent</code> is ﬁred when a sliding
+window is triggered. Finally, <code class="+ topic/ph pr-d/codeph ph codeph">onWindowInitialFullEvent</code> is ﬁred when a sliding
+window is full for the ﬁrst time. This function is particularly useful when the window trigger
+events are to be ignored before the window becomes full for the ﬁrst time (a common use case for
+operators like <span class="+ topic/keyword pr-d/apiname keyword apiname">Aggregate</span>).</p>
+</section>
+<div class="- topic/p p">The following events are specific to partitioned
+windows and are listed in the <code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code> class:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>virtual void onWindowPartitionEvictionSelection(WindowType&amp; window,
+                                                PartitionSelectionIteratorconst&amp; begin,
+                                                PartitionSelectionIteratorconst&amp; end){}
+virtual void onWindowPartitionEviction(WindowType&amp; window,
+                                       PartitionIteratorconst&amp; begin,
+                                       PartitionIteratorconst&amp; end) {}</code></pre>The <code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEvictionSelection</code> event
+is fired to select partitions for eviction. The <code class="+ topic/ph pr-d/codeph ph codeph">onWindowPartitionEviction</code> event
+is fired before the selected partitions are evicted.</div>
+<div class="- topic/p p">Events are registered with the windows using the <code class="+ topic/ph pr-d/codeph ph codeph">register&lt;EventType&gt;Handler</code>
+family of functions. For the window events that are common to tumbling and sliding windows, these
+registration functions are defined in the <code class="+ topic/ph pr-d/codeph ph codeph">Window</code> base class, as
+follows:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>WindowEventType * registerBeforeTupleInsertionHandler(WindowEventType * e); 
+WindowEventType * registerAfterTupleInsertionHandler(WindowEventType * e);
+</code></pre></div>
+<p class="- topic/p p">These functions take a pointer to a <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">WindowEventType</samp> object, which
+represents the event handler for the particular type of event under consideration. If this pointer
+is NULL, then the current event handler (if any) is removed. The registration functions always
+return the previous value for the event handler object pointer. Initially all event handler object
+pointers are set to NULL, which means there are no event handlers registered.</p>
+<div class="- topic/p p">For the window events that are specific to tumbling windows, these registration functions are
+defined in the <code class="+ topic/ph pr-d/codeph ph codeph">TumblingWindow</code> class, as
+follows:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>WindowEventType * registerBeforeWindowFlushHandler(WindowEventType * e);
+WindowEventType * registerAfterWindowFlushHandler(WindowEventType * e);
+</code></pre></div>
+<div class="- topic/p p">For the window events that are specific to sliding windows, these registration functions are
+defined in the <code class="+ topic/ph pr-d/codeph ph codeph">SlidingWindow</code> class, as
+follows:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>WindowEventType * registerBeforeTupleEvictionHandler(WindowEventType * e);
+WindowEventType * registerAfterTupleEvictionHandler(WindowEventType * e);
+WindowEventType * registerOnWindowTriggerHandler(WindowEventType * e);
+WindowEventType * registerOnWindowInitialFullHandler(WindowEventType * e);
+</code></pre></div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Accessing window data</h2>
+
+<p class="- topic/p p">There are three functions available for accessing data that is stored within windows. These
+functions are defined in the <code class="+ topic/ph pr-d/codeph ph codeph cmtt-10">Window</code> class, as follows:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>StorageType &amp; getWindowStorage();
+DataType &amp; getWindowData(PartitionType const &amp; partition);
+DataType &amp; getWindowData();
+</code></pre>
+<p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">getWindowStorage</code> function returns a reference to the main window storage
+area, which maps each partition to its own specific storage area that contains window data. For a
+partition, its window data can be accessed through the <code class="+ topic/ph pr-d/codeph ph codeph">getWindowData</code> function.
+Also, a version of <code class="+ topic/ph pr-d/codeph ph codeph">getWindowData</code> exists that does not take a
+<code class="+ topic/ph pr-d/codeph ph codeph">partition</code> parameter. This version is used for non-partitioned windows and creates
+the default partition if it does not already exist.</p>
+<p class="- topic/p p">Window events do not involve multi-threading in the absence of time-based eviction and trigger
+policies. Otherwise, each time-based policy of a window brings in a thread of its own. For instance,
+a tumbling window introduces a thread when it is configured with a time-based eviction policy. A
+sliding window can bring in up to two threads, as it might have a time-based trigger policy in
+addition to a time-based eviction policy. For a window with a time-based policy, the window is
+always locked when an event is ﬁred, so the users do not need to deal with locking inside event
+handlers. In a time-based eviction policy, the tuple eviction and window flush events
+(<code class="+ topic/ph pr-d/codeph ph codeph">before/afterTupleEvictionEvent</code> and <code class="+ topic/ph pr-d/codeph ph codeph">before/afterWindowFlushEvent</code>)
+are ﬁred by the eviction thread. In a time-based trigger policy, the window trigger events
+(<code class="+ topic/ph pr-d/codeph ph codeph">onWindowTriggerEvent</code>) are ﬁred by the trigger thread.</p>
+<p class="- topic/p p">To access the window contents from outside an event handler, in the presence of
+time-based eviction or trigger policies, the <code class="+ topic/ph pr-d/codeph ph codeph">AutoWindowDataAcquirer</code> class can be
+used. The usage is as follows:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>{ AutoWindowDataAcquirer awa(window);
+  ... // access the window data safely
+}
+</code></pre>
+<p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">AutoWindowDataAcquirer</code> object, when constructed, calls
+<code class="+ topic/ph pr-d/codeph ph codeph">acquireData()</code> on the window, and when destructed (when it goes out of scope in the
+example), it calls <code class="+ topic/ph pr-d/codeph ph codeph">releaseData()</code> on the window. These operations reduce to a no-op
+for windows that are free of time-based eviction and trigger policies. As a result, this pattern can
+be safely used in the general case without worrying about unnecessary processing.</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Putting it all together</h2>
+
+<p class="- topic/p p">To summarize, here is a list of the steps that are involved in using the windowing library from
+within a primitive operator:</p>
+<ul class="- topic/ul ul">
+<li class="- topic/li li">Add member variables to your operator that represent the windows</li>
+<li class="- topic/li li">Extend your class from <code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent</code> and add relevant member function overrides
+to handle window events</li>
+<li class="- topic/li li">Add initialization code to your operator's constructor to set up the windowing policies for
+your windows</li>
+<li class="- topic/li li">Add registration code to your operator's constructor to register the events of
+interest</li>
+<li class="- topic/li li">Add logic to your processing functions to insert items into the window</li>
+<li class="- topic/li li">Add logic to your event handler function to implement windowing functionality</li>
+</ul>
+<p class="- topic/p p">Look at an end-to-end example of using the windowing library in a non-generic operator. This
+example is extended to a generic operator that handles various types of windows in <a class="- topic/xref xref" href="windowshandling.html" title="The SPL code generation framework provides code generation APIs to ease the common tasks that are associated with window handling.">Window handling</a>.</p>
+<p class="- topic/p p">For illustration purposes, use a small application called <code class="+ topic/ph pr-d/codeph ph codeph">SensorQuery</code>. This
+application aims at answering queries that are posed against the recent history of sensor readings.
+It contains two sources, one generating queries, and another generating sensor readings. Create an
+operator that keeps the last <code class="+ topic/ph pr-d/codeph ph codeph">n</code> sensor readings and evaluates the incoming queries
+against these readings, outputting any matches that are found. The matching is based on the distance
+of the query to the sensor that originates the reading. In other words, this operator keeps a
+sliding window with a count-based eviction policy of <code class="+ topic/ph pr-d/codeph ph codeph">n</code> on the sensor readings, and
+matches the incoming queries against that window, using nested loop processing. To make things a
+little more interesting, this operator also tracks how many times a sensor reading was matched
+during its stay within the window, and outputs readings that are popular when such readings are
+evicted from the window. A separate output stream is used for this purpose. </p>
+</section>
+<div class="- topic/example example">Here is the SPL code for this
+application:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>composite SensorQuery {
+  type
+    Position = float64 x, float64 y;
+    Reading = int32 sensorId, Position position, float64 value;
+    Query = int32 queryId, Position position, float64 distance;
+    Match = int32 queryId, int32 sensorId, float64 value;
+  graph
+    stream&lt;Reading&gt; Readings as O = Beacon() {
+      param iterations : 10000u;
+      output O : sensorId = (int32) (100.0*random()),
+                 position = { x = random(), y = random() },
+                 value = 1000.0 * random();
+    }
+    stream&lt;Query&gt; Queries as O = Beacon() {
+      logic state : mutable int32 id = -1;
+      param iterations : 10000u;
+      output O : queryId = ++id, distance = 0.05,
+                 position = { x = random(), y = random() };
+    }
+    (stream&lt;Match&gt; Matches; stream&lt;Reading&gt; PopReadings)
+        = FindReadings(Readings; Queries)
+            { param size : 100u; threshold : 3u; }
+}
+</code></pre></div>
+<p class="- topic/p p"><span class="+ topic/keyword pr-d/apiname keyword apiname">Beacon</span>  operators are used as simple workload
+generators for the sensor readings and the queries. An operator that
+is named <span class="+ topic/keyword pr-d/apiname keyword apiname">FindReadings</span> observes data on the sensor
+and query streams using two input ports. This operator produces the
+match results and the popular sensor readings, using two output streams
+on two different output ports. As part of this example, this operator
+can be implemented as a non-generic operator that employs the windowing
+library. For brevity, assume that the operator model is already set
+up, and focus on the C++ code for implementing the operator. Start
+with the header ﬁle that deﬁnes the operator, as follows:</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>#include &lt;SPL/Runtime/Window/Window.h&gt;
+#pragma SPL_NON_GENERIC_OPERATOR_HEADER_PROLOGUE
+class MY_OPERATOR : public MY_BASE_OPERATOR,
+                    public WindowEvent&lt;MY_BASE_OPERATOR::IPort0Type*&gt; {
+                    // extend from the window event class
+public:
+  MY_OPERATOR();
+  virtual ~MY_OPERATOR();
+  void process(Tuple const &amp; tuple, uint32_t port);
+  // method to handle window eviction events
+  void beforeTupleEvictionEvent(Window&lt;IPort0Type*&gt; &amp; window,
+                                IPort0Type * &amp; tuple, int const &amp;);
+private:
+  Mutex mutex_; // This is a stateful operator
+  typedef SlidingWindow&lt;IPort0Type*&gt; WindowType; // Use pointers
+  WindowType windowOfReadings_; // Keep the current readings
+  map&lt;uintptr_t,uint32&gt; matchedReadings_; // Keep match counts
+};
+#pragma SPL_NON_GENERIC_OPERATOR_HEADER_EPILOGUE</code></pre></div>
+<p class="- topic/p p">First, a member variable named <var class="+ topic/keyword sw-d/varname keyword varname">windowOfReadings_</var> is
+defined. The type of the window that is used is <code class="+ topic/ph pr-d/codeph ph codeph">SlidingWindow&lt;IPort0Type*&gt;</code>.
+In other words, it stores pointers to tuples in the window. The tuple
+type for the window corresponds to the sensor readings. Also, it keeps
+a map from sensor reading tuples to the number of times they match
+to a query. This map is called <code class="+ topic/ph pr-d/codeph ph codeph">matchedReadings_</code>.
+It contains tuples for which there was at least one match. Such tuples
+are stored until they are evicted from the   window. Use this map
+to track the popular tuples.</p>
+<p class="- topic/p p">Second, the operator class extends from <code class="+ topic/ph pr-d/codeph ph codeph">WindowEvent&lt;MY
+BASE OPERATOR::IPort0Type*&gt;</code> and implements only one event
+handler, namely <code class="+ topic/ph pr-d/codeph ph codeph">beforeTupleEvictionEvent</code>. This event
+is sufficient to implement the wanted functionality.</p>
+<p class="- topic/p p">Now look at the implementation of this operator. The implementation
+can be described in pieces. The ﬁrst piece consists of the constructor
+and the destructor.</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>#pragma SPL_NON_GENERIC_OPERATOR_IMPLEMENTATION_PROLOGUE
+MY_OPERATOR::MY_OPERATOR()
+  : windowOfReadings_(*this /*operator*/, 0 /*port*/,
+      CountWindowPolicy(getParameter_size()), // eviction policy
+      CountWindowPolicy(1)) // trigger policy
+{ windowOfReadings_.registerBeforeTupleEvictionHandler(this); }
+
+MY_OPERATOR::~MY_OPERATOR()
+{ windowOfReadings_.deleteWindowObjects(); }
+...
+#pragma SPL_NON_GENERIC_OPERATOR_IMPLEMENTATION_EPILOGUE</code></pre></div>
+<p class="- topic/p p">In the constructor, initialize the window by passing it the operator,
+the input port index, and the window policies. Use a count-based eviction
+policy, where the size is retrieved from the parameter <code class="+ topic/ph pr-d/codeph ph codeph">size</code>.
+A trigger policy of size <code class="+ topic/ph pr-d/codeph ph codeph">1</code> is used. Also, register
+the operator with the window to handle the <code class="+ topic/ph pr-d/codeph ph codeph">beforeTupleEviction</code> events.
+In the destructor, call the window's <code class="+ topic/ph pr-d/codeph ph codeph">deleteWindowObjects</code> function
+to reclaim memory for the tuples contained. This call is needed because
+pointers in the window are stored, rather than tuple values.</p>
+<p class="- topic/p p">Now look at the implementation of the processing logic for the
+tuples from the ﬁrst port, representing sensor readings.</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>void MY_OPERATOR::process(Tuple const &amp; tuple, uint32_t port) {
+  AutoPortMutex apm(mutex_, *this);
+  if(port==0) {
+    IPort0Type const &amp; reading = static_cast&lt;IPort0Type const&amp;&gt;(tuple);
+    windowOfReadings_.insert(new IPort0Type(reading));
+  } else { ... }
+}</code></pre></div>
+<p class="- topic/p p">Use an auto port mutex to protect the processing logic, since the
+operator is stateful. The processing logic for the ﬁrst port is as
+simple as inserting a new tuple that represents the just received
+sensor reading into the window. This action might in turn ﬁre an eviction
+event.</p>
+<p class="- topic/p p">Now look at the processing logic for the tuples from the second port
+that represents the queries:</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>void MY_OPERATOR::process(Tuple const &amp; tuple, uint32_t port) {
+  AutoPortMutex apm(mutex_, *this);
+  if(port==0) { ... } else {
+    IPort1Type const &amp; query = static_cast&lt;IPort1Type const&amp;&gt;(tuple);
+    IPort1Type::position_type const &amp; qPos = query.get_position();
+    WindowType::DataType &amp; content = windowOfReadings_.getWindowData();
+    for(WindowType::DataType::iterator it=content.begin(); it!=content.end(); ++it) {
+       IPort0Type const &amp; reading = **it;
+       IPort0Type::position_type const &amp; rPos = reading.get_position();
+       float64 distance = spl::sqrt(spl::pow(rPos.get_x()-qPos.get_x(), 2.0) +
+                          spl::pow(rPos.get_y()-qPos.get_y(), 2.0));
+       if(distance&lt;=query.get_distance()) {
+         OPort0Type otuple(query.get_queryId(), reading.get_sensorId(),
+                           reading.get_value());
+         submit(otuple, 0);
+         uintptr_t ptr = reinterpret_cast&lt;uintptr_t&gt;(&amp;reading);
+         map&lt;uintptr_t,uint32&gt;::iterator mit = matchedReadings_.find(ptr);
+         if(mit==matchedReadings_.end())
+           matchedReadings_.insert(std::make_pair(ptr,1));
+         else
+           mit-&gt;second = mit-&gt;second+1;
+} } } }</code></pre></div>
+<p class="- topic/p p">To process a query tuple, get access to the contents of the sensor
+readings window and iterate over it. For each sensor reading seen,
+compute the distance between the sensor reading and the query, and
+check whether this distance is less than or equal to the threshold
+specified in the query. If so, create an output tuple that represents
+the match and submit it to the ﬁrst output port. If a match, also
+insert the sensor reading tuple pointer into the <code class="+ topic/ph pr-d/codeph ph codeph">matchedReadings_</code> map.
+Increment the number of times the sensor reading was matched to a
+query, if it was already in the map.</p>
+<p class="- topic/p p">Now look at the tuple eviction event handler for sensor readings.</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>void MY_OPERATOR::beforeTupleEvictionEvent(Window&lt;IPort0Type*&gt; &amp; window,
+                                           IPort0Type * &amp; reading, int const &amp;) {
+  uintptr_t ptr = reinterpret_cast&lt;uintptr_t&gt;(reading);
+  map&lt;uintptr_t,uint32&gt;::iterator mit = matchedReadings_.find(ptr);
+  if(mit!=matchedReadings_.end()) {
+    uint32 numMatches = mit-&gt;second;
+    if(numMatches &gt;= getParameter_threshold())
+      submit(*reading, 1);
+    matchedReadings_.erase(mit);
+  }
+  delete reading;
+}</code></pre></div>
+<p class="- topic/p p">When a sensor reading tuple is evicted, ﬁrst check if this tuple
+had any matches. If so, check the number of matches and output the
+tuple on the second port in case the number of matches is beyond the threshold
+that is specified by the <code class="+ topic/ph pr-d/codeph ph codeph">threshold</code> parameter. In
+other words, if it is determined that the sensor reading tuple is
+a popular one, output it. Also, remove the tuple from the matched
+readings map. Before the event handler returns, reclaim the memory
+for the tuple by deleting its pointer.</p>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

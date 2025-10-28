@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="security" content="public">
+<meta name="Robots" content="index,follow">
+<meta name="DC.Type" content="task">
+<meta name="DC.Title" content="Processing JMX API notifications">
+<meta name="abstract" content="To successfully process JMX notifications, your application must implement the NotificationListener interface, become a listener for notifications, and be tolerant of potential lost notifications.">
+<meta name="Description" content="To successfully process JMX notifications, your application must implement the NotificationListener interface, become a listener for notifications, and be tolerant of potential lost notifications.">
+<meta name="DC.subject" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="keywords" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="DC.Relation" scheme="URI" content="../doc/jmxapi-dev.html">
+<meta name="copyright" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Rights.Owner" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="jmxapi-notifications">
+<meta name="DC.Language" content="en-us">
+<meta name="IBM.Country" content="ZZ">
+<!-- Licensed Materials - Property of IBM -->
+<!-- US Government Users Restricted Rights -->
+<!-- Use, duplication or disclosure restricted by -->
+<!-- GSA ADP Schedule Contract with IBM Corp. -->
+
+<link rel="stylesheet" type="text/css" href="/streams/html/css/jmx.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+
+<title>Processing JMX API notifications</title>
+
+	 <link rel="shortcut icon" href="/streams/html/images/favicon_16.ico" type="image/vnd.microsoft.icon">
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png">
+
+<link type="text/css" href="/streams/html/css/www.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/tables.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/content_northstar_styles.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/kc.css" rel="stylesheet"/>
+</head>
+<body id="jmxapi-dev">
+
+<div class="jmx-body">
+  <!-- NLS_CHARSET=UTF-8 -->
+  <div class="blue_header">
+  <!-- Infosphere Streams topics header v -->
+  <div class="runningheader"><!--<img src="../../com.ibm.swg.im.infosphere.streams.common.doc/images/ngibm.gif" border="0" alt="" align="top" />-->
+  <!--<div style="float:right; padding-bottom:5px;">
+    <image src="/streams/html/images/home_button.svg"/>
+  </div>-->
+  <!-- End of InfoSphere Streams topics header -->
+  <div class="button_back"><a href="/external-reference/jmx/api/java/api/index.html">Streams JMX API</a></div></div>
+  <div class="nav_bar"></div>
+</div>
+
+<h1 class="title topictitle1">Processing JMX API notifications</h1>
+<div class="body taskbody">
+<div class="abstract"><span class="shortdesc">To successfully process JMX notifications, your
+application must implement the <samp class="ph codeph">NotificationListener</samp> interface,
+become a listener for notifications, and be tolerant of potential
+lost notifications.</span>
+</div>
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd34125e42">Procedure</h2>
+</div><ol class="ol steps ibm-colored-list ibm-textcolor-gray-80"><li class="li step stepexpand"><span class="ph cmd">Implement the <samp class="ph codeph">NotificationListener</samp> interface.</span> <p class="p">To receive JMX notifications, you must implement the Java™ <samp class="ph codeph">javax.management.NotificationListener</samp> interface.
+The interface contains a single <span class="keyword apiname">handleNotification</span> method,
+where you can add your notification handling logic. </p>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">Make the application a listener for notifications.</span> <p class="p">To become a listener for notifications for a JMX bean, you
+must call the <span class="keyword apiname">javax.management.MBeanServerConnection.addNotificationListener</span> method.
+To limit which notifications are received, you can pass an optional
+filter on the call.</p>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">Make the application tolerant of potential lost notifications.</span> For a complete notification-handling implementation, potential
+lost notifications must be addressed. This tolerance is necessary
+because JMX guarantees that an application either receives all notifications
+for which it is listening or can discover that notifications might have
+been lost. An application can discover when notifications are lost
+by registering a connection notification listener. To register a connection
+notification listener, use the <span class="keyword apiname">javax.management.remote.JMXConnector.addConnectionNotificationListener</span> method. </li>
+</ol>
+<div class="example">
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd34125e78">Example</h2>
+</div>The following example Java code uses the <span class="keyword">Teracloud
+Streams</span> JMX API to register a job and keeps it registered by handling inactivity warning
+notifications:<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock0">import java.math.BigInteger;
+import java.util.HashMap;
+
+import javax.management.JMX;
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
+import javax.management.Notification;
+import javax.management.NotificationFilterSupport;
+import javax.management.NotificationListener;
+
+import com.ibm.streams.management.Notifications;
+import com.ibm.streams.management.ObjectNameBuilder;
+import com.ibm.streams.management.instance.InstanceMXBean;
+import com.ibm.streams.management.job.JobMXBean;
+
+// javac -cp com.ibm.streams.management.jmxmp.jar:com.ibm.streams.management.mx.jar Client.java
+// java -cp .:com.ibm.streams.management.jmxmp.jar:com.ibm.streams.management.mx.jar:jmxremote_optional.jar:glassfish-corba-omgapi-[version].jar:commons-cli-[version].jar 
+//   Client service:jmx:jmxmp://server:9975 domainA instanceA 0 user password
+// Note: It is important to include com.ibm.streams.management.jmxmp.jar in the class path before jmxremote_optional.jar
+public class Client implements NotificationListener {
+  JobMXBean _job;
+  int _inactivityCount = 0;
+
+  public Client(String jmxUrl, String domainName, String instanceName, String jobId, String user, String password) {
+    try {             
+      HashMap&lt;String, Object&gt; env = new HashMap&lt;String, Object&gt;();
+      String [] creds = {user, password};
+      env.put("jmx.remote.credentials", creds);
+      env.put("jmx.remote.protocol.provider.pkgs", "com.ibm.streams.management");
+
+      JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(jmxUrl), env);
+      MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
+
+      ObjectName instanceObjName = ObjectNameBuilder.instance(domainName, instanceName);
+      InstanceMXBean instance = JMX.newMXBeanProxy(mbsc, instanceObjName, InstanceMXBean.class, true);
+
+      ObjectName jobObjName = instance.registerJob(new BigInteger(jobId));
+      _job = JMX.newMXBeanProxy(mbsc, jobObjName, JobMXBean.class, true);
+      System.out.println("Job name: " + _job.getName());
+
+      NotificationFilterSupport filter = new NotificationFilterSupport();
+      filter.enableType(Notifications.INACTIVITY_WARNING);
+      mbsc.addNotificationListener(jobObjName, this, filter, null);
+      jmxc.addConnectionNotificationListener(this,null,null); // listen for potential lost notifications
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void showStatus() {
+    try {
+      while (true) {  
+        Thread.sleep(60000);
+        System.out.println("Number of times in status loop since last job access: " + ++_inactivityCount);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+   
+  public void handleNotification(Notification notification, Object handback) { 
+    System.out.println("Notification type: " + notification.getType());
+    System.out.println("Notification source: " + notification.getSource());
+    _job.keepRegistered();  // call on inactivity warning of if notifications were potentially lost
+    _inactivityCount = 0;
+  }
+ 
+  public static void main(String[] args) {
+    try {
+      Client client = new Client(args[0],  // jmxUrl - use streamtool getjmxconnect to find
+                                 args[1],  // domainName
+                                 args[2],  // instanceName
+                                 args[3],  // jobId 
+                                 args[4],  // user - use streamtool setacl 
+                                           // or streamtool setacl to assign required permissions
+                                 args[5]); // password
+      client.showStatus();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</body></html>

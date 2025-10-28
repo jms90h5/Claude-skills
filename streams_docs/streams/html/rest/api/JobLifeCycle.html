@@ -1,0 +1,140 @@
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="security" content="public" />
+<meta name="Robots" content="index,follow" />
+<meta name="DC.Type" content="task" />
+<meta name="DC.Title" content="Teracloud Streams REST Management APIs" />
+<meta name="abstract" content="You can use the REST management API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="Description" content="You can use the REST API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="DC.subject" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="keywords" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="restapi-dev" />
+<meta name="DC.Language" content="en-us" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/rest.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+<title>Streams Job Life Cycle</title>
+
+
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png">
+
+</head>
+<body id="restapi-dev"><div role="main">
+<div class="rest-header">
+<!-- NLS_CHARSET=UTF-8 -->
+</div><div class="rest-left-column">
+<div class="button_back">
+<svg class="rest-arrow" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg>
+<a href="/external-reference/redoc-static.html">Streams REST API</a></div></div>
+<div class="rest-body">
+<h1 class="title topictitle1">Teracloud Streams Job Life Cycle
+</h1>
+<div class="body taskbody">
+<p>
+You can submit a job by uploading the Streams application bundle from the client or you can provide a URL to the application bundle.
+When you submit the job, the  request does not return until the submission process completes.
+<ul>
+
+<li><b>Upload application bundle from client</b><br/>
+With this option, you first call the POST method on <i>https://host:port/streams/instances/{instanceId}/applicationbundles</i>, passing the application bundle to upload.
+This method copies the bundle to the Streams server and returns an application bundle identifier for the uploaded bundle.
+Next, you submit the job by calling the POST method on <i>https://host:port/streams/instances/{instanceId}/jobs</i>, 
+passing the value of the <code>bundleId</code> property from the previous call as the value of <code>application</code> property on this call.
+<br><br>
+<code>curl -X POST "https://host:port/streams/instances/{instanceId}/applicationbundles" -H  "accept: application/json" -H  "Content-Type: application/x-jar" --data-binary  "@sample.sab"</code>
+<br><br>
+<code>curl -X POST "https://host:port/streams/instances/{instanceId}/jobs" -H  "accept: application/json" -H  "Content-Type: application/json" 
+-d "{\"application\":\"bundleId:87764a40c0c0fc071dc9fe75264eba36648fd458b231ab39476f3636\"}"</code>
+</li>
+<br>
+<li><b>Provide URL to application bundle on server</b><br/>
+With this option, you make a single call to the POST method on <i>https://host:port/streams/instances/{instanceId}/jobs</i>, 
+passing the URL to the application bundle to run as the value of the <code>application</code> property.
+If the host serving the application bundle is secured, also provide the required credentials as the value of the <code>applicationCredentials</code> property.
+<br><br>
+<code>curl -X POST "https://host:port/streams/instances/{instanceId}/jobs" -H  "accept: application/json" -H  "Content-Type: application/json"  
+-d "{\"application\":\"https://myserver.com/sample.sab\"}"</code>
+</li>
+</ul>
+
+<!-- Alternatively, you can choose to have the job submission run asynchronously. In this case, the submit request returns after initial processing
+and you can use additional REST API calls to monitor the job submission status for completion.
+The asynchronous submit job options are as follows:
+<ul>
+
+<li><b>Upload archive for building application bundle from client</b>
+With this option, you first call the POST method on <i>https://host:port/streams/rest/instances/{instanceId}/jobsubmissions</i>,
+passing values for the <code>builds</code> and <code>buildsCredentials</code> properties which identify how to access an installation of the Streams build service.
+This method returns a URL to a job submission resource to be created.
+Next, you complete the creation of the job submission but calling the PUT method on the URL returned by the previous call.
+For this call, you pass the archive containing the content necessary to build the application bundle.
+This method returns the properties of the created job submission. These properties can be used to monitor the status of the job submission.
+<br><br>
+<code>curl -X POST "https://host:port/streams/rest/instances/{instanceId}/jobsubmissions" -H  "accept: application/json" -H  "Content-Type: application/json" 
+-d "{\"builds\":\"https://host:port/streams/rest/builds\",\"buildsCredentials\":{\"user\":\"joe\",\"password\":\"secret\"}}"</code>
+<br><br>
+<code>curl -X PUT "https://host:port/streams/rest/instances/{instanceId}/jobsubmissions/44aa21f7-e83d-467a-bee6-4dfa55262e4d" -H  "accept: application/Json" -H  "Content-Type: application/zip" 
+--data-binary  "@sample.zip"
+</code>
+</li>
+<br>
+<li><b>Upload application bundle from client</b>
+With this option, you first call the POST method on <i>https://host:port/streams/rest/instances/{instanceId}/applicationbundles</i>, passing the application bundle to upload.
+This method copies the bundle to the Streams server and returns an application bundle identifier for the uploaded bundle.
+Next, you call the POST method on <i>https://host:port/streams/rest/instances/{instanceId}/jobsubmissions</i>,
+passing the value of the <code>bundleId</code> property from the previous call as the value of <code>application</code> property on this call.
+This method returns the properties of the created job submission. These properties can be used to monitor the status of the job submission.
+<br><br>
+<code>curl -X POST "https://host:port/streams/rest/instances/{instanceId}/applicationbundles" -H  "accept: application/json" -H  "Content-Type: application/x-jar" --data-binary  "@sample.sab"</code>
+<br><br>
+<code>curl -X POST "https://host:port/streams/rest/instances/{instanceId}/jobsubmissions" -H  "accept: application/json" -H  "Content-Type: application/json" 
+-d "{\"application\":\"bundleId:87764a40c0c0fc071dc9fe75264eba36648fd458b231ab39476f3636\"}"</code>
+</li>
+<br>
+<li><b>Provide URL to application bundle on server</b>
+With this option, you make a single call the POST method on <i>https://host:port/streams/rest/instances/{instanceId}/jobsubmissions</i>,
+passing the URL to the application bundle to run as the value of the <code>application</code> property.
+If the host serving the application bundle is secured, also provide the required credentials as the value of the <code>applicationCredentials</code> property.
+This method returns the properties of the created job submission. These properties can be used to monitor the status of the job submission.
+<br><br>
+<code>curl -X POST "https://host:port/streams/rest/instances/i0418b/jobsubmissions" -H  "accept: application/json" -H  "Content-Type: application/json"  
+-d "{\"application\":\"https://myserver.com/sample.sab\"}"</code>
+</li>
+</ul> -->
+
+<p><br/>
+You can monitor the status of your running jobs using:<br/><br/>
+<code>curl -X GET "https://host:port/streams/instances/{instanceId}/jobs" -H  "accept: application/json"</code>
+
+<p><br/>
+You can make changes to a job using the update operators API. For example, to update the width of a parallel region:<br/><br/> 
+<code>
+curl -X PATCH 'https://host:port/streams/instances/{instanceId}/jobs/{jobId}' -H 'Content-Type: application/json' -H 'Accept: application/json' --data '{"jobConfigurationOverlay" : {"jobConfigOverlays": [{"configInstructions": {"adjustmentSection":  [{"targetParallelRegion": {"regionName": "TransformedData", "newWidth": 5}}]}}]}}'
+</code>    
+
+<p><br/>
+To end a job, the cancel job API can be used:<br/><br/>
+<code>curl -X DELETE "https://host:port/streams/instances/{instanceId}/jobs/{jobId}"</code>
+
+</div></div>
+<div class="rest-right-column"></div>
+</body>
+</html>

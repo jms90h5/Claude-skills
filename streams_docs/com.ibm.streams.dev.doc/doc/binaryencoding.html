@@ -1,0 +1,321 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="description" content="SPL uses a platform independent binary encoding for serializing and deserializing data."/><meta name="DC.subject" content="binary encoding,serializing,deserializing,SPL type,NBF"/><meta name="keywords" content="binary encoding, serializing, deserializing, SPL type, NBF"/><meta name="indexterms" content="binary encoding, serializing, deserializing, SPL type, NBF"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spl-container.html"/><meta name="DC.relation" content="characterencoding.html"/><meta name="DC.relation" content="defaultvaluesofspltypes.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/primitivetypes.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="binaryencoding"/><meta name="DC.language" content="en-us"/>        
+      <title>SPL binary encoding</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="binaryencoding-d41691e64391"/><meta name="wh-source-relpath" content="com.ibm.streams.dev.doc/doc/binaryencoding.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.dev.doc/doc/binaryencoding.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="binaryencoding" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="spl-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li><div class="topicref" data-id="splbinaryandcharacterencoding"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html">SPL binary and character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary and character encoding for serializing and deserializing data. This encoding is used for the <code class="ph codeph">FileSource</code>, <code class="ph codeph">TCPSource</code>, and <code class="ph codeph">UDPSource</code> operators, as well as the <code class="ph codeph">FileSink</code>, <code class="ph codeph">TCPSink</code>, and <code class="ph codeph">UDPSink</code> operators.</p></div></div></div></li><li class="active"><div class="topicref" data-id="binaryencoding"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/binaryencoding.html">Binary encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary encoding for serializing and deserializing data.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="langoverview-d41691e63305" class="topicref" data-id="langoverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/langoverview.html" id="langoverview-d41691e63305-link">Language overview</a><div class="wh-tooltip"><p class="shortdesc">SPL contains types, expressions, statements, functions, clauses, and other elements of a programming language.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammarnotation-d41691e63316" class="topicref" data-id="grammarnotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammarnotation.html" id="grammarnotation-d41691e63316-link">Grammar notation</a><div class="wh-tooltip"><p class="shortdesc">This language specification adopts a flavor of Backus-Naur Form (BNF) to describe the syntax of language features.</p></div></div></div></li><li role="treeitem"><div data-tocid="lexicalsyntax-d41691e63327" class="topicref" data-id="lexicalsyntax" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/lexicalsyntax.html" id="lexicalsyntax-d41691e63327-link">Lexical syntax</a><div class="wh-tooltip"><p class="shortdesc">SPL defines a set of rules to determine the syntax of a program.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammaroverview-d41691e63338" class="topicref" data-id="grammaroverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammaroverview.html" id="grammaroverview-d41691e63338-link">Grammar overview</a><div class="wh-tooltip"><p class="shortdesc">Here is the SPL grammar syntax, with references to the sections that contain the semantics.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="expressionlanguage-d41691e63349" class="topicref" data-id="expressionlanguage" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action expressionlanguage-d41691e63349-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/expressionlanguage.html" id="expressionlanguage-d41691e63349-link">Expression language</a><div class="wh-tooltip"><p class="shortdesc">Though SPL is a streaming language, there are many places where it uses expressions that are found in traditional imperative or functional languages.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="annotations-d41691e63482" class="topicref" data-id="annotations" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action annotations-d41691e63482-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/annotations.html" id="annotations-d41691e63482-link">Annotations</a><div class="wh-tooltip"><p class="shortdesc">Operators can be annotated. Annotations influence the run time behavior of <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="types-d41691e63633" class="topicref" data-id="types" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action types-d41691e63633-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/types.html" id="types-d41691e63633-link">Types</a><div class="wh-tooltip"><p class="shortdesc">SPL has several primitive types that are tailored for streaming, and a few composite types that are inspired by scripting languages but statically checked. The following topics describe the types, how to define them, and how to convert values between different types.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="operators_1-d41691e63757" class="topicref" data-id="operators_1" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operators_1-d41691e63757-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html" id="operators_1-d41691e63757-link">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="programstructure-d41691e64106" class="topicref" data-id="programstructure" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action programstructure-d41691e64106-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/programstructure.html" id="programstructure-d41691e64106-link">Program structure</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="config-container-d41691e64163" class="topicref" data-id="config-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action config-container-d41691e64163-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/config-container.html" id="config-container-d41691e64163-link">Operator config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds an operator invocation, or how the runtime system runs it. </p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="splbinaryandcharacterencoding-d41691e64361" class="topicref" data-id="splbinaryandcharacterencoding" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action splbinaryandcharacterencoding-d41691e64361-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html" id="splbinaryandcharacterencoding-d41691e64361-link">SPL binary and character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary and character encoding for serializing and deserializing data. This encoding is used for the <code class="ph codeph">FileSource</code>, <code class="ph codeph">TCPSource</code>, and <code class="ph codeph">UDPSource</code> operators, as well as the <code class="ph codeph">FileSink</code>, <code class="ph codeph">TCPSink</code>, and <code class="ph codeph">UDPSink</code> operators.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="binaryencoding-d41691e64391" class="topicref" data-id="binaryencoding" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/binaryencoding.html" id="binaryencoding-d41691e64391-link">Binary encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary encoding for serializing and deserializing data.</p></div></div></div></li><li role="treeitem"><div data-tocid="splcharacterencoding-d41691e64402" class="topicref" data-id="splcharacterencoding" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/characterencoding.html" id="splcharacterencoding-d41691e64402-link">Character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform-independent character encoding for serializing and deserializing data.</p></div></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="ariaid-title1">
+
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">SPL binary encoding</h1>
+
+
+
+<div class="- topic/body concept/conbody body conbody"><p class="- topic/shortdesc shortdesc">SPL uses a platform independent binary encoding for serializing
+and deserializing data.</p>
+<p class="- topic/p p">This encoding is used for the <code class="+ topic/ph pr-d/codeph ph codeph">FileSource</code>, <code class="+ topic/ph pr-d/codeph ph codeph">TCPSource</code>, <code class="+ topic/ph pr-d/codeph ph codeph">UDPSource</code>, <code class="+ topic/ph pr-d/codeph ph codeph">FileSink</code>, <code class="+ topic/ph pr-d/codeph ph codeph">TCPSink</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">UDPSink</code> operators that are configured with the <span class="+ topic/ph sw-d/filepath ph filepath">bin</span> format
+specifier. This encoding is also used by the binary file read and
+write functions that are provided as part of the <span class="+ topic/ph sw-d/filepath ph filepath">spl.file</span> namespace.
+Furthermore, the same encoding is used for the binary serialization
+and deserialization function that is provided for the SPL C++ types.</p>
+<p class="- topic/p p">A variable-size encoding scheme is employed by SPL for encoding
+the size of types that do not have a fixed-size, such as strings and lists.
+Given a non-negative size <code class="+ topic/ph pr-d/codeph ph codeph">n</code>, the binary encoding
+for it is given as follows: If <code class="+ topic/ph pr-d/codeph ph codeph">n&lt;128</code>, then the
+size is encoded as a single byte that represents <code class="+ topic/ph pr-d/codeph ph codeph">n</code> in
+binary. If <code class="+ topic/ph pr-d/codeph ph codeph">n&gt;=128</code>, then the first byte is encoded
+as 128 in binary followed by the 4 bytes encoding of <code class="+ topic/ph pr-d/codeph ph codeph">n</code> in
+binary, in Network Byte Format (NBF). A few examples are given as
+follows:</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>  3    -&gt; 0x03
+  85   -&gt; 0x55
+  127  -&gt; 0x7F
+  128  -&gt; 0x80 0x00 0x00 0x00 0x80
+  240  -&gt; 0x80 0x00 0x00 0x00 0xF0
+  1234 -&gt; 0x80 0x00 0x00 0x04 0xD2
+</code></pre></div>
+<section class="- topic/section section"><p class="- topic/p p">Each SPL type is encoded in binary.</p><p class="- topic/p p">Integer types,
+which include <code class="+ topic/ph pr-d/codeph ph codeph">int8</code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint8</code>, <code class="+ topic/ph pr-d/codeph ph codeph">int16</code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint16</code>, <code class="+ topic/ph pr-d/codeph ph codeph">int32</code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint32</code>, <code class="+ topic/ph pr-d/codeph ph codeph">int64</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">uint64</code> are encoded in binary using NBF. Signed
+values are encoded using two's complement binary encoding.</p><p class="- topic/p p">A Boolean
+is encoded with a single byte, where 0 in binary represents false,
+and 1 in binary represents true.</p><p class="- topic/p p">Float types, which include <code class="+ topic/ph pr-d/codeph ph codeph">float32</code>, <code class="+ topic/ph pr-d/codeph ph codeph">float64</code> are
+encoded with IEEE 754 <code class="+ topic/ph pr-d/codeph ph codeph">binary32</code>, <code class="+ topic/ph pr-d/codeph ph codeph">binary64</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">binary128</code> formats. Again, the encoding is in
+NBF.</p><p class="- topic/p p">Complex types, which include <code class="+ topic/ph pr-d/codeph ph codeph">complex32</code>, <code class="+ topic/ph pr-d/codeph ph codeph">complex64</code> are
+encoded by first encoding the real part as a float and then encoding
+the imaginary part as a float. In other words, <code class="+ topic/ph pr-d/codeph ph codeph">complex&lt;n&gt;</code> is
+encoded as two <code class="+ topic/ph pr-d/codeph ph codeph">float&lt;n&gt;</code>, where the first float
+is the real part and the second one is the imaginary part.</p><div class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">decimal32</code> values
+are encoded as IEEE 754 values in little endian (LE) byte order:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-60"><code>s - sign bit
+c - combination bits
+e - exponent continuation
+x - coefficient continuation
+(n) - refers to 'byte number'
+x(n) - is 8 bits of coefficient in byte n
+
+IEEE 754 logical representation: scccccee(0) eeeexxxx(1) x(2) x(3)
+SPL binary encoding in LE order:  x(3) x(2) eeeexxxx(1) scccccee(0) (i.e. the low order byte of the decimal32 is first)</code></pre><code class="+ topic/ph pr-d/codeph ph codeph">decimal64</code> values
+are encoded as 64-bit IEEE 754 values that are stored in LE byte order:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-60"><code>IEEE 754 logical representation: scccccee(0) eeeeeexx(1) eexxxxxx(2) x(3) x(4) x(5) x(6) x(7)
+SPL binary encoding in LE order: x(7) x(6) x(5) x(4) x(3) x(2) eeeeeexx(1) scccccee(0)</code></pre><code class="+ topic/ph pr-d/codeph ph codeph">decimal128</code> values
+are encoded as 128-bit IEEE 754 values that are stored as two 64-bit
+words in LE byte order:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-60"><code>IEEE 754 logical representation: scccccee(0) eeeeeeee(1) eexxxxxx(2) x(3) x(4) x(5) x(6) x(7) x(8) x(9) x(a) x(b) x(c) x(d) x(e) x(f)
+SPL binary encoding in LE order: x(7) x(6) x(5) x(4) x(3) eexxxxxx(2) eeeeeeee(1) scccccee(0) x(f) x(e) x(d) x(c) x(b) x(a) x(9) x(8)</code></pre></div><p class="- topic/p p">String
+types include <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> and <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code>. An <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> is
+encoded by first encoding the number of bytes in the string using
+SPL's variable-size encoding for sizes, followed by the binary encodings
+of the individual bytes contained in the string. <span class="- topic/ph ph"><span class="+ topic/ph pr-d/synph ph synph"><code class="+ topic/ph pr-d/codeph ph codeph">rstring[n]</code></span> is
+encoded by first encoding the number of bytes in the string using <span class="+ topic/ph pr-d/synph ph synph"><code class="+ topic/ph pr-d/codeph ph codeph">uint8</code></span> for <code class="+ topic/ph pr-d/codeph ph codeph">n&lt;2ˆ<sup class="+ topic/ph hi-d/sup ph sup">8</sup></code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint16</code> for <code class="+ topic/ph pr-d/codeph ph codeph">2ˆ<sup class="+ topic/ph hi-d/sup ph sup">8</sup>&lt;n&lt;2ˆ<sup class="+ topic/ph hi-d/sup ph sup">16</sup></code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">uint32</code> for <code class="+ topic/ph pr-d/codeph ph codeph">2ˆ<sup class="+ topic/ph hi-d/sup ph sup">16</sup>&lt; n&lt;2ˆ<sup class="+ topic/ph hi-d/sup ph sup">32</sup></code>,
+followed by <span class="+ topic/ph pr-d/synph ph synph"><code class="+ topic/ph pr-d/codeph ph codeph">n+1</code></span> bytes encoding the
+string. Any bytes past the number of bytes in the string are not part
+of the current value of the string and might be ignored.</span> A <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code> is
+encoded by first encoding the number of code units in the UTF-16 encoding
+of the Unicode string using SPL's variable-size encoding for sizes,
+followed by the binary encodings of the individual code units that
+are contained in the string. Each code unit is encoded using NBF.
+UTF-16 code units are <code class="+ topic/ph pr-d/codeph ph codeph">uint16</code>.</p><p class="- topic/p p">A time stamp
+is encoded as a <code class="+ topic/ph pr-d/codeph ph codeph">int64</code> representing the seconds field,
+followed by a <code class="+ topic/ph pr-d/codeph ph codeph">uint32</code> representing the nanoseconds
+field, followed by a <code class="+ topic/ph pr-d/codeph ph codeph">uint32</code> representing the machine
+id field.</p><p class="- topic/p p">A <code class="+ topic/ph pr-d/codeph ph codeph">blob</code> is encoded by first encoding
+the size of the blob as a <code class="+ topic/ph pr-d/codeph ph codeph">uint64</code>, followed by the
+binary encodings of the individual bytes in the blob.</p><p class="- topic/p p">Lists
+are encoded by first encoding the size of the list using SPL's variable-size
+encoding for sizes, followed by the SPL binary encodings of the individual
+elements in the list.</p><p class="- topic/p p">Sets are encoded by first encoding the
+size of the set using SPL's variable-size encoding for sizes, followed
+by the SPL binary encodings of the individual elements in the set.</p><p class="- topic/p p">Maps
+are encoded by first encoding the size of the map using SPL's variable-size
+encoding for sizes, followed by the SPL binary encodings of the individual
+pairs of keys and values in the list. For each pair, the key is encoded
+first, followed by the value.</p><p class="- topic/p p">Bounded lists are encoded by first
+encoding the size (the number of used elements) of the bounded list,
+followed by the SPL binary encodings of the individual elements in
+the list, including the unused elements (using the default value of
+the element type). The number of elements that are encoded is always
+equal to the bound of the list. Unused elements come after the used
+elements. The size of the bounded list is encoded using the smallest
+SPL unsigned integer type that can hold the bound of the list. If <code class="+ topic/ph pr-d/codeph ph codeph">n</code> is
+the bound, then <code class="+ topic/ph pr-d/codeph ph codeph">uint8</code> is used for <code class="+ topic/ph pr-d/codeph ph codeph">n&lt;2ˆ<sup class="+ topic/ph hi-d/sup ph sup">8</sup></code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint16</code> for <code class="+ topic/ph pr-d/codeph ph codeph">2ˆ<sup class="+ topic/ph hi-d/sup ph sup">8</sup>&lt;n&lt;2ˆ<sup class="+ topic/ph hi-d/sup ph sup">16</sup></code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">uint32</code> for <code class="+ topic/ph pr-d/codeph ph codeph">2ˆ<sup class="+ topic/ph hi-d/sup ph sup">16</sup>&lt; n&lt;2ˆ<sup class="+ topic/ph hi-d/sup ph sup">32</sup></code>.</p><p class="- topic/p p">Bounded
+sets are encoded by first encoding the size (the number of used elements)
+of the bounded set, followed by the SPL binary encodings of the individual
+elements in the set, including the unused elements (using the default
+value of the element type), followed by a series of Boolean encodings
+that represent whether the previously encoded elements are used or
+unused in the set. Unlike in a list, the used elements in a set can
+be dispersed. Both the number of elements that are encoded and the
+number of Boolean encoded for tracking which elements are used, are
+always equal to the bound of the set. The size of the bounded set
+is encoded using the smallest SPL unsigned integer type that can hold
+the bound of the set. See bounded lists for more details.</p><p class="- topic/p p">Bounded
+maps are encoded by first encoding the size (the number of used elements)
+of the bounded map, followed by the SPL binary encodings of the individual
+elements (pairs of keys and values) in the map, including the unused
+elements (using the default value of the element type), followed by
+a series of Boolean encodings that represent whether the previously
+encoded elements are used or unused in the map. Similar to a set,
+the used elements in a map can be dispersed. Both the number of elements
+that are encoded and the number of Boolean that is encoded for tracking
+which elements are used, are always equal to the bound of the map.
+Each element in a bounded map contains a key and value, and the key
+is encoded before the value. The size of the bounded map is encoded using
+the smallest SPL unsigned integer type that can hold the bound of
+the map. See bounded lists for more details.</p><p class="- topic/p p">Tuple types are
+encoded by following the order of the attributes that are specified
+in the SPL language definition of the tuple type and encoding each
+attribute using SPL's binary encoding for the attribute type. Attribute
+names are not encoded.</p>
+<p class="- topic/p p" id="binaryencoding__chinook" data-ofbid="binaryencoding__chinook">Optional types are encoded by first setting a single byte to <code class="+ topic/ph pr-d/codeph ph codeph">1</code> if
+the optional type has a data value, or to <code class="+ topic/ph pr-d/codeph ph codeph">0</code> if there is no data value (the value of
+the optional type is <code class="+ topic/ph pr-d/codeph ph codeph"><em class="+ topic/ph hi-d/i ph i">null</em></code>). If the optional type has a data value, this is
+followed by the SPL binary encoding of the data value, otherwise there are no additional bytes.</p><p class="- topic/p p">Enumerations are encoded using an <code class="+ topic/ph pr-d/codeph ph codeph">uint32</code> that
+represents the index of the enumeration value in the list of valid
+values as they appear in the SPL language definition of the enum type.</p><p class="- topic/p p">XML values are encoded as a 1-byte version number with
+value <code class="+ topic/ph pr-d/codeph ph codeph">0x01</code>, followed by the XML value that is encoded
+as an <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code>.</p><p class="- topic/p p">C++ APIs provided for serializing
+and deserializing SPL types also support a non-NBF, native encoding.
+The native encoding follows the same encoding scheme except that it
+does not employ NBF for encoding individual pieces.</p><p class="- topic/p p">The binary encoding
+is also used at the transport layer for communicating across PEs.
+The largest tuple that can be transported across PEs can have at most
+2ˆ<sup class="+ topic/ph hi-d/sup ph sup">32-1</sup> bytes when encoded in binary.</p></section>
+</div>
+
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relconcepts" xml:lang="en-us" lang="en-us"><strong>Related concepts</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="characterencoding.html" title="Information about character encoding of SPL types.">SPL character
+encoding</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="defaultvaluesofspltypes.html" title="Information about the default values of SPL types.">Default
+values of SPL types</a></li></ul></div><div class="- topic/linklist linklist relinfo" xml:lang="en-us" lang="en-us"><strong>Related information</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ref.doc/doc/primitivetypes.html" title="Information about primitive types that are supported in the SPL language.">Primitive types</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

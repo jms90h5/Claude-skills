@@ -1,0 +1,245 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="type: hostPoolDef +, , where: hostPoolDef ::= ID ' = ' hostList , and hostList is of type list&lt;rstring&gt;. example: config hostPool : SourcePool = [&#34;foo.test.teracloud.com&#34;, &#34;10.8.5.6&#34;] , ComputingPool ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.subject" content="hostPool config,config clause,hostPool,createPool intrinsic function,intrinsic functions,createPool"/><meta name="keywords" content="hostPool config, config clause, hostPool, createPool intrinsic function, intrinsic functions, createPool"/><meta name="indexterms" content="hostPool config, config clause, hostPool, createPool intrinsic function, intrinsic functions, createPool"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/simpleoperconfigs.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spl-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/config-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/udpsplhostconfig.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/placementhost.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="hostpool"/><meta name="DC.language" content="en-us"/><title>hostPool</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="hostpool-d41691e64215"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/hostpool.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/hostpool.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="hostpool" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="spl-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li><div class="topicref" data-id="config-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/config-container.html">Operator config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds an operator invocation, or how the runtime system runs it. </p></div></div></div></li><li><div class="topicref" data-id="simpleoperatorconfigs"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/simpleoperconfigs.html">Simple config clauses in operators</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause can have subclauses that influence how an operator is compiled or run.</p></div></div></div></li><li class="active"><div class="topicref" data-id="hostpool"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/hostpool.html">hostPool</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="langoverview-d41691e63305" class="topicref" data-id="langoverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/langoverview.html" id="langoverview-d41691e63305-link">Language overview</a><div class="wh-tooltip"><p class="shortdesc">SPL contains types, expressions, statements, functions, clauses, and other elements of a programming language.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammarnotation-d41691e63316" class="topicref" data-id="grammarnotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammarnotation.html" id="grammarnotation-d41691e63316-link">Grammar notation</a><div class="wh-tooltip"><p class="shortdesc">This language specification adopts a flavor of Backus-Naur Form (BNF) to describe the syntax of language features.</p></div></div></div></li><li role="treeitem"><div data-tocid="lexicalsyntax-d41691e63327" class="topicref" data-id="lexicalsyntax" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/lexicalsyntax.html" id="lexicalsyntax-d41691e63327-link">Lexical syntax</a><div class="wh-tooltip"><p class="shortdesc">SPL defines a set of rules to determine the syntax of a program.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammaroverview-d41691e63338" class="topicref" data-id="grammaroverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammaroverview.html" id="grammaroverview-d41691e63338-link">Grammar overview</a><div class="wh-tooltip"><p class="shortdesc">Here is the SPL grammar syntax, with references to the sections that contain the semantics.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="expressionlanguage-d41691e63349" class="topicref" data-id="expressionlanguage" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action expressionlanguage-d41691e63349-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/expressionlanguage.html" id="expressionlanguage-d41691e63349-link">Expression language</a><div class="wh-tooltip"><p class="shortdesc">Though SPL is a streaming language, there are many places where it uses expressions that are found in traditional imperative or functional languages.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="annotations-d41691e63482" class="topicref" data-id="annotations" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action annotations-d41691e63482-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/annotations.html" id="annotations-d41691e63482-link">Annotations</a><div class="wh-tooltip"><p class="shortdesc">Operators can be annotated. Annotations influence the run time behavior of <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="types-d41691e63633" class="topicref" data-id="types" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action types-d41691e63633-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/types.html" id="types-d41691e63633-link">Types</a><div class="wh-tooltip"><p class="shortdesc">SPL has several primitive types that are tailored for streaming, and a few composite types that are inspired by scripting languages but statically checked. The following topics describe the types, how to define them, and how to convert values between different types.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="operators_1-d41691e63757" class="topicref" data-id="operators_1" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operators_1-d41691e63757-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html" id="operators_1-d41691e63757-link">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="programstructure-d41691e64106" class="topicref" data-id="programstructure" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action programstructure-d41691e64106-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/programstructure.html" id="programstructure-d41691e64106-link">Program structure</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="config-container-d41691e64163" class="topicref" data-id="config-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action config-container-d41691e64163-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/config-container.html" id="config-container-d41691e64163-link">Operator config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds an operator invocation, or how the runtime system runs it. </p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="simpleoperatorconfigs-d41691e64177" class="topicref" data-id="simpleoperatorconfigs" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action simpleoperatorconfigs-d41691e64177-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/simpleoperconfigs.html" id="simpleoperatorconfigs-d41691e64177-link">Simple config clauses in operators</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause can have subclauses that influence how an operator is compiled or run.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="applicationscope-d41691e64191" class="topicref" data-id="applicationscope" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/applicationscope.html" id="applicationscope-d41691e64191-link">applicationScope</a></div></div></li><li role="treeitem"><div data-tocid="checkpoint-d41691e64199" class="topicref" data-id="checkpoint" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/checkpoint.html" id="checkpoint-d41691e64199-link">checkpoint</a></div></div></li><li role="treeitem"><div data-tocid="defaultPoolSize-d41691e64207" class="topicref" data-id="defaultPoolSize" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/defaultPoolSize.html" id="defaultPoolSize-d41691e64207-link">defaultPoolSize</a></div></div></li><li role="treeitem" class="active"><div data-tocid="hostpool-d41691e64215" class="topicref" data-id="hostpool" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/hostpool.html" id="hostpool-d41691e64215-link">hostPool</a></div></div></li><li role="treeitem"><div data-tocid="inputtransport-d41691e64223" class="topicref" data-id="inputtransport" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/inputtransport.html" id="inputtransport-d41691e64223-link">inputTransport</a></div></div></li><li role="treeitem"><div data-tocid="loglevel-d41691e64231" class="topicref" data-id="loglevel" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/loglevel.html" id="loglevel-d41691e64231-link">logLevel</a></div></div></li><li role="treeitem"><div data-tocid="outputtransport-d41691e64239" class="topicref" data-id="outputtransport" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/outputtransport.html" id="outputtransport-d41691e64239-link">outputTransport</a></div></div></li><li role="treeitem"><div data-tocid="relocatable-d41691e64247" class="topicref" data-id="relocatable" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/relocatable.html" id="relocatable-d41691e64247-link">relocatable</a></div></div></li><li role="treeitem"><div data-tocid="restartable-d41691e64255" class="topicref" data-id="restartable" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/restartable.html" id="restartable-d41691e64255-link">restartable</a></div></div></li><li role="treeitem"><div data-tocid="streamviewabilityconfig-d41691e64263" class="topicref" data-id="streamviewabilityconfig" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/streamviewability.html" id="streamviewabilityconfig-d41691e64263-link">streamViewability</a></div></div></li><li role="treeitem"><div data-tocid="threadedport-d41691e64272" class="topicref" data-id="threadedport" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/threadedport.html" id="threadedport-d41691e64272-link">threadedPort</a></div></div></li><li role="treeitem"><div data-tocid="tracing-d41691e64280" class="topicref" data-id="tracing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/tracing.html" id="tracing-d41691e64280-link">tracing</a></div></div></li><li role="treeitem"><div data-tocid="wrapper-d41691e64288" class="topicref" data-id="wrapper" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/wrapper.html" id="wrapper-d41691e64288-link">wrapper</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="placementoperconfig-d41691e64296" class="topicref" data-id="placementoperconfig" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action placementoperconfig-d41691e64296-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/placementoperconfig.html" id="placementoperconfig-d41691e64296-link">Operator placement config clause</a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="splbinaryandcharacterencoding-d41691e64361" class="topicref" data-id="splbinaryandcharacterencoding" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action splbinaryandcharacterencoding-d41691e64361-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html" id="splbinaryandcharacterencoding-d41691e64361-link">SPL binary and character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary and character encoding for serializing and deserializing data. This encoding is used for the <code class="ph codeph">FileSource</code>, <code class="ph codeph">TCPSource</code>, and <code class="ph codeph">UDPSource</code> operators, as well as the <code class="ph codeph">FileSink</code>, <code class="ph codeph">TCPSink</code>, and <code class="ph codeph">UDPSink</code> operators.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">hostPool</h1>
+
+
+
+
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section"><dl class="- topic/dl dl">
+<dt class="- topic/dt dt dlterm">type:</dt>
+<dd class="- topic/dd dd"><var class="+ topic/keyword sw-d/varname keyword varname">hostPoolDef</var> <sup class="+ topic/ph hi-d/sup ph sup">+,</sup>,</dd>
+<dd class="- topic/dd dd ddexpand">where:</dd>
+<dd class="- topic/dd dd ddexpand"><var class="+ topic/keyword sw-d/varname keyword varname">hostPoolDef</var> ::= <var class="+ topic/keyword sw-d/varname keyword varname">ID</var> '<code class="+ topic/ph pr-d/codeph ph codeph">=</code>' <var class="+ topic/keyword sw-d/varname keyword varname">hostList</var>,</dd>
+<dd class="- topic/dd dd ddexpand">and <var class="+ topic/keyword sw-d/varname keyword varname">hostList</var> is of type list&lt;rstring&gt;.</dd>
+
+<dt class="- topic/dt dt dlterm">example:</dt>
+<dd class="- topic/dd dd"><code class="+ topic/ph pr-d/codeph ph codeph">config hostPool : SourcePool = ["foo.test.teracloud.com", "10.8.5.6"]</code>,</dd>
+<dd class="- topic/dd dd ddexpand"><code class="+ topic/ph pr-d/codeph ph codeph">ComputingPool = createPool( { size=15u, tags=["ib","blue"]
+}, Sys.Shared);</code></dd>
+
+<dt class="- topic/dt dt dlterm">description:</dt>
+<dd class="- topic/dd dd">List of host pool definitions. In the simplest case, the <var class="+ topic/keyword sw-d/varname keyword varname">hostList</var> is
+a list literal that explicitly enumerates the contained hosts by names
+or IP addresses. In the general case, it is an intrinsic function
+that returns a list of strings that denote hosts. In the latter case,
+the hosts to be used are decided at run time. The name of the intrinsic
+function is <span class="+ topic/keyword pr-d/apiname keyword apiname">createPool</span>, and its valid signatures
+are as follows:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>config hostPool: 
+  P1=createPool({size=10u, tags=["ib","blue"]}, Sys.Shared), //sized, tagged, shared
+  P2=createPool({size=10u, tags=["ib","blue"]}, Sys.Exclusive), //sized, tagged, exclusive
+  P4=createPool({size=10u}, Sys.Shared), //sized, untagged, shared
+  P5=createPool({size=10u}, Sys.Exclusive), //sized, untagged, exclusive
+  P3=createPool({tags=["ib","blue"]}, Sys.Shared), //unsized, tagged, shared
+  P6=createPool(Sys.Shared); //unsized, untagged, shared
+</code></pre></dd>
+</dl></section>
+<section class="- topic/section section"><p class="- topic/p p">Exclusive pools must be sized. A tag specification is
+considered to be conjunctive. For example, <code class="+ topic/ph pr-d/codeph ph codeph">tags=["ib", "blue"]</code> is
+interpreted as hosts that have both the <code class="+ topic/ph pr-d/codeph ph codeph">"ib"</code> and
+the <code class="+ topic/ph pr-d/codeph ph codeph">"blue"</code> tags.</p><p class="- topic/p p">Pools that are explicitly
+specified with their hosts are considered as sized, untagged, and
+shared. For example, the following definition is legal even though <code class="+ topic/ph pr-d/codeph ph codeph">h1</code> occurs
+in both <code class="+ topic/ph pr-d/codeph ph codeph">P1</code> and <code class="+ topic/ph pr-d/codeph ph codeph">P2</code>.</p><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">config
+hostPool : P1=["h1", "h2"], P2=["h1", "h3"];</code></p><p class="- topic/p p">Hosts
+that are allocated in an exclusive host pool are not used for any
+other job in the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance.
+These hosts are allocated exclusively to this application. If the
+same host is also available to another <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance,
+it might be used by that instance.</p><p class="- topic/p p">The hosts that
+are allocated in a shared host pool are available to be used by the
+other host pools and applications in the same instance.</p><p class="- topic/p p">If the application has user-defined parallelism, you
+can also use tags to control whether host pools are replicated in
+a parallel region.</p><dl class="- topic/dl dl">
+<dt class="- topic/dt dt dlterm">default:</dt>
+<dd class="- topic/dd dd">By default, there are no user-defined pools. There is always a
+default pool, either stated with a defaultPoolSize config or implicit.</dd>
+
+<dt class="- topic/dt dt dlterm">where:</dt>
+<dd class="- topic/dd dd">Main operator. <p class="- topic/p p">The
+main operator is a composite operator that is chosen as the top-level
+starting point upon job creation. It must be a composite operator
+definition without ports.</p><p class="- topic/p p">If there is a hostPool config that
+is not at the topmost level, the compiler generates a warning and
+ignores it.</p></dd>
+</dl></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relconcepts" xml:lang="en-us" lang="en-us"><strong>Related concepts</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.dev.doc/doc/udpsplhostconfig.html" title="You can use both relative host constraints and host pool replication to configure host placement options for parallel channels.">Host constraints in parallel regions</a></li></ul></div><div class="- topic/linklist linklist relref" xml:lang="en-us" lang="en-us"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ref.doc/doc/placementhost.html" title="placement : host">placement : host</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

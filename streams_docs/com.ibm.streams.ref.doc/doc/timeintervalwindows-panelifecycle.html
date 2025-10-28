@@ -1,0 +1,230 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="abstract" content="This topic describes the lifecycle of a timeInterval window pane."/><meta name="description" content="This topic describes the lifecycle of a timeInterval window pane."/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/timeintervalwindows-clause.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spl-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/operators_1.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/operatorinvocations.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/windowclause.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="timeintervalwindows-panelifecycle"/><meta name="DC.language" content="en-us"/>        
+      <title>Lifecycle of a timeInterval window pane</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="timeintervalwindows-panelifecycle-d41691e63873"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/timeintervalwindows-panelifecycle.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/timeintervalwindows-panelifecycle.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="timeintervalwindows-panelifecycle" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="spl-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li><div class="topicref" data-id="operators_1"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div></li><li><div class="topicref" data-id="operatorinvocations"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatorinvocations.html">Operator invocations</a><div class="wh-tooltip"><p class="shortdesc">The purpose of SPL is to allow users to create streams of data, which are connected and     manipulated by operator invocations.</p></div></div></div></li><li><div class="topicref" data-id="windowclause"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/windowclause.html">Window clause</a><div class="wh-tooltip"><p class="shortdesc">A window is a logical container for tuples recently received by an input port of an operator.</p></div></div></div></li><li><div class="topicref" data-id="timeintervalwindows-clause"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/timeintervalwindows-clause.html">TimeInterval windows</a><div class="wh-tooltip"><p class="shortdesc">A timeInterval window collects tuples into fixed-duration intervals defined over event time.</p></div></div></div></li><li class="active"><div class="topicref" data-id="timeintervalwindows-panelifecycle"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/timeintervalwindows-panelifecycle.html">Lifecycle of a timeInterval window pane </a><div class="wh-tooltip"><p class="shortdesc">This topic describes the lifecycle of a timeInterval window pane.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="langoverview-d41691e63305" class="topicref" data-id="langoverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/langoverview.html" id="langoverview-d41691e63305-link">Language overview</a><div class="wh-tooltip"><p class="shortdesc">SPL contains types, expressions, statements, functions, clauses, and other elements of a programming language.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammarnotation-d41691e63316" class="topicref" data-id="grammarnotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammarnotation.html" id="grammarnotation-d41691e63316-link">Grammar notation</a><div class="wh-tooltip"><p class="shortdesc">This language specification adopts a flavor of Backus-Naur Form (BNF) to describe the syntax of language features.</p></div></div></div></li><li role="treeitem"><div data-tocid="lexicalsyntax-d41691e63327" class="topicref" data-id="lexicalsyntax" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/lexicalsyntax.html" id="lexicalsyntax-d41691e63327-link">Lexical syntax</a><div class="wh-tooltip"><p class="shortdesc">SPL defines a set of rules to determine the syntax of a program.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammaroverview-d41691e63338" class="topicref" data-id="grammaroverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammaroverview.html" id="grammaroverview-d41691e63338-link">Grammar overview</a><div class="wh-tooltip"><p class="shortdesc">Here is the SPL grammar syntax, with references to the sections that contain the semantics.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="expressionlanguage-d41691e63349" class="topicref" data-id="expressionlanguage" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action expressionlanguage-d41691e63349-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/expressionlanguage.html" id="expressionlanguage-d41691e63349-link">Expression language</a><div class="wh-tooltip"><p class="shortdesc">Though SPL is a streaming language, there are many places where it uses expressions that are found in traditional imperative or functional languages.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="annotations-d41691e63482" class="topicref" data-id="annotations" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action annotations-d41691e63482-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/annotations.html" id="annotations-d41691e63482-link">Annotations</a><div class="wh-tooltip"><p class="shortdesc">Operators can be annotated. Annotations influence the run time behavior of <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="types-d41691e63633" class="topicref" data-id="types" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action types-d41691e63633-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/types.html" id="types-d41691e63633-link">Types</a><div class="wh-tooltip"><p class="shortdesc">SPL has several primitive types that are tailored for streaming, and a few composite types that are inspired by scripting languages but statically checked. The following topics describe the types, how to define them, and how to convert values between different types.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="operators_1-d41691e63757" class="topicref" data-id="operators_1" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action operators_1-d41691e63757-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html" id="operators_1-d41691e63757-link">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="operatorinvocations-d41691e63771" class="topicref" data-id="operatorinvocations" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action operatorinvocations-d41691e63771-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatorinvocations.html" id="operatorinvocations-d41691e63771-link">Operator invocations</a><div class="wh-tooltip"><p class="shortdesc">The purpose of SPL is to allow users to create streams of data, which are connected and     manipulated by operator invocations.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="operatorInvocatiohead-d41691e63782" class="topicref" data-id="operatorInvocatiohead" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatorinvocatiohead.html" id="operatorInvocatiohead-d41691e63782-link">Operator invocation head</a><div class="wh-tooltip"><p class="shortdesc">The head of an operator invocation lists the output and input streams and the name of the operator that processes the data.</p></div></div></div></li><li role="treeitem"><div data-tocid="logicclause-d41691e63793" class="topicref" data-id="logicclause" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/logicclause.html" id="logicclause-d41691e63793-link">Logic clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">logic</code> clause consists of local operator state that persists across operator firings, and statements that execute when an input port receives a tuple or a punctuation and thus fires.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="windowclause-d41691e63807" class="topicref" data-id="windowclause" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action windowclause-d41691e63807-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/windowclause.html" id="windowclause-d41691e63807-link">Window clause</a><div class="wh-tooltip"><p class="shortdesc">A window is a logical container for tuples recently received by an input port of an operator.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="punctuation-d41691e63818" class="topicref" data-id="punctuation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/punctuation.html" id="punctuation-d41691e63818-link">Punctuation</a><div class="wh-tooltip"><p class="shortdesc">Punctuation is a control signal that appears interleaved with the tuples in a stream.</p></div></div></div></li><li role="treeitem"><div data-tocid="tumblingwindows-d41691e63829" class="topicref" data-id="tumblingwindows" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/tumblingwindows.html" id="tumblingwindows-d41691e63829-link">Tumbling windows</a><div class="wh-tooltip"><p class="shortdesc">A tumbling window stores incoming tuples until the window is full, then executes the operator behavior, and finally flushes all stored tuples, before it starts over from scratch.</p></div></div></div></li><li role="treeitem"><div data-tocid="slidingwindows-d41691e63840" class="topicref" data-id="slidingwindows" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/slidingwindows.html" id="slidingwindows-d41691e63840-link">Sliding windows</a><div class="wh-tooltip"><p class="shortdesc">A sliding window is specified by providing both an eviction policy and a trigger policy.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="timeintervalwindows-clause-d41691e63851" class="topicref" data-id="timeintervalwindows-clause" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action timeintervalwindows-clause-d41691e63851-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/timeintervalwindows-clause.html" id="timeintervalwindows-clause-d41691e63851-link">TimeInterval windows</a><div class="wh-tooltip"><p class="shortdesc">A timeInterval window collects tuples into fixed-duration intervals defined over event time.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="timeintervalwindows-syntax-d41691e63862" class="topicref" data-id="timeintervalwindows-syntax" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/timeintervalwindows-syntax.html" id="timeintervalwindows-syntax-d41691e63862-link">Syntax for defining timeInterval windows</a><div class="wh-tooltip"><p class="shortdesc">The syntax for the timeInterval window clause.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="timeintervalwindows-panelifecycle-d41691e63873" class="topicref" data-id="timeintervalwindows-panelifecycle" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/timeintervalwindows-panelifecycle.html" id="timeintervalwindows-panelifecycle-d41691e63873-link">Lifecycle of a timeInterval window pane </a><div class="wh-tooltip"><p class="shortdesc">This topic describes the lifecycle of a timeInterval window pane.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="partitioning-d41691e63884" class="topicref" data-id="partitioning" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/partitioning.html" id="partitioning-d41691e63884-link">Partitioning</a><div class="wh-tooltip"><p class="shortdesc">The flag <code class="ph codeph">partitioned</code> in the window clause specifies that instead of maintaining just one window per port, the operator invocation maintains one window per port per partition. A <dfn class="term">partition</dfn> is a set of tuples that have the same values for the partitioning attributes.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="paramclause-d41691e63901" class="topicref" data-id="paramclause" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/paramclause.html" id="paramclause-d41691e63901-link">Param clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">param</code> clause contains code snippets that are supplied to the operator at invocation time.</p></div></div></div></li><li role="treeitem"><div data-tocid="outputclause-d41691e63915" class="topicref" data-id="outputclause" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/outputclause.html" id="outputclause-d41691e63915-link">Output clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">output</code> clause assigns values to attributes in output tuples each time the operator submits data to an output stream.</p></div></div></div></li><li role="treeitem"><div data-tocid="configclause1-d41691e63929" class="topicref" data-id="configclause1" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/configclause1.html" id="configclause1-d41691e63929-link">Config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds this operator invocation, or how the runtime system executes it.</p></div></div></div></li><li role="treeitem"><div data-tocid="history-d41691e63943" class="topicref" data-id="history" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/history.html" id="history-d41691e63943-link">History</a><div class="wh-tooltip"><p class="shortdesc">Expressions in parameters or output assignments of operator invocations can refer directly to tuples received in the past.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="operatordefn-d41691e63954" class="topicref" data-id="operatordefn" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operatordefn-d41691e63954-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatordefn.html" id="operatordefn-d41691e63954-link">Operator definitions</a><div class="wh-tooltip"><p class="shortdesc">A stream operator can be invoked to transform input streams to output streams. SPL supports two kinds of operators: primitive operators and composite operators.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="programstructure-d41691e64106" class="topicref" data-id="programstructure" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action programstructure-d41691e64106-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/programstructure.html" id="programstructure-d41691e64106-link">Program structure</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="config-container-d41691e64163" class="topicref" data-id="config-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action config-container-d41691e64163-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/config-container.html" id="config-container-d41691e64163-link">Operator config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds an operator invocation, or how the runtime system runs it. </p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="splbinaryandcharacterencoding-d41691e64361" class="topicref" data-id="splbinaryandcharacterencoding" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action splbinaryandcharacterencoding-d41691e64361-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html" id="splbinaryandcharacterencoding-d41691e64361-link">SPL binary and character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary and character encoding for serializing and deserializing data. This encoding is used for the <code class="ph codeph">FileSource</code>, <code class="ph codeph">TCPSource</code>, and <code class="ph codeph">UDPSource</code> operators, as well as the <code class="ph codeph">FileSink</code>, <code class="ph codeph">TCPSink</code>, and <code class="ph codeph">UDPSink</code> operators.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Lifecycle of a timeInterval window pane </h1>
+
+
+
+<div class="- topic/body reference/refbody body refbody"><div class="- topic/abstract abstract">
+ <span class="- topic/shortdesc shortdesc">This topic describes the lifecycle of a timeInterval window pane.</span>
+</div>
+<section class="- topic/section section">
+<p class="- topic/p p">A timeInterval window is:</p>
+<dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm">Created </dt>
+<dd class="- topic/dd dd">When the first tuples are assigned to it.</dd>
+
+
+<dt class="- topic/dt dt dlterm">Closed</dt>
+<dd class="- topic/dd dd">When the current watermark is beyond the discard age. The discard age is defined as the end of
+the interval plus the tuple age beyond which tuples are ignored. In this case the window pane
+ignores further input and its contents are discarded.</dd>
+
+
+<dt class="- topic/dt dt dlterm">Incomplete </dt>
+<dd class="- topic/dd dd">If the current watermark has not yet reached the end of the pane interval.</dd>
+
+
+<dt class="- topic/dt dt dlterm">Complete </dt>
+<dd class="- topic/dd dd">If the current watermark is greater than or equal to the end of the pane interval.</dd>
+
+</dl>
+<p class="- topic/p p">When the current event time (specified by the watermark) becomes greater than or equal to the
+interval's end, the window pane is completed and triggers. If tuples with event times within the
+pane’s interval arrive after the pane has triggered (late tuples), the pane triggers again and the
+operator which handles the trigger event re-calculates output taking into account the late data.</p>
+<p class="- topic/p p">A timeInterval window pane triggers when:</p>
+<ul class="- topic/ul ul">
+<li class="- topic/li li">The latest watermark is larger than or equal to the interval end.</li>
+<li class="- topic/li li">Late events are inserted, which arrive after the watermark passed its end. </li>
+</ul>
+<p class="- topic/p p">As a result the event handler then calculates aggregate values based on the window content.</p>
+</section>
+<div class="- topic/example example"><h2 class="sectiontitle">Example of a timeInterval window lifecycle</h2>
+<div class="- topic/p p">A timeInterval window can be configured to create non-overlapping window panes every hour with a
+discard age of 6 hours:<ol class="- topic/ol ol">
+<li class="- topic/li li">A new pane is created for the interval [00:00 … 01:00) when the first tuple with an event time,
+which falls into this interval, arrives. </li>
+<li class="- topic/li li">It marks the window complete when the input watermark passes 01:00.</li>
+<li class="- topic/li li">It closes (and removes) this window when the watermark passes 07:00.</li>
+</ol></div>
+</div>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

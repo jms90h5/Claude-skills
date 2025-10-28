@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="security" content="public" />
+<meta name="Robots" content="index,follow" />
+<meta name="DC.Type" content="task" />
+<meta name="DC.Title" content="Teracloud Streams REST Management APIs" />
+<meta name="abstract" content="You can use the REST management API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="Description" content="You can use the REST management API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="DC.subject" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="keywords" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="restapi-dev" />
+<meta name="DC.Language" content="en-us" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/rest.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+<title>Processing REST management API requests</title>
+ <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png">
+</head>
+<body id="restapi-dev"><div role="main">
+<div class="rest-header">
+<!-- NLS_CHARSET=UTF-8 -->
+</div><div class="rest-left-column">
+<div class="button_back">
+<svg class="rest-arrow" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg>
+<a href="/external-reference/redoc-static.html">Streams REST API</a></div></div>
+<div class="rest-body">
+<h1 class="title topictitle1">Processing REST management API requests</h1>
+<div class="body taskbody"><p class="shortdesc">To access information from Streams by
+using the REST management API, your application must send a valid HTTP request.
+The application must then handle the HTTP response.</p>
+<div class="section prereq"><div class="tasklabel"><h2 class="sectiontitle tasklabel" id="taskd46076e54">Before you begin</h2></div><a class="xref" href="ConfigureSecurity.html" title="When you are developing an application that uses the IBM Streams REST API, you must configure the access control lists, choose a method for authenticating users, and handle server and client certificates.">Configure
+security for the REST management API</a>.</div>
+<div class="section context"><div class="tasklabel"><h2 class="sectiontitle tasklabel" id="taskd46076e65">About this task</h2></div><div class="p">The objects that you can access with the <span class="keyword">IBM
+Streams</span> REST management 
+API are referred to as <dfn class="term">resources</dfn>. <div class="note note"><span class="notetitle">Note:</span> The
+concept of REST API resources is different from the general concept
+of resources in Streams.
+A REST API resource refers an object with properties and relationships
+to other resources. A Streams resource
+refers to an entity on which <span class="keyword">stream processing applications</span> and Streams services
+can be run, for example a host. </div>
+</div>
+<p class="p">Each
+resource can be identified by a uniform resource identifier (URI).
+You can also add query parameters to the URI to tailor and filter
+response content. The REST management API supports standard HTTP methods for
+accessing the resource that is identified by the URI.</p>
+<p class="p">The Streams REST management
+API uses the JavaScript Object
+Notation (JSON) format for message content.</p>
+</div>
+<div class="tasklabel"><h2 class="sectiontitle tasklabel" id="taskd46076e113">Procedure</h2></div><ol class="ol steps"><li class="li step stepexpand"><span class="ph cmd">Construct the URI for the resource that you want to access.</span> For example: <pre class="pre codeblock"><code>https://server1:32767/streams/resources</code></pre>
+ In this example,server1 is the IP address or host name and 32767 is the port number to use for access to the <span class="keyword">REST management API service</span>.</li>
+<li class="li step stepexpand"><span class="ph cmd">Specify the appropriate HTTP method in your application.</span> For example, use the GET method to query a resource.</li>
+<li> Set any HTTP request headers and configure the
+request message body as necessary. If any cookies were returned in
+the Set-Cookie header of a previous Streams REST
+call, include these cookies in the Cookie header. Retaining cookies
+between requests helps your application performance.</li>
+<li class="li step stepexpand"><span class="ph cmd">Establish an HTTPS connection in your application and send
+the request to the Streams server.</span></li>
+<li class="li step stepexpand"><span class="ph cmd">Process the HTTP status code, response headers, and any
+response message that are returned.</span></li>
+<li> Retain cookies that
+are returned in the Set-Cookie header so that they can be sent with
+subsequent requests.</li>
+</ol>
+<div class="example"><div class="tasklabel"><h2 class="sectiontitle tasklabel" id="taskd46076e151">Example</h2></div><div class="p">The following example Java™ code retrieves the root resource
+information in a scenario where client authentication is enabled. In this example, user
+authentication is handled by using HTTP basic
+authentication:<pre class="pre codeblock"><code>import com.google.gson.*;
+
+import java.io.*;
+import java.net.*;
+import java.util.Base64;
+
+import javax.net.ssl.*;
+
+public class RestBasic {
+    public static void main (String[] args) {
+        try {
+            System.setProperty("javax.net.ssl.trustStore", ".\\streams-rest.p12");
+            System.setProperty("javax.net.ssl.trustStorePassword", "Streams-Rest-Passw0rd%");
+
+            HostnameVerifier hv = new HostnameVerifier() {
+                public boolean verify(String urlHostName, SSLSession session) {
+                    return true;   // trust all hosts that supply the Streams certificate
+                }
+            };
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
+            // Retain cookies between requests
+            CookieManager cm = new CookieManager();
+            CookieHandler.setDefault(cm);
+
+            URL url = new URL("https://myserver.mybusiness.com:9714/streams/domains/d-dev72");
+            String userInfo  = "joeuser" + ":" + new String("Tr1ckyS3cr3tPhras3!");
+            String authToken = "Basic " + Base64.getEncoder().encodeToString(userInfo.getBytes());
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+
+            conn.setRequestProperty("Authorization", authToken);
+            conn.setRequestMethod("GET"); 
+            conn.connect();
+            System.out.println("Response code: " + conn.getResponseCode());
+            System.out.println("Content type: " + conn.getHeaderField("Content-Type"));
+
+            InputStream  responseStream = conn.getInputStream();
+
+            try (InputStreamReader responseStreamReader = new InputStreamReader(responseStream)) {
+                JsonObject jsonResult = new Gson().fromJson(responseStreamReader, JsonObject.class);
+                String id = jsonResult.get("id").getAsString();
+                System.out.println("Domain id = " + id);
+            } 
+            conn.disconnect();
+        }
+        catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage()); 
+        }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>	<div class="rest-right-column"></div>
+</body>
+</html>

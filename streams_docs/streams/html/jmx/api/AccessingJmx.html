@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="security" content="public">
+<meta name="Robots" content="index,follow">
+<meta name="DC.Type" content="task">
+<meta name="DC.Title" content="Accessing Teracloud Streams information with JMX APIs">
+<meta name="abstract" content="To access Teracloud Streams information by using the JMX API, you must supply the necessary environment parameter values, establish a JMX connection, obtain access to a Teracloud Streams JMX bean proxy, and call bean methods through the proxy.">
+<meta name="Description" content="To access Teracloud Streams information by using the JMX API, you must supply the necessary environment parameter values, establish a JMX connection, obtain access to a Teracloud Streams JMX bean proxy, and call bean methods through the proxy.">
+<meta name="DC.subject" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="keywords" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="DC.Relation" scheme="URI" content="../doc/jmxapi-dev.html">
+<meta name="copyright" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Rights.Owner" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="jmxapi-access">
+<meta name="DC.Language" content="en-us">
+<meta name="IBM.Country" content="ZZ">
+<!-- Licensed Materials - Property of IBM -->
+<!-- US Government Users Restricted Rights -->
+<!-- Use, duplication or disclosure restricted by -->
+<!-- GSA ADP Schedule Contract with IBM Corp. -->
+
+<link rel="stylesheet" type="text/css" href="/streams/html/css/jmx.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+
+<title>Using JMX APIs to manage and monitor Teracloud Streams</title>
+
+	 <link rel="shortcut icon" href="/streams/html/images/favicon-light.png" type="image/png">
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png">
+
+<link type="text/css" href="/streams/html/css/www.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/tables.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/content_northstar_styles.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/kc.css" rel="stylesheet"/>
+</head>
+
+<body id="jmxapi-access">
+<div style="padding: 50px">
+  <!-- NLS_CHARSET=UTF-8 -->
+  <div class="blue_header">
+  <!-- Infosphere Streams topics header v -->
+  <div class="runningheader"><!--<img src="../../com.ibm.swg.im.infosphere.streams.common.doc/images/ngibm.gif" border="0" alt="" align="top" />-->
+  <!--<div style="float:right; padding-bottom:5px;">
+    <image src="/streams/html/images/home_button.svg"/>
+  </div>-->
+  <!-- End of InfoSphere Streams topics header -->
+  <div class="button_back"><a href="/external-reference/jmx/api/java/api/index.html">Streams JMX API</a></div></div>
+  <div class="nav_bar"></div>
+</div>
+<h1 class="title topictitle1">Accessing <span class="keyword">Teracloud
+Streams</span> information with JMX APIs</h1>
+<div class="body taskbody"><p class="shortdesc">To access <span class="keyword">Teracloud
+Streams</span> information by using the JMX API, you must supply the necessary environment parameter values,
+establish a JMX connection, obtain access to an <span class="keyword">Teracloud
+Streams</span> JMX bean proxy, and call bean methods through the proxy.</p>
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd32819e53">Procedure</h2></div><ol class="ol steps ibm-colored-list ibm-textcolor-gray-80"><li class="li step stepexpand"><span class="ph cmd"> Supply the necessary environment parameter value.</span> The package name for the <span class="keyword">Teracloud
+Streams</span> connector client provider must be provided as an environment parameter. The connector client
+provider is in the <span class="keyword">Teracloud
+Streams</span> product. <p class="p">The package name is <span class="ph filepath">com.ibm.streams.management</span>, and it must be
+supplied as the value for the <span class="keyword parmname">jmx.remote.protocol.provider.pkgs</span> property.</p>
+ For example, the following Java™ code sets the
+environment
+parameter:<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock0">HashMap&lt;String,Object&gt; env = new HashMap&lt;String,Object&gt;();
+env.put("jmx.remote.protocol.provider.pkgs", "com.ibm.streams.management");</code></pre>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">Complete the setup for authenticating to the JMX server.</span> <p class="p">To establish a JMX connection, you must authenticate by supplying a <span class="keyword">Teracloud
+Streams</span> user ID and password.</p>
+<ul class="ul choices ibm-colored-list ibm-textcolor-gray-80"><li class="li choice">User ID and password option<div class="p ibm-padding-bottom-1">Supply these values as a string array for the
+<span class="keyword parmname">jmx.remote.credentials</span> environment parameter. The following example shows how
+to supply these values in a Java
+application:<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock1">HashMap&lt;String,Object&gt; env = new HashMap&lt;String,Object&gt;();
+String [] creds = {user, password};
+env.put("jmx.remote.credentials", creds);</code></pre>
+</div>
+<p class="p"></p>
+</li>
+<!-- take out for icp4d
+<li class="li choice">Client certificate authentication option<p class="p">Complete the following steps:</p>
+<div class="p ibm-padding-bottom-1"><ol class="ol ibm-colored-list ibm-textcolor-gray-80 ibm-alpha-list" type="a"><li class="li"><span class="ph"><span class="ph"><a class="xref" href="https://www.ibm.com/support/knowledgecenter/SSCRJU_4.3.0/com.ibm.streams.cfg.doc/doc/setting-up-certificate-authentication.html?view=kc">Set
+up client certificate authentication.</a></span></span><p class="p"></p>
+</li>
+<li class="li">Provide access to the certificate through an additional environment parameter or system
+environment variable.<ul class="ul ibm-colored-list ibm-textcolor-gray-80"><li class="li">Environment parameter option <div class="p ibm-padding-bottom-1">Supply a value for the
+<span class="keyword parmname">jmx.remote.x.certificate</span> environment parameter. <span class="ph">The value
+of the parameter can either be a java.security.cert.X509Certificate object or an absolute path to
+the X.509 client certificate file, or the <span class="keyword">PKCS #12</span>
+file that contains the client certificate, on the system where the JMX application runs.</span> For
+example, the following Java code sets the environment
+parameter:
+<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock2">HashMap&lt;String,Object&gt; env = new HashMap&lt;String,Object&gt;();
+env.put("jmx.remote.x.certificate", "c:\\streamscertificates\\streamsuser.pem");</code></pre>
+</div>
+</li>
+<li class="li">Environment variable option<div class="p ibm-padding-bottom-1"><span class="ph">Set the STREAMS_X509CERT environment variable
+on the system where the JMX application runs, and set it to the absolute path of the X.509 client
+certificate file or the <span class="keyword">PKCS #12</span>
+file that contains the client certificate.</span><ul class="ul ibm-colored-list ibm-textcolor-gray-80"><li class="li">Linux system
+example:<pre class="pre">export STREAMS_X509CERT=/streamscertificates/streamsuser.pem </pre>
+</li>
+<li class="li">Microsoft
+Windows system
+example:<pre class="pre">set STREAMS_X509CERT=c:\streamscertificates\streamsuser.pem </pre>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</li>
+<li class="li">If the certificate is contained in a <span class="keyword">PKCS #12</span>
+file, you must provide the <span class="keyword">PKCS #12</span>
+file password and alias of the certificate. In this case, the certificate alias and <span class="keyword">PKCS #12</span>
+file password are the credentials.<div class="p ibm-padding-bottom-1">Supply the credentials as a string array for the
+<span class="keyword parmname">jmx.remote.x.certificate.credentials</span> environment parameter. The first element
+contains the certificate alias and the second element contains the certificate password. The
+following example shows how to supply these values in a Java
+application:<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock3">HashMap&lt;String,Object&gt; env = new HashMap&lt;String,Object&gt;();
+String [] creds = {alias, password};
+env.put("jmx.remote.x.certificate.credentials", creds);</code></pre>
+</div>
+</li>
+</ol>
+</div>
+-->
+</li>
+</ul>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">If required, specify the cryptographic protocol to use for the JMX connection. This step is
+required only if the <span class="keyword parmname">jmx.sslOption</span> configuration property is set to a value
+other than the default value.</span> <p class="p">To specify the cryptographic protocol to use, supply a value for the
+<span class="keyword parmname">jmx.remote.tls.enabled.protocols</span> environment property. The specified value must
+match the value of the <span class="keyword parmname">jmx.sslOption</span> property. To retrieve this value, run the
+<span class="keyword cmdname">streamtool getdomainproperty jmx.sslOption</span> command. </p>
+ The following example shows how to supply this value in a Java
+application:<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock4">HashMap&lt;String,Object&gt; env = new HashMap&lt;String,Object&gt;();
+env.put("jmx.remote.tls.enabled.protocols", "TLSv1.2");</code></pre>
+</li>
+
+<!--
+<li class="li step stepexpand">Optional: <span class="ph cmd">Specify the locale that determines the language in which messages
+are returned from JMX calls. If you do not specify a locale, messages are returned in the language
+of the JMX process locale.</span> <p class="p">To specify the locale, supply either a java.util.Locale object or a string representation of the
+locale for the jmx.remote.locale environment property. If you use a string representation, it must
+be in the format that is documented for the <span class="keyword apiname">java.util.Locale.toString() </span>
+method.</p>
+
+<p class="p">The following example shows how to supply this value in a Java application:</p>
+
+<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock5">HashMap&lt;String,Object&gt; env = new HashMap&lt;String,Object&gt;();
+env.put("jmx.remote.locale", Locale.ENGLISH);</code></pre>
+
+<div class="p ibm-padding-bottom-1">Supported
+languages:<ul class="ul ibm-colored-list ibm-textcolor-gray-80"><li class="li">Brazilian Portuguese (pt_BR)</li>
+<li class="li">English (en)</li>
+<li class="li">French (fr)</li>
+<li class="li">German (de)</li>
+<li class="li">Italian (it)</li>
+<li class="li">Japanese (ja)</li>
+<li class="li">Korean (ko)</li>
+<li class="li">Russian (ru)</li>
+<li class="li">Simplified Chinese (zh_CN)</li>
+<li class="li">Spanish (es)</li>
+<li class="li">Traditional Chinese (zh_TW) </li>
+</ul>
+</div>
+
+</li>
+-->
+
+<li class="li step stepexpand"><span class="ph cmd">Establish a JMX connection. </span> <p class="p">The <span class="keyword">Teracloud
+Streams</span> JMX connector is part of the <span class="keyword">management API service</span>. To establish a connection to the JMX connector, call the
+<span class="keyword apiname">JMXConnectorFactory.connect()</span> method. You must supply the environment parameters
+that are described in the previous steps and the JMX URL. </p>
+
+<p class="p">You can determine the JMX URL by calling the streamtool getjmxconnect command.
+After you establish a connection to the JMX connector, retrieve a connection to the managed bean
+server by calling the <span class="keyword apiname">getMBeanServerConnection()</span> method on the returned
+JMXConnector object.</p>
+ For example, the following Java code establishes a
+JMX
+connection:<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock6">JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(jmxUrlString), env);
+MBeanServerConnection mbsc = jmxc.getMBeanServerConnection(); </code></pre>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">Obtain access to a <span class="keyword">Teracloud
+Streams</span> JMX bean proxy.</span> <p class="p">The easiest way to access the attributes and operations of a JMX bean is through a proxy object.
+To obtain the proxy object for a JMX bean, you need to know the class name of the bean (for example
+<samp class="ph codeph">InstanceMXBean.class</samp>) and the object name for the specific bean to access. You can
+use the <samp class="ph codeph">com.ibm.streams.management.ObjectNameBuilder</samp> class to help construct the
+object name. Alternatively, you can use the <span class="keyword apiname">MBeanServerConnection.queryMBeans()</span>
+method to query the object name.</p>
+ For example, the following Java code uses the
+<samp class="ph codeph">com.ibm.streams.management.ObjectNameBuilder</samp> class to construct the object name and
+access a JMX bean
+proxy:<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock7">ObjectName instanceObjName = ObjectNameBuilder.instance(domainId, instanceId);
+InstanceMXBean instance = JMX.newMXBeanProxy(mbsc, instanceObjName, InstanceMXBean.class, true);</code></pre>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">Call the bean methods through the proxy.</span> After you obtain a proxy for the bean, you can access the bean attributes and operations by
+calling methods on the proxy. For example, the following Java code uses methods to
+obtain the instance status and get the list of jobs in the instance:
+<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock8">System.out.println("Status: " + instance.getStatus());
+System.out.println("Jobs: " + instance.getJobs());</code></pre>
+</li>
+</ol>
+<div class="example"><div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd32819e357">Example</h2></div>The following Java code example uses the <span class="keyword">Teracloud
+Streams</span> JMX API to retrieve the instance status and the jobs within the instance.
+<pre class="pre codeblock ibm-textcolor-default ibm-background-neutral-white-40"><code data-clipboard-id="codeblock9">import java.util.HashMap;
+
+import javax.management.JMX;
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
+
+import com.ibm.streams.management.instance.InstanceMXBean;
+import com.ibm.streams.management.ObjectNameBuilder;
+
+// javac -cp com.ibm.streams.management.jmxmp.jar:com.ibm.streams.management.mx.jar Client.java
+// java -cp .:com.ibm.streams.management.jmxmp.jar:com.ibm.streams.management.mx.jar:jmxremote_optional.jar:glassfish-corba-omgapi-[version].jar:commons-cli-[version].jar 
+//   Client service:jmx:jmxmp://server:9975 domainA instanceA user password
+// Note: It is important to include com.ibm.streams.management.jmxmp.jar in the class path before jmxremote_optional.jar
+public class Client {
+  public static void main(String [] args) {
+    try { 
+      String jmxUrl = args[0];  // use streamtool getjmxconnect to find
+      String domainName = args[1];
+      String instanceName = args[2];
+      String user = args[3];    // use streamtool setacl to assign required permissions
+      String password = args[4];
+            
+      HashMap&lt;String,Object&gt; env = new HashMap&lt;String,Object&gt;();
+      String [] creds = {user, password};
+      env.put("jmx.remote.credentials", creds);
+      env.put("jmx.remote.protocol.provider.pkgs", "com.ibm.streams.management");
+
+      JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(jmxUrl), env);
+      MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
+
+      ObjectName objName = ObjectNameBuilder.instance(domainName, instanceName);
+      InstanceMXBean instance = JMX.newMXBeanProxy(mbsc, objName, InstanceMXBean.class, true);
+
+      System.out.println("Status: " + instance.getStatus());
+      System.out.println("Jobs: " + instance.getJobs());
+    }
+    catch (Exception e) {
+     e.printStackTrace();     
+    }   
+  }
+}</code></pre>
+</div>
+</div>
+
+</body></html>

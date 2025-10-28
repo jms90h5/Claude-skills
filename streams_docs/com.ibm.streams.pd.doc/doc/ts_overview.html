@@ -1,0 +1,280 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="abstract" content="Troubleshooting is a systematic approach to solving a problem. The goal of troubleshooting is to determine why something does not work as you expect it to work, and then decide how to resolve the problem."/><meta name="description" content="Troubleshooting is a systematic approach to solving a problem. The goal of troubleshooting is to determine why something does not work as you expect it to work, and then decide how to resolve the problem."/><meta name="DC.subject" content="techniques and support,troubleshooting,Streams,Teracloud"/><meta name="keywords" content="techniques and support, troubleshooting, Streams, Teracloud"/><meta name="indexterms" content="techniques and support, troubleshooting"/><meta name="DC.relation" content="../../com.ibm.streams.pd.doc/doc/ts_parent.html"/><meta name="DC.relation" content="../../com.ibm.streams.pd.doc/doc/before_contactingsupport.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="ts_overview"/><meta name="DC.language" content="en-us"/>        
+      <title>Techniques for troubleshooting problems</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="ts_overview-d41691e8130"/><meta name="wh-source-relpath" content="com.ibm.streams.pd.doc/doc/ts_overview.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.pd.doc/doc/ts_overview.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="ts_overview" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="troubleshootingforproduct"><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li class="active"><div class="topicref" data-id="ts_overview"><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_overview.html">Troubleshooting techniques</a><div class="wh-tooltip"><p class="shortdesc"><dfn class="term">Troubleshooting</dfn> is a systematic approach to solving a problem. The goal of troubleshooting is to determine why something does not work as you expect it to work, and then decide how to resolve the problem.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="before_contactingsupport.dita-d41691e8110" class="topicref" data-id="before_contactingsupport.dita" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/before_contactingsupport.html" id="before_contactingsupport.dita-d41691e8110-link">Before contacting Teracloud® Support</a><div class="wh-tooltip"><p class="shortdesc">Review this information before you contact Teracloud® Support. These resources might help you to find possible solutions for your issue, or make your support experience more efficient if you need to contact Teracloud Support.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="ts_overview-d41691e8130" class="topicref" data-id="ts_overview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_overview.html" id="ts_overview-d41691e8130-link">Troubleshooting techniques</a><div class="wh-tooltip"><p class="shortdesc"><dfn class="term">Troubleshooting</dfn> is a systematic approach to solving a problem. The goal of troubleshooting is to determine why something does not work as you expect it to work, and then decide how to resolve the problem.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerparentknownprobs-d41691e8143" class="topicref" data-id="containerparentknownprobs" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerparentknownprobs-d41691e8143-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerknownprobsparent.html" id="containerparentknownprobs-d41691e8143-link">Known problems and solutions</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve known problems that you might encounter when you work with different components of the product.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ts_tools-d41691e8880" class="topicref" data-id="ts_tools" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ts_tools-d41691e8880-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_tools.html" id="ts_tools-d41691e8880-link">Troubleshooting services and diagnostic tools</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides log and trace services and troubleshooting tools that can help you resolve the issues that you encounter when you work with the product.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="streamsmessages-d41691e9147" class="topicref" data-id="streamsmessages" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streamsmessages-d41691e9147-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.msg.doc/parentcontainer.html" id="streamsmessages-d41691e9147-link"><span class="keyword">Teracloud® Streams</span> messages</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">Teracloud® 					Streams</span> messages describe the errors and solutions, warnings of potentially problematic conditions, and helpful information that you can use to troubleshoot the problems that can occur when you work with the product. These messages are displayed in the user interfaces and log files. </p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Techniques for troubleshooting problems</h1>
+
+
+<div class="- topic/body concept/conbody body conbody"><div class="- topic/abstract abstract"><span class="- topic/shortdesc shortdesc"><dfn class="- topic/term term">Troubleshooting</dfn> is a
+systematic approach to solving a problem. The goal of troubleshooting
+is to determine why something does not work as you expect it to work,
+and then decide how to resolve the problem.</span></div>
+<p class="- topic/p p">Certain common techniques can help with the task of troubleshooting. The first step in the
+            troubleshooting process is to describe the problem completely. Problem descriptions help
+            you and the <span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+            Support representative know where to look for the cause of the problem. Ask yourself the
+            following questions:</p>
+<ul class="- topic/ul ul">
+<li class="- topic/li li">What are the symptoms of the problem?</li>
+<li class="- topic/li li">Where does the problem occur?</li>
+<li class="- topic/li li">When does the problem occur?</li>
+<li class="- topic/li li">Under which conditions does the problem occur?</li>
+<li class="- topic/li li">Can the problem be reproduced? </li>
+</ul>
+<p class="- topic/p p">The answers to these questions typically establish a good description
+of the problem, which can then lead you to a resolution. </p>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">What are the symptoms of the problem?</h2><p class="- topic/p p">When
+you begin to describe a problem, the most obvious question is <q class="- topic/q q">What
+is the problem?</q> This question might seem straightforward. However,
+you can break this question into several focused questions that create
+a more descriptive picture of the problem. These questions can include:</p><ul class="- topic/ul ul">
+<li class="- topic/li li">Who, or what, is reporting the problem?</li>
+<li class="- topic/li li">What are the error codes and messages?</li>
+<li class="- topic/li li">How does the system fail? For example, is the failure manifested
+as a loop, hang, crash, performance degradation, or an incorrect result?</li>
+</ul></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Where does the problem occur?</h2><p class="- topic/p p">One of the
+most important steps in resolving a problem is to determine where
+the problem originates. Multiple layers of technology can exist between
+the reporting and failing components. Networks, disks, and drivers
+are only a few of the components to consider when you investigate
+problems.</p><p class="- topic/p p">The following questions help you to focus on the layer
+of technology in which the problem occurs:</p><ul class="- topic/ul ul">
+<li class="- topic/li li">Is the problem specific to one platform or operating system, or
+is it common across multiple platforms or operating systems?</li>
+<li class="- topic/li li">Is the current environment and configuration supported by the
+product?</li>
+<li class="- topic/li li">Do all the users encounter the problem?</li>
+<li class="- topic/li li">For a multiple-site installation, do all the sites encounter the
+problem?</li>
+</ul><p class="- topic/p p">When one layer of technology reports the problem, the problem does not necessarily originate in
+that layer. By understanding the environment in which a problem exists, you can more easily identify
+where that problem originates. Take the time to completely describe the environment in which the
+problem exists, including the operating system and version, all the corresponding software and
+versions, and the hardware that is used in the environment. Verify that you run in an environment
+that is a supported by <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>. Many problems can be traced to incompatible software levels that are not intended to run
+together or have not been thoroughly tested together.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">When does the problem occur?</h2><p class="- topic/p p">Develop a detailed
+timeline of the events that lead to the failure, especially for the
+problems that occur only once. By working backwards, you can easily
+develop a timeline of events. Begin at the time when an error was
+reported, and be as precise as possible by including even the millisecond.
+Work backwards through the available logs and information. Typically,
+you need to look only as far as the first suspicious event that you
+find in a diagnostic log.</p><p class="- topic/p p">To develop a detailed timeline of
+events, and construct a frame of reference in which to investigate
+the problem, answer these questions:</p><ul class="- topic/ul ul">
+<li class="- topic/li li">Does the problem occur only at a specific time of day or night?</li>
+<li class="- topic/li li">How frequently does the problem occur?</li>
+<li class="- topic/li li">What sequence of events leads to the time when the problem is
+reported?</li>
+<li class="- topic/li li">Does the problem occur after an environment change such as an
+upgrade, or after installing software or hardware?</li>
+</ul></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Under which conditions does the problem occur?</h2><p class="- topic/p p">For
+troubleshooting purposes, it is important to know which systems and
+applications are running when a problem occurs. The following questions
+about your environment can help you to identify the root cause of
+the problem:</p><ul class="- topic/ul ul">
+<li class="- topic/li li">Does the problem always occur during one particular task or operation? </li>
+<li class="- topic/li li">Does the problem occur only after a specific sequence of events?</li>
+<li class="- topic/li li">Do other applications fail at the same time?</li>
+</ul><p class="- topic/p p">By answering questions such as these, you can you explain
+the environment in which the problem occurs and correlate any dependencies.
+However, when multiple problems occur at about the same time, the
+problems are not necessarily related.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Can the problem be reproduced?</h2><p class="- topic/p p">Under ideal
+troubleshooting conditions, the problem can be reproduced. When a
+problem can be reproduced, you typically have a larger set of tools
+or procedures that can help you to investigate the problem. The problems
+that you can reproduce are often easier to debug and resolve.</p><p class="- topic/p p">However,
+the problems that you can reproduce can have a disadvantage. If the
+problem is of significant business impact, you do not want the problem
+to occur again. In this case and if it is possible, reproduce the
+problem in a test environment or a development environment, which
+typically offers you more flexibility and control during your investigation.</p><ul class="- topic/ul ul">
+<li class="- topic/li li">Can the problem be reproduced on a test system?</li>
+<li class="- topic/li li">Do multiple users or applications encounter the same type of problem?</li>
+<li class="- topic/li li">Can the problem be reproduced by running a single command, a set
+of commands, or a particular application?</li>
+</ul></section>
+</div>
+
+
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.pd.doc/doc/before_contactingsupport.html" title="Review this information before you contact Teracloud Support. These resources might help you to find possible solutions for your issue, or make your support experience more efficient if you need to contact Teracloud Support.">Before contacting Teracloud Support</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

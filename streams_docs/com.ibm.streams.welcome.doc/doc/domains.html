@@ -1,0 +1,236 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="description" content="A Teracloud Streams domain is a logical grouping of resources in a network for common management and administration. To use Teracloud Streams, you must create at least one domain."/><meta name="DC.subject" content="domains,overview"/><meta name="keywords" content="domains, overview"/><meta name="indexterms" content="domains, overview"/><meta name="DC.relation" content="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components.html"/><meta name="DC.relation" content="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html"/><meta name="DC.relation" content="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/setting-up-basic-domain.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/domains.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="domains"/><meta name="DC.language" content="en-us"/>        
+      <title>Teracloud Streams domains</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="domains-d41691e298"/><meta name="wh-source-relpath" content="com.ibm.streams.welcome.doc/doc/domains.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.welcome.doc/doc/domains.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="domains" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="kc_welcome"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreamsintroduction"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction.html">Introduction to <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts. This   section provides an overview of the platform's stream processing capabilities, development   approaches, and runtime environment to help you understand how Teracloud Streams can address your   real-time data processing needs.</p></div></div></div></li><li><div class="topicref" data-id="streamscomponents"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components.html"><span class="keyword">Teracloud® Streams</span> components</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> consists of many components such as <span class="keyword">stream applications</span>, domains, instances, and resources.</p></div></div></div></li><li class="active"><div class="topicref" data-id="domains"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/domains.html">Domains</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <span class="keyword">Teracloud® 					Streams</span> domain is a             logical grouping of resources in a network for common management and administration. To             use <span class="keyword">Teracloud 					Streams</span>,             you must create at least one domain.</span></p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="true"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="roadmap-d41691e200" class="topicref" data-id="roadmap" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/roadmap.html" id="roadmap-d41691e200-link">Information roadmap</a><div class="wh-tooltip"><p class="shortdesc">Find links to the information resources that are available for <span class="keyword">Teracloud® 					Streams</span>. Whether you're just getting started with analyzing streaming data or you're looking to expand your knowledge, we have the information that you need. </p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreamsintroduction-d41691e216" class="topicref" data-id="ibminfospherestreamsintroduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreamsintroduction-d41691e216-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction.html" id="ibminfospherestreamsintroduction-d41691e216-link">Introduction to <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts. This   section provides an overview of the platform's stream processing capabilities, development   approaches, and runtime environment to help you understand how Teracloud Streams can address your   real-time data processing needs.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-introduction-overview-d41691e236" class="topicref" data-id="ibminfospherestreams-introduction-overview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-overview.html" id="ibminfospherestreams-introduction-overview-d41691e236-link"><span class="keyword">Teracloud® Streams</span> features and architecture</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> consists of a programming language, an API, and a runtime system that can run the     applications on a single or distributed set of     resources.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="streamscomponents-d41691e255" class="topicref" data-id="streamscomponents" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action streamscomponents-d41691e255-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components.html" id="streamscomponents-d41691e255-link"><span class="keyword">Teracloud® Streams</span> components</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> consists of many components such as <span class="keyword">stream applications</span>, domains, instances, and resources.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="streamscomponents-applications-d41691e278" class="topicref" data-id="streamscomponents-applications" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components-applications.html" id="streamscomponents-applications-d41691e278-link"><span class="keyword">Stream applications</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Stream applications</span> typically involve ingesting live data streams from a variety of sources, transforming the     data to prepare it for analysis, and applying analytics to derive intelligence and make     decisions. The main components of <span class="keyword">stream applications</span> are tuples, data streams, operators, processing elements (PEs), and jobs.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="domains-d41691e298" class="topicref" data-id="domains" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/domains.html" id="domains-d41691e298-link">Domains</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <span class="keyword">Teracloud® 					Streams</span> domain is a             logical grouping of resources in a network for common management and administration. To             use <span class="keyword">Teracloud 					Streams</span>,             you must create at least one domain.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-introduction-instances-d41691e320" class="topicref" data-id="ibminfospherestreams-introduction-instances" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-instances.html" id="ibminfospherestreams-introduction-instances-d41691e320-link">Instances</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <span class="keyword">Teracloud® 					Streams</span> instance is             a runtime environment for <span class="keyword">stream applications</span>. It is             composed of a set of interacting services running across one or more resources. Before             you can use <span class="keyword">Teracloud 					Streams</span>, you must             create at least one instance.</span> </p></div></div></div></li><li role="treeitem"><div data-tocid="services-d41691e347" class="topicref" data-id="services" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/services.html" id="services-d41691e347-link">Domain and instance services</a><div class="wh-tooltip"><p class="shortdesc">When you start a <span class="keyword">Teracloud® 					Streams</span> domain, instance, or <span class="keyword">stream application</span>, services start on the appropriate resources.</p></div></div></div></li><li role="treeitem"><div data-tocid="interfaces-d41691e366" class="topicref" data-id="interfaces" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/interfaces.html" id="interfaces-d41691e366-link">Interfaces</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides a graphical interface for monitoring and managing Streams services and jobs. A command   line interface as well as REST and JMX programming interfaces are also available.   </p></div></div></div></li><li role="treeitem"><div data-tocid="resources-d41691e381" class="topicref" data-id="resources" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/resources.html" id="resources-d41691e381-link">Resources</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Resources are physical and logical entities that <span class="keyword">Teracloud® 					Streams</span> uses to run services. </span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-adminconsole-applications-visualizing-terminology-d41691e398" class="topicref" data-id="ibminfospherestreams-adminconsole-applications-visualizing-terminology" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-adminconsole-applications-visualizing-terminology.html" id="ibminfospherestreams-adminconsole-applications-visualizing-terminology-d41691e398-link">Views, charts, and tables</a><div class="wh-tooltip"><p class="shortdesc">A view defines the set of attributes that can be displayed in a chart or table for a specific viewable data stream. </p></div></div></div></li></ul></li></ul></li><li role="treeitem"><div data-tocid="streams_rel_notes_overview-d41691e409" class="topicref" data-id="streams_rel_notes_overview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/streams_rel_notes_overview.html" id="streams_rel_notes_overview-d41691e409-link">Release notes</a><div class="wh-tooltip"><p class="shortdesc">Learn about the new, deprecated, and removed features in <span class="keyword">Teracloud® 					Streams Version 7.2.0</span>.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1"><span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domains</h1>
+
+
+
+<div class="- topic/body concept/conbody body conbody"><p class="- topic/shortdesc shortdesc"><span class="- topic/ph ph">A <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domain is a
+            logical grouping of resources in a network for common management and administration. To
+            use <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>,
+            you must create at least one domain.</span></p>
+<section class="- topic/section section"><p class="- topic/p p">There are two main types of domains: basic and enterprise. You can create both types of domains
+    by
+    using
+    the <code class="+ topic/ph pr-d/codeph ph codeph">streamtool mkdomain</code> command.</p><p class="- topic/p p"><span class="- topic/ph ph"><span class="- topic/ph ph" id="domains__basic-domain-definition-ph1">A <dfn class="- topic/term term">basic
+                domain</dfn> has a single <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> resource
+              and user. This type of domain is typically used for test or development environments. </span>
+            <span class="- topic/ph ph" id="domains__basic-domain-definition-ph2"><span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> uses the
+              Pluggable Authentication Module (PAM) authentication service for user authentication,
+              and <span class="- topic/keyword keyword">Apache
+					ZooKeeper</span> for
+              managing and storing configuration information. </span>
+            <span class="- topic/ph ph" id="domains__basic-domain-definition-ph3">By default, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> uses an
+              embedded version of <span class="- topic/keyword keyword">ZooKeeper</span>, which is
+              included in the product installation. </span><span class="- topic/ph ph" id="domains__basic-domain-description-ph4">If you
+              use an external <span class="- topic/keyword keyword">ZooKeeper</span> server, it must
+              be set up before you create the basic
+            domain.</span></span></p><div class="- topic/p p"><span class="- topic/ph ph" id="domains__enterprise-domain-definition"><span class="- topic/ph ph" id="domains__enterprise-domain-definition-ph1">An <dfn class="- topic/term term">enterprise domain</dfn> can have
+              multiple resources and users. This type of domain is typically used for production
+              environments. You can configure high availability to ensure that <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> can
+              continue to run even if resources fail or are not available.</span>
+            <span class="- topic/ph ph" id="domains__enterprise-domain-definition-ph2">For high availability, you need to set up
+              and configure an <span class="- topic/keyword keyword">Apache
+					ZooKeeper</span> server for
+              managing and storing configuration information. The method that you use to
+              authenticate users in the domain must also be highly available.</span>
+            <span class="- topic/ph ph" id="domains__enterprise-domain-definition-ph3">The type of enterprise domain that you create
+              depends on your authentication mechanism. The following options are available as
+              default authentication methods:</span></span>
+          <ul class="- topic/ul ul" id="domains__enterprise-domain-definition-ul" data-ofbid="domains__enterprise-domain-definition-ul">
+            <li class="- topic/li li">Enterprise PAM domain: For high availability, use a Pluggable Authentication Module
+              (PAM) with the LDAP backend. PAM must be set up and configured before you create the
+              domain. The LDAP server must be accessible from the resource that is running the
+                <span class="- topic/keyword keyword">authentication and authorization services</span>.
+              There are other options that might not be highly available, such as PAM with a <span class="- topic/tm tm">UNIX<span class="- topic/tmmark tmmark ">™</span></span> backend. For this option, the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> users must
+              be defined on this system.</li>
+            <li class="- topic/li li">Enterprise LDAP domain: For high availability, use a Lightweight Directory Access
+              Protocol (LDAP) server. LDAP must be set up and configured before you create the
+              domain. </li>
+          </ul></div></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.cfg.doc/doc/setting-up-basic-domain.html" title="A basic domain provides a quick and easy method for using Teracloud Streams with minimal setup. This type of domain is typically used for test or application development environments.">Setting up an <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams</span> basic domain</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain.html" title="An enterprise domain can have multiple resources and users. This type of domain is typically used for production environments.">Setting up an <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams</span> enterprise domain</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/domains.html" title="After you create a Teracloud Streams domain, you can administer it by using the Streams Console graphical user interface and the streamtool command-line interface.">Administering domains</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

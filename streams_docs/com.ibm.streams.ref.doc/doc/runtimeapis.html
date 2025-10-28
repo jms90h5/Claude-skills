@@ -1,0 +1,212 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="description" content="Primitive operators provide native process functions for input tuples: void process(Tuple&amp; tuple, unsigned inputPortNumber) { //can inspect actual tuple type at runtime //can reflectively forward ..."/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/primitiveoperators.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spl-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/operators_1.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/operatordefn.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="runtimeapis"/><meta name="DC.language" content="en-us"/>        
+      <title>Runtime APIs</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="runtimeapis-d41691e64085"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/runtimeapis.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/runtimeapis.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="runtimeapis" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="spl-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li><div class="topicref" data-id="operators_1"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div></li><li><div class="topicref" data-id="operatordefn"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatordefn.html">Operator definitions</a><div class="wh-tooltip"><p class="shortdesc">A stream operator can be invoked to transform input streams to output streams. SPL supports two kinds of operators: primitive operators and composite operators.</p></div></div></div></li><li><div class="topicref" data-id="primitiveoperators"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/primitiveoperators.html">Primitive operators</a><div class="wh-tooltip"><p class="shortdesc">A primitive operator is an operator that is implemented in the C++ or Java™ and that includes an operator model that describes the syntax and semantics of the operator.</p></div></div></div></li><li class="active"><div class="topicref" data-id="runtimeapis"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/runtimeapis.html">Runtime APIs</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="langoverview-d41691e63305" class="topicref" data-id="langoverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/langoverview.html" id="langoverview-d41691e63305-link">Language overview</a><div class="wh-tooltip"><p class="shortdesc">SPL contains types, expressions, statements, functions, clauses, and other elements of a programming language.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammarnotation-d41691e63316" class="topicref" data-id="grammarnotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammarnotation.html" id="grammarnotation-d41691e63316-link">Grammar notation</a><div class="wh-tooltip"><p class="shortdesc">This language specification adopts a flavor of Backus-Naur Form (BNF) to describe the syntax of language features.</p></div></div></div></li><li role="treeitem"><div data-tocid="lexicalsyntax-d41691e63327" class="topicref" data-id="lexicalsyntax" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/lexicalsyntax.html" id="lexicalsyntax-d41691e63327-link">Lexical syntax</a><div class="wh-tooltip"><p class="shortdesc">SPL defines a set of rules to determine the syntax of a program.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammaroverview-d41691e63338" class="topicref" data-id="grammaroverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammaroverview.html" id="grammaroverview-d41691e63338-link">Grammar overview</a><div class="wh-tooltip"><p class="shortdesc">Here is the SPL grammar syntax, with references to the sections that contain the semantics.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="expressionlanguage-d41691e63349" class="topicref" data-id="expressionlanguage" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action expressionlanguage-d41691e63349-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/expressionlanguage.html" id="expressionlanguage-d41691e63349-link">Expression language</a><div class="wh-tooltip"><p class="shortdesc">Though SPL is a streaming language, there are many places where it uses expressions that are found in traditional imperative or functional languages.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="annotations-d41691e63482" class="topicref" data-id="annotations" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action annotations-d41691e63482-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/annotations.html" id="annotations-d41691e63482-link">Annotations</a><div class="wh-tooltip"><p class="shortdesc">Operators can be annotated. Annotations influence the run time behavior of <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="types-d41691e63633" class="topicref" data-id="types" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action types-d41691e63633-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/types.html" id="types-d41691e63633-link">Types</a><div class="wh-tooltip"><p class="shortdesc">SPL has several primitive types that are tailored for streaming, and a few composite types that are inspired by scripting languages but statically checked. The following topics describe the types, how to define them, and how to convert values between different types.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="operators_1-d41691e63757" class="topicref" data-id="operators_1" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action operators_1-d41691e63757-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html" id="operators_1-d41691e63757-link">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="operatorinvocations-d41691e63771" class="topicref" data-id="operatorinvocations" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operatorinvocations-d41691e63771-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatorinvocations.html" id="operatorinvocations-d41691e63771-link">Operator invocations</a><div class="wh-tooltip"><p class="shortdesc">The purpose of SPL is to allow users to create streams of data, which are connected and     manipulated by operator invocations.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="operatordefn-d41691e63954" class="topicref" data-id="operatordefn" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action operatordefn-d41691e63954-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatordefn.html" id="operatordefn-d41691e63954-link">Operator definitions</a><div class="wh-tooltip"><p class="shortdesc">A stream operator can be invoked to transform input streams to output streams. SPL supports two kinds of operators: primitive operators and composite operators.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="streamoperinstancenames-d41691e63965" class="topicref" data-id="streamoperinstancenames" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/streamoperinstancenames.html" id="streamoperinstancenames-d41691e63965-link">Stream and operator instance names</a><div class="wh-tooltip"><p class="shortdesc">SPL has rules for giving names to operators, operator instances, streams, and ports.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="compositeoperators-d41691e63976" class="topicref" data-id="compositeoperators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action compositeoperators-d41691e63976-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/compositeoperators.html" id="compositeoperators-d41691e63976-link">Composite operators</a><div class="wh-tooltip"><p class="shortdesc">A composite operator is implemented in the <span class="keyword">Streams Processing Language (SPL)</span> and encapsulates a subgraph of a data flow graph that can be parameterized to make it     reusable in multiple <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="operatorparams-d41691e64016" class="topicref" data-id="operatorparams" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operatorparams-d41691e64016-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operatorparams.html" id="operatorparams-d41691e64016-link">Operator parameters</a><div class="wh-tooltip"><p class="shortdesc">Different invocations of the same operator can yield different expansions, by providing actual parameter values for formal parameter placeholders declared in the operator definition.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="primitiveoperators-d41691e64071" class="topicref" data-id="primitiveoperators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action primitiveoperators-d41691e64071-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/primitiveoperators.html" id="primitiveoperators-d41691e64071-link">Primitive operators</a><div class="wh-tooltip"><p class="shortdesc">A primitive operator is an operator that is implemented in the C++ or Java™ and that includes an operator model that describes the syntax and semantics of the operator.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="runtimeapis-d41691e64085" class="topicref" data-id="runtimeapis" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/runtimeapis.html" id="runtimeapis-d41691e64085-link">Runtime APIs</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem"><div data-tocid="compiletimeapis-d41691e64095" class="topicref" data-id="compiletimeapis" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/compiletimeapis.html" id="compiletimeapis-d41691e64095-link">Compile-time APIs</a><div class="wh-tooltip"><p class="shortdesc">You can write a primitive operator to optionally specialize at compile time to optimize for statically known information.</p></div></div></div></li></ul></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="programstructure-d41691e64106" class="topicref" data-id="programstructure" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action programstructure-d41691e64106-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/programstructure.html" id="programstructure-d41691e64106-link">Program structure</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="config-container-d41691e64163" class="topicref" data-id="config-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action config-container-d41691e64163-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/config-container.html" id="config-container-d41691e64163-link">Operator config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds an operator invocation, or how the runtime system runs it. </p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="splbinaryandcharacterencoding-d41691e64361" class="topicref" data-id="splbinaryandcharacterencoding" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action splbinaryandcharacterencoding-d41691e64361-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html" id="splbinaryandcharacterencoding-d41691e64361-link">SPL binary and character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary and character encoding for serializing and deserializing data. This encoding is used for the <code class="ph codeph">FileSource</code>, <code class="ph codeph">TCPSource</code>, and <code class="ph codeph">UDPSource</code> operators, as well as the <code class="ph codeph">FileSink</code>, <code class="ph codeph">TCPSink</code>, and <code class="ph codeph">UDPSink</code> operators.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Runtime APIs</h1>
+
+
+
+
+
+
+<div class="- topic/body concept/conbody body conbody"><p class="- topic/shortdesc shortdesc"></p>
+<p class="- topic/p p">Primitive operators provide native <code class="+ topic/ph pr-d/codeph ph codeph">process</code> functions
+for input tuples:</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>void process(Tuple&amp; tuple, unsigned inputPortNumber) {
+     //can inspect actual tuple type at runtime
+     //can reflectively forward attributes from input to output
+}</code></pre>
+<p class="- topic/p p">Process functions can be implemented in either reflective or non-reflective
+style. To work in non-reflective style, cast the tuple to the specific
+type: </p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>void process(Tuple&amp; tuple, unsigned inputPortNumber) {
+   switch(port) {
+     case 0: {
+       IPort0Type&amp; p0tuple = static_cast&lt;IPort0Type&amp;&gt;(tuple);
+       ...
+       break;
+     }
+     ...
+   }
+ }
+        </code></pre>
+<div class="- topic/p p">The types <code class="+ topic/ph pr-d/codeph ph codeph">IPort0Type</code>, <code class="+ topic/ph pr-d/codeph ph codeph">IPort1Type</code>, and so on,
+are defined to be exactly the types of the tuples that can arrive
+on the input streams. Primitive operators call native <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> functions
+for output tuples:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>submit(tuple, outputPortNumber);</code></pre></div>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

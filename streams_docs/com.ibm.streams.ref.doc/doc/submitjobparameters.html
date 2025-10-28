@@ -1,0 +1,1450 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="abstract" content="You can specify or change configuration parameters when you use the submitjob or updateoperators operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the job configuration overlay file, the changes override any previously set values."/><meta name="description" content="You can specify or change configuration parameters when you use the submitjob or updateoperators operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the job configuration overlay file, the changes override any previously set values."/><meta name="DC.subject" content="job configuration overlays,job configuration overlays reference,job parameters"/><meta name="keywords" content="job configuration overlays, job configuration overlays reference, job parameters"/><meta name="indexterms" content="job configuration overlays, job configuration overlays reference, job parameters"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/jcoexamples.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="submitjob-parameters"/><meta name="DC.language" content="en-us"/>        
+      <title>Job configuration overlays reference</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="submitjob-parameters-d41691e61331"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/submitjobparameters.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/submitjobparameters.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="submitjob-parameters" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li class="active"><div class="topicref" data-id="submitjob-parameters"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="true" class="active"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="jcoexamples-d41691e61351" class="topicref" data-id="jcoexamples" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/jcoexamples.html" id="jcoexamples-d41691e61351-link"><span class="keyword">Job configuration overlay</span> examples</a><div class="wh-tooltip"><p class="shortdesc">You can use a <span class="keyword">job configuration overlay</span> file to save reusable job submission parameters or to change a running job with an <code class="ph codeph">updateoperators</code> operation. </p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="submitjob-parameters__job-config-overlay-title">
+<h1 class="- topic/title title topictitle1" id="submitjob-parameters__job-config-overlay-title">Job configuration overlays reference</h1>
+    
+
+    
+<div class="- topic/body reference/refbody body refbody"><div class="- topic/abstract abstract">
+<p class="- topic/shortdesc shortdesc">You can specify or change configuration parameters when you use the
+<code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code> or <code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code> operations. The settings control
+submission constraints, host constraints and locations, and operator status. Parameters are captured
+and updated in the configuration JSON file. When you change the values in the <span class="- topic/keyword keyword">job configuration overlay</span> file, the changes override any previously set values.</p>
+<div class="- topic/note note important note_important"><span class="note__title">Important:</span>  When you set a value in the  <span class="- topic/keyword keyword">job configuration overlay</span> file, you might override application configuration settings that the application
+developer defined and the changes can potentially conflict with the application developer's
+intention.<p class="- topic/p p">A
+value that you set in a <span class="- topic/keyword keyword">job configuration overlay</span> file will override any corresponding value provided by a submission-time parameter or a
+corresponding value provided in the application. If your application requires submission-time
+values, you must still set those values in the application, even though they will be
+overridden.</p></div>
+</div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Job parameters format</h2>
+
+<p class="- topic/p p">The following categories classify parameters as input or output related:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_yhn_214_vv" data-ofbid="submitjob-parameters__table_yhn_214_vv" data-cols="3"><caption></caption><colgroup><col style="width:29.275362318840582%"/><col style="width:28.985507246376812%"/><col style="width:41.73913043478261%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_yhn_214_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_yhn_214_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_yhn_214_vv__entry__3">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">comment</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__3">Comment text.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">jobConfigOverlays</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">JobConfigOverlay</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__3">Each element of the array contains the job configuration settings. Only the
+first <span class="+ topic/keyword pr-d/parmname keyword parmname">jobConfigOverlay</span> element is supported. Other elements in the array are
+ignored.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">results</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__2">Results</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_yhn_214_vv__entry__3">Produced from the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">submitjob --preview</span> command
+or from the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">updateoperators</span> command. This parameter is output only and is ignored
+for job preview, update, or submission. Results can be successful, partially successful, or
+failure.</td>
+</tr>
+</tbody></table></div>
+<dl class="+ topic/dl pr-d/parml dl parml">
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">jobConfigOverlays</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Single element array of jobConfigOverlays.</dd>
+
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">Results</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">
+<p class="- topic/p p">Output from the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">submitjob --preview</span> command or the
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">updateoperators</span> command. This parameter is output only and it is ignored for job
+preview, update, or submission. For parameters, see <a class="- topic/xref xref" href="#submitjob-parameters__jco-results">Results</a>. </p>
+</dd>
+
+</dl>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">JobConfigOverlay</h2>
+
+<p class="- topic/p p">The following parameters define the contents of the  <span class="- topic/keyword keyword">job configuration overlay</span>:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_dsh_kn4_vv" data-ofbid="submitjob-parameters__table_dsh_kn4_vv" data-cols="4"><caption></caption><colgroup><col style="width:28.57142857142857%"/><col style="width:17.857142857142858%"/><col style="width:29.761904761904763%"/><col style="width:23.809523809523807%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dsh_kn4_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_dsh_kn4_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dsh_kn4_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dsh_kn4_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">jobConfig</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">JobConfig</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__3">Job configuration values</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">deploymentConfig</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">DeploymentConfig</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__3">Deployment configuration values.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">operatorConfigs</span> (optional)<p class="- topic/p p">Ignored when
+<span class="+ topic/keyword pr-d/parmname keyword parmname">fusionScheme</span>=legacy.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">OperatorConfigs</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__3">Operator configuration values. </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">configInstructions</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">ConfigInstructions</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__3">Configuration instructions.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code><p class="- topic/lines lines"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">operationConfig</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">OperationConfig</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__3">Operation configuration values.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsh_kn4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code><p class="- topic/lines lines"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></p></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">JobConfig</h2>
+
+<p class="- topic/p p">The following parameters define the contents of the job configuration:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_zln_bq4_vv" data-ofbid="submitjob-parameters__table_zln_bq4_vv" data-cols="4"><caption></caption><colgroup><col style="width:28.915662650602407%"/><col style="width:24.096385542168676%"/><col style="width:26.506024096385545%"/><col style="width:20.481927710843372%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_zln_bq4_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_zln_bq4_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_zln_bq4_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_zln_bq4_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">jobName</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__3">The name that is assigned to the job.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">jobGroup</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__3">The job group to use to control the permissions for the submitted job.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">submissionParameters</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">SubmissionParameter</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__3">Job-specific key: value submission parameters.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">dataDirectory</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__3">Specifies the location of the data directory.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">preloadApplicationBundles</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__2">Boolean</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__3">Specifies whether to preload the job onto all resources in the instance, even
+if the job is not currently needed on each. <p class="- topic/p p">Values are <code class="+ topic/ph pr-d/codeph ph codeph">true</code> or
+<code class="+ topic/ph pr-d/codeph ph codeph">false</code> (default).</p>
+<p class="- topic/p p"> Preloading the job can improve the performance if the PEs are relocated to a new resource.
+</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">tracing</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__3">Specifies the trace setting for the PEs. The valid values are
+<code class="+ topic/ph pr-d/codeph ph codeph">error</code>, <code class="+ topic/ph pr-d/codeph ph codeph">warn</code>, <code class="+ topic/ph pr-d/codeph ph codeph">info</code>, <code class="+ topic/ph pr-d/codeph ph codeph">debug</code>, and
+<code class="+ topic/ph pr-d/codeph ph codeph">trace</code>.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_zln_bq4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">SubmissionParameter</h2>
+
+<p class="- topic/p p">The following elements comprise the submission parameters:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_wt4_l54_vv" data-ofbid="submitjob-parameters__table_wt4_l54_vv" data-cols="4"><caption></caption><colgroup><col style="width:28.915662650602407%"/><col style="width:24.096385542168676%"/><col style="width:26.506024096385545%"/><col style="width:20.481927710843372%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_wt4_l54_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_wt4_l54_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_wt4_l54_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_wt4_l54_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">name</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__3">Parameter name.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">value</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__3">Parameter value.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_wt4_l54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Operation Config</h2>
+
+<p class="- topic/p p">The following elements comprise the contents of the operation configuration:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" data-cols="4"><caption></caption><colgroup><col style="width:30.58823529411765%"/><col style="width:23.52941176470588%"/><col style="width:25.882352941176475%"/><col style="width:20%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__77">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__entry__78">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__79">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__80">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__77"><span class="+ topic/keyword pr-d/parmname keyword parmname">overrideResourceLoadProtection</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__78">Boolean </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__79"><code class="+ topic/ph pr-d/codeph ph codeph">False</code>: (default). The instance property setting for resource
+overload protections will be used.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">True</code>: Resource overload protection is disabled
+for this job submission.</p><p class="- topic/p p">Note: You must have jobs-override authority on the instance object to
+use this option.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__80"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__77"><span class="+ topic/keyword pr-d/parmname keyword parmname">forcePeStopped </span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__78">Boolean</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__79"><code class="+ topic/ph pr-d/codeph ph codeph">True</code>: If a currently running PE is required to be stopped by
+the operation, this operation will stop the PE.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">False</code>: (default). If a PE is
+required to stop, but it is not stopped, then the operation will fail.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__80"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__77"><span class="+ topic/keyword pr-d/parmname keyword parmname">enableAutomaticAugmentation</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__78">Boolean</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__79"><code class="+ topic/ph pr-d/codeph ph codeph">True</code>: Resources are added automatically as needed to
+minimally solve resource placement problems. <p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">False</code>: (default). Resources are not
+added automatically, regardless of placement problems.</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__80"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">DeploymentConfig</h2>
+
+<p class="- topic/p p">The following elements comprise the contents of the deployment configuration:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_nxr_hzs_ww" data-ofbid="submitjob-parameters__table_nxr_hzs_ww" data-cols="4"><caption></caption><colgroup><col style="width:29.599999999999998%"/><col style="width:19.2%"/><col style="width:37.6%"/><col style="width:13.600000000000001%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_nxr_hzs_ww__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_nxr_hzs_ww__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_nxr_hzs_ww__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_nxr_hzs_ww__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">fusionScheme</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">automatic</code>: (default). At submission time, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> decides on a number of PEs that are appropriate to the job and the instance.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">manual</code>: At submission time, the user must provide a target number of PEs for
+each job.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">legacy</code>: At submission time, <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> uses the fusion behavior from prior to Version
+4.2.0.</li>
+</ul>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">fusionTargetPeCount</span> (optional)<p class="- topic/p p">Requires
+<span class="+ topic/keyword pr-d/parmname keyword parmname">fusionScheme</span>=manual or <span class="+ topic/keyword pr-d/parmname keyword parmname">
+instance.fusionScheme</span>=manual.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">Number</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3">Use this option to set the number of PEs to create.
+<span class="+ topic/keyword pr-d/parmname keyword parmname">fusionScheme</span> must be set to <code class="+ topic/ph pr-d/codeph ph codeph">manual</code>.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">placementScheme</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">legacy</code>: The estimated load of PEs to be placed is fitted in with existing ldavg
+numbers of hosts, adjusted for the number of cores in hosts.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">balancedJob</code>: PEs are distributed across candidate hosts proportionally to the
+number of cores on the hosts. PEs from previous jobs are ignored.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">balancedInstance</code>: (default). PEs are distributed across candidate hosts
+proportionally to the number of cores on the hosts, taking into account PE placements from previous
+jobs.</li>
+</ul>
+<p class="- topic/p p">For both balanced schemes, the balancing pass selects the candidate host that has
+the lowest PE to core ratio. If there is a tie, the balancing process chooses the host with the
+lowest load.</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">threadingModel</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">manual</code>: Threads are manually placed by the application developer. All threads
+come from either operators, explicitly requested threaded ports, or PE input ports.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">automatic</code>: The SPL runtime decides on thread placement based on runtime
+information like necessary threads, number of operators that are available in the PE, and number of
+available logical processors.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">dynamic</code>: Each operator input port can be executed by any thread. The assignment
+of threads to input ports can change at runtime as can the number of available threads.
+</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">dedicated</code>: Each operator input port has a dedicated thread that processes all
+of the tuples on that input port, regardless of whether or not those operators have the
+<span class="+ topic/keyword pr-d/parmname keyword parmname">threadedPort</span> configuration.</li>
+</ul>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">dynamicThreadingThreadCount</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">Number</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3">Specifies the number of threads that scheduled ports should use. Inherits its
+value from <span class="+ topic/keyword pr-d/parmname keyword parmname">instance.dynamicThreadingThreadCount</span>, if set.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">dynamicThreadingElastic</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">Boolean</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3"><span class="- topic/ph ph">Specifies whether the number of dynamic threads as well as
+the number of operators under the dynamic threading model can change at runtime to maximize
+throughput. Specify <kbd class="+ topic/ph sw-d/userinput ph userinput">true</kbd> to make elastic adjustment or
+<kbd class="+ topic/ph sw-d/userinput ph userinput">false</kbd> to keep the number of dynamic threads and the number of operators under
+the dynamic threading model static.</span>
+<div class="- topic/note note note note_note"><span class="note__title">Note:</span> This setting can only be used if the application configuration
+<span class="+ topic/keyword pr-d/parmname keyword parmname">threadingModel</span> is set to <code class="+ topic/ph pr-d/codeph ph codeph">dynamic</code>.</div></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">parallelRegionConfig</span> (optional)<p class="- topic/p p">Ignored if
+<span class="+ topic/keyword pr-d/parmname keyword parmname">fusionScheme</span>=legacy.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">parallelRegionConfig</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3">Configuration information for all the parallel regions in the job.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">jobResourceSharing</span>
+(optional)<p class="- topic/p p">If not specified, the <span class="+ topic/keyword pr-d/parmname keyword parmname">instance.jobResourceSharing</span> property value
+is used.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">sameJob</code>: Job resources are only allowed to be used within
+this job.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">sameUser</code>: If unused resources are not available, job resources are
+allowed to be shared by other jobs from the same user that are also specified as
+<code class="+ topic/ph pr-d/codeph ph codeph">sameUser</code> sharing.</p><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">sameInstance</code>: If unused resources are not
+available, job resources are allowed to be shared by other jobs from the same instance that are also
+specified as <code class="+ topic/ph pr-d/codeph ph codeph">sameInstance</code> sharing.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">proposedOperatorsPerResource</span>
+(optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__2">Integer greater than 0.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__3">Ratio of the number of operators per resource. This ratio is a suggestion to
+the scheduler to influence the number of resources that are requested to support the job's resource
+needs.<p class="- topic/p p">The default is the value of the <span class="+ topic/keyword pr-d/parmname keyword parmname">instance.proposedOperatorsPerResource</span>
+property.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_nxr_hzs_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">parallelRegionConfig</h2>
+
+<p class="- topic/p p">The following elements comprise the submission parameters:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_u5f_kjy_ww" data-ofbid="submitjob-parameters__table_u5f_kjy_ww" data-cols="4"><caption></caption><colgroup><col style="width:29.629629629629626%"/><col style="width:18.51851851851852%"/><col style="width:30.864197530864196%"/><col style="width:20.98765432098765%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_u5f_kjy_ww__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_u5f_kjy_ww__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_u5f_kjy_ww__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_u5f_kjy_ww__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_u5f_kjy_ww__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">fusionType</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_u5f_kjy_ww__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_u5f_kjy_ww__entry__3">
+
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">channelIsolation</code>: Operators within a channel are fused into a PE only with
+operators from the same channel. Operators outside the parallel region or from other channels in the
+same region are fused into different PEs. One or more PEs for a channel can be created depending on
+the fusion constraints.<p class="- topic/p p">You can explicitly collocate an operator in a channel with an operator
+outside the region or from a different channel in the same region. A separate PE is created if all
+of the explicitly colocated operators are not members of the same channel.</p></li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">channelExlocation</code>: Operators within a channel are fused with operators from the
+same channel or with operators from outside the region. Operators from other channels in the same
+region are not fused into the same PEs. One or more PEs for a channel can be created depending on
+the fusion constraints. <p class="- topic/p p">You can explicitly collocate an operator in a channel with an operator
+outside the region or from a different channel in the same region. A separate PE is created if all
+of the explicitly colocated operators are not members of the same channel.</p><p class="- topic/p p">If you use this value, you cannot change the width of a parallel region
+while the job is running. You would need to resubmit the job with the value set to <code class="+ topic/ph pr-d/codeph ph codeph">
+channelIsolation</code> or to <code class="+ topic/ph pr-d/codeph ph codeph">noChannelInfluence</code>.</p></li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">noChannelInfluence</code>: (default). Inclusion in this
+<span class="+ topic/keyword pr-d/parmname keyword parmname">parallelRegion</span> has no impact on the fusion process.</li>
+</ul>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_u5f_kjy_ww__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">OperatorConfigs</h2>
+
+<p class="- topic/p p">The following parameters define the contents of the operator configurations:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_ljy_k54_vv" data-ofbid="submitjob-parameters__table_ljy_k54_vv" data-cols="4"><caption></caption><colgroup><col style="width:29.761904761904763%"/><col style="width:20.238095238095237%"/><col style="width:29.761904761904763%"/><col style="width:20.238095238095237%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ljy_k54_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_ljy_k54_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ljy_k54_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ljy_k54_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">operators</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">Operator</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__3">Configuration attributes for individual operators. Not all existing operators
+must be in the array, but only operators defined by the application are allowed.<p class="- topic/p p">
+If an operator is referenced multiple times, the configuration updates are made
+one at a time in the order that they appear in the JSON file. The resulting configuration will be
+cumulative from the application of all the configurations.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">hostColocationGroups</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">LocationGroup</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__3">Each element of the array represents a hostColocationGroup, where each member
+of the group must be placed onto the same host as other operators in this group. These groups are
+combined with groups that are defined in the application bundle.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">hostExlocationGroups</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">LocationGroup</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__3">Each element of the array represents a hostExlocationGroup, where each member
+of the group cannot be placed onto the same host as any other operators in this group. These groups
+are combined with groups that are defined in the application bundle.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">partitionColocationGroups</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">LocationGroup</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__3">Each element of the array represents a partitionColocationGroup, where each
+member of the group must be fused together with other operators in the group into the same PE. These
+groups are combined with groups that are defined in the application bundle.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">partitionExlocationGroups</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">LocationGroup</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__3">Each element of the array represents a partitionExlocationGroup, where each
+member of this group cannot be fused together with any other operators from this group into the same
+PE. These groups are combined with groups that are defined in the application bundle.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">poolPlacementGroups</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">PoolPlacementGroup</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__3">Each element of the array represents a host pool definition.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ljy_k54_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">LocationGroup</h2>
+
+<p class="- topic/p p">The following parameters define the location groups:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_tf4_qy4_vv" data-ofbid="submitjob-parameters__table_tf4_qy4_vv" data-cols="4"><caption></caption><colgroup><col style="width:25.939849624060145%"/><col style="width:18.796992481203006%"/><col style="width:31.76691729323308%"/><col style="width:23.49624060150376%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_tf4_qy4_vv__entry__1">AttributeName </th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_tf4_qy4_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_tf4_qy4_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_tf4_qy4_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">groupName</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__3">Name of a location group. </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code>: If this name matches the name of a group that is
+defined in the application bundle, this group replaces the group in the
+bundle.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code>: If this name matches the name of an existing group, it
+will replace it. All current members of the group must be included in the target zone, or an error
+is reported.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">members</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__3">Each element of the array is a nameSpec of the operator or operators that are
+included in this group. If this attribute is not specified, or the array is empty, then a group with
+a matching groupName that is defined in the application bundle is removed.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_tf4_qy4_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code><p class="- topic/lines lines"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></p></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">PoolPlacementGroup</h2>
+
+<p class="- topic/p p">The following parameters define the details for pool placement groups:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_khv_wpp_vv" data-ofbid="submitjob-parameters__table_khv_wpp_vv" data-cols="4"><caption></caption><colgroup><col style="width:47.953216374269005%"/><col style="width:15.204678362573098%"/><col style="width:23.391812865497073%"/><col style="width:13.450292397660817%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_khv_wpp_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_khv_wpp_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_khv_wpp_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_khv_wpp_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">name</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__3">Name of the host pool.<p class="- topic/p p">For the <code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code>
+operation: If this name matches the name of a group that is defined in the application bundle, this
+group replaces the group in the bundle.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">operatorsInPool</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">OperatorInPool</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__3">A specific operator can be specified in only one
+<span class="+ topic/keyword pr-d/parmname keyword parmname">PoolPlacementGroup</span> or in the <span class="+ topic/keyword pr-d/parmname keyword parmname">declaredHost</span> attribute of the
+Operator.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">membershipMode</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">SHARED</code>: (default). Hosts that are members of this pool are
+allowed to be in other pools as well. <p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">EXCLUSIVE</code>: Hosts that are members of this
+pool are not allowed to be in any other pools, whether this job or any other jobs. The value for
+<span class="+ topic/keyword pr-d/parmname keyword parmname">size</span> must be specified.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">size</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__2">Number</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__3">Optional number. Defines the number of hosts that are allowed in the host
+pool. If specified, the number must be greater than 0. <p class="- topic/p p">If <span class="+ topic/keyword pr-d/parmname keyword parmname">declaredHosts</span> size
+is greater than 0, then the value that is specified for size is ignored.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">tags</span> (optional) <p class="- topic/p p">Exclusive with
+<span class="+ topic/keyword pr-d/parmname keyword parmname">declaredHosts</span></p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__3">Defines what the tagging requirements are for hosts to be considered for
+membership of this pool.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">declaredHosts</span> (optional) <div class="- topic/p p">Exclusive with the following: <ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">tags</span></li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">membershipMode</span>=<code class="+ topic/ph pr-d/codeph ph codeph">Exclusive</code></li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">numberOfResourcesToRequest</span></li>
+</ul>
+</div><p class="- topic/p p">Not allowed if <span class="+ topic/keyword pr-d/parmname keyword parmname"> applicationResourceAllocationMode</span>=job.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__3">Defined hosts that are members of this host pool.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">numberOfResourcesToRequest</span> (optional)
+<p class="- topic/p p">Exclusive with <span class="+ topic/keyword pr-d/parmname keyword parmname">declaredHosts</span>.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__2">Number</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__3">The <code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code> operation will request this number of resources
+that match the requirements for the <span class="+ topic/keyword pr-d/parmname keyword parmname">poolPlacementGroup</span> parameter. If operators
+with different<span class="+ topic/keyword pr-d/parmname keyword parmname"> poolPlacementGroups</span> are partition colocated together, the
+largest number for this field will be used.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_khv_wpp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">OperatorInPool</h2>
+
+<p class="- topic/p p">The following parameters define the operator pools:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_ybg_zrp_vv" data-ofbid="submitjob-parameters__table_ybg_zrp_vv" data-cols="4"><caption></caption><colgroup><col style="width:40.609137055837564%"/><col style="width:9.644670050761421%"/><col style="width:37.055837563451774%"/><col style="width:12.690355329949238%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ybg_zrp_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_ybg_zrp_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ybg_zrp_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ybg_zrp_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">nameSpec</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__3"><span class="+ topic/keyword pr-d/parmname keyword parmname">nameSpec</span> of the operators in the pool.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">inPoolIndex</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__2">Number </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__3">Optional number. The index within the host pool, for example, the fourth host
+listed in the host pool. This value can be specified only as part of a
+<span class="+ topic/keyword pr-d/parmname keyword parmname">PoolPlacementGroup</span> that has a <span class="+ topic/keyword pr-d/parmname keyword parmname">size</span> specified. The index
+number must be smaller than the specified size.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ybg_zrp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Operator</h2>
+
+<p class="- topic/p p">The following parameters define the details for operator
+configuration:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_dsv_ktp_vv" data-ofbid="submitjob-parameters__table_dsv_ktp_vv" data-cols="4"><caption></caption><colgroup><col style="width:39.62264150943396%"/><col style="width:9.433962264150944%"/><col style="width:37.735849056603776%"/><col style="width:13.20754716981132%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dsv_ktp_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_dsv_ktp_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dsv_ktp_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dsv_ktp_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">nameSpec</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__3"><span class="- topic/ph ph">Specification of a name of an existing operator instance or
+                                    instances in an application after User defined parallelism (UDP)
+                                    transformations.</span><p class="- topic/p p">The name might contain zero or more '*'
+                                    characters in the specification. The '*' represents 0 or more
+                                    occurrences of any legal name character. </p><p class="- topic/p p">For example,
+                                    "Main.*.MyComp2.Filter[*]"</p><p class="- topic/p p">'[ ]' are normal characters,
+                                    and do not have any regular expression meaning.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">restartable</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__2">Boolean </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">true</code>: A PE that contains this operator is able to be
+restarted. <span class="- topic/ph ph">If you set the value to <code class="+ topic/ph pr-d/codeph ph codeph">true</code>, it will not be specified
+in the preview output. </span><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">false</code>: A PE that contains this operator is not able
+to be restarted.</p><p class="- topic/p p">If you specify this parameter, it will override the currently
+active value.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">relocatable</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__2">Boolean </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">true</code>: A PE that contains this operator is able to be
+relocated. <span class="- topic/ph ph">If you set the value to <code class="+ topic/ph pr-d/codeph ph codeph">true</code>, it will not be specified
+in the preview output.</span>
+<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">false</code>: A PE that contains this operator is not able to be relocated.</p><p class="- topic/p p">If you specify this parameter, it will override the currently active
+value.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">partitionIsolation</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__2">Boolean</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">true</code>: A PE that contains this operator cannot be fused with
+any other operator.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">false</code>: A PE that contains this operator can be fused with
+other operators. <span class="- topic/ph ph">If you set the value to <code class="+ topic/ph pr-d/codeph ph codeph">false</code>, it will not be
+specified in the preview output.</span></p><p class="- topic/p p">If you specify this parameter, it will
+override the currently active value.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">partitionGroupIsolation</span>
+(optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__2">Boolean</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">true</code>: The only operators that are allowed to be fused with
+this operator or those that have been configured with partitionColocation placement with
+it.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">false</code>: No additional restrictions to what operators this operator can be
+fused with. <span class="- topic/ph ph">If you set the value to <code class="+ topic/ph pr-d/codeph ph codeph">false</code>, it will not be
+specified in the preview output.</span></p><p class="- topic/p p">If you specify this parameter, it will
+override the currently active value.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">hostIsolation</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__2">Boolean</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">true</code>: A PE that contains this operator cannot be placed on
+the same host as any other PE.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">false</code>: A PE that contains this operator can be
+placed on the same host with other PEs. <span class="- topic/ph ph">If you set the value to
+<code class="+ topic/ph pr-d/codeph ph codeph">false</code>, it will not be specified in the preview output.</span></p><p class="- topic/p p">If
+you specify this parameter, it will override the currently active value.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">declaredHost</span> (optional) <p class="- topic/p p">Not allowed if
+<span class="+ topic/keyword pr-d/parmname keyword parmname">applicationResourceAllocationMode</span>=job).</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__3">A PE that contains this operator must be placed on this specific host. If this
+attribute is specified, then the operator cannot be included in any of the
+<span class="+ topic/keyword pr-d/parmname keyword parmname">PoolPlacement</span> sections. <p class="- topic/p p">If you specify this parameter, it will
+override the currently active value.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dsv_ktp_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">ConfigInstructions</h2>
+
+<p class="- topic/p p">The following parameters define the details for the configuration instructions:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_np1_fq5_vv" data-ofbid="submitjob-parameters__table_np1_fq5_vv" data-cols="4"><caption></caption><colgroup><col style="width:32.80632411067194%"/><col style="width:19.76284584980237%"/><col style="width:27.66798418972332%"/><col style="width:19.76284584980237%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_np1_fq5_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_np1_fq5_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_np1_fq5_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_np1_fq5_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">ignoreBundleRelationalPlacements</span> (optional)<p class="- topic/p p">Ignored
+when <span class="+ topic/keyword pr-d/parmname keyword parmname">fusionScheme</span>=legacy.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">PARTITION</code>: Clear all
+current partition relational placements from bundle (<span class="+ topic/keyword pr-d/parmname keyword parmname">partitionIsolation</span>,
+<span class="+ topic/keyword pr-d/parmname keyword parmname">partitionColocationGroups</span>,
+<span class="+ topic/keyword pr-d/parmname keyword parmname">partitionExlocationGroups</span>).<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">HOST</code>: Clear all current host
+relational placements from bundle (<span class="+ topic/keyword pr-d/parmname keyword parmname">hostIsolation</span>,
+<span class="+ topic/keyword pr-d/parmname keyword parmname">hostColocationGroups</span>,
+<span class="+ topic/keyword pr-d/parmname keyword parmname">hostExlocationGroups</span>).</p><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">ALL</code>: Clear partition and host
+relational placements.</p><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">NONE</code>: (default). Bundle relational placements are left
+as is.</p><div class="- topic/p p">
+<div class="- topic/note note tip note_tip"><span class="note__title">Tip:</span> Be careful when you use this keyword because the effects can counteract the
+intentions of the application developer.</div>
+</div></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">ignoreBundleHostPlacements</span> (optional)<p class="- topic/p p">Ignored when
+<span class="+ topic/keyword pr-d/parmname keyword parmname">fusionScheme</span>=legacy.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__2">Boolean </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">true</code>: All operators are placed in the default pool.
+(default=<code class="+ topic/ph pr-d/codeph ph codeph">false</code>)<div class="- topic/p p">
+<div class="- topic/note note tip note_tip"><span class="note__title">Tip:</span> Be careful when you use this keyword because the effects can counteract the
+intentions of the application developer.</div>
+</div></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">convertTagSet</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">tagConversion</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__3">Replace tags in the <span class="+ topic/keyword pr-d/parmname keyword parmname">poolPlacementGroups</span> with tags in the
+<span class="+ topic/keyword pr-d/parmname keyword parmname">convertTagSet</span>. <p class="- topic/p p">If <span class="+ topic/keyword pr-d/parmname keyword parmname">poolPlacementGroup.tags</span> is a superset
+of <span class="+ topic/keyword pr-d/parmname keyword parmname">originalTagSet</span>, then tags in <span class="+ topic/keyword pr-d/parmname keyword parmname">originalTagSet</span> are removed
+from <span class="+ topic/keyword pr-d/parmname keyword parmname">poolPlacementGroup.tags</span>, and tags in <span class="+ topic/keyword pr-d/parmname keyword parmname">targetTagSet</span> are
+inserted in its place.</p><p class="- topic/p p">If the <span class="+ topic/keyword pr-d/parmname keyword parmname">originalTagSet</span> is not specified, then a
+<span class="+ topic/keyword pr-d/parmname keyword parmname">poolPlacementGroup</span> with an empty tag set, known as a default host pool, has its
+tags changed to include <span class="+ topic/keyword pr-d/parmname keyword parmname">targetTagSet</span>. </p><p class="- topic/p p">The parameter does not convert
+tags within the jobConfigOverlay.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">changeThreadedPortSettings</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">ThreadedPortSetting</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__3">Change settings for all threaded ports that are defined in the
+application.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">adjustmentSection</span>
+(optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">AdjustmentSubsection</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__3">Adjustment section definition. <p class="- topic/p p">The operator set that makes up the
+adjustment section of the job is defined by the union of the composite set of operators of all the
+subsections. The composite set of operators for each subsection is defined by the union of the
+target operators and the operator sets that make up the target PEs. </p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_np1_fq5_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code>: Multiple sections are
+supported.<p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code>: Multiple sections are supported, but only one
+parallel region can be specified.</p></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">AdjustmentSubsection</h2>
+
+
+<p class="- topic/p p">The following parameters define the adjustment subsection: </p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" data-cols="4"><caption></caption><colgroup><col style="width:32.80632411067194%"/><col style="width:19.76284584980237%"/><col style="width:27.66798418972332%"/><col style="width:19.76284584980237%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__281">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__entry__282">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__283">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__284">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__281"><span class="+ topic/keyword pr-d/parmname keyword parmname">targetParallelRegion </span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__282"> object <var class="+ topic/keyword sw-d/varname keyword varname">TargetParallelRegion</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__283">Parallel region to be targeted. </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__284"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code><p class="- topic/lines lines"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__281"><span class="+ topic/keyword pr-d/parmname keyword parmname">numberOfResourcesToBeAdded </span> (optional) <p class="- topic/p p">Ignored during
+the <code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code> operation.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__282">Number</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__283">Number of resources to be added to job.<p class="- topic/p p">The tagging requirement for the
+resources is defined by the <span class="+ topic/keyword pr-d/parmname keyword parmname">tagsForAddedResources</span> parameter. If the
+<span class="+ topic/keyword pr-d/parmname keyword parmname">tagsForAddedResources </span>parameter is not specified, then an untagged request will
+be made.</p>
+<p class="- topic/p p">Ignored if the width of the parallel region is not increased.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__284"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__281"><span class="+ topic/keyword pr-d/parmname keyword parmname">tagsForAddedResources</span> (optional)<p class="- topic/p p">Ignored if
+<span class="+ topic/keyword pr-d/parmname keyword parmname">numberOfResourcesToBeAdded</span> is not specified.</p></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__282">Array <var class="+ topic/keyword sw-d/varname keyword varname">string</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__283">Defines the tagging requirements for the hosts to be added.<p class="- topic/p p">An empty tag
+array is supported.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__284"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">TargetParallelRegion</h2>
+
+<p class="- topic/p p">The following parameters define the target parallel region:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" data-cols="4"><caption></caption><colgroup><col style="width:24.914089347079035%"/><col style="width:17.18213058419244%"/><col style="width:35.2233676975945%"/><col style="width:22.68041237113402%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__297">AttributeName </th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__entry__298">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__299">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__300">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__297"><span class="+ topic/keyword pr-d/parmname keyword parmname">regionName</span>
+</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__298">
+<span class="+ topic/keyword pr-d/parmname keyword parmname">NameSpec</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__299">Name of parallel region. The parallel region name is the logical name of the
+operator that the <code class="+ topic/ph pr-d/codeph ph codeph">@parallel</code> annotation was applied to. <p class="- topic/p p">The asterisk
+(<code class="+ topic/ph pr-d/codeph ph codeph">*</code>) wildcard character is supported, except when the wildcard character resolves to
+multiple parallel regions. Ensure that any regular expression you use applies to only one level of a
+nested parallel region. For more information, see <a class="- topic/xref xref" href="../../com.ibm.streams.dev.doc/doc/nestedudpoverview.html">Nested parallel
+regions</a>.</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__300"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code><p class="- topic/lines lines"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></p><div class="- topic/note note important note_important"><span class="note__title">Important:</span> Changes to the width of multiple parallel regions at once is supported only for a
+<code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code> operation. For an<code class="+ topic/ph pr-d/codeph ph codeph"> updateoperators </code> operation, only one
+width change at a time is allowed. (You cannot change multiple widths of a running
+job.)</div></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__297"><span class="+ topic/keyword pr-d/parmname keyword parmname">newWidth</span> (optional)</td>
+
+
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__298">Number</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__299">New width for parallel region. If the new width is same as current, then no
+adjustment is performed. The new width must be greater than 0.<p class="- topic/p p">The <span class="+ topic/keyword pr-d/parmname keyword parmname">fusionType
+</span> parameter must be set to<code class="+ topic/ph pr-d/codeph ph codeph"> noChannelInfluence</code> or to
+<code class="+ topic/ph pr-d/codeph ph codeph">channelIsolation</code>.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__300"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob </code><p class="- topic/lines lines"><code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code></p></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">ThreadedPortSetting</h2>
+
+<p class="- topic/p p">The following parameter defines the threaded port settings:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_ocz_m55_vv" data-ofbid="submitjob-parameters__table_ocz_m55_vv" data-cols="4"><caption></caption><colgroup><col style="width:32.80632411067194%"/><col style="width:19.76284584980237%"/><col style="width:27.66798418972332%"/><col style="width:19.76284584980237%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ocz_m55_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_ocz_m55_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ocz_m55_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ocz_m55_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ocz_m55_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">queueSize</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ocz_m55_vv__entry__2">Number </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ocz_m55_vv__entry__3">Size of threaded port queue. Must be greater than or equal to 1.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ocz_m55_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">TagConversion</h2>
+
+<p class="- topic/p p">The following parameters define the tag conversion:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_anb_z55_vv" data-ofbid="submitjob-parameters__table_anb_z55_vv" data-cols="4"><caption></caption><colgroup><col style="width:32.80632411067194%"/><col style="width:19.76284584980237%"/><col style="width:27.66798418972332%"/><col style="width:19.76284584980237%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_anb_z55_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_anb_z55_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_anb_z55_vv__entry__3">Value</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_anb_z55_vv__entry__4">Operation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">originalTagSet</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__3">An array of strings that represent a list of tags to convert from.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">targetTagSet</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__3">An array of strings that represent a list of tags to convert to.</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_anb_z55_vv__entry__4"><code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code></td>
+</tr>
+</tbody></table></div>
+<div class="- topic/p p">For complex transformation for tagging definitions that go beyond a one-to-one transformation,
+you can define a convertTagSet: <div class="table-container"><table class="- topic/table table table--pgwide-1 scale-80" id="submitjob-parameters__table_fq5_c1v_vv" data-ofbid="submitjob-parameters__table_fq5_c1v_vv" data-cols="5"><caption></caption><colgroup><col style="width:18.29484902309059%"/><col style="width:18.29484902309059%"/><col style="width:22.557726465364123%"/><col style="width:22.557726465364123%"/><col style="width:18.29484902309059%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_fq5_c1v_vv__entry__1">OriginalTagSet</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_fq5_c1v_vv__entry__2">TargetTagSet</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_fq5_c1v_vv__entry__3">poolPlacementGroupTags Before</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_fq5_c1v_vv__entry__4">poolPlacementGroupTags After</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_fq5_c1v_vv__entry__5">Notes</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__1">"A"</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__2">"X" </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__3">"A,B"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__4">"X,B"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__5">One to one</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__1">"A"</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__2">"X,Y"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__3">"A,B"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__4">"X,Y,B"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__5">One to many</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__1">"A,B"</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__2">"Y"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__3">"A,B,C"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__4">"Y,C"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__5">Many to one</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__1">"A,B"</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__2">"W,Y,Z"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__3">"A,B,C"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__4">"W,Y,Z,C"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__5">Many to many</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__1">"A,B"</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__2">"Z"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__3">"A,C,D"<p class="- topic/p p">Not a superset; missing B.</p></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__4">"A,C,D"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__5">No change, since not all tags exist in the "Before" set</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__1">" "</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__2">"X,Y"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__3">" "</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__4">"X,Y"</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_fq5_c1v_vv__entry__5">Adding tags to default host pool.</td>
+</tr>
+</tbody></table></div></div>
+</section>
+<section class="- topic/section section" id="submitjob-parameters__jco-results" data-ofbid="submitjob-parameters__jco-results"><h2 class="- topic/title title sectiontitle">Results</h2>
+
+<p class="- topic/p p">The following parameters define the submission results. These parameters are output only and are
+ignored on input:</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_dlp_tcv_vv" data-ofbid="submitjob-parameters__table_dlp_tcv_vv" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dlp_tcv_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_dlp_tcv_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_dlp_tcv_vv__entry__3">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">placementResults</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">PlacementResult</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__3">Each element of the array describes a resulting PE.<p class="- topic/p p">This field is not
+specified if <span class="+ topic/keyword pr-d/parmname keyword parmname">fusionErrors</span> occur, but is specified if only
+<span class="+ topic/keyword pr-d/parmname keyword parmname">placementErrors</span> occur.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">fusionErrors</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">FusionError</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__3">Each element of the array provides information on errors that occurred while
+the system is trying to fuse operators into a PE.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">placementErrors</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">PlacementError</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__3">Each element of the array provides information on errors that occurred while
+the system is trying to place a PE onto a host.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">jobResources</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">ResourceConfig</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__3">Each element describes a resource that is being used by an operator in the
+target parallel region, a PE in the target parallel region, or by a collateral operator. Collateral
+operators are operators that have a relationship with the operators in the targeted parallel region.
+The collateral operators are either fused in same PE as a target operator or they connect with the
+targeted parallel region with a splitter or a merger. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__1">
+<span class="+ topic/keyword pr-d/parmname keyword parmname">collateralOperators</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__3">Names of the collateral operators that are affected by the
+<code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code> operation. Collateral operators are operators that have a
+relationship with the operators in the targeted parallel region. The collateral operators are either
+fused in same PE as a target operator or they connect with the targeted parallel region with a
+splitter or a merger. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">parallelRegionsInfo</span>
+(optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">ParallelRegionInfo</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__3">Each element provides information on a parallel region defined in the
+job.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">deploymentConfig</span>
+(optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__2">Object <var class="+ topic/keyword sw-d/varname keyword varname">DeploymentConfig</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_dlp_tcv_vv__entry__3">The deployment config information that is active for this job.</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">PlacementResult</h2>
+
+
+<p class="- topic/p p">If the fusion phase completes successfully, a <span class="+ topic/keyword pr-d/parmname keyword parmname">placementResults</span>
+element is returned whether the <span class="+ topic/keyword pr-d/parmname keyword parmname">placementPhase</span> was successful or not. If the
+placement phase fails, the <span class="+ topic/keyword pr-d/parmname keyword parmname">hostPlacement</span> field is not set. This partial return
+is useful if you want to use <code class="+ topic/ph pr-d/codeph ph codeph">submitjob --preview</code> to get feedback on the fusing
+phase before you have your test instance fully configured. </p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_hjt_z2v_vv" data-ofbid="submitjob-parameters__table_hjt_z2v_vv" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_hjt_z2v_vv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_hjt_z2v_vv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_hjt_z2v_vv__entry__3">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">peId</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__2">Number </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__3">PE identifier.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">names</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__3">Names of the operators to fuse together into this PE.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">tags</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__3">The host placement tags that are associated with this fused PE.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">declaredHosts</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__3">Any declared host that this PE is associated with.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">hostPlacement</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__2">String</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_hjt_z2v_vv__entry__3">The target host for PE placement if the job was submitted. If
+<span class="+ topic/keyword pr-d/parmname keyword parmname">placementPhase</span> is not successful, then this field is not set. <p class="- topic/p p">Since the
+current runtime situation is temporal and affects the host selection, this
+<span class="+ topic/keyword pr-d/parmname keyword parmname">hostPlacement</span> might not be the same for subsequent <code class="+ topic/ph pr-d/codeph ph codeph">submitjob</code>
+operations.</p></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">ResourceConfig </h2>
+
+<div class="table-container"><table class="- topic/table table table--pgwide-1" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__406">AttributeName </th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__entry__407">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__408">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__406"><span class="+ topic/keyword pr-d/parmname keyword parmname">resourceId</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__407">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__408">ID of the resource.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__406"><span class="+ topic/keyword pr-d/parmname keyword parmname">numberOfCores</span>
+</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__407">Number </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__408">Number of CPU cores in the resource. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__406"><span class="+ topic/keyword pr-d/parmname keyword parmname">amountOfMemory</span>
+</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__407">Number </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__408">Number of megabytes of memory in the resource.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__406"><span class="+ topic/keyword pr-d/parmname keyword parmname">networkBandwidth</span>
+</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__407">Number </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__408">Number of kilobytes per second that are supported in the resource.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__406"><span class="+ topic/keyword pr-d/parmname keyword parmname">tags</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__407">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__408">Each element is a tag identifier that is assigned to the resource. </td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">FusionError</h2>
+
+<p class="- topic/p p">The <span class="+ topic/keyword pr-d/parmname keyword parmname">FusionError</span> information describes the set of operators that were
+intended to be fused together, as well as what factors might have prevented successful fusion.</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_icb_zsl_wv" data-ofbid="submitjob-parameters__table_icb_zsl_wv" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_icb_zsl_wv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_icb_zsl_wv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_icb_zsl_wv__entry__3">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_icb_zsl_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">operatorNames</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_icb_zsl_wv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_icb_zsl_wv__entry__3">Names of operators that were not successfully fused.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_icb_zsl_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">detailedProblemMessages</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_icb_zsl_wv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">Message</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_icb_zsl_wv__entry__3">Messages that describe in detail the problems that were detected that
+prevented successful fusion. The messages are scoped to the collection of operators and not to a
+single operator. For example:<p class="- topic/p p">CDISR3203E One or more of the operators are specified as
+partitionIsolate which prohibits from being fused with any other operator.</p><p class="- topic/p p">CDISR3210E
+Different indexes [0, 1] within the 0 host pool were specified by the operators.</p>
+</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">PlacementError</h2>
+
+<p class="- topic/p p">The PE placement process is hierarchical in nature. A job contains one or more PE colocation
+groups. A PE colocation group contains one or more PEs. A PE contains one or more operators. The
+placement process cycles through various constraints to arrive at a candidate host set for each
+placementNode. If the host set is empty, that node in the placement tree cannot be placed. </p>
+<p class="- topic/p p">The error messages are also hierarchical. In the previously described scenario, the reported
+error is not the last constraint that makes the set empty, but rather a composite message structure
+that describes the bigger picture of what causes the failure. At each node in the placement tree,
+there can be constraints that nominate or eliminate hosts to the candidate host set. </p>
+<p class="- topic/p p">For example, each child node of a node nominates its candidate host set to its parent's candidate
+set. The parent node eliminates all hosts from its candidate set that are not included in each of
+its child's candidate set. That is, the parent set starts with the intersection of all child sets. </p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_vbf_f4q_wv" data-ofbid="submitjob-parameters__table_vbf_f4q_wv" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_vbf_f4q_wv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_vbf_f4q_wv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_vbf_f4q_wv__entry__3">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">placementNodeInfo</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__2">PlacementNodeInfo </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__3">Contains information about the overall status of the placement node, including
+whether the node is able to be successfully placed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">contributingMessages</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">Message</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__3">A set of messages that describe the contributions that produce the resulting
+placementNodeInfo status. Some contributing messages describe why a set of hosts is nominated to the
+candidate set, for example: <p class="- topic/p p">CDISR3051I The following hosts were included in the scheduling
+process because the hosts are eligible to be included in the MyHostPool host pool by having the
+following host pool tags. The hosts are: 10.4.24.226, 10.4.40.236. The host pool tags that are
+shared by the hosts are: [Red,Blue].</p><p class="- topic/p p">Some contributing messages describe why a set of hosts is
+eliminated from the candidate set, for example: </p><p class="- topic/p p">CDISR3066I: Because the following hosts are
+not supported by all the operators in the partition, these hosts cannot be included in the
+scheduling process: 10.4.24.226, 10.4.40.247. </p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">childContributions</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">PlacementError</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_vbf_f4q_wv__entry__3">A set of placement errors that detail how the child placement nodes contribute
+to these placement node results.</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">PlacementNodeInfo</h2>
+
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_szj_nsq_wv" data-ofbid="submitjob-parameters__table_szj_nsq_wv" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_szj_nsq_wv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_szj_nsq_wv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_szj_nsq_wv__entry__3">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">success</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__2">Boolean </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__3">If the value is <code class="+ topic/ph pr-d/codeph ph codeph">true</code>, this node has at least one valid
+candidate host.<p class="- topic/p p">If the value is <code class="+ topic/ph pr-d/codeph ph codeph">false</code>, there are no candidate hosts remaining for
+this <span class="+ topic/keyword pr-d/parmname keyword parmname">placementNode</span>, and placement fails for this node.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">name</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__3">If present, the placement node is related to the operator that is named by
+this parameter. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">peId</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__3">If present, the placement node is related to a PE.<p class="- topic/p p">The
+<span class="+ topic/keyword pr-d/parmname keyword parmname">peOperatorSet</span> field contains the related operator name set for this
+PE.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">peOperatorSet</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__3">If present, the placement node is related to a PE, and this is the set of
+operator names that make up the PE. The ID for this PE is specified in the <span class="+ topic/keyword pr-d/parmname keyword parmname">peID</span>
+field.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">colocatedPeSet</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__3">If present, this placement node is related to a colocated set of PEs. This
+parameter expresses the array of PE IDs as a string.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">placementMessage</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__2">Message</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_szj_nsq_wv__entry__3">A message that describes the placement status for this placement node. For
+example:<p class="- topic/p p">CDISR3046E The processing element ID 3: op1 cannot be scheduled. For more information,
+see the messages that follow this one.</p><p class="- topic/p p">CDISR3047I: A constraint on the op1 operator requires
+that it be scheduled from the following hosts: 10.4.24.226, 10.4.40.236.. For more information, see
+the messages that follow this one.</p></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Message</h2>
+
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="submitjob-parameters__table_ez4_sls_wv" data-ofbid="submitjob-parameters__table_ez4_sls_wv" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ez4_sls_wv__entry__1">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__table_ez4_sls_wv__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__table_ez4_sls_wv__entry__3">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">messageCode</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__3">The code for the message, for example, CDISR3200E.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">substitutionTexts</span> (optional) </td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__2">Array <var class="+ topic/keyword sw-d/varname keyword varname">String</var>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__3">The substitution text string for the message.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__1"><span class="+ topic/keyword pr-d/parmname keyword parmname">displayMessage</span> (optional)</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__2">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__table_ez4_sls_wv__entry__3">Human readable display message with substitutionTexts inserted and
+instantiated by the client in the client locale.<p class="- topic/p p">This field is transient and is
+included to improve the readability of error messages in the JSON file.</p></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">ParallelRegionInfo</h2>
+
+<div class="table-container"><table class="- topic/table table table--pgwide-1" data-cols="3"><caption></caption><colgroup><col style="width:30.76923076923077%"/><col style="width:22.377622377622377%"/><col style="width:46.85314685314685%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__478">AttributeName</th>
+<th class="- topic/entry entry align-center colsep-0 rowsep-0" id="submitjob-parameters__entry__479">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="submitjob-parameters__entry__480">Value</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__478"><span class="+ topic/keyword pr-d/parmname keyword parmname">name</span></td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__479">String </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__480">Name of the parallel region.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__478"><span class="+ topic/keyword pr-d/parmname keyword parmname">width</span>
+</td>
+<td class="- topic/entry entry align-center colsep-0 rowsep-0" headers="submitjob-parameters__entry__479">Number </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="submitjob-parameters__entry__480">Width of parallel region after an <code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code> operation.
+<p class="- topic/p p">In preview mode, it shows the value as if the updates were actually done.</p></td>
+</tr>
+</tbody></table></div>
+</section>
+</div>
+</article></main></div>
+                        
+                        <div class=" wh_child_links d-print-none "><nav aria-label="Child Links" role="navigation" class="- topic/related-links related-links"><ul class="ullinks"><li class="- topic/link link ulchildlink"><strong><a href="../../com.ibm.streams.ref.doc/doc/jcoexamples.html">Job configuration overlay examples</a></strong><div class="- topic/desc desc">You can use a <span class="- topic/keyword keyword">job configuration overlay</span> file to save reusable job submission parameters or to change a running job with an <code class="+ topic/ph pr-d/codeph ph codeph">updateoperators</code> operation. </div></li></ul></nav></div>
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

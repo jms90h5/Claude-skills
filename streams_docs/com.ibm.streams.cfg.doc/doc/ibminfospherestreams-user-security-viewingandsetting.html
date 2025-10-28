@@ -1,0 +1,210 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="task"/><meta name="abstract" content="You can review and configure the access control list (ACL) settings for Teracloud Streams domains and instances by using the streamtool command-line interface. You can also grant access privileges to domain and instance resources by using the Streams Console."/><meta name="description" content="You can review and configure the access control list (ACL) settings for Teracloud Streams domains and instances by using the streamtool command-line interface. You can also grant access privileges to domain and instance resources by using the Streams Console."/><meta name="DC.subject" content="access control lists,viewing and configuring"/><meta name="keywords" content="access control lists, viewing and configuring"/><meta name="indexterms" content="access control lists, viewing and configuring"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authorization.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html"/><meta name="DC.relation" content="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-adminconsole.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/getdomainacl.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/setdomainacl.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/getacl.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/setacl.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/grantjobpermission.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/revokejobpermission.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="ibminfospherestreams-user-security-viewing"/><meta name="DC.language" content="en-us"/>        
+      <title>Viewing and configuring ACL settings for Teracloud Streams domains and instances</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="ibminfospherestreams-user-security-viewing-d41691e2139"/><meta name="wh-source-relpath" content="com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-viewingandsetting.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-viewingandsetting.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="ibminfospherestreams-user-security-viewing" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="ibminfospherestreams-containercfg"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li><div class="topicref" data-id="streamssecurity"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security.html">Configuring security</a><div class="wh-tooltip"><p class="shortdesc">Each <span class="keyword">Teracloud® 					Streams</span> domain and instance maintains its own security configuration.</p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-user-security-authorization"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authorization.html">User authorization</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> uses access control lists (ACLs) to manage user authorization for domains and instances. An ACL contains the type of domain and instance objects to secure and the actions that a user or group is authorized to perform against the object. The ACLs are initialized when you create a domain or instance.</p></div></div></div></li><li class="active"><div class="topicref" data-id="ibminfospherestreams-user-security-viewing"><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-viewingandsetting.html">Viewing and configuring ACL settings for domains and instances</a><div class="wh-tooltip"><p class="shortdesc">You can review and configure the access control list (ACL) settings for <span class="keyword">Teracloud® 					Streams</span> domains and instances by using the <span class="keyword cmdname">streamtool</span> command-line interface. You can also grant access privileges to domain and instance resources by using the <span class="keyword">Streams Console</span>.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="setting-up-basic-domain-d41691e1516" class="topicref" data-id="setting-up-basic-domain" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setting-up-basic-domain-d41691e1516-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-basic-domain.html" id="setting-up-basic-domain-d41691e1516-link">Setting up a basic domain on a single resource</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <dfn class="term">basic                 domain</dfn> has a single <span class="keyword">Teracloud® 					Streams</span> resource               and user. This type of domain is typically used for test or development environments. </span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="setting-up-enterprise-domain-d41691e1579" class="topicref" data-id="setting-up-enterprise-domain" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action setting-up-enterprise-domain-d41691e1579-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/setting-up-enterprise-domain.html" id="setting-up-enterprise-domain-d41691e1579-link">Setting up an enterprise domain on multiple resources</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">An <dfn class="term">enterprise domain</dfn> can have               multiple resources and users. This type of domain is typically used for production               environments. You can configure high availability to ensure that <span class="keyword">Teracloud® 					Streams</span> can               continue to run even if resources fail or are not available.</span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="streamssecurity-d41691e2011" class="topicref" data-id="streamssecurity" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action streamssecurity-d41691e2011-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security.html" id="streamssecurity-d41691e2011-link">Configuring security</a><div class="wh-tooltip"><p class="shortdesc">Each <span class="keyword">Teracloud® 					Streams</span> domain and instance maintains its own security configuration.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-user-security-authorization-d41691e2027" class="topicref" data-id="ibminfospherestreams-user-security-authorization" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-user-security-authorization-d41691e2027-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authorization.html" id="ibminfospherestreams-user-security-authorization-d41691e2027-link">User authorization</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> uses access control lists (ACLs) to manage user authorization for domains and instances. An ACL contains the type of domain and instance objects to secure and the actions that a user or group is authorized to perform against the object. The ACLs are initialized when you create a domain or instance.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-security-objects-d41691e2042" class="topicref" data-id="ibminfospherestreams-security-objects" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-security-objects-d41691e2042-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-security-objects.html" id="ibminfospherestreams-security-objects-d41691e2042-link">Security objects and access permissions</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> security objects and permissions enable you to control access to domain and instance resources and data. You can update security objects and access permissions by using the <span class="keyword">Streams Console</span> or <span class="keyword cmdname">streamtool</span> commands.</p></div></div></div></li><li role="treeitem"><div data-tocid="roles-d41691e2111" class="topicref" data-id="roles" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/roles.html" id="roles-d41691e2111-link">Roles</a><div class="wh-tooltip"><p class="shortdesc">A <dfn class="term">role</dfn> is a collection of permissions that can be assigned to a user or group of users.</p></div></div></div></li><li role="treeitem"><div data-tocid="jobgroups-d41691e2125" class="topicref" data-id="jobgroups" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/jobgroups.html" id="jobgroups-d41691e2125-link">Job groups</a><div class="wh-tooltip"><p class="shortdesc">A <dfn class="term">job group</dfn> is a group of jobs that have the same authority or permissions.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="ibminfospherestreams-user-security-viewing-d41691e2139" class="topicref" data-id="ibminfospherestreams-user-security-viewing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-viewingandsetting.html" id="ibminfospherestreams-user-security-viewing-d41691e2139-link">Viewing and configuring ACL settings for domains and instances</a><div class="wh-tooltip"><p class="shortdesc">You can review and configure the access control list (ACL) settings for <span class="keyword">Teracloud® 					Streams</span> domains and instances by using the <span class="keyword cmdname">streamtool</span> command-line interface. You can also grant access privileges to domain and instance resources by using the <span class="keyword">Streams Console</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-security-shared-instance-setup-d41691e2161" class="topicref" data-id="ibminfospherestreams-security-shared-instance-setup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-security-shared-instance-setup-d41691e2161-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-security-shared-instance-setup.html" id="ibminfospherestreams-security-shared-instance-setup-d41691e2161-link">Configuring user access to domains and instances</a><div class="wh-tooltip"><p class="shortdesc">By default, <span class="keyword">Teracloud® 					Streams</span> domains and instances are private and can be accessed only by the user who creates the domain or instance. To set up a domain or instance that can be accessed by multiple users, you can use either the <span class="keyword">Teracloud 					Streams</span> graphical user interfaces or <span class="keyword cmdname">streamtool</span> commands.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-user-authentication-commands-d41691e2204" class="topicref" data-id="ibminfospherestreams-user-authentication-commands" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authentication-commands.html" id="ibminfospherestreams-user-authentication-commands-d41691e2204-link">Streamtool commands that require user authorization</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword cmdname">streamtool</span> command description provides information about the authority that is required to run each command.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-user-security-authentication-d41691e2218" class="topicref" data-id="ibminfospherestreams-user-security-authentication" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-user-security-authentication-d41691e2218-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-authentication.html" id="ibminfospherestreams-user-security-authentication-d41691e2218-link">User authentication</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The default user             authentication method for <span class="keyword">Teracloud® 					Streams</span> domains is PAM or LDAP. For a basic domain, <span class="keyword">Teracloud 					Streams</span> uses PAM.             For an enterprise domain, you can specify either LDAP or PAM as the default method when             you create the domain, and then customize user authentication after the domain is             created.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-user-security-run-authority-d41691e2468" class="topicref" data-id="ibminfospherestreams-user-security-run-authority" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-run-authority.html" id="ibminfospherestreams-user-security-run-authority-d41691e2468-link">Linux users and <span class="keyword">Teracloud® Streams</span> jobs</a><div class="wh-tooltip"><p class="shortdesc">To determine which Linux user has the authority to run the jobs for a <span class="keyword">Teracloud® 					Streams</span> instance, you must first determine which user is running the <span class="keyword">domain controller services</span> for your domain. The security implications of the <span class="keyword parmname">instance.runAsUser</span> and <span class="keyword parmname">instance.canSetPeOSCapabilities</span> property settings also need to be considered.</p></div></div></div></li><li role="treeitem"><div data-tocid="changingcrypto-d41691e2498" class="topicref" data-id="changingcrypto" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/changingcrypto.html" id="changingcrypto-d41691e2498-link">Changing the cryptographic protocol</a><div class="wh-tooltip"><p class="shortdesc">Many domain and instance services support connections that use Transport Layer Security    (TLS) cryptographic protocols. You can specify which cryptographic protocols the services use for    secure communication by setting domain and instance properties. <span class="ph">Starting with <span class="keyword">Teracloud® 					Streams Version 7.2.0</span>, the default protocol setting is TLSv1.3, which indicates that TLS 1.3 or later protocols are     used.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="securing-cluster-d41691e2516" class="topicref" data-id="securing-cluster" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/securing-cluster.html" id="securing-cluster-d41691e2516-link">Securing a <span class="keyword">Teracloud® Streams</span> cluster</a><div class="wh-tooltip"><p class="shortdesc">While applications are deployed into production environments with specific recommendations that apply to individual customers, enterprise organizations generally have security policies and procedures that must be met and followed. To meet enterprise requirements, a combination of product and environment configuration is needed. The following are some key features using the standard information security CIA triad.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-user-security-auditlogfile-d41691e2532" class="topicref" data-id="ibminfospherestreams-user-security-auditlogfile" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-user-security-auditlogfile-d41691e2532-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-auditlogfile.html" id="ibminfospherestreams-user-security-auditlogfile-d41691e2532-link">Configuring audit logging</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> supports comprehensive, multiple-level auditing of product and user operations. By default, audit logging is not enabled.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-transports-configuring-d41691e2602" class="topicref" data-id="ibminfospherestreams-transports-configuring" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-transports-configuring-d41691e2602-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-transports-configuring.html" id="ibminfospherestreams-transports-configuring-d41691e2602-link">Configuring transport mechanisms</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> supports several high-performance and configurable transport mechanisms for communicating   across processing elements (PEs). You can configure the transport mechanism by updating <span class="keyword">Teracloud 					Streams</span> properties.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-configuring-checkpoint-data-store-d41691e2681" class="topicref" data-id="ibminfospherestreams-configuring-checkpoint-data-store" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-configuring-checkpoint-data-store.html" id="ibminfospherestreams-configuring-checkpoint-data-store-d41691e2681-link">Configuring a checkpoint data store</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this procedure to configure a checkpoint data store for <span class="keyword">Teracloud® 					Streams</span> domains and                 instances.</span></p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic task/task topic task" role="article" aria-labelledby="ariaid-title1">
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Viewing and configuring ACL settings for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domains
+and instances</h1>
+
+
+<div class="- topic/body task/taskbody body taskbody"><div class="- topic/abstract abstract"><span class="- topic/shortdesc shortdesc">You can review and configure the
+access control list (ACL) settings for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domains
+and instances by using the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> command-line
+interface. You can also grant access privileges to domain and instance
+resources by using the <span class="- topic/keyword keyword">Streams
+Console</span>.</span></div>
+
+
+<section class="- topic/ul task/steps-unordered ul steps-unordered"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Procedure</h2></div><ul class="- topic/ul task/steps-unordered ul steps-unordered"><li class="- topic/li task/step li step"><span class="- topic/ph task/cmd ph cmd">View ACL settings.</span>
+<ul class="- topic/ul task/choices ul choices">
+<li class="- topic/li task/choice li choice">To view ACL settings for a domain, use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+getdomainacl</span> command.</li>
+<li class="- topic/li task/choice li choice">To view ACL settings for an instance, use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+getacl</span> command.</li>
+</ul>
+</li><li class="- topic/li task/step li step"><span class="- topic/ph task/cmd ph cmd">Configure ACL settings.</span>
+<ul class="- topic/ul task/choices ul choices">
+<li class="- topic/li task/choice li choice">To configure ACL settings for a domain, use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+setdomainacl</span> command.</li>
+<li class="- topic/li task/choice li choice">To configure ACL settings for an instance, use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+setacl</span> command.</li>
+</ul>
+</li></ul></section>
+</div>
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-adminconsole.html" title="Administering a domain in the Streams Console">Administering a domain in the Streams Console</a></li></ul></div><div class="- topic/linklist linklist relref" xml:lang="en-us" lang="en-us"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/getdomainacl.html" title="streamtool getdomainacl command">streamtool getdomainacl command</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/setdomainacl.html" title="streamtool setdomainacl command">streamtool setdomainacl command</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/getacl.html" title="streamtool getacl command">streamtool getacl command</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/setacl.html" title="streamtool setacl command">streamtool setacl command</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/grantjobpermission.html" title="streamtool grantjobpermission command">streamtool grantjobpermission command</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/revokejobpermission.html" title="streamtool revokejobpermission command">streamtool revokejobpermission command</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

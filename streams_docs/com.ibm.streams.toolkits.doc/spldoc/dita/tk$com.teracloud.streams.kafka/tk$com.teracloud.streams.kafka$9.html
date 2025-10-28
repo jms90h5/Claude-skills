@@ -1,0 +1,351 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="In Apache Kafka, the consumer group concept is a way of achieving two things: Having consumers as part of the same consumer group means providing the “competing consumers” pattern with whom the ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_page"/><title>Consistent region support for consumer groups</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_page-d41691e66844"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$9.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_page" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li><div class="topicref" data-id="spldoc_toolkit"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_page"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$9.html">Consistent region support for consumer groups</a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_page-d41691e66780" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$1.html" id="spldoc_page-d41691e66780-link">Release notes</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e66788" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$2.html" id="spldoc_page-d41691e66788-link">Configuring operators to communicate with Kafka</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_page-d41691e66796" class="topicref" data-id="spldoc_page" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_page-d41691e66796-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$3.html" id="spldoc_page-d41691e66796-link">Common consumer patterns and use cases</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e66828" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$7.html" id="spldoc_page-d41691e66828-link">Improving throughput</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e66836" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$8.html" id="spldoc_page-d41691e66836-link">Consuming big messages</a></div></div></li><li role="treeitem" class="active"><div data-tocid="spldoc_page-d41691e66844" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$9.html" id="spldoc_page-d41691e66844-link">Consistent region support for consumer groups</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66852" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Namespace.html" id="spldoc_index-d41691e66852-link">Namespaces: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66860" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Operator.html" id="spldoc_index-d41691e66860-link">Operators: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66868" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Function.html" id="spldoc_index-d41691e66868-link">Functions: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66876" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Type.html" id="spldoc_index-d41691e66876-link">Types: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e66885" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e66885-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ns$com.teracloud.streams.kafka.html" id="spldoc_namespace-d41691e66885-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Consistent region support for consumer groups</h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section">
+<p class="- topic/p p">In Apache Kafka, the consumer group concept is a way of achieving two things:
+</p>
+<div class="- topic/p p">
+<ol class="- topic/ol ol">
+<li class="- topic/li li"> Having consumers as part of the same consumer group means providing the “competing consumers” pattern with whom the messages from topic partitions    are spread across the members of the group. Each consumer receives messages from one or more partitions (“automatically” assigned to it) and the    same messages won’t be received by the other consumers (assigned to different partitions). In this way, we can scale the number of the consumers    up to the number of the partitions (having one consumer reading only one partition); in this case, a new consumer joining the group will be in an    idle state without being assigned to any partition.</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> Having consumers as part of different consumer groups means providing the “publish/subscribe” pattern where the messages from topic partitions are    sent to all the consumers across the different groups. It means that inside the same consumer group, we’ll have the rules explained above, but across    different groups, the consumers will receive the same messages. It’s useful when the messages inside a topic are of interest for different applications    that will process them in different ways. We want all the interested applications to receive all the same messages from the topic.
+</p></li>
+</ol>
+</div>
+<p class="- topic/p p">Another great advantage of consumers grouping is the rebalancing feature. When a consumer joins a group, if there are still enough partitions available (i.e. we haven’t reached the limit of one consumer per partition), a re-balancing starts and the partitions will be reassigned to the current consumers, plus the new one. In the same way, if a consumer leaves a group, the partitions will be reassigned to the remaining consumers. For Streams applications in a consistent region, this feature is not relevant, however because the number of consumers will not change at runtime of a Streams application. The other way round, when partitions are added to topics, Kafka will automatically assign the new partitions to consumers in the group rebalancing the partitions. This scenario must be supported by the Streams operators.
+</p>
+<p class="- topic/p p">A consumer operator represents one member of a group, therefore a consumer is a synonymon for a consumer operator. When we talk about partitions, Kafka topic partitions are meant.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Assumptions and restrictions
+</h2>
+
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> All members of a consumer group must be in the same consistent region; the group must not have members outside the consistent region or outside of the Streams application.</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> In a consistent region, the control input port is not supported. Current function of the control port is to assign or unassign partitions to or from a consumer, which is not in the sense of consumer groups.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> The initial start point for consuming messages can be configured (the <strong class="+ topic/ph hi-d/b ph b">startPosition</strong> parameter). It can be the beginning of a partition, the end, last committed offset, or a message timestamp, but not a specific offset because an offset belongs to a partition. Partition assignment is not under control by the operator.
+</p></li>
+</ul>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Operator design
+</h2>
+
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Threads and queues</strong>
+</p>
+<p class="- topic/p p">The operator uses the Kafka consumer Java API. This API is not thread-safe. That's why, the following design was chosen:
+</p>
+<p class="- topic/p p">Each consumer operator has two threads.
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> The <strong class="+ topic/ph hi-d/b ph b">event thread</strong> invokes the consumer API for polling for messages, committing offsets, processing partition revocation and assignment. It also processes the <em class="+ topic/ph hi-d/i ph i">StateHandler</em> related events of the consistent region, checkpoint, and reset. This thread is controlled over events placed by other threads into the <strong class="+ topic/ph hi-d/b ph b">event queue</strong>. Most of the time, the event thread polls for messages from Kafka and enqueues them into the <strong class="+ topic/ph hi-d/b ph b">message queue</strong>. Messages are received from the Kafka broker in batches, where the maximum batch size is configurable via the <span class="+ topic/ph hi-d/tt ph tt">max.poll.records</span> consumer configuration. The capacity of the message queue is <span class="+ topic/ph hi-d/tt ph tt">100 * max.poll.records</span>. Leaving the default value for this config, the message queue has a capacity of 50,000 messages.</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> The <strong class="+ topic/ph hi-d/b ph b">process thread</strong> pulls messages from the message queue and, when a consistent region permit is acquired, it creates and submits tuples. This thread also saves the offsets of the submitted tuples for every topic and partition in a data structure called the <em class="+ topic/ph hi-d/i ph i">offset manager</em> after tuple submission.
+</p></li>
+</ul>
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Shared data</strong>
+</p>
+<p class="- topic/p p">When group management is used in a consistent region, the consumer client implementation <span class="+ topic/ph hi-d/tt ph tt">CrKafkaConsumerGroupClient</span> is used in the operator. This client implementation uses a job-scoped MXBean in the JobControlPlane operator, which is unique for the consumer group to which the client belongs to. When the connection to the JobControlPlane is created, every Consumer operator registers itself with its operator name, so that each member of the group can obtain the number of consumer operators in the consumer group and its names. Using this MXBean is one reason, why a consumer group must not be spread over multiple Streams jobs. This MXBean is not persisted. When the JobControlPlane operator restarts, it reconnects to all consumer operators, and then they register again, so that the registration will be restored.
+</p>
+<p class="- topic/p p">For every topic partition that is assigned to any of the operators in the consumer group, a shared control variable of Long type is created for the consumer group. Such a variable contains the initial fetch offset for a particular topic partition in the consumer group. The variable is created when a consumer sees a topic partition the first time. These control variables are used on reset to initial state to ensure that the fetch position is the same on every reset to initial state.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Checkpointed data</strong>
+</p>
+<p class="- topic/p p">The operator's checkpoint contains following data
+</p>
+<div class="- topic/p p">
+<ol class="- topic/ol ol">
+<li class="- topic/li li"> The operator name of the operator that is checkpointed.</li>
+<li class="- topic/li li"> All operator names that participate in the consumer group. These are the names of the operators registered in the MXBean.</li>
+<li class="- topic/li li"> the offset manager. The offset manager contains the mapping from [topic, partition] to the offset of the message fetched next for the assigned partitions. These are the start offsets for these partitions after reset.</li>
+</ol>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Operator Function
+</h2>
+
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Initialization</strong>
+</p>
+<p class="- topic/p p">The consumer operators, which are members of a consumer group try to create a job-scoped MXBean in the JCP operator, which has an object name unique for the consumer group. It is initialized with group-ID and consistent region index. All operators do this concurrently, but only one manages to create the MXBean. All operators compare their own consistent region index with the consistent region index attribute of the MBean. If the indexes differ, the rule is violated that all group members must belong to the same consistent region. The operator initialization will fail in this case.
+</p>
+<p class="- topic/p p">Then, the opertor subscribes to the configured topics or pattern. It has no partitions assigned yet. The client is in state SUBSCRIBED.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Partition revocation and assignment</strong>
+</p>
+<p class="- topic/p p">Partition assignment and revocation is done by Kafka. The client is notified by callbacks about these events whithin the call of the <span class="+ topic/ph hi-d/tt ph tt">poll</span> API of the KafkaConsumer - and only then. <span class="+ topic/ph hi-d/tt ph tt">onPartitionsRevoked</span> is always followed by <span class="+ topic/ph hi-d/tt ph tt">onPartitionsAssigned</span> with the newly assigned partitions. Since version 2 of Kafka, <span class="+ topic/ph hi-d/tt ph tt">onPartitionsRevoked</span> and <span class="+ topic/ph hi-d/tt ph tt">onPartitionsAssigned</span> can be called within different invocations of <span class="+ topic/ph hi-d/tt ph tt">poll</span>. <span class="+ topic/ph hi-d/tt ph tt">onPartitionsRevoked</span> is always called <em class="+ topic/ph hi-d/i ph i">before</em> partitions are unassigned. When partitions are revoked, the Kafka consumer (part of the kafka client) forgets its assignment and all current fetch positions of the partitions being revoked.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Partition revocation</strong>
+</p>
+<div class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">onPartitionsRevoked</span> is ignored when the client has just subscribed, or after reset to initial state or to a checkpoint, and if the client has not yet fetched messages. Otherwise, a reset of the consistent region is initiated by the operator:
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> The message queue is cleared, so that tuple submission stops</li>
+<li class="- topic/li li"> A stop polling event is asynchronously submitted to the event queue, which lets the operator stop polling for new messages. Stop polling avoids that the callbacks are called again before the expected reset event is processed.</li>
+<li class="- topic/li li"> The consistent region reset is triggered in <em class="+ topic/ph hi-d/i ph i">force mode</em>. <em class="+ topic/ph hi-d/i ph i">Force mode</em> resets the consecutive reset counter.</li>
+<li class="- topic/li li"> The state of the client changes to CR_RESET_PENDING.</li>
+<li class="- topic/li li"> When it comes to the consistent region reset, the operator places a reset event into the event queue. This event is</li>
+</ul>always processed by the event thread <em class="+ topic/ph hi-d/i ph i">after</em> the current <span class="+ topic/ph hi-d/tt ph tt">poll</span> has finished. <span class="+ topic/ph hi-d/tt ph tt">onPartitionsAssigned</span> can already have been processed or not before the reset event is processed.
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Partition assignment</strong>
+</p>
+<p class="- topic/p p">The cycle <span class="+ topic/ph hi-d/tt ph tt">onPartitionsRevoked</span> - <span class="+ topic/ph hi-d/tt ph tt">onPartitionsAssigned</span> can happen whenever the client polls for messages. Both callbacks can be invoked in the same context of <span class="+ topic/ph hi-d/tt ph tt">poll</span> or in different <span class="+ topic/ph hi-d/tt ph tt">poll</span> invocations. The client performs following:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> for the partitions that are <em class="+ topic/ph hi-d/i ph i">not assigned anymore</em> to this consumer
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> remove the [topic, partition] to offset mappings from the offset manager</li>
+</ul></li>
+<li class="- topic/li li"> save the newly assigned partitions for this operator</li>
+<li class="- topic/li li"> add the new topic partitions to the offset manager</li>
+<li class="- topic/li li"> seek the assigned partitions to
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> an offset from a <em class="+ topic/ph hi-d/i ph i">merged</em> checkpoint</li>
+<li class="- topic/li li"> an initial offset from a control variable, or</li>
+<li class="- topic/li li"> an initial offset determined from the <strong class="+ topic/ph hi-d/b ph b">startPosition</strong> parameter, which is then saved in a contol variable</li>
+</ul></li>
+<li class="- topic/li li"> When the operator is in state CR_RESET_PENDING (awaiting a reset) the assigned partitions are not seeked. This happens during reset later.</li>
+</ul>
+</div>
+<div class="- topic/p p">The operator maintains following metrics when partitions are assigned:
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> <strong class="+ topic/ph hi-d/b ph b">nPartitionsAssigned</strong> showing the number of currently assigned partitions</li>
+<li class="- topic/li li"> <strong class="+ topic/ph hi-d/b ph b">nConsumedTopics</strong> showing the number of topics consumed by this operator in the group</li>
+</ul>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Drain processing
+</h2>
+
+<p class="- topic/p p">On drain, the operator stops polling for new messages, and, if the region is <em class="+ topic/ph hi-d/i ph i">not operator driven</em>, drains the entire content of the message queue into a temporary buffer. Then, the offsets from the offset manager are committed in one single synchronous server request. If this fails, for only one partition, an exception is thrown causing an operator restart with subsequent reset to the last consistent state.
+</p>
+<p class="- topic/p p">The operator maintains two metrics, the drain time of last drain, and the maximum drain time, both measured in milliseconds.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Reset processing
+</h2>
+
+<div class="- topic/p p">A reset of the consistent region can happen
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> after new partitions have been assigned (a consumer operator within the group has triggered the reset during its <span class="+ topic/ph hi-d/tt ph tt">onPartitionsRevoked</span>)</li>
+<li class="- topic/li li"> without change of partition assignment, for example, when a downstream PE has caused the reset</li>
+<li class="- topic/li li"> with subsequent partition assignment, for example, when a PE hosting a consumer operator restarted.</li>
+</ul>
+</div>
+<p class="- topic/p p">When the operator is reset without restart, it seeks the assigined partitions to initial offsets or offsets from a merged checkpoint. A partition assignment <em class="+ topic/ph hi-d/i ph i">can</em> happen afterwards. When the operator is reset after relaunch of its PE, a partition assignement will definitely happen. It can be an empty partition assignment, however. The partition assignment will consist of partition revocation followed by a partition assignment. The partition assignment can also change when partitions are assigned at the time of reset. After reset processing the consumer client goes into state <span class="+ topic/ph hi-d/tt ph tt">RESET_COMPLETE</span> and starts polling with throttled speed.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Reset processing to inital state</strong>
+</p>
+<p class="- topic/p p">Polling for new Kafka messages is stopped, the drain buffer and the message queues are cleared. When the operator has assigned partitions, a <em class="+ topic/ph hi-d/i ph i">seek offset map</em> is created from the initial offsets stored in the control variables. This map maps the currently assigned partitions to the initial offsets.
+</p>
+<p class="- topic/p p">The assigned partitions are seeked to the initial offsets, and the offset manager is updated and refreshed with the fetch positions from the broker. After reset processing the consumer client goes into state <span class="+ topic/ph hi-d/tt ph tt">RESET_COMPLETE</span> and starts polling with throttled speed.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Reset processing to a previous state using a checkpoint</strong>
+</p>
+<p class="- topic/p p">When the operator resets to a previous state, each operator must have offsets of its currently assigned partitions and those partitons, which can be assigned later. The currently assigned partitions can be different from the assigned partitions at checkpoint time. That's why the checkpoints of the consumer operators within a consumer group must be merged, so that all consumer operators have the same <em class="+ topic/ph hi-d/i ph i">merged checkpoint</em>.
+</p>
+<p class="- topic/p p">The checkpoint of each operator contains
+</p>
+<div class="- topic/p p">
+<ol class="- topic/ol ol">
+<li class="- topic/li li"> Its own operator name</li>
+<li class="- topic/li li"> The operator names of all consumer operators at the time of checkpoint</li>
+<li class="- topic/li li"> Its offset manager at the time of the checkpoint. The offset manager can be understood of a map from topic partition to fetch offset.</li>
+</ol>
+</div>
+<p class="- topic/p p">The offsets (3) are merged by using the MXBean in the JobControlPlane. Each consumer operator sends its partition-offset map (3) together with its operator name (1), the number of distinct consumer operators <em class="+ topic/ph hi-d/i ph i">N</em> (from (2)), and the checkpoint sequence-ID to the MXBean. When the MXBean has received <em class="+ topic/ph hi-d/i ph i">N</em> contributions with <em class="+ topic/ph hi-d/i ph i">N</em> different operator names for the chackpoint sequence-ID, the merge is treated being complete, and a JMX notification with the merged offset map is emitted. The JMX notification also contains the checkpoint-ID, so that the operator can wait for exactly the notification for current checkpoint sequence-ID. When an operator has received the right notification, it creates the seek offset map from the merged offset map received with the JMX notification.
+</p>
+<p class="- topic/p p">The timeout for receiving the JMX notification is <span class="+ topic/ph hi-d/tt ph tt">minimum (CR_resetTimeout/2, max.poll.interval.ms/2, 15000 ms)</span>. The merges in the MXBean and the received JMX notifications in the consumer client are removed on <span class="+ topic/ph hi-d/tt ph tt">retireCheckpoint</span>.
+</p>
+<p class="- topic/p p">After this checkpoint merge happened, polling for new Kafka messages is stopped, the drain buffer and the message queues are cleared.
+</p>
+<p class="- topic/p p">The assigned partitions are seeked to the offsets from merged checkpoint, and the offset manager is updated and refreshed with the fetch positions from the broker. After reset processing the consumer client goes into state <span class="+ topic/ph hi-d/tt ph tt">RESET_COMPLETE</span> and starts polling with throttled speed.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Partition assignment after reset</strong>
+</p>
+<p class="- topic/p p">The <span class="+ topic/ph hi-d/tt ph tt">onPartitionsRevoked</span> callback is ignored when a reset happened before. The partition assignment within the <span class="+ topic/ph hi-d/tt ph tt">onPartitionsAssigned</span> callback is done as described above.
+</p>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="security" content="public">
+<meta name="Robots" content="index,follow">
+<meta name="DC.Type" content="task">
+<meta name="DC.Title" content="Registering JMX beans for jobs">
+<meta name="abstract" content="You must register JMX beans for jobs and related objects before you can access them from an application. Related objects include processing elements (PEs), operators, and connections.">
+<meta name="Description" content="You must register JMX beans for jobs and related objects before you can access them from an application. Related objects include processing elements (PEs), operators, and connections.">
+<meta name="DC.subject" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="keywords" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="DC.Relation" scheme="URI" content="../doc/jmxapi-dev.html">
+<meta name="copyright" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Rights.Owner" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="jmxapi-register">
+<meta name="DC.Language" content="en-us">
+<meta name="IBM.Country" content="ZZ">
+<!-- Licensed Materials - Property of IBM -->
+<!-- US Government Users Restricted Rights -->
+<!-- Use, duplication or disclosure restricted by -->
+<!-- GSA ADP Schedule Contract with IBM Corp. -->
+
+<link rel="stylesheet" type="text/css" href="/streams/html/css/jmx.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+
+<title>Registering JMX beans for jobs</title>
+
+	 <link rel="shortcut icon" href="/streams/html/images/favicon_16.ico" type="image/vnd.microsoft.icon">
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png">
+
+<link type="text/css" href="/streams/html/css/www.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/tables.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/content_northstar_styles.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/kc.css" rel="stylesheet"/>
+</head>
+
+<body id="jmxapi-dev">
+
+<div class="jmx-body">
+  <!-- NLS_CHARSET=UTF-8 -->
+  <div class="blue_header">
+  <!-- Infosphere Streams topics header v -->
+  <div class="runningheader"><!--<img src="../../com.ibm.swg.im.infosphere.streams.common.doc/images/ngibm.gif" border="0" alt="" align="top" />-->
+  <!--<div style="float:right; padding-bottom:5px;">
+    <image src="/streams/html/images/home_button.svg"/>
+  </div>-->
+  <!-- End of InfoSphere Streams topics header -->
+  <div class="button_back"><a href="/external-reference/jmx/api/java/api/index.html">Streams JMX API</a></div></div>
+  <div class="nav_bar"></div>
+</div>
+
+<h1 class="title topictitle1">Registering JMX beans for jobs</h1>
+<div class="body taskbody">
+<div class="abstract"><span class="shortdesc">You must register JMX beans for jobs and related
+objects before you can access them from an application. Related objects
+include processing elements (PEs), operators, and connections.</span>
+</div>
+<div class="section context">
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd34282e39">About this task</h2>
+</div><p class="p">If you try to access a job-related bean that was not registered,
+the following exception occurs: <samp class="ph msgph">javax.management.InstanceNotFoundException</samp>.
+The bean must also be registered to add a notification listener for
+the bean.</p>
+</div>
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd34282e45">Procedure</h2>
+</div>
+<div class="li step"><span class="ph cmd">To register job-related JMX beans, you must call one of the
+job registration methods on InstanceMXBean.</span> For
+example:<ul class="ul ibm-colored-list ibm-textcolor-gray-80">
+<li class="li"><span class="keyword apiname"> registerAllJobs(java.lang.String listenerId)</span></li>
+<li class="li"><span class="keyword apiname">registerJobById(String jobId)</span></li>
+<li class="li"><span class="keyword apiname">registerJobById(String jobId, String listenerId)</span></li>
+<li class="li"><span class="keyword apiname">registerJob(java.lang.String jobName)</span></li>
+<li class="li"><span class="keyword apiname">registerJob(java.lang.String jobName, java.lang.String listenerId)</span></li>
+<li class="li"><span class="keyword apiname">registerJobForPe(String peId)</span></li>
+<li class="li"><span class="keyword apiname">registerJobForPe(String peId, String listenerId)</span></li>
+<li class="li"><span class="keyword apiname">registerJobs(String jobGroup, String listenerId) </span></li>
+</ul>
+</div>
+<div class="section postreq">
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd34282e80">What to do next</h2>
+</div><p class="p">If there is no activity on the job bean or one of its
+related object beans by any JMX client for a period, all beans that
+are related to the job are unregistered and deleted. This operation
+is done to free the memory that is associated with the unused beans.
+If the beans are needed again, you can register them again. Shortly
+before the beans are unregistered for inactivity, <span class="keyword">Teracloud
+Streams</span> sends
+an inactivity warning notification for the job bean. If you call the <span class="keyword apiname">keepRegistered()</span> method
+or any other method on the job bean or one of its related object beans,
+the inactivity counter resets and delays the beans from being unregistered.
+For an example of how to register a job and handle the inactivity
+warning notifications, see <a class="xref tipso_style ibm-widget-processed" href="/streams/html/jmx/api/Notifications.html" data-widget="tooltip">Processing JMX API notifications</a>.</p>
+</div>
+</div>
+</div>
+
+</body></html>

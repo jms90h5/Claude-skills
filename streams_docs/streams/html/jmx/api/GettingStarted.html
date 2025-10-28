@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="security" content="public">
+<meta name="Robots" content="index,follow">
+<meta name="DC.Type" content="task">
+<meta name="DC.Title" content="Getting started with JMX APIs">
+<meta name="abstract" content="To develop an application that uses the Teracloud Streams JMX API, you must configure the access control lists and determine the JMX URL for establishing a connection.">
+<meta name="Description" content="To develop an application that uses the Teracloud Streams JMX API, you must configure the access control lists and determine the JMX URL for establishing a connection.">
+<meta name="DC.subject" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="keywords" content="APIs, JMX, developing applications, application programming interfaces, applications, developing, JMX API">
+<meta name="DC.Relation" scheme="URI" content="../doc/jmxapi-dev.html">
+<meta name="copyright" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Rights.Owner" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="jmxapi-start">
+<meta name="DC.Language" content="en-us">
+<meta name="IBM.Country" content="ZZ">
+<!-- Licensed Materials - Property of IBM -->
+<!-- US Government Users Restricted Rights -->
+<!-- Use, duplication or disclosure restricted by -->
+<!-- GSA ADP Schedule Contract with IBM Corp. -->
+
+<link rel="stylesheet" type="text/css" href="/streams/html/css/jmx.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+<title>Getting started with JMX APIs</title>
+
+	 <link rel="shortcut icon" href="/streams/html/images/favicon_16.ico" type="image/vnd.microsoft.icon">
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png">
+
+<link type="text/css" href="/streams/html/css/www.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/tables.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/content_northstar_styles.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/kc.css" rel="stylesheet"/>
+</head>
+<body id="jmxapi-start" class="ibm-type ibm-background-white-core">
+<div class="jmx-body">
+  <!-- NLS_CHARSET=UTF-8 -->
+  <div class="blue_header">
+  <!-- Infosphere Streams topics header v -->
+  <div class="runningheader"><!--<img src="../../com.ibm.swg.im.infosphere.streams.common.doc/images/ngibm.gif" border="0" alt="" align="top" />-->
+  <!--<div style="float:right; padding-bottom:5px;">
+    <image src="/streams/html/images/home_button.svg"/>
+  </div>-->
+  <!-- End of InfoSphere Streams topics header -->
+  <div class="button_back"><a href="/external-reference/jmx/api/java/api/index.html">Streams JMX API</a></div></div>
+  <div class="nav_bar"></div>
+</div>
+
+<h1 class="title topictitle1">Getting started with JMX APIs</h1>
+<div class="body taskbody">
+<div class="abstract"><span class="shortdesc">To develop an application that uses the <span class="keyword">Teracloud®
+Streams</span> JMX
+API, you must configure the access control lists and determine the
+JMX URL for establishing a connection.</span>
+ You can then build
+and run your application with the required Java™ archive (<span class="ph filepath">.jar</span>) files.
+</div>
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd34492e51">Procedure</h2>
+</div><ol class="ol steps ibm-colored-list ibm-textcolor-gray-80"><li class="li step stepexpand"><span class="ph cmd">Configure the access control lists for the <span class="keyword">Teracloud
+Streams</span> resources. </span> To use the JMX API successfully, users must be authorized to
+access <span class="keyword">Teracloud
+Streams</span> objects.
+You can configure the access control lists by using the <span class="keyword">Streams
+Console</span>.
+Alternatively, you can use the <span class="keyword cmdname">streamtool setacl</span> command
+to set domain and instance permissions.</li>
+<li class="li step stepexpand"><span class="ph cmd"> Determine the URL that you can use to establish a JMX
+connection.</span> The URL is the connection string for the <span class="keyword">JMX management API service</span>.
+You can use the <span class="keyword cmdname">streamtool getjmxconnect</span> command
+to obtain this information.</li>
+<li class="li step stepexpand"><span class="ph cmd">Build and run your application with the necessary Java archive (.jar) files.</span> To
+successfully compile your application, you must include the following <span class="ph filepath">.jar</span> files
+in your class path: <span class="ph filepath">com.ibm.streams.management.jmxmp.jar</span>; <span class="ph filepath">com.ibm.streams.management.mx.jar</span>. These
+files can be found in the following directory: <span class="ph filepath"><var class="keyword varname ibm-item-note-alternate">product-installation-root-directory</var>/lib</span>. 
+<div class="p ibm-padding-bottom-1">
+<p>To
+successfully run the application, you must also include the following <span class="ph filepath">.jar</span> files
+in your class path:</p>
+<ul>
+<li><span class="ph filepath">jmxremote_optional.jar</span></li>
+<li><span class="ph filepath">glassfish-corba-omgapi-*.jar</span></li>
+<li><span class="ph filepath">commons-cli-*.jar</span></li>
+</ul>
+<br>
+<p>These
+files can be found in the following directory: <span class="ph filepath"><var class="keyword varname ibm-item-note-alternate">product-installation-root-directory</var>/ext/lib</span>. 
+Note: you will need to replace the * in the jar file names with the version numbers of the files in this directory.</p>
+
+<div class="note important border-2 ibm-border-yellow-30 margin-top-1 margin-bottom-1"><span class="importanttitle ibm-bold background-yellow ibm-padding-top-1 ibm-padding-bottom-1 padding-left-1 padding-right-1">Important:</span> To find
+and use the <span class="keyword">Teracloud
+Streams</span> JMX
+connector implementation successfully, you must include <span class="ph filepath">com.ibm.streams.management.jmxmp.jar</span> in
+the class path before <span class="ph filepath">jmxremote_optional.jar</span>.
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</body></html>

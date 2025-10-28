@@ -1,0 +1,213 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="task"/><meta name="abstract" content="You can create tags to identify resources that have different physical characteristics or logical uses."/><meta name="description" content="You can create tags to identify resources that have different physical characteristics or logical uses."/><meta name="DC.subject" content="tags,creating,removing"/><meta name="keywords" content="tags, creating, removing"/><meta name="indexterms" content="tags, creating, tags, removing"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/tags.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/resources.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/mktag.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/rmtag.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/tags.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="ibminfospherestreams-instance-host-tags"/><meta name="DC.language" content="en-us"/>        
+      <title>Creating and removing tags in a domain</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="ibminfospherestreams-instance-host-tags-d41691e2902"/><meta name="wh-source-relpath" content="com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-host-tags.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-host-tags.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="ibminfospherestreams-instance-host-tags" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="containeradmin"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li><div class="topicref" data-id="adminresources"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/resources.html">Resources</a><div class="wh-tooltip"><p class="shortdesc">After you add resources to domains and instances, you can administer them by using the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</p></div></div></div></li><li><div class="topicref" data-id="tags"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/tags.html">Tags</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Tags are a mechanism for differentiating and identifying resources that have different physical characteristics or logical uses.</span> </p></div></div></div></li><li class="active"><div class="topicref" data-id="ibminfospherestreams-instance-host-tags"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-host-tags.html"><span class="ph">Creating and removing tags in a domain</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">You can create             tags to identify resources that have different physical characteristics or logical             uses.</span></p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="admindomains-d41691e2724" class="topicref" data-id="admindomains" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action admindomains-d41691e2724-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/domains.html" id="admindomains-d41691e2724-link">Domains</a><div class="wh-tooltip"><p class="shortdesc">After you create a <span class="keyword">Teracloud® 					Streams</span> domain, you can administer it by using the   <span class="keyword">Streams Console</span> graphical user interface and the <span class="keyword cmdname">streamtool</span> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="adminresources-d41691e2839" class="topicref" data-id="adminresources" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action adminresources-d41691e2839-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/resources.html" id="adminresources-d41691e2839-link">Resources</a><div class="wh-tooltip"><p class="shortdesc">After you add resources to domains and instances, you can administer them by using the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="res_allocation_app_services-d41691e2856" class="topicref" data-id="res_allocation_app_services" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/res_allocation_app_services.html" id="res_allocation_app_services-d41691e2856-link">Resource allocation for application services</a><div class="wh-tooltip"><p class="shortdesc">A resource for application services can be static (added explicitly to an instance) or dynamic (added to or removed from an instance dynamically based upon the job or processing element requirements). A static resource is specified manually by name or automatically by a resource specification and remains allocated to the instance until it is explicitly removed. A dynamic resource is released from the instance when the instance is stopped or when the resource is no longer needed. </p></div></div></div></li><li role="treeitem"><div data-tocid="res_allocation_mgmt_services-d41691e2867" class="topicref" data-id="res_allocation_mgmt_services" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/res_allocation_mgmt_services.html" id="res_allocation_mgmt_services-d41691e2867-link">Resource allocation for management services</a><div class="wh-tooltip"><p class="shortdesc">Management services are placed on static resources if available. If the instance does not have any static resources and dynamic resource allocation is enabled, management resources are dynamically requested at the time the instance is started. </p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-instance-host-identifiers-d41691e2878" class="topicref" data-id="ibminfospherestreams-instance-host-identifiers" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-host-identifiers.html" id="ibminfospherestreams-instance-host-identifiers-d41691e2878-link">Resource identifiers</a><div class="wh-tooltip"><p class="shortdesc">A resource identifier uniquely identifies a resource in a domain or    instance.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="tags-d41691e2889" class="topicref" data-id="tags" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action tags-d41691e2889-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/tags.html" id="tags-d41691e2889-link">Tags</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Tags are a mechanism for differentiating and identifying resources that have different physical characteristics or logical uses.</span> </p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="ibminfospherestreams-instance-host-tags-d41691e2902" class="topicref" data-id="ibminfospherestreams-instance-host-tags" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-host-tags.html" id="ibminfospherestreams-instance-host-tags-d41691e2902-link"><span class="ph">Creating and removing tags in a domain</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">You can create             tags to identify resources that have different physical characteristics or logical             uses.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="assigningtags-d41691e2915" class="topicref" data-id="assigningtags" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/assigningtags.html" id="assigningtags-d41691e2915-link">Assigning tags to resources</a><div class="wh-tooltip"><p class="shortdesc">You can specify the tags for a resource at domain creation time, when a resource is added to a domain, or any time thereafter.</p></div></div></div></li><li role="treeitem"><div data-tocid="restrictinghosts-d41691e2926" class="topicref" data-id="restrictinghosts" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/restrictinghosts.html" id="restrictinghosts-d41691e2926-link">Using tags to restrict resources</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">You can use tags to restrict resources for a specific application purpose by creating a tag restriction between the resource and a tag or between an instance and a tag.</span> This tag restriction instructs the scheduler to place on the resource only the processing elements (PEs) that refer to a host pool that specifies that tag.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="monitoringresources-d41691e2939" class="topicref" data-id="monitoringresources" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action monitoringresources-d41691e2939-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/monitoringresources.html" id="monitoringresources-d41691e2939-link">Monitoring resources</a><div class="wh-tooltip"><p class="shortdesc">Use the <span class="keyword">Streams Console</span> to view the status of resources.</p></div></div></div></li><li role="treeitem"><div data-tocid="stoppingresources-d41691e2964" class="topicref" data-id="stoppingresources" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/stoppingresources.html" id="stoppingresources-d41691e2964-link">Stopping and quiescing resources</a><div class="wh-tooltip"><p class="shortdesc">You can stop or quiesce resources when you want to perform maintenance activities.</p></div></div></div></li><li role="treeitem"><div data-tocid="removingresources-d41691e2975" class="topicref" data-id="removingresources" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/removingresources.html" id="removingresources-d41691e2975-link">Removing resources</a><div class="wh-tooltip"><p class="shortdesc">You might choose to remove a resource if the host is no longer available or you    want to replace it with a different resource.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-instance-main-d41691e2986" class="topicref" data-id="ibminfospherestreams-instance-main" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-instance-main-d41691e2986-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-main.html" id="ibminfospherestreams-instance-main-d41691e2986-link">Instances</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To create and manage instances, you can use the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="adminservices-d41691e3178" class="topicref" data-id="adminservices" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action adminservices-d41691e3178-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/services.html" id="adminservices-d41691e3178-link">Domain and instance services</a><div class="wh-tooltip"><p class="shortdesc">Before you can perform <span class="keyword">Teracloud® 					Streams</span> tasks, <span class="keyword">Teracloud 					Streams</span> domain and instance services need to be running on resources in the domain. Domain services are   started by starting the domain and instance services are started by starting the   instance.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="adminjobs-d41691e3310" class="topicref" data-id="adminjobs" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action adminjobs-d41691e3310-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/jobs.html" id="adminjobs-d41691e3310-link">Jobs</a><div class="wh-tooltip"><p class="shortdesc">You can start and administer jobs by using <span class="keyword">Streams Console</span> or the <code class="ph codeph">streamtool</code> command-line interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-faulttolerance-main-d41691e3769" class="topicref" data-id="ibminfospherestreams-faulttolerance-main" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-faulttolerance-main-d41691e3769-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-faulttolerance-main.html" id="ibminfospherestreams-faulttolerance-main-d41691e3769-link">Recovery</a><div class="wh-tooltip"><p class="shortdesc">You can back up your <span class="keyword">Teracloud® 					Streams</span> system files and directories and then restore them later if necessary. In general, you can recover from application and runtime failures without restoring <span class="keyword">Teracloud 					Streams</span> from a backup.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-adminconsole-d41691e3881" class="topicref" data-id="ibminfospherestreams-adminconsole" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-adminconsole-d41691e3881-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-adminconsole.html" id="ibminfospherestreams-adminconsole-d41691e3881-link"><span class="keyword">Streams Console</span></a><div class="wh-tooltip"><p class="shortdesc">You can use the <span class="keyword">Streams Console</span> to monitor and manage the <span class="keyword">Teracloud® 					Streams</span> instances and applications in your domain from any computer that has HTTP connectivity to the server that is running the <span class="keyword">web management service</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-log-and-trace-managing-files-d41691e3942" class="topicref" data-id="ibminfospherestreams-log-and-trace-managing-files" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-log-and-trace-managing-files.html" id="ibminfospherestreams-log-and-trace-managing-files-d41691e3942-link">Logs and traces</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph"><span class="keyword">Teracloud® 					Streams</span> provides options that enable administrators, instance owners, and application developers to       manage log and trace data.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="accessingpathscompiletime-d41691e3958" class="topicref" data-id="accessingpathscompiletime" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/managemonitorstreamsapi.html" id="accessingpathscompiletime-d41691e3958-link">Managing and monitoring <span class="keyword">Teracloud® Streams</span> using management APIs</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides two API sets to manage and monitor Streams services and jobs.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic task/task topic task" role="article" aria-labelledby="ariaid-title1">
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1"><span class="- topic/ph ph">Creating and removing tags in a domain</span></h1>
+
+
+<div class="- topic/body task/taskbody body taskbody"><div class="- topic/abstract abstract"><span class="- topic/ph ph">Domains contain tags that you can use to specify which
+            resources run the domain and instance services. </span> <span class="- topic/shortdesc shortdesc"><span class="- topic/ph ph">You can create
+            tags to identify resources that have different physical characteristics or logical
+            uses.</span></span></div>
+<section class="- topic/ul task/steps-unordered ul steps-unordered"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Procedure</h2></div><ul class="- topic/ul task/steps-unordered ul steps-unordered"><li class="- topic/li task/step li step"><span class="- topic/ph task/cmd ph cmd">To define more tags in a domain, use the <span class="- topic/keyword keyword">Streams
+Console</span>,
+or the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool mktag</span> command.</span>
+<div class="- topic/itemgroup task/info itemgroup info"><div class="- topic/note note note note_note"><span class="note__title">Note:</span> <span class="- topic/ph ph">Tags are case-sensitive strings with a letter optionally
+followed by alphanumeric or underscore characters.</span></div></div>
+</li><li class="- topic/li task/step li step"><span class="- topic/ph task/cmd ph cmd">To remove tags from a domain, use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+rmtag</span> command or the <span class="- topic/keyword keyword">Streams
+Console</span>.</span>
+<div class="- topic/itemgroup task/info itemgroup info"><div class="- topic/note note note note_note" id="ibminfospherestreams-instance-host-tags__tag-removal" data-ofbid="ibminfospherestreams-instance-host-tags__tag-removal"><span class="note__title">Note:</span> The tag is not removed in the following
+scenarios:<ul class="- topic/ul ul">
+<li class="- topic/li li">The tag has a reserved name, such as management or application.</li>
+<li class="- topic/li li">The tag was used by the scheduler to place a processing element
+(PE) or job that is running.</li>
+</ul></div></div><div class="- topic/itemgroup task/stepresult itemgroup stepresult">If you remove a tag from the domain
+and that tag was used in a resource specification for an instance
+that is running, the resources are not removed from the instance until
+it restarts. To update or remove the resource specification that mentions
+the tag, use the <span class="- topic/keyword keyword">Streams
+Console</span> or
+the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool chresourcespec</span> or <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+rmresourcespec</span> commands.</div></li></ul></section>
+<section class="- topic/section task/postreq section postreq"><div class="tasklabel"><h2 class="sectiontitle tasklabel">What to do next</h2></div>
+   <p class="- topic/p p">After
+you create tags, assign them to resources in the domain. See <a class="- topic/xref xref" href="assigningtags.html" title="You can specify the tags for a resource at domain creation time, when a resource is added to a domain, or any time thereafter.">Assigning tags to resources in a domain</a>.</p></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relconcepts" xml:lang="en-us" lang="en-us"><strong>Related concepts</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/tags.html" title="Tags are a mechanism for differentiating and identifying resources that have different physical characteristics or logical uses.">Tags</a></li></ul></div><div class="- topic/linklist linklist relref" xml:lang="en-us" lang="en-us"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/mktag.html" title="The streamtool mktag command creates a tag in a domain. You can also provide a description and a resource definition.">streamtool mktag</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/rmtag.html" title="The streamtool rmtag command removes tags from a domain.">streamtool rmtag</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

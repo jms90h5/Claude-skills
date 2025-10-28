@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="security" content="public">
+<meta name="Robots" content="index,follow">
+<meta name="DC.Type" content="task">
+<meta name="DC.Title" content="Handling JMX API errors">
+<meta name="abstract" content="The Teracloud Streams Java Management Extensions (JMX) APIs throw a standard Java exception when an error occurs.">
+<meta name="Description" content="The Teracloud Streams Java Management Extensions (JMX) APIs throw a standard Java exception when an error occurs.">
+<meta name="DC.subject" content="APIs, JMX, handling errors, application programming interfaces, JMX API">
+<meta name="keywords" content="APIs, JMX, handling errors, application programming interfaces, JMX API">
+<meta name="DC.Relation" scheme="URI" content="../doc/jmxapi-dev.html">
+<meta name="copyright" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Rights.Owner" content="© Copyright IBM Corporation 2012, 2018">
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="jmxapi-errors">
+<meta name="DC.Language" content="en-us">
+<meta name="IBM.Country" content="ZZ">
+<!-- Licensed Materials - Property of IBM -->
+<!-- US Government Users Restricted Rights -->
+<!-- Use, duplication or disclosure restricted by -->
+<!-- GSA ADP Schedule Contract with IBM Corp. -->
+
+<link rel="stylesheet" type="text/css" href="/streams/html/css/jmx.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+
+<title>Handling JMX API errors</title>
+
+	 <link rel="shortcut icon" href="/streams/html/images/favicon_16.ico" type="image/vnd.microsoft.icon">
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png">
+
+<link type="text/css" href="/streams/html/css/www.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/tables.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/content_northstar_styles.css" rel="stylesheet">
+<link type="text/css" href="/streams/html/css/kc.css" rel="stylesheet"/>
+</head>
+<body id="jmxapi-dev">
+<div class="jmx-body">
+  <!-- NLS_CHARSET=UTF-8 -->
+  <div class="blue_header">
+  <!-- Infosphere Streams topics header v -->
+  <div class="runningheader"><!--<img src="../../com.ibm.swg.im.infosphere.streams.common.doc/images/ngibm.gif" border="0" alt="" align="top" />-->
+  <!--<div style="float:right; padding-bottom:5px;">
+    <image src="/streams/html/images/home_button.svg"/>
+  </div>-->
+  <!-- End of InfoSphere Streams topics header -->
+  <div class="button_back"><a href="/external-reference/jmx/api/java/api/index.html">Streams JMX API</a></div></div>
+  <div class="nav_bar"></div>
+</div>
+
+<h1 class="title topictitle1">Handling JMX API errors</h1>
+<div class="body taskbody">
+<div class="abstract"><span class="shortdesc">The <span class="keyword">Teracloud
+Streams</span> Java™ Management Extensions (JMX)
+APIs throw a standard Java exception
+when an error occurs.</span>
+ </div>
+<div class="section context">
+<div class="tasklabel"><h2 class="sectiontitle tasklabel ibm-h3 ibm-padding-top-1" id="taskd33667e47">About this task</h2>
+</div><p class="p"> For permission errors, a <samp class="ph msgph">SecurityException</samp> occurs. For input errors, an
+<samp class="ph msgph">IllegalArgumentException</samp> or an <samp class="ph msgph">NullPointerException</samp> occurs. For most
+other errors, an <samp class="ph msgph">IllegalStateException</samp> occurs. The message text for many of the
+exceptions contains an <span class="keyword">Teracloud
+Streams</span> message with an identifier prefix.
+To handle specific <span class="keyword">Teracloud
+Streams</span> messages in your application, you can add code to check whether the exception begins with a
+specific message identifier, then run the appropriate error handling code.</p>
+</div>
+</div>
+</div>
+</body></html>

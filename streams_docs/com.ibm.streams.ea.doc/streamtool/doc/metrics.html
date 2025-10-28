@@ -1,0 +1,698 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../favicon-light.png"/><link rel="icon" href="../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="description" content="Teracloud Streams provides metrics to help evaluate the health of Teracloud Streams services, to aid in diagnosing performance issues, and to analyze throughput of requests. You can use the streamtool checkinstancemetrics, streamtool checkdomainmetrics, streamtool getdomainmetrics, and streamtool checkresourcemetrics commands to view the metrics data."/><meta name="DC.subject" content="metrics,histograms,counters,gauges,timers,meters"/><meta name="keywords" content="metrics, histograms, counters, gauges, timers, meters"/><meta name="indexterms" content="metrics, histograms, counters, gauges, timers, meters"/><meta name="DC.relation" content="../../../com.ibm.streams.ref.doc/doc/cmdref-container.html"/><meta name="DC.relation" content="../../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="metrics"/><meta name="DC.language" content="en-us"/>        
+      <title>Metrics</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../"/><meta name="wh-toc-id" content="metrics-d41691e62985"/><meta name="wh-source-relpath" content="com.ibm.streams.ea.doc/streamtool/doc/metrics.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ea.doc/streamtool/doc/metrics.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../cobalt.css"/></head>
+
+    <body id="metrics" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="cmdref-container"><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/cmdref-container.html">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li class="active"><div class="topicref" data-id="metrics"><div class="title"><a href="../../../com.ibm.streams.ea.doc/streamtool/doc/metrics.html">Metrics</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides metrics to help evaluate the health of <span class="keyword">Teracloud 					Streams</span> services, to aid in diagnosing performance issues, and to analyze throughput of requests. You can use the <span class="keyword cmdname">streamtool checkinstancemetrics</span>, <span class="keyword cmdname">streamtool checkdomainmetrics</span>, <span class="keyword cmdname">streamtool getdomainmetrics, </span>and <span class="keyword cmdname">streamtool checkresourcemetrics</span> commands to view the metrics data.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="streamtool-d41691e61385" class="topicref" data-id="streamtool" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streamtool-d41691e61385-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html" id="streamtool-d41691e61385-link">streamtool</a><div class="wh-tooltip"><p class="shortdesc">Streamtool is the Streams command-line interface.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="metrics-d41691e62985" class="topicref" data-id="metrics" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ea.doc/streamtool/doc/metrics.html" id="metrics-d41691e62985-link">Metrics</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides metrics to help evaluate the health of <span class="keyword">Teracloud 					Streams</span> services, to aid in diagnosing performance issues, and to analyze throughput of requests. You can use the <span class="keyword cmdname">streamtool checkinstancemetrics</span>, <span class="keyword cmdname">streamtool checkdomainmetrics</span>, <span class="keyword cmdname">streamtool getdomainmetrics, </span>and <span class="keyword cmdname">streamtool checkresourcemetrics</span> commands to view the metrics data.</p></div></div></div></li><li role="treeitem"><div data-tocid="commandsyntax-doc-d41691e63017" class="topicref" data-id="commandsyntax-doc" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ea.doc/streamtool/doc/commandsyntax-doc.html" id="commandsyntax-doc-d41691e63017-link">Reading syntax diagrams in the documentation</a><div class="wh-tooltip"><p class="shortdesc">There is a syntax convention for how parameters and values are represented in the command syntax diagrams in the <span class="keyword">Teracloud® 					Streams</span> documentation.</p></div></div></div></li><li role="treeitem"><div data-tocid="sc-d41691e63033" class="topicref" data-id="sc" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/sc.html" id="sc-d41691e63033-link">sc command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">sc</span> command compiles SPL applications.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-app-info-d41691e63048" class="topicref" data-id="spl-app-info" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spl-app-info.html" id="spl-app-info-d41691e63048-link">spl-app-info command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-app-info</span> command reports information about a <span class="keyword">application bundle file</span>.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-make-doc-d41691e63066" class="topicref" data-id="spl-make-doc" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spl-make-doc.html" id="spl-make-doc-d41691e63066-link">spl-make-doc command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-make-doc</span> command generates documentation for your toolkits.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-make-operator-d41691e63081" class="topicref" data-id="spl-make-operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spl-make-operator.html" id="spl-make-operator-d41691e63081-link">spl-make-operator command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-make-operator</span> command creates code generator modules from template files. The command can also create skeleton code generator templates and a default operator model if they do not exist.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-make-toolkit-d41691e63096" class="topicref" data-id="spl-make-toolkit" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spl-make-toolkit.html" id="spl-make-toolkit-d41691e63096-link">spl-make-toolkit command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-make-toolkit</span> command indexes a toolkit and makes the functions and operators it contains ready for use by SPL programs.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-schema-from-xml-d41691e63111" class="topicref" data-id="spl-schema-from-xml" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spl-schema-from-xml.html" id="spl-schema-from-xml-d41691e63111-link">spl-schema-from-xml command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-schema-from-xml</span> command creates an SPL tuple declaration from an XML document.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-transport-stats-d41691e63126" class="topicref" data-id="spl-transport-stats" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spl-transport-stats.html" id="spl-transport-stats-d41691e63126-link">spl-transport-stats command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-transport-stats</span> command creates a transport statistics model by running a transport performance test.</span></p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Metrics</h1>
+
+
+
+
+
+<div class="- topic/body reference/refbody body refbody"><p class="- topic/shortdesc shortdesc"><span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> provides metrics to help evaluate the health of <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> services, to aid in diagnosing performance issues, and to analyze throughput of requests. You can
+use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool checkinstancemetrics</span>, <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+checkdomainmetrics</span>, <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool getdomainmetrics,
+</span>and <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool checkresourcemetrics</span> commands to view the metrics
+data.</p>
+<section class="- topic/section section">
+<p class="- topic/p p">Metrics are only in memory and are collected when services are started. Metrics that are kept in
+the <span class="- topic/keyword keyword">ZooKeeper</span> server are also collected in memory. You can clear the metrics from memory on that server by
+running the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">resetzkstat</span> command.</p>
+<p class="- topic/p p">Metrics that are displayed by default are defined in the default template file
+<span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">install-dir</var>/<var class="+ topic/keyword sw-d/varname keyword varname">version</var>/etc/cfg/checkMetricsTemplate.json</span>.
+If you want to make changes to this template file, copy it to a new location. You can affect which
+metrics are displayed by setting the include element for the metric. You can modify the attributes
+of the metric to indicate which metrics to check and provide threshold values to check against.
+After you update the file, specify the file in the new location on the metrics
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> command by using the <span class="+ topic/keyword pr-d/parmname keyword parmname">--file</span> parameter.</p>
+<p class="- topic/p p">Threshold values can be set for the metrics to give a warning if the value is above the limit
+that is specified in the template. The values are flagged with ** if they do not meet the thresholds
+that are established in the template file. Some metrics are specific for the instance name. If you
+want to show these metrics, update the <code class="+ topic/ph pr-d/codeph ph codeph">@@instance-name@@</code> value to the name of the
+instance.</p>
+<p class="- topic/p p">The data that is time related is shown in milliseconds.</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Metric types</h2>
+
+<div class="- topic/p p"><span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> monitors performance and issues by using the following metric types:<ul class="- topic/ul ul">
+<li class="- topic/li li">counter</li>
+<li class="- topic/li li">gauge</li>
+<li class="- topic/li li">histogram</li>
+<li class="- topic/li li">meter</li>
+<li class="- topic/li li">timer</li>
+</ul></div>
+<p class="- topic/p p">A <dfn class="- topic/term term">counter</dfn> is a simple incrementing and decrementing 64-bit integer. The attribute
+<span class="+ topic/keyword pr-d/parmname keyword parmname">count</span> is the counter's current value.</p>
+<p class="- topic/p p">A <dfn class="- topic/term term">gauge</dfn> is the simplest metric type, and only returns a value. It is an
+instantaneous measurement of the attribute <span class="+ topic/keyword pr-d/parmname keyword parmname">value</span>, which returns the metric's
+current value. For example, a gauge might measure the number of pending jobs in a queue.</p>
+<p class="- topic/p p">A <dfn class="- topic/term term">histogram</dfn> measures the distribution of values in a stream of data, for example,
+the number of results that are returned by a search. In addition to minimum, maximum, mean, and so
+forth, it also measures median, 75th, 90th, 95th, 98th, 99th, and 99.9th percentiles. </p>
+<p class="- topic/p p">Traditionally, the way the median or any other quantile is calculated is by sorting the entire
+data set and determining the value in the middle (or 1% from the end, for the 99th percentile). This
+works for small data sets, or batch processing systems, but not for high-throughput, low-latency
+services. The solution for the high-throughput services is to sample the data as it passes through.
+By maintaining a small, manageable reservoir that is statistically representative of the data stream
+as a whole, the system can quickly and easily calculate quantiles that are valid approximations of
+the actual quantiles.</p>
+<p class="- topic/p p">This technique is called reservoir sampling. <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> uses an exponentially decaying reservoir. A histogram with an exponentially decaying reservoir
+produces quantiles that are representative of approximately the last five minutes of data. It does
+so by using a forward-decaying priority reservoir with an exponential weighting towards newer data.
+Unlike the uniform reservoir, an exponentially decaying reservoir represents recent data, enabling
+you to know very quickly if the distribution of the data has changed. Timers use histograms with
+exponentially decaying reservoirs by default.</p>
+<div class="- topic/p p">The following attributes apply for histograms:<div class="table-container"><table class="- topic/table table frame-all" id="metrics__table_npm_dkh_hw" data-ofbid="metrics__table_npm_dkh_hw" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Histogram attributes</span></caption><colgroup><col style="width:50%"/><col style="width:50%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-1 rowsep-1" id="metrics__table_npm_dkh_hw__entry__1">Attribute</th>
+<th class="- topic/entry entry colsep-0 rowsep-1" id="metrics__table_npm_dkh_hw__entry__2">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">count</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The number of values recorded.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">min</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The lowest value in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">max</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The highest value in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">mean</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The arithmetic mean of the values in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">median</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The median value in the distribution.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">stdDev</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The standard deviation of the values in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">95 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The value at the 95th percentile in the distribution.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">98 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The value at the 98th percentile in the distribution.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__1">99 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_npm_dkh_hw__entry__2">The value at the 99th percentile in the distribution. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-0" headers="metrics__table_npm_dkh_hw__entry__1">999 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_npm_dkh_hw__entry__2">The value at the 999th percentile in the distribution.</td>
+</tr>
+</tbody></table></div></div>
+<p class="- topic/p p">A <dfn class="- topic/term term">meter</dfn> measures the rate at which a set of events occur. Meters measure the rate of
+the events in a few different ways. The mean rate is the average rate of events. Although useful,
+the mean rate represents the total rate for your application’s entire lifetime, so it does not offer
+a sense of recency. For example, the mean rate might measure the total number of requests handled,
+divided by the number of seconds the process has been running. However, meters also record three
+different exponentially-weighted moving average rates: the 1-, 5-, and 15-minute moving
+averages.</p>
+<div class="- topic/p p">The following attributes apply for meters:<div class="table-container"><table class="- topic/table table frame-all" id="metrics__table_kvy_b13_hw" data-ofbid="metrics__table_kvy_b13_hw" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 2</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Meter attributes</span></caption><colgroup><col style="width:50%"/><col style="width:50%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-1 rowsep-1" id="metrics__table_kvy_b13_hw__entry__1">Attribute</th>
+<th class="- topic/entry entry colsep-0 rowsep-1" id="metrics__table_kvy_b13_hw__entry__2">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__1">count</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__2">The number of events that are marked.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__1">15 min rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__2">The fifteen-minute exponentially-weighted moving average rate at which events have occurred
+since the meter was created.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__1">5 min rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__2">The five-minute exponentially-weighted moving average rate at which events have occurred
+since the meter was created.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__1">1 min rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_kvy_b13_hw__entry__2">The one-minute exponentially-weighted moving average rate at which events have occurred since
+the meter was created.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-0" headers="metrics__table_kvy_b13_hw__entry__1">mean rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_kvy_b13_hw__entry__2">The mean rate at which events have occurred since the meter was created.</td>
+</tr>
+</tbody></table></div></div>
+<p class="- topic/p p">A <dfn class="- topic/term term">timer</dfn> is a histogram of the duration of a type of event and a meter of the rate of
+its occurrence. A timer measures both the rate that a particular piece of code is called and the
+distribution of its duration. Elapsed times for events are measured internally in nanoseconds, using
+Java’s high-precision <span class="+ topic/keyword pr-d/parmname keyword parmname">System.nanoTime()</span> method. Its precision and accuracy vary
+depending on operating system and hardware.</p>
+<div class="- topic/p p">The following attributes apply for timers:<div class="table-container"><table class="- topic/table table frame-all" id="metrics__table_tjj_313_hw" data-ofbid="metrics__table_tjj_313_hw" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 3</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Timer attributes</span></caption><colgroup><col style="width:50%"/><col style="width:50%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-1 rowsep-1" id="metrics__table_tjj_313_hw__entry__1">Attribute</th>
+<th class="- topic/entry entry colsep-0 rowsep-1" id="metrics__table_tjj_313_hw__entry__2">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">count</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The number of events that have been marked.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">15 min rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The fifteen-minute exponentially-weighted moving average rate at which events have occurred
+since the timer was created.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">5 min rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The five-minute exponentially-weighted moving average rate at which events have occurred
+since the timer was created.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">1 min rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The one-minute exponentially-weighted moving average rate at which events have occurred since
+the timer was created.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">mean rate</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The mean rate at which events have occurred since the timer was created.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">min</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The lowest value in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">max</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The highest value in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">mean</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The arithmetic mean of the values in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">median</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The median value in the distribution.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">stdDev</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The standard deviation of the values in the snapshot.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">95 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The value at the 95th percentile in the distribution. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">98 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The value at the 98th percentile in the distribution.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="metrics__table_tjj_313_hw__entry__1">99 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="metrics__table_tjj_313_hw__entry__2">The value at the 99th percentile in the distribution. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-0" headers="metrics__table_tjj_313_hw__entry__1">999 pct</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_tjj_313_hw__entry__2">The value at the 999th percentile in the distribution.</td>
+</tr>
+</tbody></table></div></div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle"><span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> Metrics</h2>
+
+<div class="- topic/p p">The following table shows the metrics that are included in the JSON template for metrics
+reporting.<div class="table-container"><table class="- topic/table table table--pgwide-1" id="metrics__table_hs5_s13_hw" data-ofbid="metrics__table_hs5_s13_hw" data-cols="4"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 4</span><span class="table--title-label-punctuation">. </span></span><span class="table--title"><span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> metrics</span></caption><colgroup><col style="width:47.25274725274725%"/><col style="width:9.89010989010989%"/><col style="width:10.989010989010989%"/><col style="width:31.868131868131865%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="metrics__table_hs5_s13_hw__entry__1">Metric Name</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="metrics__table_hs5_s13_hw__entry__2">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="metrics__table_hs5_s13_hw__entry__3">Display by Default</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="metrics__table_hs5_s13_hw__entry__4">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">domain.aas.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times the aas service is started on this node. This counts
+anytime the service is restarted intentionally or
+not.<p class="- topic/lines lines">Limit Value: counter = 5</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> domain.auditlog.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times auditlog service was started on this node. This counts
+anytime the service is restarted intentionally or
+not.<p class="- topic/lines lines">Limit Value: counter = 5</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> domain.jmx.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times jmx service was started on this node. This counts anytime
+the service is restarted intentionally or not.<p class="- topic/lines lines">Limit Value: counter = 5</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> domain.sws.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times sws service was started on this node. This counts anytime
+the service is restarted intentionally or not.<p class="- topic/lines lines">Limit value: counter = 5</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> controller.ping.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures the time for leader to non-leader resource ping requests.<p class="- topic/lines lines">Limit Values: </p><ul class="- topic/ul ul">
+<li class="- topic/li li">min=500</li>
+<li class="- topic/li li"> max=1000</li>
+<li class="- topic/li li"> mean=500</li>
+<li class="- topic/li li"> median=500</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> zk.children.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures the time to perform ZooKeeper get children operations<p class="- topic/lines lines">Limit Values:  </p><ul class="- topic/ul ul">
+<li class="- topic/li li">min=5 </li>
+<li class="- topic/li li">max=250</li>
+<li class="- topic/li li"> mean=10</li>
+<li class="- topic/li li"> median=10</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">zk.create.timer </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures the time to perform ZooKeeper create operations.<p class="- topic/lines lines">Limit Values: </p><ul class="- topic/ul ul">
+<li class="- topic/li li">min=15</li>
+<li class="- topic/li li"> max=500</li>
+<li class="- topic/li li"> mean=20</li>
+<li class="- topic/li li"> median=20</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> zk.delete.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4"> Measures the time to perform ZooKeeper delete operations.<p class="- topic/lines lines">Limit Values: </p><ul class="- topic/ul ul">
+<li class="- topic/li li">min=10</li>
+<li class="- topic/li li"> max=500</li>
+<li class="- topic/li li"> mean=25</li>
+<li class="- topic/li li">median=25</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">zk.exist.timer </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures the time to perform ZooKeeper exists operations.<p class="- topic/lines lines">Limit Values:  </p><ul class="- topic/ul ul">
+<li class="- topic/li li">min=5 </li>
+<li class="- topic/li li">max=250</li>
+<li class="- topic/li li"> mean=10</li>
+<li class="- topic/li li"> median=10</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> zk.read.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+    <td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures the time to perform ZooKeeper read operations.<p class="- topic/lines lines">Limit Values: </p><ul class="- topic/ul ul">
+<li class="- topic/li li">min=5 </li>
+<li class="- topic/li li">max=250</li>
+<li class="- topic/li li"> mean=10</li>
+<li class="- topic/li li"> median=10</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> zk.transaction.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures the time to perfrom ZooKeeper transaction
+operations.<p class="- topic/lines lines">Limit Values = no warnings </p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> zk.write.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4"> Measures the time to perform ZooKeeper write operations.<p class="- topic/lines lines">Limit Values: </p><ul class="- topic/ul ul">
+<li class="- topic/li li">min=15</li>
+<li class="- topic/li li"> max=500</li>
+<li class="- topic/li li"> mean=20</li>
+<li class="- topic/li li"> median=20</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> zk.disconnect.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures the time for ZooKeeper disconnect occurrences.<p class="- topic/lines lines">Limit Values: </p><ul class="- topic/ul ul">
+<li class="- topic/li li">1 min rate=1</li>
+<li class="- topic/li li"> 5 min rate=1</li>
+<li class="- topic/li li">15 min rate=1</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> sam.job.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of jobs submitted to SAM since instance start.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">sam.pe.counter </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of PEs created by SAM since instance start.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> sam.inputport.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of PE Input Ports created by SAM since instance start.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> sam.outputport.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of PE Output Ports created by SAM since instance start.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">sam.connection.counter </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of PE Connections created by SAM since instance start.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">*.app.counter <sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-instance">3</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times app service was started on this node. This counts anytime
+the service is restarted intentionally or not.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">*.sam.counter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-instance">3</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times sam service was started on this node. This counts anytime
+the service is restarted intentionally or not.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">*.srm.counter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-instance">3</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times srm service was started on this node. This counts anytime
+the service is restarted intentionally or not.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> *.view.counter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-instance">3</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of times view service was started on this node. This counts anytime
+the service is restarted intentionally or not.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> view.get.data.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The amount of time it takes the view server to retrieve the data from it's
+internal buffer and return to the caller.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> view.active.view.counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of views that are actively buffering data.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> rest.request.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The amount of time it took to service a rest request (this is the published
+REST API).</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> sws.get.file.timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">timer</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The amount of time SWS took to service file downloads (this is done for html,
+scripts, css, etc that the console needs).</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">aas.session.counter </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">The number of AAS sessions since the domain
+started.<p class="- topic/lines lines">Limit Values: counter = 3500</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">aas.login.timer </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">counter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">Y</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures time for authentication with user credential.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">aas.ldap.*.invalidauthreqs.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-ldapid">1</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures invalid LDAP authentication.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> aas.ldap.*.errorauthreqs.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-ldapid">1</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures LDAP authentication errors.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> aas.ldap.*.erroranonauthreqs.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-ldapid">1</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures anonymous LDAP authentication errors.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> aas.ldap.*.invalidsulauthreqs.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-ldapid">1</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures invalid secondary user lookup LDAP authentication.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">aas.ldap.*.errorsulreqs.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-ldapid">1</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures secondary user lookup LDAP errors.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">aas.pam.*.invalidauthreqs.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-PAM">2</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures invalid PAM authentication.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1"> aas.pam.*.errorauthreqs.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-PAM">2</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures PAM authentication errors.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__1">aas.ldap.*.commerrors.meter<sup class="+ topic/ph hi-d/sup ph sup"><a class="- topic/xref xref" href="#metrics__table-note-ldapid">1</a></sup></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__2">meter</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__3">N</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="metrics__table_hs5_s13_hw__entry__4">Measures LDAP communication errors.</td>
+</tr>
+</tbody></table></div></div>
+<div class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Table notes:</strong><ol class="- topic/ol ol">
+<li class="- topic/li li" id="metrics__table-note-ldapid" data-ofbid="metrics__table-note-ldapid">The asterisk (*) displays the metric for each configured LDAP server.
+When displayed, the asterisk (*) is replaced by a value that is composed of the LDAP hostname and
+port. The periods within the hostname and the colon are replaced by underscore characters. For
+example, if the LDAP server URL is ldap://xyz.ibm.com:389, then the value displayed in place of the
+asterisk (*) is <kbd class="+ topic/ph sw-d/userinput ph userinput">xyz_ibm_com_389</kbd>.</li>
+<li class="- topic/li li" id="metrics__table-note-PAM" data-ofbid="metrics__table-note-PAM">The asterisk (*) displays the metric for each configured PAM server. When
+displayed, the asterisk (*) is replaced with the PAM service name.</li>
+<li class="- topic/li li" id="metrics__table-note-instance" data-ofbid="metrics__table-note-instance">The asterisk (*) displays the metric for each instance. When displayed,
+the asterisk (*) will be replaced by the instance name.</li>
+<li class="- topic/li li">You can modify the template to replace an asterisk (*) with a specific instance or server. If
+you do not modify the file to hard code the specific name, the metrics for all instances and servers
+are displayed.</li>
+</ol></div>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

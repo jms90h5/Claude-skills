@@ -1,0 +1,75 @@
+<!-- begin_generated_IBM_Teracloud_ApS_copyright_prolog               -->
+<!--                                                                  -->
+<!-- This is an automatically generated copyright prolog.             -->
+<!-- After initializing,  DO NOT MODIFY OR MOVE                       -->
+<!-- **************************************************************** -->
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- (C) Copyright Teracloud ApS 2025, 2025, IBM Corp. 2018, 2019     -->
+<!-- All Rights Reserved.                                             -->
+<!-- US Government Users Restricted Rights - Use, duplication or      -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with          -->
+<!-- IBM Corp.                                                        -->
+<!--                                                                  -->
+<!-- end_generated_IBM_Teracloud_ApS_copyright_prolog                 -->
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta name="security" content="public" />
+<meta name="Robots" content="index,follow" />
+<meta name="DC.Type" content="task" />
+<meta name="DC.Title" content="Teracloud Streams REST Management APIs" />
+<meta name="abstract" content="You can use the REST management API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="Description" content="You can use the REST management API from any application that can establish an HTTPS connection to the server that is running the REST management API service." />
+<meta name="DC.subject" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="keywords" content="APIs, REST, developing applications, application programming interfaces, applications, developing, REST API" />
+<meta name="DC.Date" scheme="iso8601" content="2018-07-07" />
+<meta name="DC.Format" content="XHTML" />
+<meta name="DC.Identifier" content="restapi-dev" />
+<meta name="DC.Language" content="en-us" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/rest.css" />
+<link rel="stylesheet" type="text/css" href="/streams/html/css/swg_info_common.css" />
+<title>Enabling cross-origin requests to the Streams REST management API</title>
+
+	 <link rel="icon" type="image/png" href="/streams/html/images/favicon-light.png"/>
+
+</head>
+<body id="restapi-dev"><div role="main">
+<div class="rest-header">
+<!-- NLS_CHARSET=UTF-8 -->
+</div><div class="rest-left-column">
+<div class="button_back">
+<svg class="rest-arrow" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg>
+<a href="/external-reference/redoc-static.html">Streams REST API</a></div></div>
+
+<div class="rest-body">
+<h1 class="title topictitle1">Enabling cross-origin requests to the Streams REST management API</h1>
+<div class="body taskbody"><p class="shortdesc">If you add an origin to the 
+Streams trusted origin list, you can make cross-origin requests to the REST management API from that
+origin.</p>
+<div class="section context"><div class="tasklabel"><h2 class="sectiontitle tasklabel" id="taskd45705e47">About this task</h2></div><p class="p">Web browsers typically restrict scripts from accessing data with a different origin than the page that contains the script. This restriction, which is known as the same-origin policy, prevents you from directly accessing the 
+Streams REST management API from a script. The REST management API supports cross-origin resource sharing (CORS), which provides a mechanism for the browser and server to determine whether to allow cross-origin requests.</p>
+</div>
+<div class="tasklabel"><h2 class="sectiontitle tasklabel" id="taskd45705e55">Procedure</h2></div><ol class="ol steps"><li class="li step stepexpand"><span class="ph cmd">Verify that your browser supports CORS.</span> Most modern browsers support CORS; however, you might need to upgrade to the latest browser version to get this support.</li>
+<li class="li step stepexpand"><span class="ph cmd">Add the originator of script REST management API calls to the list of trusted origins.</span> You can do this by using the REST management API, JMX management API or the management dashboard of the Streams
+Console.<p class="p">The origin specifies the scheme, host, and port from which requests originate. It must be a case-sensitive match for the HTTP Origin header value that the browser adds on the cross-origin request, for example: <samp class="ph codeph">http://myserver.com:8080</samp></p>
+</li>
+<li class="li step stepexpand"><span class="ph cmd">Add the 
+Streams certificate to the web browser.</span> Use your web browser's interface to trust the self-signed certificate that is provided by
+Streams.</li>
+<li class="li step stepexpand"><span class="ph cmd">Determine the method to authenticate the 
+Streams user.</span> If the instance is configured to use client authentication and the client certificate contains
+a Streams user name, no further configuration is necessary. The user is authenticated when the
+certificate is verified. <p class="p">Otherwise, HTTP basic authentication is used and you must set the
+<samp class="ph codeph">withCredentials</samp> attribute of the XMLHttpRequest object to <samp class="ph codeph">true</samp> for
+user credentials to be included on the cross-origin request. If your browser supports prompting for
+credentials with CORS requests, you can supply credentials this way. Alternatively, you can supply
+the credentials directly in the HTTP Authorization request header.</p>
+</li>
+</ol>
+</div></div>
+<div class="rest-right-column"></div>
+</body>
+</html>

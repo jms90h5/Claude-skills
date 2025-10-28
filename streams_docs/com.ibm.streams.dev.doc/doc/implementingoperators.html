@@ -1,0 +1,540 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="topic"/><meta name="description" content="An operator is implemented as a C++ class that extends from the SPL runtime class SPL::Operator."/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/operatorimplementation.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/dev-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/developing_operators.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/developing_primitive_operators.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/restartable.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/operatormodel.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/multithreadingandoperatorfusion.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="implementingoperators"/><meta name="DC.language" content="en-us"/>        
+      <title>Implementing operators</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="implementingoperators-d41691e5928"/><meta name="wh-source-relpath" content="com.ibm.streams.dev.doc/doc/implementingoperators.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.dev.doc/doc/implementingoperators.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="implementingoperators" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="dev-container"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li><div class="topicref" data-id="developing_operators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div></li><li><div class="topicref" data-id="developing_primitive_operators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_primitive_operators.html">Developing primitive operators</a><div class="wh-tooltip"><p class="shortdesc"> You develop new primitive operators by implementing them in the C++ or Java™ language. You must define an operator model that describes the syntax and semantics of the operator and implement the operator logic by creating the header and implementation code generator templates.</p></div></div></div></li><li><div class="topicref" data-id="creatingprimitiveoperators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html">Developing C++ primitive operators</a><div class="wh-tooltip"><p class="shortdesc">The SPL language supports writing two styles of primitive operators, namely: generic operators and non-generic operators.</p></div></div></div></li><li><div class="topicref" data-id="operatorimplementation"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/operatorimplementation.html">Operator implementation</a><div class="wh-tooltip"><p class="shortdesc">You use skeleton template files that are generated by the <span class="keyword cmdname">spl-make-operator</span> script as the basis for operator implementations.</p></div></div></div></li><li class="active"><div class="topicref" data-id="implementingoperators"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/implementingoperators.html">Implementing operators</a><div class="wh-tooltip"><p class="shortdesc">An operator is implemented as a C++ class that extends from the SPL runtime class <code class="ph codeph">SPL::Operator</code>.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="streaming_application_basics-d41691e3994" class="topicref" data-id="streaming_application_basics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streaming_application_basics-d41691e3994-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/streaming_application_basics.html" id="streaming_application_basics-d41691e3994-link">Development concepts</a><div class="wh-tooltip"><p class="shortdesc">Development of stream applications consists of several components such as operators,         streams, tuples, Streams Processing Language, toolkits, and         more.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="writingapplications-d41691e4218" class="topicref" data-id="writingapplications" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action writingapplications-d41691e4218-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/writingapplications.html" id="writingapplications-d41691e4218-link">Developing <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Try out tutorials and explore details about stream application development, SPL features,     and best practices.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="creatingnativefunctions-d41691e5698" class="topicref" data-id="creatingnativefunctions" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creatingnativefunctions-d41691e5698-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingnativefunctions.html" id="creatingnativefunctions-d41691e5698-link"><span class="ph">Developing native functions</span></a><div class="wh-tooltip"><p class="shortdesc">Extend SPL's computational capabilities by creating native functions     written in C++ or Java.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="developing_operators-d41691e5772" class="topicref" data-id="developing_operators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action developing_operators-d41691e5772-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html" id="developing_operators-d41691e5772-link">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="choosingoperators-d41691e5787" class="topicref" data-id="choosingoperators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action choosingoperators-d41691e5787-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/str_optype.html" id="choosingoperators-d41691e5787-link">Types of operators</a><div class="wh-tooltip"><p class="shortdesc">  When developing new operators, developers need to choose the kind of operator to implement based on the task they want to accomplish, the programming language they want to use and the trade-offs they are willing to make between generality and ease of implementation.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="developing_primitive_operators-d41691e5878" class="topicref" data-id="developing_primitive_operators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action developing_primitive_operators-d41691e5878-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_primitive_operators.html" id="developing_primitive_operators-d41691e5878-link">Developing primitive operators</a><div class="wh-tooltip"><p class="shortdesc"> You develop new primitive operators by implementing them in the C++ or Java™ language. You must define an operator model that describes the syntax and semantics of the operator and implement the operator logic by creating the header and implementation code generator templates.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="creatingprimitiveoperators-d41691e5892" class="topicref" data-id="creatingprimitiveoperators" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action creatingprimitiveoperators-d41691e5892-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html" id="creatingprimitiveoperators-d41691e5892-link">Developing C++ primitive operators</a><div class="wh-tooltip"><p class="shortdesc">The SPL language supports writing two styles of primitive operators, namely: generic operators and non-generic operators.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="operatorimplementation-d41691e5903" class="topicref" data-id="operatorimplementation" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action operatorimplementation-d41691e5903-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/operatorimplementation.html" id="operatorimplementation-d41691e5903-link">Operator implementation</a><div class="wh-tooltip"><p class="shortdesc">You use skeleton template files that are generated by the <span class="keyword cmdname">spl-make-operator</span> script as the basis for operator implementations.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="cplustypes-d41691e5917" class="topicref" data-id="cplustypes" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/cplustypes.html" id="cplustypes-d41691e5917-link">C++ types</a><div class="wh-tooltip"><p class="shortdesc">C++ types in SPL are typically implemented based on the  C++ standard library or other well established libraries.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="implementingoperators-d41691e5928" class="topicref" data-id="implementingoperators" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/implementingoperators.html" id="implementingoperators-d41691e5928-link">Implementing operators</a><div class="wh-tooltip"><p class="shortdesc">An operator is implemented as a C++ class that extends from the SPL runtime class <code class="ph codeph">SPL::Operator</code>.</p></div></div></div></li><li role="treeitem"><div data-tocid="implementinggenericoperators-d41691e5942" class="topicref" data-id="implementinggenericoperators" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/implementinggenericoperators.html" id="implementinggenericoperators-d41691e5942-link">Implementing generic operators</a><div class="wh-tooltip"><p class="shortdesc">Generic operators are implemented through code generation. </p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="advancedoperatorimplementationtopics-d41691e5953" class="topicref" data-id="advancedoperatorimplementationtopics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action advancedoperatorimplementationtopics-d41691e5953-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/advancedoperatorimplementationtopics.html" id="advancedoperatorimplementationtopics-d41691e5953-link">Advanced operator implementation</a><div class="wh-tooltip"><p class="shortdesc">Advanced operator implementation techniques provide additional runtime operator control.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="advancedcodegenerationtopics-d41691e6124" class="topicref" data-id="advancedcodegenerationtopics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action advancedcodegenerationtopics-d41691e6124-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/advancedcodegenerationtopics.html" id="advancedcodegenerationtopics-d41691e6124-link">Advanced code generation</a><div class="wh-tooltip"><p class="shortdesc">When you create generic operators, you can use advanced code generation techniques for more operator customization and control.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="javaprimitiveoperators-d41691e6281" class="topicref" data-id="javaprimitiveoperators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action javaprimitiveoperators-d41691e6281-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/javaprimitiveoperators.html" id="javaprimitiveoperators-d41691e6281-link">Developing Java™ primitive operators</a><div class="wh-tooltip"><p class="shortdesc">To create a Java™ primitive operator inside an SPL toolkit, you must provide an operator model. The process is similar to how you provide operator models for C++ primitive operators.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev_python_prim_oper-d41691e6594" class="topicref" data-id="dev_python_prim_oper" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev_python_prim_oper-d41691e6594-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-python-prim-oper.html" id="dev_python_prim_oper-d41691e6594-link">Developing Python primitive operators</a><div class="wh-tooltip"><p class="shortdesc">To create a Python primitive operator inside an SPL toolkit, you must provide an         operator model. The process is similar to how you provide operator models for C++ primitive         operators.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="creatingcpluslibraries-d41691e6715" class="topicref" data-id="creatingcpluslibraries" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingcpluslibraries.html" id="creatingcpluslibraries-d41691e6715-link">Creating C++ libraries for operators and native functions</a><div class="wh-tooltip"><p class="shortdesc">To enable operators and native functions, you must compile with the appropriate include file paths and options and link any shared libraries against the correct runtime libraries. </p></div></div></div></li><li role="treeitem"><div data-tocid="fusingmultiplejavaoperators-d41691e6726" class="topicref" data-id="fusingmultiplejavaoperators" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/fusingjavaoperators.html" id="fusingmultiplejavaoperators-d41691e6726-link">Fusing multiple Java™ operators into a single PE</a><div class="wh-tooltip"><p class="shortdesc">If multiple Java™ primitive operators and <span class="keyword apiname">JavaOp</span> operator invocations have compatible <span class="keyword parmname">vmArg</span> parameter lists, you can fuse them together into a single processing element (PE) or run them in stand-alone mode.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="best_practices_for_custom_operators-d41691e6749" class="topicref" data-id="best_practices_for_custom_operators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action best_practices_for_custom_operators-d41691e6749-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/best_practices_for_custom_operators.html" id="best_practices_for_custom_operators-d41691e6749-link">Best practices</a><div class="wh-tooltip"><p class="shortdesc">Use these tips to write operators that perform effectively in their application, and         in other applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="perfrecoforprimitiveoperatorimplementors-d41691e6978" class="topicref" data-id="perfrecoforprimitiveoperatorimplementors" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action perfrecoforprimitiveoperatorimplementors-d41691e6978-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/perf_rec_primitive_operatorimplementors.html" id="perfrecoforprimitiveoperatorimplementors-d41691e6978-link">Performance recommendations</a><div class="wh-tooltip"><p class="shortdesc">These tips help you to improve performance of your primitive operators in C++.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="creating_toolkits-d41691e7044" class="topicref" data-id="creating_toolkits" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creating_toolkits-d41691e7044-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creating_toolkits.html" id="creating_toolkits-d41691e7044-link">Developing custom toolkits</a><div class="wh-tooltip"><p class="shortdesc">Bundle and reuse custom functions and operators across several <span class="keyword">stream applications</span> by creating custom toolkits.</p></div></div></div></li><li role="treeitem"><div data-tocid="enabling-streams-application-service-d41691e7457" class="topicref" data-id="enabling-streams-application-service" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/enabling-streams-data-exchange.html" id="enabling-streams-application-service-d41691e7457-link">Enabling Streams data exchange</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides a data exchange REST API for inserting and retrieving tuples within a job to             easily integrate with other data services and external applications. Stream applications             can enable the data exchange feature by using one or more Endpoint             operators.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldebugger-container-d41691e7472" class="topicref" data-id="spldebugger-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldebugger-container-d41691e7472-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/spldebugger-container.html" id="spldebugger-container-d41691e7472-link">Debugging <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Debug stream applications using the interactive, command line-based <span class="keyword">Streams Debugger</span> (<code class="ph codeph">sdb</code>).</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic topic" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Implementing operators</h1>
+
+<div class="- topic/body body"><p class="- topic/shortdesc shortdesc">An operator is implemented as a C++ class that extends
+from the SPL runtime class <code class="+ topic/ph pr-d/codeph ph codeph">SPL::Operator</code>.</p>
+<div class="- topic/p p">The important member functions that are commonly used for implementing
+the operator logic include the following functions:<ul class="- topic/ul ul">
+<li class="- topic/li li">Constructor and destructor</li>
+<li class="- topic/li li">Port readiness notification: <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code></li>
+<li class="- topic/li li">Tuple processing: <code class="+ topic/ph pr-d/codeph ph codeph">process(Tuple)</code></li>
+<li class="- topic/li li">Punctuation processing: <code class="+ topic/ph pr-d/codeph ph codeph">process(Punctuation)</code></li>
+<li class="- topic/li li">Termination notification: <code class="+ topic/ph pr-d/codeph ph codeph">prepareToShutdown</code></li>
+</ul><a class="- topic/xref xref" href="implementingoperators.html#implementingoperators__fig_orderofinvocation">Figure 1</a> shows
+the order of invocation of the member functions:<figure class="- topic/fig fig fignone" id="implementingoperators__fig_orderofinvocation" data-ofbid="implementingoperators__fig_orderofinvocation"><figcaption data-caption-side="top" class="- topic/title title figcapcenter"><span class="figtitleprefix fig--title-label">Figure<span class="fig--title-label-number"> 1</span><span class="fig--title-label-punctuation">. </span></span><span class="fig--title">Order of invocation</span></figcaption>
+<br/><div class="imagecenter"><img class="- topic/image image imagecenter" src="../images/invocation.jpg" alt="This figure is described in the surrounding text."/></div><br/>
+</figure></div>
+<p class="- topic/p p">An operator instance starts its runtime lifecycle with a call to
+its constructor. The operator cannot receive or send tuples and punctuation
+until its ports are ready. When the operator ports are ready, the
+operator starts receiving calls to its tuple and punctuation processing
+functions and can submit tuples accordingly. The <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code> function
+is called as a notification to the operator that its ports are ready
+to receive and submit tuples. The operator's tuple and punctuation
+processing functions can be invoked before the <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code> notification
+is received. If a tuple submission is to be made outside the context
+of a tuple or punctuation processing function, then the <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code> notification
+must be received first. When the processing element (PE) that hosts
+the operator is being shut down, the operator receives a call to its <code class="+ topic/ph pr-d/codeph ph codeph">prepareToShutdown</code> function,
+which can take place while tuple and punctuation processing functions
+are active. Eventually, the destructor is called to free any resources
+that are allocated by the operator.</p>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Guidelines for Submitting and Processing Tuples and
+Punctuation</h2><ul class="- topic/ul ul">
+<li class="- topic/li li">All operators are constructed before any tuple/punctuation can
+be received.</li>
+<li class="- topic/li li">You cannot submit tuples or punctuation from a constructor because
+it causes a C++ exception.</li>
+<li class="- topic/li li">You can start submitting tuples and punctuation when the <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code> function
+is called.</li>
+<li class="- topic/li li">You might receive tuples and punctuation before the <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code> function
+is called.</li>
+<li class="- topic/li li">After a final punctuation is received on an input port, no more
+tuples or punctuation will be received from that input port</li>
+<li class="- topic/li li">After a final punctuation is submitted on an output port, all
+subsequent tuples and punctuation that are submitted to that port
+will be silently discarded.</li>
+</ul></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Processing Input Tuples</h2><div class="- topic/p p">There
+are three process functions an operator can choose to implement to
+process tuples and punctuation<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">void process(Tuple const &amp; tuple, uint32_t port)</code> is
+the tuple processing function for input ports that are non-mutating.
+The <span class="+ topic/keyword pr-d/parmname keyword parmname">tuple</span> parameter represents the tuple that
+is received on the input port at index <code class="+ topic/ph pr-d/codeph ph codeph">port</code>. Port
+indexing is zero-based.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">void process(Tuple &amp; tuple, uint32_t port)</code> is
+the tuple processing function for input ports that are mutating.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">void process(Punctuation const &amp; punct, uint32_t port)</code> is
+the punctuation processing function for all input ports. The <code class="+ topic/ph pr-d/codeph ph codeph">punct</code> parameter
+represents the punctuation that is received on the input port at index <code class="+ topic/ph pr-d/codeph ph codeph">port</code>.</li>
+</ul></div><p class="- topic/p p">An input port is either mutating or non-mutating, as specified
+by the operator model. An input port that is declared as <dfn class="- topic/term term">mutating</dfn> in
+the operator model indicates that the operator developer must implement
+the <code class="+ topic/ph pr-d/codeph ph codeph">process</code> function that takes a non-const tuple
+reference for adding the logic for that port. It is allowed to modify
+the tuple as part of the implementation. An input port that is declared
+as <dfn class="- topic/term term">non-mutating</dfn> in the operator model indicates that
+the operator developer must implement the <code class="+ topic/ph pr-d/codeph ph codeph">process</code> function
+that takes a const tuple reference for adding the logic for that port.
+It is not allowed to modify the tuple as part of the implementation.
+It is common that an operator implements only one of the two tuple
+processing functions. However, in the general case, an operator can
+have both mutating and non-mutating input ports, which would require
+implementing both functions.</p><p class="- topic/p p">A tuple that is passed in as a
+parameter to a <code class="+ topic/ph pr-d/codeph ph codeph">process</code> function can be used during
+the lifetime of the <code class="+ topic/ph pr-d/codeph ph codeph">process</code> function call. Do not
+store a pointer or a reference to the tuple for use in a context other
+than the current process call. A tuple received from the process call
+can be safely submitted when the submit call is performed in the context
+of the process call. If the tuple is to be stored as part of the operator
+state and made available across process calls, then make a copy.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Stateful Operators and Concurrency</h2><div class="- topic/p p">The process functions of different input ports can be called concurrently with each other by the
+runtime system due to multi-threaded execution. Furthermore, the process function for an input port
+can be called concurrently for multiple streams if the port has fan-in (more than one stream that is
+connected to it). In general, if an operator maintains state that is accessed by the process
+functions associated with its input ports, then this state must be protected against concurrent
+accesses to ensure execution correctness. Having windows also counts as having state. SPL provides
+three utility classes to help create critical sections, namely: <code class="+ topic/ph pr-d/codeph ph codeph">Mutex</code>,
+<code class="+ topic/ph pr-d/codeph ph codeph">AutoMutex</code>, and <code class="+ topic/ph pr-d/codeph ph codeph">AutoPortMutex</code>. <code class="+ topic/ph pr-d/codeph ph codeph">Mutex</code> is a class
+that wraps the functionality of a <code class="+ topic/ph pr-d/codeph ph codeph">pthread</code> mutex. <code class="+ topic/ph pr-d/codeph ph codeph">AutoMutex</code> is a
+class that creates a critical section from a <code class="+ topic/ph pr-d/codeph ph codeph">Mutex</code> object. It locks the mutex when
+constructed and unlocks it when it goes out of scope (that is, when the object is destructed).
+<code class="+ topic/ph pr-d/codeph ph codeph">AutoPortMutex</code> is similar to <code class="+ topic/ph pr-d/codeph ph codeph">AutoMutex</code>, but it reduces to an
+untaken branch when the SPL run time knows that there cannot be concurrent calls to the process
+functions of the operator. Whether the input process functions of an operator are called
+concurrently or not depends on the operator fusion configuration that is employed, the properties of
+the upstream operators, the transport options, and the existence of threaded ports.
+As a result, at operator development time, it is not possible to tell
+whether the operator's input process functions are called concurrently or not. It is important that
+the developer always protects the state against concurrent accesses. The SPL run time makes sure
+that the locking and unlocking cost is not paid when no concurrency is involved. For this
+optimization to take place seamlessly, use the <code class="+ topic/ph pr-d/codeph ph codeph">AutoPortMutex</code> class. An example use
+is as follows:</div></section>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>class MY_OPERATOR ... {
+  ...  
+private:
+  Mutex mutex_;
+};
+
+void MY_OPERATOR::process(Tuple const &amp; tuple, uint32_t port) {
+  ...
+  { // mutex_.lock() is called upon entry if needed
+    AutoPortMutex am(mutex_, *this);
+    ... // access state
+  } // mutex_.unlock() is called upon exit if needed
+  ...
+}
+</code></pre></div>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Source Operators and Operator Threads</h2><p class="- topic/p p"> So
+far, implementation of operator logic that is triggered by calls to
+process functions associated with the input ports is described. However, <dfn class="- topic/term term">source</dfn> operators
+do not have input ports. Furthermore, some operators might prefer
+to perform work that is not triggered by incoming tuples. For these
+purposes, SPL's operator API provides an additional <code class="+ topic/ph pr-d/codeph ph codeph">process</code> function
+that is not associated with an input port. It is referred to as the <dfn class="- topic/term term">non-input</dfn> process
+function.</p><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">void process(uint32_t idx)</code> is a process
+function that runs in a thread of its own. The <code class="+ topic/ph pr-d/codeph ph codeph">idx</code> parameter
+is the thread index, local to the operator.</p><p class="- topic/p p">As implied by the
+index argument of the non-input process function, there can be more
+than one thread that runs it. These threads are created by calls to
+the <code class="+ topic/ph pr-d/codeph ph codeph">uint32_t createThreads(uint32_t num)</code> function.
+This function creates <code class="+ topic/ph pr-d/codeph ph codeph">num</code> number of threads. These
+threads are referred to as <dfn class="- topic/term term">operator threads</dfn>. An operator
+thread calls the non-input process function once, passing it its local
+thread index.</p><p class="- topic/p p">With this functionality, a source operator might
+be implemented as follows:</p></section>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>void MY_OPERATOR::allPortsReady() {
+  createThreads(1);
+}
+
+void MY_OPERATOR::process(uint32_t) {
+  while(!getPE().getShutdownRequested()) {
+    ...
+  }
+}
+</code></pre></div>
+<p class="- topic/p p">In the example, the <code class="+ topic/ph pr-d/codeph ph codeph">createThreads</code> function
+is called from within the <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code> function.
+While it is not strictly necessary, it is good practice. If the non-input
+process function contains code that submits tuples (which is very
+common), delaying the creation of the thread ensures that no tuples
+are submitted before the connections to the operators are set up.
+ It is not valid to submit tuples before <code class="+ topic/ph pr-d/codeph ph codeph">allPortsReady</code> is
+called. Another important point to note is the use of <code class="+ topic/ph pr-d/codeph ph codeph">getPE().getShutdownRequested()</code> to
+check for the shutdown status of the processing element that manages
+this operator. If the non-input process function does not return upon
+shutdown of the PE, the operator and the PE are terminated forcefully
+when necessary, which is undesirable as the shutdown processing specified
+ by the operators is not run. See <a class="- topic/xref xref" href="blockingshutdownhandling.html" title="SPL provides functions to block and shut down operator processing elements safely.">Blocking and shutdown handling</a> for
+further details.</p>
+<p class="- topic/p p">Additional operator threads can be used to create multi-threaded
+operators. If the operator logic involves submitting tuples from more
+than one thread, care must be taken in specifying the threading behavior
+of the operator in the operator model.</p>
+
+<p class="- topic/p p">The SPL language run time considers the execution of a source operator
+complete when all threads of the operator complete their execution.
+Since source operators do not have tuple or punctuation processing
+functions, the completion of the operator threads marks the end of
+the execution of the operator. The language run time ensures that
+final punctuation is sent on all output ports upon completion of the
+execution of the source operator. For more information about final
+punctuation, see <a class="- topic/xref xref" href="punctuationprocessing.html" title="Punctuation markers in SPL create boundaries. Window punctuation create boundaries within a stream that can be used for creating user-defined windows. Final punctuation is used to mark the end of streams.">Punctuation processing</a> ). The runtime keeps track
+only of threads that are created with the SPL runtime APIs. If the
+operator relies on other threads, such as those created by third-party
+libraries, then an SPL operator thread must be created to wait on
+the external threads. Otherwise, the run time prematurely sends final
+punctuation on the output ports.</p>
+<p class="- topic/p p">Similarly, non-source operators are considered complete when all
+operator threads are terminated and final punctuation is received
+on all input ports and is processed in full. In the general case,
+final punctuation is forwarded from the input ports to the output
+ports, automatically by the SPL language run time. However, if the
+operator model turns off auto-forwarding of final punctuation, then
+the operator developer is responsible for submitting final punctuation.
+The run time does not submit final punctuation on the output ports
+of the completed non-source operator.</p>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Submitting Tuples and Punctuation</h2><div class="- topic/p p">Tuples
+and punctuation can be submitted to output ports of the operator through
+the submit functions. There are two submit functions for tuples:<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">void submit(Tuple const &amp; tuple, uint32_t port)</code>:
+The <code class="+ topic/ph pr-d/codeph ph codeph">tuple</code> parameter   represents the tuple to be
+submitted on the output port at index <code class="+ topic/ph pr-d/codeph ph codeph">port</code>, where
+the indexing is zero-based.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">void submit(Tuple &amp; tuple, uint32_t port)</code> is
+similar to the first function, but the tuple passed in can be modified
+as a result of the submit call.</li>
+</ul> </div><p class="- topic/p p">For output ports that are non-mutating, both submit functions
+are valid and are equivalent in functionality. For mutating   ports,
+only the non-const version is valid. For both versions, passing a
+tuple whose concrete type is not the same as the tuple type of the
+port that is specified results in a runtime error.</p><p class="- topic/p p">An output
+port that is declared as mutating in the operator model indicates
+that the operator developer must use the <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> function
+that takes a non-const tuple reference for submitting tuples on that
+port. Expect that the submit call modifies the tuple as part of its
+processing. An output port that is declared as non-mutating in the
+operator model indicates that the operator developer is guaranteed
+that the submit call does not modify the tuple as part of its processing.
+Thus it can use any one of the submit functions. The <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> function
+that is used for a submit call is defined by the function resolution
+rules of the C++ language. Here are the different cases:</p><div class="table-container"><table class="- topic/table table" id="implementingoperators__tbl_submitcall_val" data-ofbid="implementingoperators__tbl_submitcall_val" data-cols="5"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Submit call validity</span></caption><colgroup><col style="width:13.41991341991342%"/><col style="width:25.108225108225106%"/><col style="width:22.07792207792208%"/><col style="width:27.705627705627705%"/><col style="width:11.688311688311687%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="implementingoperators__tbl_submitcall_val__entry__1">Port Mutability</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="implementingoperators__tbl_submitcall_val__entry__2">Tuple</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="implementingoperators__tbl_submitcall_val__entry__3">Call site</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="implementingoperators__tbl_submitcall_val__entry__4">C++ resolution</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="implementingoperators__tbl_submitcall_val__entry__5">Validity</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__1">Mutating</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__2">Non-const, for example: <code class="+ topic/ph pr-d/codeph ph codeph">Tuple &amp;
+t =...  </code>      </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">submit(t, 0)</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__4">Non-const <code class="+ topic/ph pr-d/codeph ph codeph">submit</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__5">valid</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__1">Mutating</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__2">Const, for example: <code class="+ topic/ph pr-d/codeph ph codeph">Tuple const &amp;
+t =...</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">submit(t, 0)</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__4">Const <code class="+ topic/ph pr-d/codeph ph codeph">submit</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__5">invalid</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__1">Non-mutating</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__2">Non-const, for example: <code class="+ topic/ph pr-d/codeph ph codeph">Tuple &amp;
+t =...  </code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">submit(t, 0)</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__4">Non-const <code class="+ topic/ph pr-d/codeph ph codeph">submit</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__5">valid</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__1">Non-mutating</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__2">Const, for example: <code class="+ topic/ph pr-d/codeph ph codeph">Tuple const &amp;
+t =...</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__3"><code class="+ topic/ph pr-d/codeph ph codeph">submit(t, 0)</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__4">Const <code class="+ topic/ph pr-d/codeph ph codeph">submit</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="implementingoperators__tbl_submitcall_val__entry__5">valid</td>
+</tr>
+</tbody></table></div><p class="- topic/p p">As seen from <a class="- topic/xref xref" href="implementingoperators.html#implementingoperators__tbl_submitcall_val">Table 1</a>,
+you need to pay close attention when you submit a const tuple to a
+mutating port. It is invalid and the SPL language run time throws
+an exception, resulting in a runtime error. The SPL compiler forces
+a C++ compilation error when the operator has no non-mutating output
+ports, by shadowing the non-const submit function in the generated
+operator code. This action results in an unresolved submit call, rather
+than a runtime error later on.</p><p class="- topic/p p">For punctuation, there is a single <code class="+ topic/ph pr-d/codeph ph codeph">submit</code> function.</p><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">void
+submit(Punctuation const &amp; punct, uint32_t port)</code>: The <code class="+ topic/ph pr-d/codeph ph codeph">punct</code> parameter
+represents the punctuation to be submitted on the output port at index <code class="+ topic/ph pr-d/codeph ph codeph">port</code>.</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Port Mutability</h2><p class="- topic/p p"> The tuple mutation settings
+for input and output ports are defined in the operator model. To summarize,
+for input ports, setting the <code class="+ topic/ph pr-d/codeph ph codeph">tupleMutationAllowed</code> property
+to <code class="+ topic/ph pr-d/codeph ph codeph">true</code> means declaring your intent to modify the
+incoming tuples. For output ports, setting the <code class="+ topic/ph pr-d/codeph ph codeph">tupleMutationAllowed</code> property
+to <code class="+ topic/ph pr-d/codeph ph codeph">true</code> means declaring your permission to let others
+modify the submitted tuples. Mutability of ports do <em class="+ topic/ph hi-d/i ph i">not</em> restrict
+ways in which operators can be connected to each other, as the SPL
+language run time handles any incompatibilities by creating copies
+as needed. The port mutability settings do have an impact on performance
+in the presence of operator fusion. For instance, a mutating output
+port can pass a tuple to a mutating input port under fusion, without
+requiring any copies. Alternatively, in a fan-out configuration, a
+tuple that is submitted on an output port can be passed in to multiple
+non-mutating input ports, without creating any copies. The following
+figure provides a general guideline for setting port mutability.</p><figure class="- topic/fig fig fignone"><figcaption data-caption-side="top" class="- topic/title title figcap"><span class="figtitleprefix fig--title-label">Figure<span class="fig--title-label-number"> 2</span><span class="fig--title-label-punctuation">. </span></span><span class="fig--title">Setting port mutability</span></figcaption>
+
+<br/><img class="- topic/image image" src="../images/mutability_dgm1.jpg" alt="input port mutability"/><br/>
+<br/><img class="- topic/image image" src="../images/mutability_dgm2.jpg" alt="output port mutability"/><br/>
+</figure></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Accessing   Parameters</h2><p class="- topic/p p"> For non-generic
+operators (operators using the pragma that was introduced earlier),
+parameters can be accessed in a type-safe manner using auto-generated
+convenience functions, created when the <code class="+ topic/ph pr-d/codeph ph codeph">SPL_NON_GENERIC_OPERATOR_HEADER_PROLOGUE</code> pragma
+is expanded during operator generation. These member functions are
+named as <code class="+ topic/ph pr-d/codeph ph codeph">getParameter_&lt;param-name&gt;</code> and return
+a value that has the same type as the parameter's first expression
+value that is specified in the application's SPL code. In other words:</p><p class="- topic/p p"><code class="+ topic/ph pr-d/codeph ph codeph">&lt;param-type&gt;
+getParameter_&lt;param-name&gt;() const;</code></p><p class="- topic/p p">This
+helper function is generated only if the parameter's expressions are
+all attribute-free expressions (that is, does not involve stream tuples
+and attributes whose values are only known at run time). For information
+about accessing parameter values in a more generic way from within
+generic operators, see <a class="- topic/xref xref" href="implementinggenericoperators.html" title="Generic operators are implemented through code generation.">Implementing generic operators</a>.
+As an example of  parameter access for non-generic operators, consider
+the following SPL segment:</p></section>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>stream&lt;...&gt; MyStream = MyOperator(...) {
+  param size : 10;
+}
+</code></pre></div>
+<p class="- topic/p p">The value for the parameter <code class="+ topic/ph pr-d/codeph ph codeph">size</code> can be retrieved
+as follows:</p>
+<div class="- topic/example example"><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>int32 size = getParameter_size();
+</code></pre></div>
+<div class="- topic/p p">Three additional APIs are available to non-generic
+(and generic) operators for accessing parameter values in a more reflective
+manner. <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>// Return the set of all parameter names
+const std::tr1::unordered_set&lt;std::string&gt;&amp; getParameterNames() const
+
+class ParameterValue {
+  public:
+    virtual bool isValue() = 0;
+    virtual bool isExpression() = 0;
+    virtual ConstValueHandle&amp; getValue() = 0;
+};</code></pre></div>
+<p class="- topic/p p">For each expression for a parameter, there is a corresponding <code class="+ topic/ph pr-d/codeph ph codeph">ParameterValue</code> associated
+with it. If the <code class="+ topic/ph pr-d/codeph ph codeph">expressionMode</code> for the parameter
+in the operator model is <code class="+ topic/ph pr-d/codeph ph codeph">Expression</code> or <code class="+ topic/ph pr-d/codeph ph codeph">Attribute</code>,
+then <code class="+ topic/ph pr-d/codeph ph codeph">isExpression()</code> returns <code class="+ topic/ph pr-d/codeph ph codeph">true</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">isValue()</code> returns <code class="+ topic/ph pr-d/codeph ph codeph">false</code>. For
+all other <code class="+ topic/ph pr-d/codeph ph codeph">expressionMode</code> values, <code class="+ topic/ph pr-d/codeph ph codeph">isValue()</code> returns <code class="+ topic/ph pr-d/codeph ph codeph">true</code> and <code class="+ topic/ph pr-d/codeph ph codeph">isExpression()</code> returns <code class="+ topic/ph pr-d/codeph ph codeph">false</code>.
+If <code class="+ topic/ph pr-d/codeph ph codeph">isValue()</code> is <code class="+ topic/ph pr-d/codeph ph codeph">true</code>, then <code class="+ topic/ph pr-d/codeph ph codeph">getValue()</code> can
+be called to return the value of the expression.</p>
+<p class="- topic/p p">If <code class="+ topic/ph pr-d/codeph ph codeph">allowAny</code> is <code class="+ topic/ph pr-d/codeph ph codeph">true</code> for
+the parameters in the operator model, and it is a parameter that is
+not explicitly listed, then the compiler examines each expression.
+ If a stream attribute is present, the <code class="+ topic/ph pr-d/codeph ph codeph">ParameterValue</code> for
+that expression has <code class="+ topic/ph pr-d/codeph ph codeph">isExpression() == true</code>. If no
+stream attribute is referenced, <code class="+ topic/ph pr-d/codeph ph codeph">isValue()</code> returns <code class="+ topic/ph pr-d/codeph ph codeph">true</code>.</p>
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>typedef std::vector&lt;ParameterValue*&gt; ParameterValueListType;
+typedef std::tr1::unordered_map&lt;std::string, ParameterValueListType&gt; ParameterMapType;
+	
+// Return the vector of parameter values for a given parameter name
+const  ParameterValueListType&amp; getParameterValues(std::string const &amp; param) const
+
+// Return the map of parameter names to parameter values
+virtual ParameterMapType&amp; getParameters()</code></pre>
+<p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">getParameterNames</code> function can
+be used to check whether a parameter is present. This check enables
+working with optional parameters, which are not possible with the
+non-reflective parameter access APIs. The <code class="+ topic/ph pr-d/codeph ph codeph">getParameterValues</code> function
+is used to access the values of a parameter. The parameter name is
+passed as a <code class="+ topic/ph pr-d/codeph ph codeph">string</code> argument. Multiple parameter expression
+values are available, and the type and value of each <code class="+ topic/ph pr-d/codeph ph codeph">ParameterValue</code> with <code class="+ topic/ph pr-d/codeph ph codeph">isValue()
+== true</code> can be extracted with <code class="+ topic/ph pr-d/codeph ph codeph">ConstValueHandle</code> member
+functions. If <code class="+ topic/ph pr-d/codeph ph codeph">param</code> is not a valid parameter name
+for this operator instance, <code class="+ topic/ph pr-d/codeph ph codeph">SPLRuntimeInvalidArgumentException</code> is
+thrown.</p>
+<div class="- topic/p p">An example use is as follows:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>int32 size = 0; // the default
+if (getParameterNames().count("size"))  {
+  Operator::ParameterValueListType&amp; sizeValues = getParameterValues("size");
+	assert (sizeValues[0]-&gt;isValue());
+  size = sizeValues[0]-&gt;getValue();  // read the first expression value
+}</code></pre></div>
+<p class="- topic/p p">The convenience functions <code class="+ topic/ph pr-d/codeph ph codeph">hasParameter</code> and <code class="+ topic/ph pr-d/codeph ph codeph">getParameter</code> are
+deprecated, replace them with these newer routines for accessing parameters.</p>
+<p class="- topic/p p">For detailed information about <code class="+ topic/ph pr-d/codeph ph codeph">ConstValueHandle</code> and
+the reflective type system, see <a class="- topic/xref xref" href="usingreflectivetypesystem.html" title="The types ValueHandle and Meta:BaseType provide support for reflection. The former type is a handle to a value of an SPL type. The latter type is a meta-type that represents an SPL type.">Using the reﬂective type system</a>.</p>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relref" xml:lang="en-us" lang="en-us"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ref.doc/doc/restartable.html" title="Process tuples arriving on each named input port in a separate thread, even if this operator is fused. That means that a fused upstream operator, instead of directly calling this port, merely deposits the tuple in a queue associated with the port. The queue keeps tuples in arrival order. A dedicated thread for this port then picks up the tuple from the queue when it is ready.">threadedPort</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ref.doc/doc/operatormodel.html" title="An operator model is an XML document that describes the basic properties of a primitive operator. Primitive operator developers are tasked with providing operator models that describe the basic syntactic and semantic properties of the new operators that they want to add to the SPL language. Here, we will list the major properties that can be specified using the operator model.">C++ Operator Model</a></li></ul></div><div class="- topic/linklist linklist relinfo" xml:lang="en-us" lang="en-us"><strong>Related information</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.dev.doc/doc/multithreadingandoperatorfusion.html" title="SPL operators can potentially run in a multi-threaded context, where the process functions of the operators are invoked concurrently. SPL provides a set of utility classes that handle threads, locks, and conditional variables to protect against concurrent access.">Multi-threading and operator fusion considerations</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

@@ -1,0 +1,1371 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="The CSVParse operator parses an input line of comma-separated values (CSV) that is received in an rstring type input tuple attribute, splits the line into fields (also called items), and assigns the ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_operator"/><title>Operator CSVParse</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_operator-d41691e70010"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.text$CSVParse.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/op$com.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_operator" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li><div class="topicref" data-id="spldoc_toolkit"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li><div class="topicref" data-id="spldoc_namespace"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.parser.text.html">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.parser.text</span></a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_operator"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.text$CSVParse.html">Operator <span class="ph tt" style="font-family: monospace">CSVParse</span></a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_page-d41691e68327" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$1.html" id="spldoc_page-d41691e68327-link">Release notes</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e68335" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$2.html" id="spldoc_page-d41691e68335-link">Configuring the TEDA toolkit</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_page-d41691e68343" class="topicref" data-id="spldoc_page" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_page-d41691e68343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$3.html" id="spldoc_page-d41691e68343-link">Application framework</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_page-d41691e68479" class="topicref" data-id="spldoc_page" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_page-d41691e68479-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$20.html" id="spldoc_page-d41691e68479-link">Developing applications</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_page-d41691e69344" class="topicref" data-id="spldoc_page" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_page-d41691e69344-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$126.html" id="spldoc_page-d41691e69344-link">Operating applications</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_page-d41691e69448" class="topicref" data-id="spldoc_page" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_page-d41691e69448-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$139.html" id="spldoc_page-d41691e69448-link">Troubleshooting</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e69683" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$168.html" id="spldoc_page-d41691e69683-link">Parameter reference</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e69691" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda$169.html" id="spldoc_page-d41691e69691-link">Glossary</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e69699" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ix$Namespace.html" id="spldoc_index-d41691e69699-link">Namespaces: com.teracloud.streams.teda 4.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e69707" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ix$Operator.html" id="spldoc_index-d41691e69707-link">Operators: com.teracloud.streams.teda 4.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e69716" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ix$Function.html" id="spldoc_index-d41691e69716-link">Functions: com.teracloud.streams.teda 4.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e69724" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ix$Type.html" id="spldoc_index-d41691e69724-link">Types: com.teracloud.streams.teda 4.0.1</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e69732" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e69732-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.adapter.html" id="spldoc_namespace-d41691e69732-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.adapter</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e69752" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e69752-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.encoder.binary.html" id="spldoc_namespace-d41691e69752-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.encoder.binary</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e69790" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e69790-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.file.html" id="spldoc_namespace-d41691e69790-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.file</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e69830" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e69830-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.file.path.html" id="spldoc_namespace-d41691e69830-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.file.path</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e69850" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e69850-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.parser.binary.html" id="spldoc_namespace-d41691e69850-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.parser.binary</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_namespace-d41691e70000" class="topicref" data-id="spldoc_namespace" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_namespace-d41691e70000-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.parser.text.html" id="spldoc_namespace-d41691e70000-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.parser.text</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="spldoc_operator-d41691e70010" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.text$CSVParse.html" id="spldoc_operator-d41691e70010-link">Operator <span class="ph tt" style="font-family: monospace">CSVParse</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e70020" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e70020-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/ns$com.teracloud.streams.teda.utility.html" id="spldoc_namespace-d41691e70020-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda.utility</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Operator <span class="+ topic/ph hi-d/tt ph tt">CSVParse</span></h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section splprimop">
+  <img class="- topic/image image" src="../../image/tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.text$CSVParse.svg" width="872" height="128" alt="Primitive operator image not displayed. Problem loading file: ../../image/tk$com.teracloud.streams.teda/op$com.teracloud.streams.teda.parser.text$CSVParse.svg"/>
+</section>
+<section class="- topic/section section">
+
+<p class="- topic/p p">The CSVParse operator parses an input line of <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/Comma-separated_values" target="_blank" rel="external noopener">comma-separated values (CSV)</a> that is received in an <span class="+ topic/ph hi-d/tt ph tt">rstring</span> type input tuple attribute, splits the line into fields (also called items), and assigns the field values to attributes in the output port schema. This functionality is similar to that of the the spl.utility::Parse operator in CSV mode, but it supports greater flexibility in assigning CSV fields to output attributes. CSV input fields must be mapped to output tuple attributes in a separate XML document, and the <strong class="+ topic/ph hi-d/b ph b">mappingDocument</strong> parameter must specify the location of this file. Input lines that cannot be parsed or converted successfully are sent to the error port (output port 2).
+</p>
+<p class="- topic/p p">The operator supports the following features:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> Output attributes can be assigned from CSV fields via indices
+<p class="- topic/p p">  For example if you have 5 strings in the input line, you can select   strings with indices 0, 2, and 4 to be assigned to 3 named attributes   in the output port. This assignment is called a mapping.  
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> Multiple mappings in the XML document
+</p>
+<p class="- topic/p p">  You can specify multiple mappings in the XML document. To determine which   mapping should be applied to a certain CSV line during runtime, the   mappings can have filter conditions. A filter consists of an index (the   column number of a CSV field) and a fixed string. The actual field value   of each input line in the index is compared to the configured fixed string   to determine whether the filter applies and the mapping can be used for   this line. If multiple filters match a given input line, the first mapping   that matches is applied.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> Data validation
+</p>
+<p class="- topic/p p">  For each mapping, specify the minimum and maximum number of CSV fields   expected in the input line. If during runtime a certain CSV input line   for the mapping contains fewer or greater fields than expected, the   tuple is forwarded to the error port.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> Conversion to SPL primitive types
+</p>
+<p class="- topic/p p">  For example, you can assign CSV field 3 to an <span class="+ topic/ph hi-d/tt ph tt">int8</span> type SPL output   attribute. If the conversion from string to <span class="+ topic/ph hi-d/tt ph tt">int8</span> fails during runtime,   the tuple is sent to the error port. In case the CSV field 3 is empty,   the SPL attribute can be assigned the default value. Custom output functions   are available to determine the presence of input fields, and the error reason   in case the conversion failed. 
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> Input record type unification with a common output port schema
+</p>
+<p class="- topic/p p">  For example, you receive two types of input lines, one with four CSV   fields and one with eight CSV fields. The first field is an ID that uniquely   identifies the line type. Your output stream contains the ID,   the second and fourth fields for the first line type and the fifth   and seventh fields for the second line type.
+</p>
+<p class="- topic/p p">  The output stream has the following type:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+tuple&lt;rstring id, rstring A, rstring B&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">  The incoming data has two line types. For example:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+TypeX,Hello,My,World
+TypeY,Second,Third,Fourth,Fifth,Sixth,Seventh,Eighth
+TypeX,MyNameIs,Peter,Smith
+TypeY,A,B,C,D,E,F,G
+</code></pre>
+
+</div>
+<p class="- topic/p p">  If you specify filters and mapping, the output data is:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+TypeX,Hello,World
+TypeY,Fifth,Seventh
+TypeX,MyNameIs,Smith
+TypeY,D,F
+</code></pre>
+
+</div></li>
+</ul>
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example 1: Basic use case</strong>
+</p>
+<p class="- topic/p p">Suppose you want to read a CSV file with records for different colors and their red-green-blue (RGB) values:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+COLOR,Red,255,0,0
+COLOR,Green,0,255,0
+</code></pre>
+
+</div>
+<p class="- topic/p p">The lines contain 5 fields: record type, color name, and the 3 RGB values. Suppose you are only interested in the RGB values and want to generate an output tuple for each record with the following schema:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+ColorTuple = tuple
+&lt;
+	uint8 R,
+	uint8 G,
+	uint8 B
+&gt;;
+</code></pre>
+
+</div>
+<p class="- topic/p p">To ignore the first two fields, use the following XML mapping document as specification for the CSVParse operator:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;mappings xmlns="http://www.ibm.com/software/data/infosphere/streams/csvparser"&gt;
+	&lt;mapping name="colors"&gt;
+		&lt;assign attribute="R" index="2"/&gt;
+		&lt;assign attribute="G" index="3"/&gt;
+		&lt;assign attribute="B" index="4"/&gt;
+	&lt;/mapping&gt;
+&lt;/mappings&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">The root element in the XML document is <span class="+ topic/ph hi-d/tt ph tt">mappings</span>. It can have an arbitrary number of <span class="+ topic/ph hi-d/tt ph tt">mapping</span> element children. Each <span class="+ topic/ph hi-d/tt ph tt">mapping</span> element must have a <span class="+ topic/ph hi-d/tt ph tt">name</span> attribute that uniquely identifies the mapping in the XML document. Within a mapping, you can use the <span class="+ topic/ph hi-d/tt ph tt">assign</span> element to specify the name of an SPL output attribute and the index of a CSV field. The value of this CSV field is then assigned to the SPL attribute.
+</p>
+<p class="- topic/p p">If an input line cannot be successfully converted to the output tuple, the input tuple is forwarded to the error port. The following line will be rejected because the value 1024 cannot be converted to the <span class="+ topic/ph hi-d/tt ph tt">uint8</span> type SPL attribute <span class="+ topic/ph hi-d/tt ph tt">B</span>:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+COLOR,Blue,0,0,1024
+</code></pre>
+
+</div>
+<p class="- topic/p p">If you want to ensure that only input records with colors generate output tuples, you can set up a filter for this mapping. The following example causes the operator to do a string comparison of the CSV field with index 0 against the string <span class="+ topic/ph hi-d/tt ph tt">COLOR</span>:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;mapping name="colors" filterIndex="0" filterValue="COLOR"&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">If the comparison fails, the mapping is not applied. So with this filter, an input line like the following example is dropped:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+SHAPE,Rectangle,0,0,100,100
+</code></pre>
+
+</div>
+<p class="- topic/p p">To ensure that each color input record contains enough fields to assign the R,G and B output tuple attributes, you can add <span class="+ topic/ph hi-d/tt ph tt">itemCount</span> XML attributes to the mapping, for example:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;mapping name="colors" itemCountMin="5"&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">If during runtime a color record contains less than 5 fields, the input tuple is sent to the error port. Similarly, you can specify a maximum number of allowed fields by using the <span class="+ topic/ph hi-d/tt ph tt">itemCountMax</span> XML attribute. To check for an exact number of fields, set <span class="+ topic/ph hi-d/tt ph tt">itemCountMin</span> and <span class="+ topic/ph hi-d/tt ph tt">itemCountMax</span> to the same value. If you don't validate the number of CSV fields in input records and an input line contains less fields than needed to assign the specified output tuple attributes, the remaining SPL attributes will get their default values.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example 2: Multiple mappings</strong>
+</p>
+<p class="- topic/p p">Suppose you want to read the color specifications from Example 1, but you also want to get tuples for the <span class="+ topic/ph hi-d/tt ph tt">SHAPE</span> records. The CSV input could look like the following example:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+COLOR,Red,255,0,0
+SHAPE,Rectangle,0,0,100,100	
+COLOR,Green,0,255,0
+SHAPE,Circle,0,0,100	
+</code></pre>
+
+</div>
+<p class="- topic/p p">Some lines contain <span class="+ topic/ph hi-d/tt ph tt">COLOR</span> records and have 5 fields. Other lines contain <span class="+ topic/ph hi-d/tt ph tt">SHAPE</span> records and have 4 or more fields. These input records could be mapped to the following unified SPL schema. Each input line generates one output tuple. For <span class="+ topic/ph hi-d/tt ph tt">COLOR</span> type lines, the attributes for the shape (name and coordinates) get their SPL default values. For <span class="+ topic/ph hi-d/tt ph tt">SHAPE</span> type lines, the color attributes get their defaults. The <span class="+ topic/ph hi-d/tt ph tt">recordType</span> attribute gets the string from CSV field 0 for all records.
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+ColorsAndShapes = tuple
+&lt;
+	rstring recordType,
+	uint8 R,
+	uint8 G,
+	uint8 B,
+	rstring shapeName,
+	float64 xCoordinate,
+	float64 yCoordinate
+&gt;;
+</code></pre>
+
+</div>
+<p class="- topic/p p">A mapping document for this setup could look like the following example:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;mappings xmlns="http://www.ibm.com/software/data/infosphere/streams/csvparser"&gt;
+	&lt;mapping name="colors" filterIndex="0" filterValue="COLOR" itemCountMin="5"&gt;
+		&lt;assign attribute="recordType" index="0"/&gt;
+		&lt;assign attribute="R" index="2"/&gt;
+		&lt;assign attribute="G" index="3"/&gt;
+		&lt;assign attribute="B" index="4"/&gt;
+	&lt;/mapping&gt;
+	&lt;mapping name="shapes" filterIndex="0" filterValue="SHAPE" itemCountMin="4"&gt;
+		&lt;assign attribute="recordType" index="0"/&gt;
+		&lt;assign attribute="shapeName" index="1"/&gt;
+		&lt;assign attribute="xCoordinate" index="2"/&gt;
+		&lt;assign attribute="yCoordinate" index="3"/&gt;
+	&lt;/mapping&gt;
+&lt;/mappings&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">The mapping document</strong>
+</p>
+<p class="- topic/p p">The XML mapping document specifies the mapping between CSV fields and output attributes. The operator validates the XML mapping document against the <span class="+ topic/ph hi-d/tt ph tt">etc/xsd/CSVParseMapping.xsd</span> <a class="- topic/xref xref" href="http://en.wikipedia.org/wiki/XML_Schema_%28W3C%29" target="_blank" rel="external noopener">XML schema definition (XSD)</a> file in the toolkit directory. This XSD file contains reference documentation for the XML mapping document, which is located, by default, in the SPL application directory. The root element in the XML document is <span class="+ topic/ph hi-d/tt ph tt">mappings</span>. It can have an arbitrary number of <span class="+ topic/ph hi-d/tt ph tt">mapping</span> element children. The <span class="+ topic/ph hi-d/tt ph tt">mappings</span> element can have one attribute named <span class="+ topic/ph hi-d/tt ph tt">useDefaults</span>. This attribute can also be applied to the <span class="+ topic/ph hi-d/tt ph tt">mapping</span> element. If set on the <span class="+ topic/ph hi-d/tt ph tt">mappings</span>  element, it is applied to all <span class="+ topic/ph hi-d/tt ph tt">mapping</span> elements. The attribute is described in the next section.
+</p>
+<p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">Mapping Element</em>
+</p>
+<p class="- topic/p p">A <em class="+ topic/ph hi-d/i ph i">mapping</em> specifies the assignment of CSV items from the input to SPL attributes in the output. A mapping should be defined for each CSV line format. Each mapping has a unique name and can define a filter that is matched against a CSV input line to determine if a mapping applies to that line. The content of the mapping can be an automatic or manual assignment specification. As shown in the example above, the <span class="+ topic/ph hi-d/tt ph tt">mapping</span> element can have 6 attributes:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> name
+<p class="- topic/p p">  A unique name for the mapping. The name is also used for the record   statistics custom output functions.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> filterIndex
+</p>
+<p class="- topic/p p">  The CSV field at this index that is used for comparison. If you do   not specify a value for this attribute and the <span class="+ topic/ph hi-d/tt ph tt">filterValue</span>   attribute is present, the index defaults to zero.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> filterValue
+</p>
+<p class="- topic/p p">  The string that is compared against the specified CSV field in the   input line. If the value matches, this mapping is applied to the CSV   line. If the <span class="+ topic/ph hi-d/tt ph tt">filterIndex</span> attribute is present, this attribute is   mandatory.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> itemCountMin
+</p>
+<p class="- topic/p p">  If this attribute is specified and the mapping applies to a given CSV   line, the number of fields in the CSV line is checked against this value.   If the line has less than the specified number of items, this is treated   as an error.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> itemCountMax
+</p>
+<p class="- topic/p p">  If this attribute is present and the mapping applies to a given CSV line,   the number of fields in the CSV line is checked against this value. If   the line has more than the specified number of items, an error occurs.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> useDefaults
+</p>
+<p class="- topic/p p">  If this attribute is set to true all empty CSV fields (strings of length zero)   that shall be mapped to SPL numeric attributes (integers and floats),   will be set to zero. If the attribute is set to false, the operator will    instead produce an error record, because the conversion is treated as failed.   This applies to all attributes in the current mapping. If this attribute is also   set in the <span class="+ topic/ph hi-d/tt ph tt">mappings</span> element, the setting in the <span class="+ topic/ph hi-d/tt ph tt">mapping</span> element takes   precedence. The default value for this attribute is <span class="+ topic/ph hi-d/tt ph tt">false</span>.
+</p></li>
+</ul>
+</div>
+<p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">Manual Assignment</em>
+</p>
+<p class="- topic/p p">A <em class="+ topic/ph hi-d/i ph i">manual assignment</em> consists of a list of assignments. For each assignment, you can specify the index in the CSV item list and the target SPL attribute name. With a manual assignment, you can only use the <span class="+ topic/ph hi-d/tt ph tt">assign</span> element within a <span class="+ topic/ph hi-d/tt ph tt">mapping</span> element. The <span class="+ topic/ph hi-d/tt ph tt">assign</span> element has two optional attributes:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> index
+<p class="- topic/p p">  The index of the CSV field in the input line (starts with zero). If this   attribute is omitted, the index of the preceding assignment is incremented.   So the next CSV field is picked up.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> attribute
+</p>
+<p class="- topic/p p">  The name of the SPL output attribute to which to assign the value. If this attribute is omitted, the next unassigned output attribute is used.
+</p></li>
+</ul>
+</div>
+<p class="- topic/p p">Consequently, the <span class="+ topic/ph hi-d/tt ph tt">color</span> mapping from Example 1 can also be written as:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;mapping name="colors"&gt;
+	&lt;assign attribute="R" index="2"/&gt;
+	&lt;assign/&gt;
+	&lt;assign/&gt;
+&lt;/mapping&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">In this case, the two <span class="+ topic/ph hi-d/tt ph tt">assign</span> elements that do not have attributes select the <span class="+ topic/ph hi-d/tt ph tt">G</span> and <span class="+ topic/ph hi-d/tt ph tt">B</span> SPL attributes because they are the next in the output port schema and are assigned CSV fields 3 and 4 because the first <span class="+ topic/ph hi-d/tt ph tt">assign</span> element starts with index 2.
+</p>
+<p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">Automatic Assignment</em>
+</p>
+<p class="- topic/p p">An <em class="+ topic/ph hi-d/i ph i">automatic assignment</em> can consist of a list of included or excluded SPL attribute names. Included attributes participate in the mapping, while excluded ones do not. Included and excluded attributes cannot be mixed. The automatic assignment can be empty, meaning that all attributes participate in the mapping. In the following example, the mapping tries to assign the following attributes from example 1: <span class="+ topic/ph hi-d/tt ph tt">R</span> with CSV field 0, <span class="+ topic/ph hi-d/tt ph tt">G</span> with CSV field 1 and <span class="+ topic/ph hi-d/tt ph tt">B</span> with CSV field 2:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;mapping name="colors"&gt;
+	&lt;auto/&gt;
+&lt;/mapping&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">The next two mappings try to assign the following attributes from example 1: <span class="+ topic/ph hi-d/tt ph tt">R</span> with CSV field 0 and <span class="+ topic/ph hi-d/tt ph tt">B</span> with CSV field 1:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+&lt;mapping name="colors"&gt;
+	&lt;auto&gt;
+		&lt;include&gt;R&lt;/include&gt;
+		&lt;include&gt;B&lt;/include&gt;
+	&lt;auto&gt;
+&lt;/mapping&gt;
+
+&lt;mapping name="colors"&gt;
+	&lt;auto&gt;
+		&lt;exclude&gt;G&lt;/exclude&gt;
+	&lt;auto&gt;
+&lt;/mapping&gt;
+</code></pre>
+
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Behavior in a consistent region and checkpointing
+</h2>
+
+<p class="- topic/p p">The CSVParse operator can be an operator within the reachability graph of a consistent region. It cannot be the start of a consistent region.
+</p>
+<p class="- topic/p p">The CSVParse operator also supports periodic checkpointing that is enabled with the <em class="+ topic/ph hi-d/i ph i">checkpoint</em> configuration clause, for example:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+config
+	checkpoint : periodic(5.0);
+	restartable : true;
+</code></pre>
+
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Summary</h2>
+
+<dl class="- topic/dl dl" compact="compact">
+ 
+  <dt class="- topic/dt dt dlterm">Ports</dt>
+  <dd class="- topic/dd dd">This operator has 1 input port and 3 output ports.</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Windowing</dt>
+  <dd class="- topic/dd dd">This operator does not accept any windowing configurations.</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Parameters</dt>
+  <dd class="- topic/dd dd">This operator supports 8 parameters.
+<p class="- topic/p p"> Required: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__mappingDocument">mappingDocument</a>
+
+</p>
+<p class="- topic/p p"> Optional: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__ignoreEmptyLines">ignoreEmptyLines</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__ignoreHeaderLines">ignoreHeaderLines</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__metricsMode">metricsMode</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__metricsModeThreshold">metricsModeThreshold</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__payloadAttribute">payloadAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__quoted">quoted</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__separator">separator</a>
+
+</p></dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Metrics</dt>
+  <dd class="- topic/dd dd">This operator reports 9 metrics.</dd>
+ 
+</dl></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Properties</h2>
+
+<dl class="- topic/dl dl" compact="compact">
+ 
+  <dt class="- topic/dt dt dlterm">Implementation</dt>
+  <dd class="- topic/dd dd">C++</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__providessinglethreadedexecutioncontext">Threading</a></dt>
+  <dd class="- topic/dd dd"><span class="+ topic/ph hi-d/tt ph tt">Always</span> - Operator always provides a single threaded execution context.</dd>
+ 
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set">Input Ports</a></strong></p><dl class="- topic/dl dl">
+  
+   <dt class="- topic/dt dt dlterm">Ports (0)</dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">The input port that contains the CSV data to parse. It must have at least one <span class="+ topic/ph hi-d/tt ph tt">rstring</span> attribute that holds the CSV-formatted input line, or payload. If there is only one <span class="+ topic/ph hi-d/tt ph tt">rstring</span> type attribute in the input tuple schema, this attribute is automatically used as the data source. If there is more than one <span class="+ topic/ph hi-d/tt ph tt">rstring</span> attribute, you must specify which attribute to use in the <strong class="+ topic/ph hi-d/b ph b">payLoadAttribute</strong> parameter. Any input schema is allowed. You can forward input attributes to output port attributes by applying the custom output functions <span class="+ topic/ph hi-d/tt ph tt">fromInput(...)</span> to output port attributes.
+</p>
+<p class="- topic/p p">The payload string can have one of two formats: quoted or not quoted. In quoted mode, the CSV fields can be enclosed in quotation marks (""). This symbol allows the separator character to be part of the CSV field, which is not possible in non-quoted mode. In non-quoted mode, the quoting character is treated as a normal character. The mode is controlled by the <strong class="+ topic/ph hi-d/b ph b">quoted</strong> parameter of the operator.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example 1</strong>
+</p>
+<p class="- topic/p p">In quoted mode the <span class="+ topic/ph hi-d/tt ph tt">aa,"bb,cc",dd</span> input string results in the following three fields:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> aa</li>
+<li class="- topic/li li"> bb,cc</li>
+<li class="- topic/li li"> dd</li>
+</ul>
+</div>
+<p class="- topic/p p">In non-quoted mode, the same input string results in the following four fields:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> aa</li>
+<li class="- topic/li li"> "bb</li>
+<li class="- topic/li li"> cc"</li>
+<li class="- topic/li li"> dd</li>
+</ul>
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example 2</strong>
+</p>
+<p class="- topic/p p">In quoted mode, the <span class="+ topic/ph hi-d/tt ph tt">aa,bb”cc,dd</span> input string results in an error because the quoting character cannot occur inside an unquoted field. In non-quoted mode, this string results in the following three fields:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> aa</li>
+<li class="- topic/li li"> bb"cc</li>
+<li class="- topic/li li"> dd </li>
+</ul>
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example 3</strong>
+</p>
+<p class="- topic/p p">To include the quote character inside a field, escape it with itself (according to <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc4180" target="_blank" rel="external noopener">RFC 4180</a>). In quoted mode, the <span class="+ topic/ph hi-d/tt ph tt">aa,”bb””cc”,dd</span> input string results in the following three fields:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> aa</li>
+<li class="- topic/li li"> bb"cc</li>
+<li class="- topic/li li"> dd</li>
+</ul>
+</div>
+<p class="- topic/p p">In non-quoted mode, this input string results in the following three fields:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> aa</li>
+<li class="- topic/li li"> "bb""cc"</li>
+<li class="- topic/li li"> dd</li>
+</ul>
+</div>
+<p class="- topic/p p">In quoted mode, the quoting character must occur right after the separator character. Otherwise, this field is treated as non-quoted and the quote character cannot be contained in the field. In addition, after the closing quote for a field, the next character must be a separator if additional fields follow.
+</p>
+<p class="- topic/p p">Leading and trailing spaces in fields are not trimmed. Fields with zero length result in empty fields.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example 4</strong>
+</p>
+<p class="- topic/p p">In quoted mode, the <span class="+ topic/ph hi-d/tt ph tt">,,””,</span> input string results in four empty fields. In non-quoted mode, the third field contains the two quote characters ("").
+</p>
+<p class="- topic/p p">For more information on the quote handling, see <a class="- topic/xref xref" href="http://tools.ietf.org/html/rfc4180" target="_blank" rel="external noopener">RFC 4180</a>.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Restrictions on the input string</strong>
+</p>
+<p class="- topic/p p">The input attribute with the CSV data is of <span class="+ topic/ph hi-d/tt ph tt">rstring</span> type and can hold a string with any encoding. But, this operator expects either plain ASCII (7-bit) or UTF-8 encoding. If any other encoding is used, the results are undefined. If you want to use other string encodings, use, for example the <strong class="+ topic/ph hi-d/b ph b">encoding</strong> parameter of the spl.adapter::FileSource (or TCP/UDPSource) operator to convert your encoding format to UTF-8. 
+</p>
+   <dl class="- topic/dl dl">
+    
+      <dt class="- topic/dt dt dlterm">Properties</dt>
+      <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__optional">Optional</a>: false
+     </li>
+   </ul>
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__controlport">ControlPort</a>: false
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__tuplemutationallowed">TupleMutationAllowed</a>: false
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__windowingmode">WindowingMode</a>: NonWindowed
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__windowpunctuationinputmode">WindowPunctuationInputMode</a>: Oblivious
+     </li>
+   </ul>
+      </dd>    
+   </dl>
+   <p class="- topic/p p"></p>   </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set">Output Ports</a></strong></p><dl class="- topic/dl dl">
+  
+     <dt class="- topic/dt dt dlterm">Assignments</dt>
+     <dd class="- topic/dd dd">This operator allows any SPL expression of the correct type to be assigned to output attributes.</dd>
+  
+</dl>
+<dl class="- topic/dl dl">
+      <dt class="- topic/dt dt dlterm"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__customoutputfunctions">Output Functions</a></dt>
+    <dd class="- topic/dd dd">
+      <dl class="- topic/dl dl">
+      
+        <dt class="- topic/dt dt dlterm">DataAssignmentFunctions</dt>
+        <dd class="- topic/dd dd">
+          <dl class="- topic/dl dl">
+            <dt class="- topic/dt dt dlterm"></dt><dd class="- topic/dd dd"></dd>
+            
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   &lt;any T&gt; T fromInput()</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Takes the value from the input tuple. An input attribute of the same name and type as the output attribute must exist.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   &lt;any T&gt; T fromInput(T attr)</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Takes the value from the attribute of the input tuple of the given name. An input attribute of the given name and same type as the output attribute must exist.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    boolean IsPresent(rstring attributeName) </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Use this function to determine if a given output port attribute has been assigned from an input field or from a default value. The parameter of type rstring is the name of the output attribute you want to get the presence status for.
+</p>
+<div class="- topic/p p">The function evaluates to true if the named attribute was assigned from a field of the input CSV file. It is false when
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> the attribute does not correspond to a field of the input CSV file as defined in the mapping xml</li>
+<li class="- topic/li li"> the field containing the attribute was not in the input line because the line had fewer fields than needed</li>
+<li class="- topic/li li"> the attribute is a numeric type and the field was empty</li>
+</ul>
+</div>
+<p class="- topic/p p">For example, if the output port type is:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+stream&lt;rstring aString, int anInt, rstring anotherString&gt;
+</code></pre>
+
+</div>
+<p class="- topic/p p">and the mapping includes all 3 attributes, then the following input lines produce the listed results.
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+"cats",0,"dogs"  isPresent("aString"), isPresent("anInt"), isPresent("anotherString") are all true.
+,0,              all three are true
+,0               isPresent("aString") is true, isPresent("anInt") is true, and isPresent("anotherString) is false
+,,               isPresent("anInt") is false, but the other two are true.
+</code></pre>
+
+</div>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    blob PresenceMask() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Use this function to determine the presence status of all output port attributes at once. The function returns a blob that contains at least as many bits as there are attributes in the output port. Each output port attribute is represented by a bit in the blob.  The leftmost bit in the first byte of the blob (bit 8) represents the first attribute in the output  port tuple. The next bit (bit 7 of the first byte) represents the second attribute, and so on.
+</p>
+<p class="- topic/p p">You can use the following SPL function to check the presence status of a given attribute. The first parameter is the blob returned by the presenceMask function, the second parameter is  the position of the output port attribute you want to check (starting with 0 for the first attribute).
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+boolean checkAttribute(blob mask, uint32 index)
+{
+	uint32 offset = index/8u;
+	uint8 bitpos = (1ub &lt;&lt; (7u - (index % 8u)));
+	return ((mask[offset] &amp; bitpos) == 0ub) ? false : true;
+}
+</code></pre>
+
+</div>
+<p class="- topic/p p">Note that this code does not check for out of bounds errors.
+</p>
+<p class="- topic/p p">The conditions that determine if a presence bit is set to true or false are the same as for the  IsPresent(...) custom output function. See the details in the description of that function. 
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                      </dl>        </dd>
+      
+      
+        <dt class="- topic/dt dt dlterm">ErrorAssignmentFunctions</dt>
+        <dd class="- topic/dd dd">
+          <dl class="- topic/dl dl">
+            <dt class="- topic/dt dt dlterm"></dt><dd class="- topic/dd dd"></dd>
+            
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   &lt;any T&gt; T fromInput()</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Takes the value from the input tuple. An input attribute of the same name and type as the output attribute must exist.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   &lt;any T&gt; T fromInput(T attr)</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Takes the value from the attribute of the input tuple of the given name. An input attribute of the given name and same type as the output attribute must exist.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   uint64 TupleNumber()</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of the tuple, counted from the last punctuation received. When using files as input, the number corresponds to the line number of the erroneous line.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   rstring Message()</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns an rstring containing a description of the parse or conversion error that occurred.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   rstring MessageId()</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns an rstring containing the id of the parse or conversion error that occurred.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                      </dl>        </dd>
+      
+      
+        <dt class="- topic/dt dt dlterm">MetricsFunctions</dt>
+        <dd class="- topic/dd dd">
+          <dl class="- topic/dl dl">
+            <dt class="- topic/dt dt dlterm"></dt><dd class="- topic/dd dd"></dd>
+            
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   &lt;any T&gt; T fromInput()</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Takes the value from the latest input tuple. An input attribute of the same name and type as the output attribute must exist.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">   &lt;any T&gt; T fromInput(rstring attributeName)</span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Takes the value from the attribute of the latest input tuple of the given name. An input attribute of the given name and same type as the output attribute must exist.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 getRecordCount(rstring mappingName) </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of records on a per-CSV line type, or mapping, basis.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 getErrorCount(rstring mappingName) </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of errors on a per-CSV line type (mapping) basis.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    map&lt;rstring,uint64&gt; getRecordCounts() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of successfully processed records for all specified mappings.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    map&lt;rstring,uint64&gt; getErrorCounts() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of errors for all specified mappings.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    map&lt;rstring,map&lt;rstring,uint64&gt;&gt; getRecordStats() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of successfully parsed records and the number of errors for all specified mappings. 
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesReceivedTotal() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of received tuples. 
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesSentTotal() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of sent tuples on output port 0. 
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesFailedTotal() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of sent error tuples on output port 1.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesDroppedTotal() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of dropped tuples because of ignored CSV lines.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesReceived() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of received tuples since the last sent metrics tuple.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesSent() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of sent tuples since the last sent metrics tuple.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesFailed() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of sent error tuples on output port 1 since the last window punctuation.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 nTuplesDropped() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the number of dropped tuples because of ignored CSV lines since the last window punctuation.
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                        
+              <dt class="- topic/dt dt dlterm">
+                <span class="+ topic/ph hi-d/tt ph tt">    uint64 latestPunctuation() </span>              </dt>
+            <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Returns the time of the latest occurrence of a window punctuation (in seconds) since the Epoch (00:00:00 UTC, January 1, 1970).
+</p>              <p class="- topic/p p"></p>
+            </dd>
+                      </dl>        </dd>
+      
+      </dl>
+    </dd>
+  </dl>
+ <dl class="- topic/dl dl">
+  
+   <dt class="- topic/dt dt dlterm">Ports (0)</dt>
+   <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The first output port contains the fields from a successfully parsed CSV input line and is mandatory. It supports any schema. Each attribute in the output port schema is assigned by one of the following methods (with descending precedence):
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> If a mapping for this attribute is specified in the <strong class="+ topic/ph hi-d/b ph b">mappingDocument</strong>,   the attribute is assigned the value of the CSV field with the given index.   Conversions to the type of the output attribute are completed   automatically. If an input CSV line does not have enough fields for all   output attributes to be assigned, the attributes that cannot be filled   get their default values.</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> If the attribute has a custom output function assigned, the value is   determined by the given function. The allowed function set is   <em class="+ topic/ph hi-d/i ph i">DataAssignmentFunctions</em>. If the attribute assignment is already   specified in the mapping document, a compile time error occurs.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> If the attribute is not assigned by the previous methods and an attribute   with the same name and type is present in the input port, the value of   the input attribute is copied to this output attribute.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> If none of the previous methods can be used, the SPL attribute gets its   default value.
+</p></li>
+</ul>
+</div>
+<p class="- topic/p p">For attributes that are assigned from a CSV field, the port supports <span class="+ topic/ph hi-d/tt ph tt">rstring</span>, <span class="+ topic/ph hi-d/tt ph tt">ustring</span>, <span class="+ topic/ph hi-d/tt ph tt">float32</span>, <span class="+ topic/ph hi-d/tt ph tt">float64</span> and all integral types. 
+</p>
+    <p class="- topic/p p"></p>
+    <dl class="- topic/dl dl">
+     
+      <dt class="- topic/dt dt dlterm">Properties</dt>
+      <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__optional">Optional</a>: false
+     </li>
+   </ul>
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__tuplemutationallowed">TupleMutationAllowed</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__windowpunctuationoutputmode">WindowPunctuationOutputMode</a>: Preserving
+     </li>
+   </ul>
+</dd>     
+    </dl>
+    <p class="- topic/p p"></p>
+   </dd>
+  
+  
+   <dt class="- topic/dt dt dlterm">Ports (1)</dt>
+   <dd class="- topic/dd dd">
+
+<p class="- topic/p p">On the second output port, error tuples are sent. This port is mandatory and can have any schema. For each input tuple that cannot be processed, one tuple is sent on this port. Custom output functions can be used to control the values of attributes in the schema of this output port. The allowed function set is <em class="+ topic/ph hi-d/i ph i">ErrorAssignmentFunctions</em>. For attributes that have no custom output functions, the value of an input attribute with the same name and type is assigned automatically. The simplest usage of this port is to specify the same schema as for the input port, which forwards the erroneous input tuple to this port for further analysis. Custom output functions are available to get a description of the error that occurred.
+</p>
+<p class="- topic/p p">If one of the following conditions is true, an input tuple is considered erroneous:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> The number of fields in the CSV line is less than the configured minimum   number of fields for the mapping (<span class="+ topic/ph hi-d/tt ph tt">itemCountMin</span> XML attribute).</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> The number of fields in the CSV line is greater than the configured   maximum number of fields for the mapping (<span class="+ topic/ph hi-d/tt ph tt">itemCountMax</span> XML attribute).
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> The conversion of the CSV field to the type of the SPL output attribute   fails, for example if the input item has the "strange" value and the   output attribute type is <span class="+ topic/ph hi-d/tt ph tt">int32</span>. Per default empty input fields cannot   be converted to numeric types, and the input line will be forwarded    to the error port. This behaviuor can be changed using the   <span class="+ topic/ph hi-d/tt ph tt">useDefaults</span> XML attribute in the mapping definition.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> The <strong class="+ topic/ph hi-d/b ph b">ignoreEmptyLines</strong> parameter is set to <span class="+ topic/ph hi-d/tt ph tt">false</span>. In this case, empty   lines produce error tuples if either multiple mappings are defined or if   the single mapping requires one or more CSV fields. 
+</p></li>
+</ul>
+</div>
+    <p class="- topic/p p"></p>
+    <dl class="- topic/dl dl">
+     
+      <dt class="- topic/dt dt dlterm">Properties</dt>
+      <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__optional">Optional</a>: false
+     </li>
+   </ul>
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__tuplemutationallowed">TupleMutationAllowed</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__windowpunctuationoutputmode">WindowPunctuationOutputMode</a>: Preserving
+     </li>
+   </ul>
+</dd>     
+    </dl>
+    <p class="- topic/p p"></p>
+   </dd>
+  
+  
+   <dt class="- topic/dt dt dlterm">Ports (2)</dt>
+   <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The third output port contains processing statistics. This port is optional and can have any schema. By default, statistic tuples are sent when window punctuations are received. However, this behavior can be changed by modifying the <strong class="+ topic/ph hi-d/b ph b">metricsMode</strong> and <strong class="+ topic/ph hi-d/b ph b">metricsThreshold</strong> parameters. If the <strong class="+ topic/ph hi-d/b ph b">metricsMode</strong> parameter is set to <span class="+ topic/ph hi-d/tt ph tt">tuples</span>, the operator sends a statistic tuple on this port after it receives <strong class="+ topic/ph hi-d/b ph b">metricsThreshold</strong> input tuples. In this case, no statistic tuple is sent when it receives window punctuations. Each time a statistic tuple is sent, the following internal counters are reset to zero:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> nTuplesReceived</li>
+<li class="- topic/li li"> nTuplesSent</li>
+<li class="- topic/li li"> nTuplesFailed</li>
+<li class="- topic/li li"> nTuplesDropped</li>
+</ul>
+</div>
+<p class="- topic/p p">Custom output functions can control attribute values in the output port schema. The allowed function set is <em class="+ topic/ph hi-d/i ph i">MetricsFunctions</em>. For attributes that do not have custom output functions assigned, the value of an input attribute with the same name and type is assigned automatically. Typically, statistic tuples are not sent for each input tuple, so the operator uses the attribute values of the latest input tuple while sending a statistic tuple. You can use this feature to, for example, send a filename that is constant for all tuples of a file, with the statistic tuple. 
+</p>
+<p class="- topic/p p">In addition to the metrics that are independent from the mappings, the supported custom output functions for this port can deliver statistics on a per-mapping basis. For example, if you configure two mappings named <span class="+ topic/ph hi-d/tt ph tt">colors</span> and <span class="+ topic/ph hi-d/tt ph tt">cars</span>, you can receive detailed statistics about the number of failed and successful tuples for each mapping by using the <span class="+ topic/ph hi-d/tt ph tt">getRecordStats()</span> custom output function. This function produces an output like the following:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+{recordStats={"colors":{"errors":1,"records":2}},"cars":{"errors":0,"records":1}}}
+</code></pre>
+
+</div>
+<p class="- topic/p p">This example means that we received 3 tuples that match the <span class="+ topic/ph hi-d/tt ph tt">colors</span> mapping, 2 of tuples successfully processed and one with an error. One tuple was received that matches the <span class="+ topic/ph hi-d/tt ph tt">cars</span> mapping with no errors. 
+</p>
+    <p class="- topic/p p"></p>
+    <dl class="- topic/dl dl">
+     
+      <dt class="- topic/dt dt dlterm">Properties</dt>
+      <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__optional">Optional</a>: true
+     </li>
+   </ul>
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__tuplemutationallowed">TupleMutationAllowed</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__windowpunctuationoutputmode">WindowPunctuationOutputMode</a>: Preserving
+     </li>
+   </ul>
+</dd>     
+    </dl>
+    <p class="- topic/p p"></p>
+   </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters">Parameters</a></strong></p>
+
+<p class="- topic/p p"> Required: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__mappingDocument">mappingDocument</a>
+
+</p>
+<p class="- topic/p p"> Optional: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__ignoreEmptyLines">ignoreEmptyLines</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__ignoreHeaderLines">ignoreHeaderLines</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__metricsMode">metricsMode</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__metricsModeThreshold">metricsModeThreshold</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__payloadAttribute">payloadAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__quoted">quoted</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__separator">separator</a>
+
+</p><dl class="- topic/dl dl">
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__ignoreEmptyLines" data-ofbid="spldoc_operator__parameter__ignoreEmptyLines"><span class="+ topic/ph hi-d/tt ph tt">ignoreEmptyLines</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies how to handle empty CSV lines. If this parameter is set to true, empty lines are dropped. Otherwise, empty lines may produce a default or error tuple, depending on the mapping configuration. The default value is <span class="+ topic/ph hi-d/tt ph tt">true</span>. 
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Constant
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__ignoreHeaderLines" data-ofbid="spldoc_operator__parameter__ignoreHeaderLines"><span class="+ topic/ph hi-d/tt ph tt">ignoreHeaderLines</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies how to handle header lines in the CSV input. A header line is the first line after punctuation. If this parameter is set to <span class="+ topic/ph hi-d/tt ph tt">true</span>, the header is dropped. If <span class="+ topic/ph hi-d/tt ph tt">false</span>, the header is handled like a normal line. The default value is <span class="+ topic/ph hi-d/tt ph tt">false</span>.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Constant
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__mappingDocument" data-ofbid="spldoc_operator__parameter__mappingDocument"><span class="+ topic/ph hi-d/tt ph tt">mappingDocument</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the path name of the mapping definition document, the XML document that describes the mapping of the CSV fields to the SPL output attributes.
+</p>
+<p class="- topic/p p">The mapping definition document is used at SPL compile time. If you modify the document, you must recompile the SPL application for the changes to take effect. After the application is compiled, the mapping definition document is not required for job submission.
+</p>
+<p class="- topic/p p">A relative path is relative to the SPL application directory that is the current working directory where the <span class="+ topic/ph hi-d/tt ph tt">sc</span> command is run. For example, if you specify the relative path <span class="+ topic/ph hi-d/tt ph tt">"etc/MappingDefinition.xml"</span> and run the <span class="+ topic/ph hi-d/tt ph tt">sc</span> command from the <span class="+ topic/ph hi-d/tt ph tt">/home/myapp</span> directory, the compiler looks for the <span class="+ topic/ph hi-d/tt ph tt">MappingDefinition.xml</span> document in the <span class="+ topic/ph hi-d/tt ph tt">/home/myapp/etc</span> directory. 
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: false
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Constant
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__metricsMode" data-ofbid="spldoc_operator__parameter__metricsMode"><span class="+ topic/ph hi-d/tt ph tt">metricsMode</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the trigger mode that sends a metrics tuple on the optional third output port. The supported values are <span class="+ topic/ph hi-d/tt ph tt">punctuation</span> and <span class="+ topic/ph hi-d/tt ph tt">tuples</span>. The default value is <span class="+ topic/ph hi-d/tt ph tt">punctuation</span>. For <span class="+ topic/ph hi-d/tt ph tt">tuples</span> mode, the <strong class="+ topic/ph hi-d/b ph b">metricsModeThreshold</strong> parameter is mandatory. After each sent metrics tuple, a subset of the online metrics is reset.
+</p>
+<p class="- topic/p p">For example, if <span class="+ topic/ph hi-d/tt ph tt">punctuation</span> is specified, a metrics tuple is sent when window punctuation is received. If <span class="+ topic/ph hi-d/tt ph tt">tuples</span> is specified and <strong class="+ topic/ph hi-d/b ph b">metricsModeThreshold</strong> is set to 100, a metrics tuple is sent for every 100 input tuples. 
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: MetricsModeTypes
+ (<span class="+ topic/ph hi-d/tt ph tt">punctuation, tuples</span>)     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: CustomLiteral
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__metricsModeThreshold" data-ofbid="spldoc_operator__parameter__metricsModeThreshold"><span class="+ topic/ph hi-d/tt ph tt">metricsModeThreshold</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the number of received tuples after which a metrics tuple on the optional second output port is triggered. After each sent metrics tuple, a subset of the online metrics is reset.
+</p>
+<p class="- topic/p p">For example, if the <strong class="+ topic/ph hi-d/b ph b">metricsMode</strong> parameter is set to <span class="+ topic/ph hi-d/tt ph tt">tuples</span> and this parameter is set to 100, a metrics tuple is sent for every 100 input tuples.
+</p>
+<p class="- topic/p p">This parameter is allowed only if the <strong class="+ topic/ph hi-d/b ph b">metricsMode</strong> parameter is set to <span class="+ topic/ph hi-d/tt ph tt">tuples</span>. 
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: uint64
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Expression
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__payloadAttribute" data-ofbid="spldoc_operator__parameter__payloadAttribute"><span class="+ topic/ph hi-d/tt ph tt">payloadAttribute</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the input port <span class="+ topic/ph hi-d/tt ph tt">rstring</span> attribute, which holds the payload to be parsed. If more than one <span class="+ topic/ph hi-d/tt ph tt">rstring</span> attribute exists in the input port schema, this parameter is mandatory. Otherwise, the single <span class="+ topic/ph hi-d/tt ph tt">rstring</span> attribute is automatically selected. 
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Attribute
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__quoted" data-ofbid="spldoc_operator__parameter__quoted"><span class="+ topic/ph hi-d/tt ph tt">quoted</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the quoting mode for the CSV input. Supported values are <span class="+ topic/ph hi-d/tt ph tt">off</span> and <span class="+ topic/ph hi-d/tt ph tt">on</span>. The <span class="+ topic/ph hi-d/tt ph tt">off</span> value means that no CSV field is quoted, and <span class="+ topic/ph hi-d/tt ph tt">on</span> means that some or all fields are quoted. The default value is <span class="+ topic/ph hi-d/tt ph tt">off</span>. If you are sure that no input field is quoted, specify <span class="+ topic/ph hi-d/tt ph tt">off</span> to improve performance.
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: QuotingMode
+ (<span class="+ topic/ph hi-d/tt ph tt">on, off</span>)     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: CustomLiteral
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+  
+     <dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__separator" data-ofbid="spldoc_operator__parameter__separator"><span class="+ topic/ph hi-d/tt ph tt">separator</span></dt>
+     <dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the separator character or characters that delimit the fields in the CSV input. The separator must be a single- or multi-character string constant. The default value is a comma (,).
+</p>
+  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">Properties</dt>
+     <dd class="- topic/dd dd">   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Constant
+     </li>
+   </ul>
+     <p class="- topic/p p"></p>     </dd>
+    
+  </dl>
+     </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__codetemplate">Code Templates</a></strong></p>  <dl class="- topic/dl dl">
+    
+     <dt class="- topic/dt dt dlterm">CSVParse</dt>
+     <dd class="- topic/dd dd">
+       <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+(stream&lt;${outputSchema}&gt; ${outputStream} as O; stream&lt;${errorSchema}&gt; ${errorStream} as E) = CSVParse(${inputStream} as I) 
+{
+	param
+		payloadAttribute: ${attributeName};
+		mappingDocument: "${mappingDefinitionFile}";
+}
+      </code></pre>
+     <p class="- topic/p p"></p>
+     </dd>
+    
+    
+     <dt class="- topic/dt dt dlterm">CSVParseWithStatistics</dt>
+     <dd class="- topic/dd dd">
+       <pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+(stream&lt;${outputSchema}&gt; ${outputStream} as O; stream&lt;${errorSchema}&gt; ${errorStream} as E; stream&lt;${statSchema}&gt; ${statStream} as S) = CSVParse(${inputStream} as I)
+{
+	param
+		payloadAttribute: ${attributeName};
+		mappingDocument: "${mappingDefinitionFile}";
+}
+      </code></pre>
+     <p class="- topic/p p"></p>
+     </dd>
+    
+  </dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics">Metrics</a></strong></p><dl class="- topic/dl dl">
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">latestPunctuation</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_time">Time</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The time of the latest window punctuation since the Epoch (00:00:00 UTC, January 1, 1970).
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesDropped</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_gauge">Gauge</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of dropped tuples because of ignored CSV lines since the last statistics tuple or, if the statistic output port is not present, window punctuation.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesDroppedTotal</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of dropped tuples because of CSV lines that could not be matched to a mapping.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesFailed</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_gauge">Gauge</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of error tuples sent on output port 1 since the last statistics tuple or, if the statistic output port is not present, window punctuation.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesFailedTotal</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of error tuples sent on output port 1. In other words, the number of tuples that failed conversion or <span class="+ topic/ph hi-d/tt ph tt">itemCountMin</span>/<span class="+ topic/ph hi-d/tt ph tt">itemCountMax</span> validation.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesReceived</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_gauge">Gauge</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of received tuples since the last statistics tuple or, if the statistic output port is not present, window punctuation.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesReceivedTotal</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of received tuples since the start of the operator.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesSent</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_gauge">Gauge</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of sent tuples on output port 0 since the last statistics tuple or, if the statistic output port is not present, window punctuation.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nTuplesSentTotal</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The number of tuples sent on output port 0. In other words, the number of matched and converted tuples that did not generate an error.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__dependencies">Libraries</a></strong></p><dl class="- topic/dl dl">
+ 
+  <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">Common Headers</span>  </dt>
+<dd class="- topic/dd dd"></dd>  <dd class="- topic/dd dd ddexpand"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__dependencies__managedlibrary__includepath">Include Path</a>: <span class="+ topic/ph hi-d/tt ph tt">../../../../impl/include/parser.binary</span></dd>
+ 
+</dl>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

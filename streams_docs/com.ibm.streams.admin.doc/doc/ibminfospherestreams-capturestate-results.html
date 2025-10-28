@@ -1,0 +1,1050 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="description" content="The output from the streamtool capturestate command is XML information about the status of the resources and jobs in a Teracloud Streams instance. The output also contains metrics for the resources and jobs."/><meta name="DC.subject" content="streamtool capturestate command,output"/><meta name="keywords" content="streamtool capturestate command, output"/><meta name="indexterms" content="streamtool capturestate command, output"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-status.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-main.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/metricaccess.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/capturestate.html"/><meta name="DC.relation" content="../../com.ibm.streams.welcome.doc/doc/services.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="ibminfospherestreams-capturestate-results"/><meta name="DC.language" content="en-us"/>        
+      <title>Status, performance, and connection information returned by streamtool capturestate</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="ibminfospherestreams-capturestate-results-d41691e3127"/><meta name="wh-source-relpath" content="com.ibm.streams.admin.doc/doc/ibminfospherestreams-capturestate-results.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.admin.doc/doc/ibminfospherestreams-capturestate-results.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="ibminfospherestreams-capturestate-results" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="containeradmin"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-instance-main"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-main.html">Instances</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To create and manage instances, you can use the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</span></p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-instance-status"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-status.html">Monitoring instances</a><div class="wh-tooltip"><p class="shortdesc">You can monitor the status and health of your <span class="keyword">Teracloud® 					Streams</span> environment and capture the information for offline viewing and analysis.</p></div></div></div></li><li class="active"><div class="topicref" data-id="ibminfospherestreams-capturestate-results"><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-capturestate-results.html">Status, performance, and connection output data</a><div class="wh-tooltip"><p class="shortdesc">The output from the <span class="keyword cmdname">streamtool capturestate</span> command is XML information about the status of the resources and jobs in a <span class="keyword">Teracloud® 					Streams</span> instance. The output also contains metrics for the resources and jobs.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="admindomains-d41691e2724" class="topicref" data-id="admindomains" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action admindomains-d41691e2724-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/domains.html" id="admindomains-d41691e2724-link">Domains</a><div class="wh-tooltip"><p class="shortdesc">After you create a <span class="keyword">Teracloud® 					Streams</span> domain, you can administer it by using the   <span class="keyword">Streams Console</span> graphical user interface and the <span class="keyword cmdname">streamtool</span> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="adminresources-d41691e2839" class="topicref" data-id="adminresources" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action adminresources-d41691e2839-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/resources.html" id="adminresources-d41691e2839-link">Resources</a><div class="wh-tooltip"><p class="shortdesc">After you add resources to domains and instances, you can administer them by using the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-instance-main-d41691e2986" class="topicref" data-id="ibminfospherestreams-instance-main" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-instance-main-d41691e2986-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-main.html" id="ibminfospherestreams-instance-main-d41691e2986-link">Instances</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To create and manage instances, you can use the <span class="keyword">Streams Console</span> or the <span class="keyword cmdname">streamtool</span> command-line interface.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-instance-streams-instance-identifers-d41691e3004" class="topicref" data-id="ibminfospherestreams-instance-streams-instance-identifers" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-streams-instance-identifiers.html" id="ibminfospherestreams-instance-streams-instance-identifers-d41691e3004-link">Instance identifiers</a><div class="wh-tooltip"><p class="shortdesc">An instance name or identifier is the name that you specify when you create an instance.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-instance-creating-d41691e3015" class="topicref" data-id="ibminfospherestreams-instance-creating" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-instance-creating-d41691e3015-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-creating.html" id="ibminfospherestreams-instance-creating-d41691e3015-link">Creating instances</a><div class="wh-tooltip"><p class="shortdesc">Use the <span class="keyword">Streams Console</span>       or the <span class="keyword cmdname">streamtool mkinstance</span> command to create a <span class="keyword">Teracloud® 					Streams</span> instance. When you create an instance you specify the instance name and properties and the       resources that run the instance.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreamsstartinganinstance-d41691e3079" class="topicref" data-id="ibminfospherestreamsstartinganinstance" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-running.html" id="ibminfospherestreamsstartinganinstance-d41691e3079-link">Starting and stopping instances</a><div class="wh-tooltip"><p class="shortdesc">To run <span class="keyword">Teracloud® 					Streams</span>, you must start a <span class="keyword">Teracloud 					Streams</span> instance. </p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-instance-status-d41691e3100" class="topicref" data-id="ibminfospherestreams-instance-status" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-instance-status-d41691e3100-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-status.html" id="ibminfospherestreams-instance-status-d41691e3100-link">Monitoring instances</a><div class="wh-tooltip"><p class="shortdesc">You can monitor the status and health of your <span class="keyword">Teracloud® 					Streams</span> environment and capture the information for offline viewing and analysis.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="instance-status-values-d41691e3116" class="topicref" data-id="instance-status-values" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/instance-status-values.html" id="instance-status-values-d41691e3116-link">Instance status values</a><div class="wh-tooltip"><p class="shortdesc">Instances have state values that provide information about their status.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="ibminfospherestreams-capturestate-results-d41691e3127" class="topicref" data-id="ibminfospherestreams-capturestate-results" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-capturestate-results.html" id="ibminfospherestreams-capturestate-results-d41691e3127-link">Status, performance, and connection output data</a><div class="wh-tooltip"><p class="shortdesc">The output from the <span class="keyword cmdname">streamtool capturestate</span> command is XML information about the status of the resources and jobs in a <span class="keyword">Teracloud® 					Streams</span> instance. The output also contains metrics for the resources and jobs.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="ibminfospherestreams-instance-configuring-instanceproperties-d41691e3146" class="topicref" data-id="ibminfospherestreams-instance-configuring-instanceproperties" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-configuring-instanceproperties.html" id="ibminfospherestreams-instance-configuring-instanceproperties-d41691e3146-link">Updating instance properties</a><div class="wh-tooltip"><p class="shortdesc">After you create a <span class="keyword">Teracloud® 					Streams</span> instance, you can configure it by updating its properties.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-instance-removing-d41691e3162" class="topicref" data-id="ibminfospherestreams-instance-removing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-removing.html" id="ibminfospherestreams-instance-removing-d41691e3162-link">Removing instances</a><div class="wh-tooltip"><p class="shortdesc">When you remove a <span class="keyword">Teracloud® 					Streams</span> instance, the instance record in the configuration repository is removed along with all persistent instance state information.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="adminservices-d41691e3178" class="topicref" data-id="adminservices" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action adminservices-d41691e3178-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/services.html" id="adminservices-d41691e3178-link">Domain and instance services</a><div class="wh-tooltip"><p class="shortdesc">Before you can perform <span class="keyword">Teracloud® 					Streams</span> tasks, <span class="keyword">Teracloud 					Streams</span> domain and instance services need to be running on resources in the domain. Domain services are   started by starting the domain and instance services are started by starting the   instance.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="adminjobs-d41691e3310" class="topicref" data-id="adminjobs" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action adminjobs-d41691e3310-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/jobs.html" id="adminjobs-d41691e3310-link">Jobs</a><div class="wh-tooltip"><p class="shortdesc">You can start and administer jobs by using <span class="keyword">Streams Console</span> or the <code class="ph codeph">streamtool</code> command-line interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-faulttolerance-main-d41691e3769" class="topicref" data-id="ibminfospherestreams-faulttolerance-main" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-faulttolerance-main-d41691e3769-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-faulttolerance-main.html" id="ibminfospherestreams-faulttolerance-main-d41691e3769-link">Recovery</a><div class="wh-tooltip"><p class="shortdesc">You can back up your <span class="keyword">Teracloud® 					Streams</span> system files and directories and then restore them later if necessary. In general, you can recover from application and runtime failures without restoring <span class="keyword">Teracloud 					Streams</span> from a backup.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-adminconsole-d41691e3881" class="topicref" data-id="ibminfospherestreams-adminconsole" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-adminconsole-d41691e3881-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-adminconsole.html" id="ibminfospherestreams-adminconsole-d41691e3881-link"><span class="keyword">Streams Console</span></a><div class="wh-tooltip"><p class="shortdesc">You can use the <span class="keyword">Streams Console</span> to monitor and manage the <span class="keyword">Teracloud® 					Streams</span> instances and applications in your domain from any computer that has HTTP connectivity to the server that is running the <span class="keyword">web management service</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-log-and-trace-managing-files-d41691e3942" class="topicref" data-id="ibminfospherestreams-log-and-trace-managing-files" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-log-and-trace-managing-files.html" id="ibminfospherestreams-log-and-trace-managing-files-d41691e3942-link">Logs and traces</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph"><span class="keyword">Teracloud® 					Streams</span> provides options that enable administrators, instance owners, and application developers to       manage log and trace data.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="accessingpathscompiletime-d41691e3958" class="topicref" data-id="accessingpathscompiletime" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/managemonitorstreamsapi.html" id="accessingpathscompiletime-d41691e3958-link">Managing and monitoring <span class="keyword">Teracloud® Streams</span> using management APIs</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides two API sets to manage and monitor Streams services and jobs.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Status, performance, and connection information returned by streamtool capturestate</h1>
+
+
+
+<div class="- topic/body reference/refbody body refbody"><p class="- topic/shortdesc shortdesc">The output from the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command is XML information
+about the status of the resources and jobs in a <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance. The output also contains metrics for the resources and jobs.</p>
+<section class="- topic/section section" id="ibminfospherestreams-capturestate-results__capturestate-xml-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-xml-data"><p class="- topic/p p">The schema for the XML output
+is defined in <span class="+ topic/ph sw-d/filepath ph filepath" id="ibminfospherestreams-capturestate-results__schema-directory">$STREAMS_INSTALL/schema/streamsInstanceState.xsd</span>.</p><div class="- topic/p p">The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+capturestate</span> command can return the following types of information: <ul class="- topic/ul ul">
+<li class="- topic/li li"><a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__instance-data">Instance data</a></li>
+<li class="- topic/li li"><a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__host-data">Resource and service data</a></li>
+<li class="- topic/li li"><a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__job-data">Job, processing element, operator, and port data</a></li>
+<li class="- topic/li li"><a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__performance-data">Metrics data</a></li>
+</ul></div></section>
+<section class="- topic/section section" id="ibminfospherestreams-capturestate-results__instance-data" data-ofbid="ibminfospherestreams-capturestate-results__instance-data"><h2 class="- topic/title title sectiontitle">Instance data</h2><div class="- topic/p p">The top-level XML element that is returned by the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span>
+command is an &lt;instance&gt; element, which represents the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance. The instance data is described in the following table.<div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-instance-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-instance-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Instance data returned by the streamtool capturestate command</span></caption><colgroup><col style="width:10.984848484848484%"/><col style="width:14.393939393939394%"/><col style="width:74.62121212121212%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__1">id</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__3">The instance identifier. For more information, see <a class="- topic/xref xref" href="ibminfospherestreams-instance-streams-instance-identifiers.html" title="An instance name or identifier is the name that you specify when you create an instance.">Instance identifiers</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__1">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__2">
+<p class="- topic/lines lines">hosts=state <br/>or hosts=all</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__3">The state of the resources in the instance. For more information, see <a class="- topic/xref xref" href="instance-status-values.html" title="Instances have state values that provide information about their status.">Instance status values</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__1">requestTime</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__3">The time the command request was processed. The time is represented as the
+number of seconds since the epoch (January 1, 1970 00:00:00 UTC).</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__1">&lt;host&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__2">hosts</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__3">The list of resources that are configured for the instance.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__1">&lt;job&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__2">jobs</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-instance-data__entry__3">The list of jobs that are running in the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance.</td>
+</tr>
+</tbody></table></div></div></section>
+<section class="- topic/section section" id="ibminfospherestreams-capturestate-results__host-data" data-ofbid="ibminfospherestreams-capturestate-results__host-data"><h2 class="- topic/title title sectiontitle">Resource and service data</h2><p class="- topic/p p">If
+you specify the <span class="+ topic/keyword pr-d/parmname keyword parmname">--select hosts</span> command parameter,
+the instance contains a &lt;host&gt; element for each resource that is
+configured for the instance. The data for each resource is described
+in the following table.</p><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-host-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-host-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 2</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Resource data returned by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of data that is returned by the
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command for a <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> resource.</p></span></caption><colgroup><col style="width:14.566929133858267%"/><col style="width:9.448818897637794%"/><col style="width:75.98425196850394%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__1">id</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__3">The resource identifier. For more information,
+see <a class="- topic/xref xref" href="ibminfospherestreams-instance-host-identifiers.html" title="A resource identifier uniquely identifies a resource in a domain or instance.">Resource identifiers</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__1">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__3">The state of the resource in the instance. For
+more information, see <a class="- topic/xref xref" href="resource-status-values.html" title="Resources have state values that provide information about their status.">Resource status values</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__1">schedulableState</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__3">Indicates whether the resource is available
+for scheduling application jobs. For more information, see <a class="- topic/xref xref" href="resource-status-values.html" title="Resources have state values that provide information about their status.">Resource status values</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__1">isMetricsStale</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__3">A Boolean value that indicates that the metrics
+available for this resource was not retrieved on the most recent metrics
+collection interval. Data from a previous metrics collection interval
+is provided.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__1">&lt;service&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__3">The list of services that are running on the
+resource.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__1"><span class="- topic/ph ph">&lt;metric&gt;</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-host-data__entry__3">The list of metrics that are available for this
+resource.</td>
+</tr>
+</tbody></table></div><p class="- topic/p p">Each resource includes a &lt;service&gt; element for each
+instance service that is running on the resource. The service data
+for the resource is described in the following table.</p><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-service-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-service-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 3</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Service data returned
+by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of data that is returned by the
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command for the instance services that are running on a <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> resource.</p></span></caption><colgroup><col style="width:14.559386973180077%"/><col style="width:8.812260536398467%"/><col style="width:76.62835249042146%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__1">name</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__3">The name of the service. <span class="- topic/ph ph">Possible service names are:
+                    <span class="+ topic/keyword pr-d/option keyword option">app</span>; <span class="+ topic/keyword pr-d/option keyword option">data</span>; <span class="+ topic/keyword pr-d/option keyword option">hc</span>;
+                    <span class="+ topic/keyword pr-d/option keyword option">sam</span>; <span class="+ topic/keyword pr-d/option keyword option">srm</span>; <span class="+ topic/keyword pr-d/option keyword option">view</span>.</span></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__1">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__3">The state of the service. For more information,
+see <a class="- topic/xref xref" href="service-status-values.html" title="Teracloud Streams domain and instance services have state values that provide information about their status.">Teracloud Streams service status values</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__1"><span class="- topic/ph ph">reasonCode</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-service-data__entry__3"><div class="- topic/p p">The reason code provides more
+information about the current state of the service. For example:<dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm" id="ibminfospherestreams-capturestate-results__RC-CLIENT" data-ofbid="ibminfospherestreams-capturestate-results__RC-CLIENT">client_call_failure</dt>
+<dd class="- topic/dd dd">The service received a request from a client, such as a <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> command,
+but a failure occurred.</dd>
+
+<dt class="- topic/dt dt dlterm" id="ibminfospherestreams-capturestate-results__RC-LDAP" data-ofbid="ibminfospherestreams-capturestate-results__RC-LDAP">LDAP_failure</dt>
+<dd class="- topic/dd dd">The service failed to connect to the LDAP authentication service.</dd>
+
+<dt class="- topic/dt dt dlterm" id="ibminfospherestreams-capturestate-results__RC-NONE" data-ofbid="ibminfospherestreams-capturestate-results__RC-NONE">None</dt>
+<dd class="- topic/dd dd">There is no specific reason code.</dd>
+
+<dt class="- topic/dt dt dlterm" id="ibminfospherestreams-capturestate-results__RC-ZOO" data-ofbid="ibminfospherestreams-capturestate-results__RC-ZOO">ZooKeeper_failure</dt>
+<dd class="- topic/dd dd">The service failed to connect to the name service in ZooKeeper.</dd>
+</dl></div></td>
+</tr>
+</tbody></table></div></section>
+<section class="- topic/section section" id="ibminfospherestreams-capturestate-results__job-data" data-ofbid="ibminfospherestreams-capturestate-results__job-data"><h2 class="- topic/title title sectiontitle">Job, processing element, operator, and
+port data</h2><p class="- topic/p p">If you specify the <span class="+ topic/keyword pr-d/parmname keyword parmname">--select jobs</span> command parameter, the instance contains a
+&lt;job&gt; element for each job that is running in the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance. The data for each returned job is described in the following table.</p><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-job-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-job-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 4</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Job data returned by
+the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of data that is returned by the
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command for the application jobs that are running in an instance.</p></span></caption><colgroup><col style="width:15.32567049808429%"/><col style="width:8.045977011494253%"/><col style="width:76.62835249042146%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">id</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3">The identifier of the job.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">name</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3"><span class="- topic/ph ph">The job name.</span></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">applicationName</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3"><span class="- topic/ph ph">The application name that is
+associated with the job.</span></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">submitTime</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3">The time the job was submitted to the instance.
+This time is represented in the number of seconds since the epoch.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">user</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3">The user that submitted the job.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3">The state of the job. For more information,
+see <a class="- topic/xref xref" href="ibminfospherestreams-job-status.html" title="Use the Streams Console or streamtool commands to view the status of application jobs in a Teracloud Streams instance.">Monitoring jobs</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">healthSummary</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3">A summary of the overall health of the job.
+The health summary is based on the health of the processing elements
+(PEs) in the job.  Possible values are: <dl class="- topic/dl dl">
+<dt class="- topic/dt dt dlterm">healthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__job-healthy">Indicates that the job is running
+and all of the PEs in the job are healthy.</span></dd>
+
+<dt class="- topic/dt dt dlterm">partiallyHealthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__job-parthealthy">Indicates that at least one PE
+in the job has a healthSummary value of partiallyHealthy, and the
+remaining PEs have either healthy or partiallyHealthy values.</span></dd>
+
+<dt class="- topic/dt dt dlterm">partiallyUnhealthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__job-partunhealthy">At least one of the PEs in the job
+is unhealthy. </span></dd>
+
+<dt class="- topic/dt dt dlterm">unhealthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__job-unhealthy">All of the PEs in the job are unhealthy.</span></dd>
+</dl></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__1">&lt;pe&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-job-data__entry__3">The set of PEs running in this job.</td>
+</tr>
+</tbody></table></div><p class="- topic/p p">Each &lt;job&gt; element contains a set of &lt;pe&gt; elements,
+which represent the processing elements that are running in the job.
+The data for each PE is described in the following table.</p><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-pe-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-pe-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 5</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">PE data returned by the streamtool capturestate
+command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and
+describes the type of data that is returned by the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+capturestate</span> command for the processing elements that are
+running in an application job.</p></span></caption><colgroup><col style="width:20.3125%"/><col style="width:10.9375%"/><col style="width:68.75%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">id</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The identifier of the PE.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">host</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The host that the PE is running on. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">processId</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The process ID associated with this PE.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The current state of the PE. For more information,
+see <a class="- topic/xref xref" href="ibminfospherestreams-pe-status.html" title="Use the Streams Console or streamtool commands to view the status of processing elements (PEs) in a Teracloud Streams instance.">Monitoring processing elements</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">reasonCode</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The reason code provides more information about
+the current state of the PE. For more information, see <a class="- topic/xref xref" href="ibminfospherestreams-pe-status.html" title="Use the Streams Console or streamtool commands to view the status of processing elements (PEs) in a Teracloud Streams instance.">Monitoring processing elements</a>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">requiredConnections</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">Indicates the health of the required connections
+for the PE. Possible values are:<dl class="- topic/dl dl" id="ibminfospherestreams-capturestate-results__health-states" data-ofbid="ibminfospherestreams-capturestate-results__health-states">
+<dt class="- topic/dt dt dlterm">connected</dt>
+<dd class="- topic/dd dd">All of the connections are connected.</dd>
+
+<dt class="- topic/dt dt dlterm">partiallyConnected</dt>
+<dd class="- topic/dd dd">One or more connections are still trying to connect.  </dd>
+
+<dt class="- topic/dt dt dlterm">disconnected</dt>
+<dd class="- topic/dd dd">All connections are still trying to connect or the PE is stopped.</dd>
+
+<dt class="- topic/dt dt dlterm">unknown</dt>
+<dd class="- topic/dd dd">The <span class="- topic/keyword keyword">domain controller service</span> cannot be contacted to determine the current state of the connections. </dd>
+</dl></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">optionalConnections</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">Indicates the health of the optional connections for the PE. Possible values
+are:<dl class="- topic/dl dl">
+<dt class="- topic/dt dt dlterm">connected</dt>
+<dd class="- topic/dd dd">All of the connections are connected.</dd>
+
+<dt class="- topic/dt dt dlterm">partiallyConnected</dt>
+<dd class="- topic/dd dd">One or more connections are still trying to connect.  </dd>
+
+<dt class="- topic/dt dt dlterm">disconnected</dt>
+<dd class="- topic/dd dd">All connections are still trying to connect or the PE is stopped.</dd>
+
+<dt class="- topic/dt dt dlterm">unknown</dt>
+<dd class="- topic/dd dd">The <span class="- topic/keyword keyword">domain controller service</span> cannot be contacted to determine the current state of the connections. </dd>
+</dl></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">healthSummary</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">A summary of the overall health of the PE. The
+health summary is based on the PE's state and the state of the connections
+within the PE. Possible values are:<dl class="- topic/dl dl">
+<dt class="- topic/dt dt dlterm">healthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__pe-healthy">Indicates that the PE is running and all of
+the required and optional connections are connected.</span></dd>
+
+<dt class="- topic/dt dt dlterm">partiallyHealthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__pe-parthealthy">Indicates that the PE is running and all
+of the required connections are connected, but some of the optional
+connections are in the process of being connected. </span></dd>
+
+<dt class="- topic/dt dt dlterm">partiallyUnhealthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__pe-partunhealthy">Indicates that the PE is not stopped
+or in the process of stopping, but either the state is not running
+or some required connections are not yet connected. <span class="- topic/ph ph">This
+health summary value can also occur when the PE state is unknown.</span></span></dd>
+
+<dt class="- topic/dt dt dlterm">unhealthy</dt>
+<dd class="- topic/dd dd"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__pe-unhealthy">Indicates that the PE is stopped or is in
+the process of stopping.</span></dd>
+</dl></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">isMetricsStale</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">A Boolean value that indicates that the metrics
+available for this PE were not retrieved on the most recent metrics
+collection interval. Data from a previous metrics collection interval
+is provided. The frequency of metric collections is managed by the <span class="+ topic/keyword pr-d/parmname keyword parmname">hc.metricCollectionInterval</span> instance configuration
+property.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">lastMetricCollection</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The last metric collection period that the PE reported metrics to the <span class="- topic/keyword keyword">domain controller service</span>. This information is included if metrics were requested. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">&lt;metric&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The list of metrics available for the PE. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">&lt;operator&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The set of operators that is running in this PE.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">&lt;inputPort&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The set of input ports for the PE.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__1">&lt;outputPort&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-pe-data__entry__3">The set of output ports for the PE.</td>
+</tr>
+</tbody></table></div><p class="- topic/p p">Each <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">&lt;pe&gt;</samp> element contains
+a set of &lt;operator&gt; elements, which represent the operators that
+are running in the PE. The operator data is described in the following
+table.</p><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-operator-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-operator-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 6</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Operator
+data returned by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of data
+that is returned by the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command
+for the operators that are running in a processing element (PE).</p></span></caption><colgroup><col style="width:16.60377358490566%"/><col style="width:8.30188679245283%"/><col style="width:75.09433962264151%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__1">name</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__3">The name of the operator. If the operator is
+parallelized, the channelIndex value is encoded in the name.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__1">logicalName</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__3">The name of the logical operator. If the operator
+is not parallelized, the logicalName is the same as the name.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__1">&lt;parallelChannel&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__3">The list of channels of the parallel regions that are used to route tuple data
+for this operator. The returned channel information is ordered with the innermost region information
+first and the outermost last. The list is empty if the operator is not parallelized.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__1">&lt;metric&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__3">The set of metrics available for the operator.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__1">&lt;inputPort&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__3">The input ports for the operator.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__1">&lt;outputPort&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-operator-data__entry__3">The output ports for the operator.</td>
+</tr>
+</tbody></table></div>
+<p class="- topic/p p">The command returns a set of &lt;parallelChannel&gt; elements, which represent the channels of the
+parallel regions that are used to route tuple data for this operator. The data for the elements is
+described in the following table.</p>
+<div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__table_parallel_channel" data-ofbid="ibminfospherestreams-capturestate-results__table_parallel_channel" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 7</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Parallel Channel element data returned by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc">
+<p class="- topic/p p summary">This table lists and describes the type of data that is returned by the
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command for the parallel channels for a processing
+element (PE) or operator.</p>
+</span></caption><colgroup><col style="width:16.10486891385768%"/><col style="width:8.614232209737828%"/><col style="width:75.28089887640449%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__1">index</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__3">The channel index within the parallel region.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__1">logicalName</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__table_parallel_channel__entry__3"><span class="- topic/ph ph">The logical name of the parallelized operator that introduces the
+region.</span></td>
+</tr>
+</tbody></table></div><p class="- topic/p p">The command returns a set of &lt;inputPort&gt; elements, which
+represent the input ports for the PE or operator. The data for each
+input port is described in the following table.</p><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-input-port-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-input-port-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 8</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Input port data
+returned by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of data
+that is returned by the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command
+for the input ports for a processing element (PE) or operator.</p></span></caption><colgroup><col style="width:16.10486891385768%"/><col style="width:8.614232209737828%"/><col style="width:75.28089887640449%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__1">index</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__3">The index of the input port. For operators,
+the ports are numbered by the order that they appear in an input specification
+on an operator.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__1">name</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__3"><span class="- topic/ph ph" id="ibminfospherestreams-capturestate-results__port-name">The name of the port alias
+that is specified in the SPL source file, if it exists. If it does
+not exist, it is the unqualified local name that is used for the port
+on the operator invocation.</span></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__1">&lt;metric&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-input-port-data__entry__3">The set of metrics available for this input
+port.</td>
+</tr>
+</tbody></table></div><div class="- topic/p p">The command returns a set of &lt;outputPort&gt; elements,
+which represent the output ports for the PE or operator. The data
+for each output port is described in the following table.<div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-output-port-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-output-port-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 9</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Output port data
+returned by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of data
+that is returned by the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command
+for the output ports for a processing element (PE) or operator.</p></span></caption><colgroup><col style="width:15.555555555555555%"/><col style="width:8.88888888888889%"/><col style="width:75.55555555555556%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__1">index</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__3">The index of the output port. For operators,
+the ports are numbered by the order that they appear in an output
+specification on an operator.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__1">streamName</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__3">The name of the stream that is associated with
+this output port.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__1">name</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__3"><span class="- topic/ph ph">The name of the port alias
+that is specified in the SPL source file, if it exists. If it does
+not exist, it is the unqualified local name that is used for the port
+on the operator invocation.</span></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__1">&lt;metric&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__3">The set of metrics available for this output
+port.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__1">&lt;connection&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-output-port-data__entry__3">Connections from the PE output port to other PE
+input ports.</td>
+</tr>
+</tbody></table></div></div><div class="- topic/p p">The command returns a set of &lt;connection&gt; elements,
+which represent the connections for the PE. The data for each connection
+is described in the following table.<div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-connection-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-connection-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 10</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Connection data
+returned by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of data
+that is returned by the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command
+for the connections for a processing element (PE).</p></span></caption><colgroup><col style="width:15.555555555555555%"/><col style="width:8.88888888888889%"/><col style="width:75.55555555555556%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__1">inputPeId</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__3">The ID of the PE that is the target of this
+connection.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__1">inputPortIndex</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__3">The port for the input PE that is the target
+of this connection.</td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__1">state</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__3">The connection state. Possible values are:<ul class="- topic/ul ul">
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Closed</samp>: The connection was shut down
+because one of the connection endpoints stopped.</li>
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Connected</samp>:  The connection ports
+are connected.</li>
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Connecting</samp>:  The connection ports
+initiated the connection, but the connection is not established yet.</li>
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Disconnected</samp>:  The connection ports
+are disconnected. In this case, unless the PE that initiated the connection
+shuts down, it tries to reconnect.</li>
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Initial</samp>:  The connection ports did
+not initiate a connection yet.</li>
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Unknown</samp>: The <span class="- topic/keyword keyword">application manager service</span> cannot determine the current state of the connection.</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__1">required</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__2">all</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__3">Whether the connection is required for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> to start processing messages. Possible values are:<ul class="- topic/ul ul">
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">true</samp> for a required connection (static)</li>
+<li class="- topic/li li"><samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">false</samp> for an optional connection (dynamic)</li>
+</ul></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__1">&lt;metric&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-connection-data__entry__3">The set of metrics available for this connection.</td>
+</tr>
+</tbody></table></div></div></section>
+
+<section class="- topic/section section" id="ibminfospherestreams-capturestate-results__performance-data" data-ofbid="ibminfospherestreams-capturestate-results__performance-data"><h2 class="- topic/title title sectiontitle"><span class="- topic/ph ph">Metrics data</span></h2><div class="- topic/p p">If
+you specify the <span class="+ topic/keyword pr-d/parmname keyword parmname">--select hosts=all</span>, <span class="+ topic/keyword pr-d/parmname keyword parmname">hosts=metrics</span>, <span class="+ topic/keyword pr-d/parmname keyword parmname">jobs=all</span>,
+or <span class="+ topic/keyword pr-d/parmname keyword parmname">jobs=metrics</span> command parameters, the instance
+contains a &lt;metric&gt; element under the &lt;host&gt;, &lt;pe&gt;, &lt;operator&gt;, &lt;inputPort&gt;,
+or &lt;outputPort&gt;. <ul class="- topic/ul ul">
+<li class="- topic/li li">For a description of host data, see <a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__capturestate-host-data" title="This table lists and describes the type of data that is returned by the streamtool capturestate command for a Teracloud Streams resource.">Table 2</a>. </li>
+<li class="- topic/li li">For a description of PE data, see <a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__capturestate-pe-data" title="This table lists and describes the type of data that is returned by the streamtool capturestate command for the processing elements that are running in an application job.">Table 5</a>.</li>
+<li class="- topic/li li">For a description of operator data, see <a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__capturestate-operator-data" title="This table lists and describes the type of data that is returned by the streamtool capturestate command for the operators that are running in a processing element (PE).">Table 6</a>.</li>
+<li class="- topic/li li">For a description of port data, see <a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__capturestate-input-port-data" title="This table lists and describes the type of data that is returned by the streamtool capturestate command for the input ports for a processing element (PE) or operator.">Table 8</a> and <a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__capturestate-output-port-data" title="This table lists and describes the type of data that is returned by the streamtool capturestate command for the output ports for a processing element (PE) or operator.">Table 9</a>.</li>
+</ul></div><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__capturestate-metrics-data" data-ofbid="ibminfospherestreams-capturestate-results__capturestate-metrics-data" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 11</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Metrics
+data returned by the streamtool capturestate command</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">This table lists and describes the type of metrics data that is returned by
+the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool capturestate</span> command for a resource and its components.</p></span></caption><colgroup><col style="width:19.305019305019304%"/><col style="width:10.424710424710424%"/><col style="width:70.27027027027027%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__1">Field</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__2">Select type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__3">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__1">name</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__3">The name of the metric.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__1">lastChangeObserved</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__3">The last time the metric was changed by the <span class="- topic/keyword keyword">domain controller service</span>. The time is represented in seconds since the epoch.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__1">userDefined</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__3">A value of <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">true</samp> indicates that the metric was
+defined by an operator. If <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">false</samp>, the metric is managed by <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__1">&lt;metricValue&gt;</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__2">metrics</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__capturestate-metrics-data__entry__3">The value of the metric. Each metric value contains
+the following information:<dl class="- topic/dl dl">
+<dt class="- topic/dt dt dlterm">xsi:type</dt>
+<dd class="- topic/dd dd">The type of the metric value. All metrics are of type <span class="+ topic/keyword pr-d/parmname keyword parmname">streams:longType</span>,
+which represents a signed long data type. This data type is equivalent
+to an int64 in SPL.</dd>
+
+<dt class="- topic/dt dt dlterm">value</dt>
+<dd class="- topic/dd dd">The actual value of the metric.</dd>
+</dl></td>
+</tr>
+</tbody></table></div><div class="- topic/note note note note_note"><span class="note__title">Note:</span> In
+addition to the predefined metrics in <a class="- topic/xref xref" href="#ibminfospherestreams-capturestate-results__streams-predefined-metrics" title="This table lists and describes the host, processing element (PE), operator, and connection metrics that are predefined by Teracloud Streams.">Table 12</a>,
+each operator can also provide customized operator metrics. For more
+information, see the reference information for the operator.</div><div class="table-container"><table class="- topic/table table table--pgwide-1" id="ibminfospherestreams-capturestate-results__streams-predefined-metrics" data-ofbid="ibminfospherestreams-capturestate-results__streams-predefined-metrics" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 12</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Metrics that are predefined by <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span></span><span class="- topic/desc desc tabledesc">
+<p class="- topic/p p summary">This table lists and describes the host, processing element (PE), operator,
+and connection metrics that are predefined by <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>.</p>
+</span></caption><colgroup><col style="width:33.33333333333333%"/><col style="width:66.66666666666666%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">Metric name</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent element:</strong> &lt;host&gt;</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">cpuSpeed</td>
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The speed of the CPU as represented by the BogoMips computed by the <span class="- topic/tm tm">Linux<span class="- topic/tmmark tmmark ">™</span></span> kernel if <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> is running on bare metal or on virtual systems. On Kubernetes all the system CPUs are visible but
+a pod can use only the limited (requested) number of CPUs. For example, a system has 56 CPUs but the
+pod has only two. The basis for the calculation is still 56. This means the displayed value as a
+measure for the "power of the host/resource" is too high. The real value of the resource in this
+example is 2 (number of  CPUs for this pod)/56 (number of CPUs) of the displayed value.</td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">cpuUtilization
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The CPU utilization for the past minute.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">loadAverage</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The load average for the past minute. This average is the system-reported load
+average multiplied by 100. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">memoryTotal</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The total memory (KB).</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">memoryUtilization </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The memory utilization (KB).</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">networkSpeed
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The network speed (MB/second). </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">networkUtilization
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The network utilization for the past minute.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nProcessors</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of processors for the resource.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent element:</strong> &lt;pe&gt;</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nCpuMilliseconds</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">CPU time that was used by the PE, in milliseconds (user and kernel).</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nMemoryConsumption</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">Memory consumption (resident, text, and data) that was used by the PE
+(KB).</td>
+</tr>
+<tr class="- topic/row">
+
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nResidentMemoryConsumption</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">Resident memory consumption that was used by the PE (KB).</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent element:</strong> &lt;pe&gt;/&lt;inputPort&gt;</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nFinalPunctsProcessed</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of final punctuations that were processed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTupleBytesProcessed</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuple bytes that were processed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesProcessed</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuples that were processed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nWindowPunctsProcessed</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of window punctuations that were processed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent element:</strong> &lt;pe&gt;/&lt;outputPort&gt;</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nBrokenConnections</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">A count of previously established connections that were later detected as
+being broken. This value is an incrementing counter over the lifetime of a PE's current
+process.</td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nConnections</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of connections to this output port.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nFinalPunctsSubmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of final punctuations that were submitted.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nOptionalConnecting</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The current number of optional connections that are not connected and are in
+the process of connecting to their receiver.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nRequiredConnecting</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The current number of required connections that are not connected and are in
+the process of connecting to their receiver.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTupleBytesSubmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of bytes that were submitted.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTupleBytesTransmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The total number of bytes that were transmitted to all connected PEs.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesSubmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuples that were submitted.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesTransmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The total number of tuples that were transmitted to all connected PEs.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nWindowPunctsSubmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of window punctuations that were submitted.</td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent element:</strong>
+&lt;pe&gt;/&lt;outputPort&gt;/&lt;connection&gt;</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">congestionFactor</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">An integer value (0 - 100) representing the relative congestion for the
+connection. A value of 0 indicates no congestion, and 100 indicates that the connection is extremely
+congested.</td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesFilteredOut</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuples that were not sent because they failed to meet the filter
+criteria.</td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent
+element:</strong> &lt;pe&gt;&lt;operator&gt; </td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">relativeOperatorCost  </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">An integer value (1 - 100) representing the relative computational cost of the
+operator compared to other operators within the same PE. A value of 1 indicates negligible cost
+compared to the other operators. A value of 100 indicates that almost all of the observed processing
+time is taken by this operator. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent element:</strong> &lt;operator&gt;/&lt;inputPort&gt;</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">maxItemsQueued</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The largest number of items queued for a threaded port, or <code class="+ topic/ph pr-d/codeph ph codeph">0</code>
+if the port is not threaded. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nEnqueueWaits</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of waits due to a full queue for a threaded port, or
+<code class="+ topic/ph pr-d/codeph ph codeph">0</code> if the port is not threaded. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nFinalPunctsProcessed</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of final punctuations that were processed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nFinalPunctsQueued</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of final punctuations that are queued.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesDropped</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuples that were dropped.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesProcessed</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuples that were processed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesQueued</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuples that are queued. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nWindowPunctsProcessed</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of window punctuations that were processed.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nWindowPunctsQueued</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of window punctuations that are queued.</td>
+</tr>
+<tr class="- topic/row">
+
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">queueSize</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The size of the queue for a threaded port, or 0 if the port is not
+threaded.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">recentMaxItemsQueued</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The recent largest number of items queued for a threaded port, where the
+number reported is the largest number in the current (not yet complete) and previous (completed)
+interval (given by recentMaxItemsQueuedInterval), or <code class="+ topic/ph pr-d/codeph ph codeph">0</code> if the port is not threaded. </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">recentMaxItemsQueuedInterval</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The interval in milliseconds used to determine the recent largest number of
+items queued for a threaded port, or <code class="+ topic/ph pr-d/codeph ph codeph">0</code> if the port is not threaded. Currently each
+interval is 5 minutes in duration.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1 ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2" colspan="2"><strong class="+ topic/ph hi-d/b ph b">Parent element:</strong> &lt;operator&gt;/&lt;outputPort&gt;</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nFinalPunctsSubmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of final punctuations that were submitted.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nTuplesSubmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of tuples that were submitted.</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__1">nWindowPunctsSubmitted</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-capturestate-results__streams-predefined-metrics__entry__2">The number of window punctuations that were submitted.</td>
+</tr>
+</tbody></table></div></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relconcepts" xml:lang="en-us" lang="en-us"><strong>Related concepts</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.welcome.doc/doc/services.html" title="When you start an Teracloud Streams domain, instance, or streams application, services start on the appropriate resources.">Domain and instance services</a></li></ul></div><div class="- topic/linklist linklist relref" xml:lang="en-us" lang="en-us"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.dev.doc/doc/metricaccess.html" title="Metrics are simple counters maintained at run time, which can be read from outside of a running job in order to monitor statistics of interest. There are two types of metrics provided by the SPL language runtime, namely system and user-deﬁned metrics.">Metrics access</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/capturestate.html" title="The streamtool capturestate command captures the current state of the instance, including the state of objects in the system and the metrics available on those objects.">streamtool capturestate</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

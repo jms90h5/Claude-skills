@@ -1,0 +1,1318 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="The KafkaProducer operator is used to produce messages on Kafka topics. The operator can be configured to produce messages to one or more topics. Kafka Properties The operator uses Kafka's Producer ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_operator"/><title>Operator KafkaProducer</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_operator-d41691e66905"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaProducer.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/op$com.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_operator" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li><div class="topicref" data-id="spldoc_toolkit"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li><div class="topicref" data-id="spldoc_namespace"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ns$com.teracloud.streams.kafka.html">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka</span></a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_operator"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaProducer.html">Operator <span class="ph tt" style="font-family: monospace">KafkaProducer</span></a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_page-d41691e66780" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$1.html" id="spldoc_page-d41691e66780-link">Release notes</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e66788" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$2.html" id="spldoc_page-d41691e66788-link">Configuring operators to communicate with Kafka</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_page-d41691e66796" class="topicref" data-id="spldoc_page" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_page-d41691e66796-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$3.html" id="spldoc_page-d41691e66796-link">Common consumer patterns and use cases</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e66828" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$7.html" id="spldoc_page-d41691e66828-link">Improving throughput</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e66836" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$8.html" id="spldoc_page-d41691e66836-link">Consuming big messages</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_page-d41691e66844" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka$9.html" id="spldoc_page-d41691e66844-link">Consistent region support for consumer groups</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66852" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Namespace.html" id="spldoc_index-d41691e66852-link">Namespaces: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66860" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Operator.html" id="spldoc_index-d41691e66860-link">Operators: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66868" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Function.html" id="spldoc_index-d41691e66868-link">Functions: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e66876" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ix$Type.html" id="spldoc_index-d41691e66876-link">Types: com.teracloud.streams.kafka 5.0.1</a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_namespace-d41691e66885" class="topicref" data-id="spldoc_namespace" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_namespace-d41691e66885-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/ns$com.teracloud.streams.kafka.html" id="spldoc_namespace-d41691e66885-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_operator-d41691e66895" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaConsumer.html" id="spldoc_operator-d41691e66895-link">Operator <span class="ph tt" style="font-family: monospace">KafkaConsumer</span></a></div></div></li><li role="treeitem" class="active"><div data-tocid="spldoc_operator-d41691e66905" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaProducer.html" id="spldoc_operator-d41691e66905-link">Operator <span class="ph tt" style="font-family: monospace">KafkaProducer</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_compilationunit-d41691e66915" class="topicref" data-id="spldoc_compilationunit" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/spl$com.teracloud.streams.kafka$Functions.html" id="spldoc_compilationunit-d41691e66915-link">SPL File <span class="ph tt" style="font-family: monospace">Functions.spl</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_compilationunit-d41691e66925" class="topicref" data-id="spldoc_compilationunit" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/spl$com.teracloud.streams.kafka$Types.html" id="spldoc_compilationunit-d41691e66925-link">SPL File <span class="ph tt" style="font-family: monospace">Types.spl</span></a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Operator <span class="+ topic/ph hi-d/tt ph tt">KafkaProducer</span></h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section splprimop">
+  <img class="- topic/image image" src="../../image/tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaProducer.svg" width="872" height="112" alt="Primitive operator image not displayed. Problem loading file: ../../image/tk$com.teracloud.streams.kafka/op$com.teracloud.streams.kafka$KafkaProducer.svg"/>
+</section>
+<section class="- topic/section section">
+
+<p class="- topic/p p">The KafkaProducer operator is used to produce messages on Kafka topics. The operator can be configured to produce messages to one or more topics.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Kafka Properties
+</h2>
+
+<p class="- topic/p p">The operator uses Kafka's Producer API. As a result, it supports all Kafka properties that are supported by the underlying API. The producer properties for the Kafka producer can be found in the <a class="- topic/xref xref" href="https://kafka.apache.org/37/documentation/#producerconfigs" target="_blank" rel="external noopener">Apache Kafka documentation</a>.
+</p>
+<p class="- topic/p p">When you reference files within your application, which are bundled with the Streams application bundle, for example an SSL truststore or a key tab file for Kerberos authentication, you can use the <span class="+ topic/ph hi-d/tt ph tt">{applicationDir}</span> placeholder in the property values. Before the configs are passed to the Kafka client, the <span class="+ topic/ph hi-d/tt ph tt">{applicationDir}</span> placeholder is replaced by the application directory of the application. Examples how to use the placeholder are shown below.
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+ssl.truststore.location={applicationDir}/etc/myTruststore.jks
+</code></pre>
+or
+</div>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+sasl.jaas.config=com.ibm.security.auth.module.Krb5LoginModule required \
+    debug=true \
+    credsType=both \
+    useKeytab="{applicationDir}/etc/myKeytab.keytab" \
+    principal="kafka-client@EXAMPLE.DOMAIN.COM";
+</code></pre>
+
+</div>
+<p class="- topic/p p">The <span class="+ topic/ph hi-d/tt ph tt">{applicationDir}</span> placeholder can also be used to reference files that are configured as system properties, for example when you must specify the Kerberos client configuration, which is typically done for Linux servers system wide in <span class="+ topic/ph hi-d/tt ph tt">/etc/krb5.conf</span>.
+</p>
+<p class="- topic/p p">In containerized environments and in cloud infrastructures, you cannot configure a system file, however. In such a scenario you want to bundle the Kerberos config file with your application and pass the file as a system property to the Java Virtual Machine using the <strong class="+ topic/ph hi-d/b ph b">vmArg</strong> operator parameter like this:
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+vmArg: "-Djava.security.krb5.conf={applicationDir}/etc/krb5.conf";
+</code></pre>
+More about accessing a kerberized Kafka cluster can be found in the toolkit documentation].
+</div>
+<p class="- topic/p p">Properties can be specified in a file or in an application configuration. If specifying properties via a file, the <strong class="+ topic/ph hi-d/b ph b">propertiesFile</strong> parameter can be used. If specifying properties in an application configuration, the name of the application configuration can be specified using the <strong class="+ topic/ph hi-d/b ph b">appConfigName</strong> parameter.
+</p>
+<p class="- topic/p p">The only property that the user is required to set is the <span class="+ topic/ph hi-d/tt ph tt">bootstrap.servers</span> property, which points to the Kafka brokers, for example <span class="+ topic/ph hi-d/tt ph tt">kafka-0.mydomain:9092,kafka-1.mydomain:9092,kafka-2.mydomain:9092</span>. All other properties are optional.
+</p>
+<p class="- topic/p p">The operator sets some properties by default to enable users to quickly get started with the operator. The following lists which properties the operator sets by default: 
+</p>
+<div class="- topic/p p">
+<div class="table-container"><table class="- topic/table table" data-cols="2"><caption></caption><colgroup><col/><col/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">Property name
+</p>
+</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">Default Value
+</p>
+</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">client.id
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">Generated ID in the form: <span class="+ topic/ph hi-d/tt ph tt">P-J&lt;JobId&gt;-&lt;operator name&gt;</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">key.serializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">See <strong class="+ topic/ph hi-d/b ph b">Automatic Serialization</strong> section below
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">value.serializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">See <strong class="+ topic/ph hi-d/b ph b">Automatic Serialization</strong> section below
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">acks
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">Controls the durability of records that are sent. Adjusted to <span class="+ topic/ph hi-d/tt ph tt">all</span> when the <strong class="+ topic/ph hi-d/b ph b">guaranteeOrdering</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">true</span>, or when the <strong class="+ topic/ph hi-d/b ph b">consistentRegionPolicy</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">Transactional</span> in consistent region. Otherwise <span class="+ topic/ph hi-d/tt ph tt">acks</span> is unchanged. The value <span class="+ topic/ph hi-d/tt ph tt">0</span> (fire and forget) is not recommended.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">retries
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">When the <strong class="+ topic/ph hi-d/b ph b">guaranteeOrdering</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">true</span>, or when the <strong class="+ topic/ph hi-d/b ph b">consistentRegionPolicy</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">Transactional</span> in consistent region, <strong class="+ topic/ph hi-d/b ph b">retries</strong> is adjusted to a minimum of <span class="+ topic/ph hi-d/tt ph tt">1</span>.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">linger.ms
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">100</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">batch.size
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">32768</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">max.in.flight.requests.per.connection
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">Limited to <span class="+ topic/ph hi-d/tt ph tt">5</span> when <strong class="+ topic/ph hi-d/b ph b">guaranteeOrdering</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">true</span>, or when <strong class="+ topic/ph hi-d/b ph b">consistentRegionPolicy</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">Transactional</span> in consistent region. <span class="+ topic/ph hi-d/tt ph tt">10</span> in all other cases when unset.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">enable.idempotence
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">true</span> when <strong class="+ topic/ph hi-d/b ph b">guaranteeOrdering</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">true</span>, or when in consistent region and the <strong class="+ topic/ph hi-d/b ph b">consistentRegionPolicy</strong> parameter is <span class="+ topic/ph hi-d/tt ph tt">Transactional</span>.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">transactional.id
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">Randomly generated ID in the form: <span class="+ topic/ph hi-d/tt ph tt">tid-&lt;random_string&gt;</span> only when in consistent region and the <strong class="+ topic/ph hi-d/b ph b">consistentRegionPolicy</strong> parameter is set to <span class="+ topic/ph hi-d/tt ph tt">Transactional</span>.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">transaction.timeout.ms
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">adjusted to a minimum of <span class="+ topic/ph hi-d/tt ph tt">drain timeout + 120000 milliseconds</span>, but not greater than <span class="+ topic/ph hi-d/tt ph tt">900000</span>. Adjusted only when in consistent region and <strong class="+ topic/ph hi-d/b ph b">consistentRegionPolicy</strong> parameter is set to <span class="+ topic/ph hi-d/tt ph tt">Transactional</span>.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">metric.reporters
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">added to provided reporters: <span class="+ topic/ph hi-d/tt ph tt">com.teracloud.streams.kafka.clients.producer.ProducerMetricsReporter</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">metrics.sample.window.ms
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p">adjusted to <span class="+ topic/ph hi-d/tt ph tt">10000</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">client.dns.lookup
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">use_all_dns_ips</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">reconnect.backoff.max.ms
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">10000</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">reconnect.backoff.ms
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">250</span>
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__1" colspan="1">
+<p class="- topic/p p">retry.backoff.ms
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__2" colspan="1">
+<p class="- topic/p p"><span class="+ topic/ph hi-d/tt ph tt">500</span>
+</p>
+</td>
+</tr>
+</tbody></table></div>
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">NOTE:</strong> Although properties are adjusted, users can override any of the above properties by explicitly setting the property value in either a properties file or in an application configuration.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Kafka Properties via Application Configuration
+</h2>
+
+<p class="- topic/p p">Users can specify Kafka properties using Streams' application configurations. Information on configuring application configurations can be found here: Creating application configuration objects to securely store data. Each property set in the application configuration will be loaded as a Kafka property. For example, to specify the bootstrap servers that the operator should connect to, an app config property named <span class="+ topic/ph hi-d/tt ph tt">bootstrap.servers</span> should be created.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Automatic Serialization
+</h2>
+
+<p class="- topic/p p">The operator will automatically select the appropriate serializers for the key and message based on their types. The following table outlines which deserializer will be used given a particular type: 
+</p>
+<div class="- topic/p p">
+<div class="table-container"><table class="- topic/table table" data-cols="2"><caption></caption><colgroup><col/><col/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="spldoc_operator__entry__37" colspan="1">
+<p class="- topic/p p">Serializer
+</p>
+</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="spldoc_operator__entry__38" colspan="1">
+<p class="- topic/p p">SPL Types
+</p>
+</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__37" colspan="1">
+<p class="- topic/p p">org.apache.kafka.common.serialization.StringSerializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__38" colspan="1">
+<p class="- topic/p p">rstring
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__37" colspan="1">
+<p class="- topic/p p">org.apache.kafka.common.serialization.IntegerSerializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__38" colspan="1">
+<p class="- topic/p p">int32, uint32
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__37" colspan="1">
+<p class="- topic/p p">org.apache.kafka.common.serialization.LongSerializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__38" colspan="1">
+<p class="- topic/p p">int64, uint64
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__37" colspan="1">
+<p class="- topic/p p">org.apache.kafka.common.serialization.FloatSerializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__38" colspan="1">
+<p class="- topic/p p">float32
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__37" colspan="1">
+<p class="- topic/p p">org.apache.kafka.common.serialization.DoubleSerializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__38" colspan="1">
+<p class="- topic/p p">float64
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__37" colspan="1">
+<p class="- topic/p p">org.apache.kafka.common.serialization.ByteArraySerializer
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__38" colspan="1">
+<p class="- topic/p p">blob
+</p>
+</td>
+</tr>
+</tbody></table></div>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Following metrics created by the Kafka producer client are exposed as custom metrics:
+</h2>
+
+<div class="- topic/p p">
+<div class="table-container"><table class="- topic/table table" data-cols="2"><caption></caption><colgroup><col/><col/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">Custom Metric
+</p>
+</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">Description
+</p>
+</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">connection-count
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The current number of active connections.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">compression-rate-avg
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average compression rate of record batches (as percentage, 100 means no compression).
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">topic</em>:compression-rate
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average compression rate of record batches for a topic (as percentage, 100 means no compression).
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">record-queue-time-avg
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average time in ms record batches spent in the send buffer.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">record-queue-time-max
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The maximum time in ms record batches spent in the send buffer.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">record-send-rate
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average number of records sent per second.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">record-retry-total
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The total number of retried record sends
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">topic</em>:record-send-total
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The total number of records sent for a topic.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">topic</em>:record-retry-total
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The total number of retried record sends for a topic
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p"><em class="+ topic/ph hi-d/i ph i">topic</em>:record-error-total
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The total number of record sends that resulted in errors for a topic
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">records-per-request-avg
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average number of records per request.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">requests-in-flight
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The current number of in-flight requests awaiting a response.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">request-rate
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The number of requests sent per second
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">request-size-avg
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average size of requests sent.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">request-latency-avg
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average request latency in ms
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">request-latency-max
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The maximum request latency in ms
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">batch-size-avg
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The average number of bytes sent per partition per-request.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">outgoing-byte-rate
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The number of outgoing bytes sent to all servers per second
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">bufferpool-wait-time-total
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The total time an appender waits for space allocation in nanoseconds.
+</p>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__51" colspan="1">
+<p class="- topic/p p">buffer-available-bytes
+</p>
+</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="spldoc_operator__entry__52" colspan="1">
+<p class="- topic/p p">The total amount of buffer memory that is not being used (either unallocated or in the free list).
+</p>
+</td>
+</tr>
+</tbody></table></div>
+</div>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Checkpointing behavior in an autonomous region
+</h2>
+
+<p class="- topic/p p">A <span class="+ topic/ph hi-d/tt ph tt">config checkpoint</span> clause has no effect to the operator.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Consistent Region Strategy
+</h2>
+
+<p class="- topic/p p">The producer operator can participate in a consistent region. The operator cannot be the start of a consistent region. When the consistent region drains, the operator flushes all accumulated outstanding records to the Kafka cluster.
+</p>
+<p class="- topic/p p">The operator supports <em class="+ topic/ph hi-d/i ph i">non-transactional</em> (default behavior) and <em class="+ topic/ph hi-d/i ph i">transactional</em> message delivery. The delivery can be controlled by the <strong class="+ topic/ph hi-d/b ph b">consistentRegionPolicy</strong> parameter. 
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle"><em class="+ topic/ph hi-d/i ph i">Non-transactional</em> delivery
+</h2>
+
+<p class="- topic/p p">If the operator crashes or is reset while in a consistent region, the operator will write all tuples replayed. This ensures that every tuple sent to the operator will be written to the topic(s). However, <em class="+ topic/ph hi-d/i ph i">non-transactional</em> message delivery implies that duplicate messages may be written to the topic(s).
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle"><em class="+ topic/ph hi-d/i ph i">Transactional</em> delivery
+</h2>
+
+<p class="- topic/p p">Messages are always inserted into a topic within the context of a transaction. Transactions are committed when the operator checkpoints. If the operator crashes or is reset while in a consistent region, the operator will abort an ongoing transaction and write all tuples replayed within a new transaction. External consumers configured with <span class="+ topic/ph hi-d/tt ph tt">isolation.level=read_committed</span> will not read the duplicates from the aborted transactions. Consumers that use a different isolation level will read duplicate messages as if they were produced without being part of a transaction.
+</p>
+<p class="- topic/p p">For consumers that read the output topics with <span class="+ topic/ph hi-d/tt ph tt">isolation.level=read_committed</span>, the transactional producer minimizes number if duplicate messages with the downside that the produced messages are only visible at the checkpoint interval, which can be interpreted as additional latency.
+</p>
+<p class="- topic/p p">A consumer that reads the output topics with <span class="+ topic/ph hi-d/tt ph tt">isolation.level=read_committed</span> can read duplicate messages when the consistent region fails after the Kafka transaction has been committed, but before the region has reached a consistent state.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">NOTE 1:</strong> Transactions in Kafka have an inactivity timeout, which is configured by the producer property <span class="+ topic/ph hi-d/tt ph tt">transaction.timeout.ms</span>. This timeout is adjusted by the operator to a minimum of the drain timeout plus 120 seconds. The maximum value of this property is limited by the server property <span class="+ topic/ph hi-d/tt ph tt">transaction.max.timeout.ms</span>, which has a default value of 900000. The operator opens a transaction when the first tuple of a consistent cut is processed. Every tuple being processed resets the inactivity timer.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Error Handling
+</h2>
+
+<p class="- topic/p p">Many exceptions thrown by the underlying Kafka API are considered fatal. In the event that Kafka throws a <strong class="+ topic/ph hi-d/b ph b">retriable exception</strong>, the operator behaves different when used in consistent region or not. When used in a consistent region, the operator initiates a reset of the consistent region. The reset processing will instantiate a new Kafka producer within the operator.
+</p>
+<p class="- topic/p p">When the operator is not used within a consistent region, the operator tries to recover internally by instantiating a new Kafka producer within the operator and resending all producer records, which are not yet acknowledged. Records that fail two producer generations are considered being finally failed. The corresponding tuple is counted in the custom metric <span class="+ topic/ph hi-d/tt ph tt">nFailedTuples</span>, and, if the operator is configured with an output port, an output tuple is submitted.
+</p>
+<p class="- topic/p p">In the event that Kafka throws a <strong class="+ topic/ph hi-d/b ph b">non-retriable exception</strong>, the tuple that caused the exception is counted in the custom metric <span class="+ topic/ph hi-d/tt ph tt">nFailedTuples</span>, and, if the operator is configured with an output port, an output tuple is submitted.
+</p>
+<p class="- topic/p p">Some exceptions can be retried by Kafka itself, such as those that occur due to network error. Therefore, it is not recommended to set the KafkaProducer <span class="+ topic/ph hi-d/tt ph tt">retries</span> property to 0 to disable the producer's retry mechanism.
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Summary</h2>
+
+<dl class="- topic/dl dl" compact="compact">
+ 
+  <dt class="- topic/dt dt dlterm">Ports</dt>
+  <dd class="- topic/dd dd">This operator has 1 input port and 1 output port.</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Windowing</dt>
+  <dd class="- topic/dd dd">This operator does not accept any windowing configurations.</dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Parameters</dt>
+  <dd class="- topic/dd dd">This operator supports 16 parameters.
+<p class="- topic/p p"> Optional: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__appConfigName">appConfigName</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__clientId">clientId</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__consistentRegionPolicy">consistentRegionPolicy</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__flush">flush</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__guaranteeOrdering">guaranteeOrdering</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__keyAttribute">keyAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__krb5Debug">krb5Debug</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__messageAttribute">messageAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__outputErrorsOnly">outputErrorsOnly</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__partitionAttribute">partitionAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__propertiesFile">propertiesFile</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__sslDebug">sslDebug</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__timestampAttribute">timestampAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__topic">topic</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__topicAttribute">topicAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__userLib">userLib</a>
+
+</p></dd>
+ 
+ 
+  <dt class="- topic/dt dt dlterm">Metrics</dt>
+  <dd class="- topic/dd dd">This operator reports 4 metrics.</dd>
+ 
+</dl></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Properties</h2>
+
+<dl class="- topic/dl dl" compact="compact">
+ 
+  <dt class="- topic/dt dt dlterm">Implementation</dt>
+  <dd class="- topic/dd dd">Java</dd>
+ 
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set">Input Ports</a></strong></p><dl class="- topic/dl dl">
+  
+   <dt class="- topic/dt dt dlterm">Ports (0)</dt>
+   <dd class="- topic/dd dd">
+
+<p class="- topic/p p">This port consumes tuples to be written to the Kafka topic(s). Each tuple received on this port will be written to the Kafka topic(s).
+</p>   </dd>
+  
+    
+      <dt class="- topic/dt dt dlterm">Properties</dt>
+      <dd class="- topic/dd dd">
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__optional">Optional</a>: false
+     </li>
+   </ul>
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__controlport">ControlPort</a>: false
+</li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__windowingmode">WindowingMode</a>: NonWindowed
+</li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__input_port_set__windowpunctuationinputmode">WindowPunctuationInputMode</a>: Oblivious
+</li>
+   </ul>
+      </dd>
+    
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set">Output Ports</a></strong></p><dl class="- topic/dl dl">
+  
+     <dt class="- topic/dt dt dlterm">Assignments</dt>
+       <dd class="- topic/dd dd">Java operators do not support output assignments.
+       </dd>
+  
+</dl>
+<dl class="- topic/dl dl">
+  
+   <dt class="- topic/dt dt dlterm">Ports (0)</dt>
+   <dd class="- topic/dd dd">
+
+<p class="- topic/p p">This port is an optional output port. Dependent on the <strong class="+ topic/ph hi-d/b ph b">outputErrorsOnly</strong> parameter, the output stream includes only tuples for input tuples that failed to get published on one or all of the specified topics, or it contains tuples corresponding to <em class="+ topic/ph hi-d/i ph i">all</em> input tuples, successfully produced ones and failed tuples.
+</p>
+<p class="- topic/p p">The output port is asynchronous to the input port of the operator. The sequence of the submitted tuples may also differ from the sequence of the input tuples. Window punctuations from the input stream are not forwarded.
+</p>
+<p class="- topic/p p">The schema of the output port must consist of one optional attribute of tuple type with the same schema as the input port and one optional attribute of type <span class="+ topic/ph hi-d/tt ph tt">rstring</span>, <span class="+ topic/ph hi-d/tt ph tt">ustring</span>, <span class="+ topic/ph hi-d/tt ph tt">optional&lt;rstring&gt;</span>, or <span class="+ topic/ph hi-d/tt ph tt">optional&lt;ustring&gt;</span>, that takes a JSON formatted description of the occured error, or remains <em class="+ topic/ph hi-d/i ph i">empty</em> for successfully produced tuples. Emptiness of the attribute means that the attribute contains a string with zero length when declared as <span class="+ topic/ph hi-d/tt ph tt">rstring</span> or <span class="+ topic/ph hi-d/tt ph tt">ustring</span>, and an empty optional (optional without a value) when declared as optional. Both attributes can have any names and can be declared in any order in the schema.
+</p>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example for declaring the output stream as error output:</strong>
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+stream &lt;Inp failedTuple, rstring failure&gt; Errors = KafkaProducer (Data as Inp) {
+    ...
+}
+</code></pre>
+<strong class="+ topic/ph hi-d/b ph b">Example of the failure description</strong>, which would go into the <em class="+ topic/ph hi-d/i ph i">failure</em> attribute above:
+</div>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+{
+    "failedTopics":["topic1"],
+    "lastExceptionType":"org.apache.kafka.common.errors.TopicAuthorizationException",
+    "lastFailure":"Not authorized to access topics: [topic1]"
+}
+</code></pre>
+Please note that the generated JSON does not contain line breaks as in the example above, where the JSON has been broken into multiple lines to better show its structure.
+</div>
+<p class="- topic/p p"><strong class="+ topic/ph hi-d/b ph b">Example for declaring the output stream for both successfully produced input tuples and failures:</strong>
+</p>
+<div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+stream &lt;Inp inTuple, optional&lt;rstring&gt; failure&gt; ProduceStatus = KafkaProducer (Data as Inp) {
+    param
+        outputErrorsOnly: false;
+    ...
+}
+</code></pre>
+
+</div>
+<p class="- topic/p p"></p>
+   <dl class="- topic/dl dl">
+    
+      <dt class="- topic/dt dt dlterm">Properties</dt>
+      <dd class="- topic/dd dd">
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__optional">Optional</a>: true
+     </li>
+   </ul>
+   <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__output_port_set__windowpunctuationoutputmode">WindowPunctuationOutputMode</a>: Free
+     </li>
+   </ul>
+      </dd>
+    
+   </dl>
+   <p class="- topic/p p"></p>
+   </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters">Parameters</a></strong></p>This operator supports 16 parameters.
+<p class="- topic/p p"> Optional: 
+<a class="- topic/xref xref" href="#spldoc_operator__parameter__appConfigName">appConfigName</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__clientId">clientId</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__consistentRegionPolicy">consistentRegionPolicy</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__flush">flush</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__guaranteeOrdering">guaranteeOrdering</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__keyAttribute">keyAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__krb5Debug">krb5Debug</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__messageAttribute">messageAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__outputErrorsOnly">outputErrorsOnly</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__partitionAttribute">partitionAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__propertiesFile">propertiesFile</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__sslDebug">sslDebug</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__timestampAttribute">timestampAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__topic">topic</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__topicAttribute">topicAttribute</a>, <a class="- topic/xref xref" href="#spldoc_operator__parameter__userLib">userLib</a>
+
+</p><dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__appConfigName" data-ofbid="spldoc_operator__parameter__appConfigName"><span class="+ topic/ph hi-d/tt ph tt">appConfigName</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the name of the application configuration containing Kafka properties.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__clientId" data-ofbid="spldoc_operator__parameter__clientId"><span class="+ topic/ph hi-d/tt ph tt">clientId</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the client ID that should be used when connecting to the Kafka cluster. The value specified by this parameter will override the <span class="+ topic/ph hi-d/tt ph tt">client.id</span> Kafka property if specified.
+</p>
+<p class="- topic/p p">Each operator must have a unique client ID. When operators are replicated by a parallel region, the channel-ID is automatically appended to the clientId to make the client-ID distinct for the parallel channels.
+</p>
+<p class="- topic/p p">If this parameter is not specified and the <span class="+ topic/ph hi-d/tt ph tt">client.id</span> Kafka property is not specified, the operator will create an ID with the pattern <span class="+ topic/ph hi-d/tt ph tt">C-J&lt;job-ID&gt;-&lt;operator name&gt;</span> for a consumer operator, and <span class="+ topic/ph hi-d/tt ph tt">P-J&lt;job-ID&gt;-&lt;operator name&gt;</span> for a producer operator.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__consistentRegionPolicy" data-ofbid="spldoc_operator__parameter__consistentRegionPolicy"><span class="+ topic/ph hi-d/tt ph tt">consistentRegionPolicy</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the policy to use when in a consistent region.
+</p>
+<p class="- topic/p p">When <span class="+ topic/ph hi-d/tt ph tt">NonTransactional</span> is specified, the operator guarantees that every tuple is written to the topic(s) at least once. When the consistent region resets, duplicates will most likely appear in the output topic(s). For consumers of the output topics, messages appears as they are produced.
+</p>
+<p class="- topic/p p"> When <span class="+ topic/ph hi-d/tt ph tt">Transactional</span> is specified, the operator will write tuples to the topic(s) within the context of a transaction. Transactions are commited when the operator checkpoints. This implies that downstream Kafka consumers may not see the messages until operator checkpoints. Transactional delivery minimizes (though not eliminates) duplicate messages for consumers of the output topics when they are configured with the consumer property <span class="+ topic/ph hi-d/tt ph tt">isolation.level=read_committed</span>. Consumers that read with the default isolation level <span class="+ topic/ph hi-d/tt ph tt">read_uncommitted</span> see all messages as they are produced. For these consumers, there is no difference between transactional and non-transactional message delivery.
+</p>
+<p class="- topic/p p">For backward compatibility, the parameter value <span class="+ topic/ph hi-d/tt ph tt">AtLeastOnce</span> can also be specified, but is deprecated and can be removed in a future version. <span class="+ topic/ph hi-d/tt ph tt">AtLeastOnce</span> is equivalent to <span class="+ topic/ph hi-d/tt ph tt">NonTransactional</span>.
+</p>
+<p class="- topic/p p">This parameter is ignored if the operator is not part of a consistent region. The default value is <span class="+ topic/ph hi-d/tt ph tt">NonTransactional</span>.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: com.teracloud.streams.kafka.clients.producer.ConsistentRegionPolicy
+ (<span class="+ topic/ph hi-d/tt ph tt">AtLeastOnce, NonTransactional, Transactional</span>)  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: CustomLiteral
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__flush" data-ofbid="spldoc_operator__parameter__flush"><span class="+ topic/ph hi-d/tt ph tt">flush</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the number of tuples, after which the producer is flushed. When not specified, or when the parameter value is not positive, the flush interval is adaptively  calculated to avoid queing times significantly over five seconds.
+</p>
+<p class="- topic/p p">Flushing the producer makes all buffered records immediately available to send to the server (even if <span class="+ topic/ph hi-d/tt ph tt">linger.ms</span> is greater than 0) and blocks on the completion of the requests associated with the buffered records. When a small value is specified, the batching of tuples to server requests and compression (if used) may get inefficient.
+</p>
+<p class="- topic/p p">Under normal circumstances, this parameter should be used only when the adaptive flush control gives not the desired results, for example when the custom metrics <strong class="+ topic/ph hi-d/b ph b">buffer-available-bytes</strong> goes very small and <strong class="+ topic/ph hi-d/b ph b">record-queue-time-max</strong> or <strong class="+ topic/ph hi-d/b ph b">record-queue-time-avg</strong> gets too high.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: int32
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__guaranteeOrdering" data-ofbid="spldoc_operator__parameter__guaranteeOrdering"><span class="+ topic/ph hi-d/tt ph tt">guaranteeOrdering</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">If set to true, the operator guarantees that the order of records within a topic partition is the same as the order of processed tuples when it comes to retries. This implies that the operator sets the <span class="+ topic/ph hi-d/tt ph tt">enable.idempotence</span> producer config automatically to <span class="+ topic/ph hi-d/tt ph tt">true</span>, <span class="+ topic/ph hi-d/tt ph tt">acks</span> to <span class="+ topic/ph hi-d/tt ph tt">all</span>, enables retries, and adjusts <span class="+ topic/ph hi-d/tt ph tt">max.in.flight.requests.per.connection</span> to an upper limit of 5.
+</p>
+<p class="- topic/p p">If unset, the default value of this parameter is <span class="+ topic/ph hi-d/tt ph tt">false</span>, which means that the order can change due to retries as long as the producer configuration <span class="+ topic/ph hi-d/tt ph tt">max.in.flight.requests.per.connection</span> is greater than 1.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__keyAttribute" data-ofbid="spldoc_operator__parameter__keyAttribute"><span class="+ topic/ph hi-d/tt ph tt">keyAttribute</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the input attribute that contains the Kafka key value. If not specified, the operator will look for an input attribute named <em class="+ topic/ph hi-d/i ph i">key</em>.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Attribute
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__krb5Debug" data-ofbid="spldoc_operator__parameter__krb5Debug"><span class="+ topic/ph hi-d/tt ph tt">krb5Debug</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">If Kerberos debugging is enabled, all Kerberos related protocol data and information is logged to the console. This setting is equivalent to <strong class="+ topic/ph hi-d/b ph b">vmArg: "-Dcom.ibm.security.krb5.Krb5Debug=all";</strong>. The default value for this parameter is <span class="+ topic/ph hi-d/tt ph tt">false</span>. The parameter is ignored when the <span class="+ topic/ph hi-d/tt ph tt">com.ibm.security.krb5.Krb5Debug</span> property is set via the <strong class="+ topic/ph hi-d/b ph b">vmArg</strong> parameter.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__messageAttribute" data-ofbid="spldoc_operator__parameter__messageAttribute"><span class="+ topic/ph hi-d/tt ph tt">messageAttribute</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the attribute on the input port that contains the message payload. If not specified, the operator will look for an input attribute named <em class="+ topic/ph hi-d/i ph i">message</em>. If this parameter is not specified and there is no input attribute named <em class="+ topic/ph hi-d/i ph i">message</em>, the operator will throw an exception and terminate.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Attribute
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__outputErrorsOnly" data-ofbid="spldoc_operator__parameter__outputErrorsOnly"><span class="+ topic/ph hi-d/tt ph tt">outputErrorsOnly</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">If set to <span class="+ topic/ph hi-d/tt ph tt">true</span>, the operator submits tuples to the optional output port only for the tuples that failed to produce. If set to <span class="+ topic/ph hi-d/tt ph tt">false</span>, the operator submits also tuples for the successfully produced input tuples.
+</p>
+<p class="- topic/p p">If unset, the default value of this parameter is <span class="+ topic/ph hi-d/tt ph tt">true</span>. This parameter is ignored when the operator is not configured with an output port.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__partitionAttribute" data-ofbid="spldoc_operator__parameter__partitionAttribute"><span class="+ topic/ph hi-d/tt ph tt">partitionAttribute</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the input attribute that contains the partition number that the message should be written to. If this parameter is not specified, the operator will look for an input attribute named <strong class="+ topic/ph hi-d/b ph b">partition</strong>. If the user does not indicate which partition the message should be written to, then Kafka's default partitioning strategy will be used instead (partition based on the specified partitioner or in a round-robin fashion).
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: int32
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Attribute
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__propertiesFile" data-ofbid="spldoc_operator__parameter__propertiesFile"><span class="+ topic/ph hi-d/tt ph tt">propertiesFile</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the name of the properties file containing Kafka properties. A relative path is always interpreted as relative to the <em class="+ topic/ph hi-d/i ph i">application directory</em> of the Streams application.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__sslDebug" data-ofbid="spldoc_operator__parameter__sslDebug"><span class="+ topic/ph hi-d/tt ph tt">sslDebug</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">If SSL/TLS protocol debugging is enabled, all SSL protocol data and information is logged to the console. This setting is equivalent to <strong class="+ topic/ph hi-d/b ph b">vmArg: "-Djavax.net.debug=true";</strong>. The default value for this parameter is <span class="+ topic/ph hi-d/tt ph tt">false</span>. The parameter is ignored when the <span class="+ topic/ph hi-d/tt ph tt">javax.net.debug</span> property is set via the <strong class="+ topic/ph hi-d/b ph b">vmArg</strong> parameter.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: boolean
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__timestampAttribute" data-ofbid="spldoc_operator__parameter__timestampAttribute"><span class="+ topic/ph hi-d/tt ph tt">timestampAttribute</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the attribute on the input port that contains the timestamp for the message. If not specified, the operator will look for an input attribute named <em class="+ topic/ph hi-d/i ph i">messageTimestamp</em>. If this parameter is not specified and there is no input attribute named <em class="+ topic/ph hi-d/i ph i">messageTimestamp</em>, the operator will use the timestamp provided by Kafka (broker config <span class="+ topic/ph hi-d/tt ph tt">log.message.timestamp.type=[CreateTime|LogAppendTime]</span>).
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: int64
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Attribute
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__topic" data-ofbid="spldoc_operator__parameter__topic"><span class="+ topic/ph hi-d/tt ph tt">topic</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the topic(s) that the producer should send messages to. The value of this parameter will take precedence over the <strong class="+ topic/ph hi-d/b ph b">topicAttribute</strong> parameter. This parameter will also take precedence if the input tuple schema contains an attribute named <em class="+ topic/ph hi-d/i ph i">topic</em>.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__topicAttribute" data-ofbid="spldoc_operator__parameter__topicAttribute"><span class="+ topic/ph hi-d/tt ph tt">topicAttribute</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Specifies the input attribute that contains the name of the topic that the message should be written to. If this parameter is not specified, the operator will look for an input attribute named <em class="+ topic/ph hi-d/i ph i">topic</em>. This parameter value is overridden if the <strong class="+ topic/ph hi-d/b ph b">topic</strong> parameter is specified.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__cardinality">Cardinality</a>: 1
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__expressionmode">ExpressionMode</a>: Attribute
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+
+<dt class="- topic/dt dt dlterm" id="spldoc_operator__parameter__userLib" data-ofbid="spldoc_operator__parameter__userLib"><span class="+ topic/ph hi-d/tt ph tt">userLib</span></dt>
+<dd class="- topic/dd dd">
+<p class="- topic/p p">Allows the user to specify paths to JAR files that should be loaded into the operators classpath. This is useful if the user wants to be able to specify their own partitioners or assignors. The value of this parameter can either point to a specific JAR file, or to a directory. In the case of a directory, the operator will load all files ending in <span class="+ topic/ph hi-d/tt ph tt">.jar</span> onto the classpath. By default, this parameter will load all jar files found in <span class="+ topic/ph hi-d/tt ph tt">&lt;application_dir&gt;/etc/libs</span>.
+</p><dl class="- topic/dl dl">
+
+ <dt class="- topic/dt dt dlterm">Properties </dt>
+ <dd class="- topic/dd dd">
+  <ul class="- topic/sl sl simple">
+  <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__type">Type</a>: rstring
+  </li>
+     <li class="- topic/sli sli"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__parameters__parameter__optional">Optional</a>: true
+     </li>
+  </ul>
+ </dd>
+
+</dl>
+</dd>
+
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics">Metrics</a></strong></p><dl class="- topic/dl dl">
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nFailedTuples</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Number of tuples that could not be produced for all topics
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nPendingTuples</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_gauge">Gauge</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Number of input tuples not yet produced (acknowledged from Kafka)
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">nQueueFullPause</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">Number times the input tuple processing was paused due to full tuple queue of pending tuples.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+  
+    <dt class="- topic/dt dt dlterm"><span class="+ topic/ph hi-d/tt ph tt">producerGeneration</span> - <a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__metrics_kind_counter">Counter</a></dt>
+    <dd class="- topic/dd dd">
+
+<p class="- topic/p p">The producer generation. When a new producer is created, a new generation is created.
+</p>
+     <p class="- topic/p p"></p>
+     </dd>
+  
+</dl>
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__dependencies">Libraries</a></strong></p>
+ <dl class="- topic/dl dl">
+ 
+  <dt class="- topic/dt dt dlterm">Operator class library
+  </dt>
+  <dd class="- topic/dd dd"></dd>
+  <dd class="- topic/dd dd ddexpand"><a class="- topic/xref xref" href="../references/OperatorModel.html#spldoc_reference_operator_model__context__dependencies__managedlibrary__libpath">Library Path</a>: <span class="+ topic/ph hi-d/tt ph tt">../../impl/lib/com.teracloud.streams.kafka.jar, ../../opt/downloaded/*, ../../impl/lib/*</span></dd>
+ 
+ </dl>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

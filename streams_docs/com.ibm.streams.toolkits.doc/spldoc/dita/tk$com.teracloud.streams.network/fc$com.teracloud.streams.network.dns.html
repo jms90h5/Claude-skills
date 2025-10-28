@@ -1,0 +1,921 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="This page documents native functions that can be invoked from SPL, including the SPL interfaces that can be used to invoke each of the native functions. Functions public uint32 CAPTURE_MICROSECONDS() ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_functions"/><title>C++ Native Functions: com.teracloud.streams.network.dns</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_functions-d41691e67388"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.dns.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/fc$com.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_functions" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li><div class="topicref" data-id="spldoc_toolkit"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li><div class="topicref" data-id="spldoc_namespace"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.dns.html">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.dns</span></a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_functions"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.dns.html">C++ Native Functions: <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.dns</span></a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_page-d41691e67258" class="topicref" data-id="spldoc_page" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network$1.html" id="spldoc_page-d41691e67258-link">Release notes</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67266" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Namespace.html" id="spldoc_index-d41691e67266-link">Namespaces: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67274" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Operator.html" id="spldoc_index-d41691e67274-link">Operators: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67282" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Function.html" id="spldoc_index-d41691e67282-link">Functions: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e67290" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ix$Type.html" id="spldoc_index-d41691e67290-link">Types: com.teracloud.streams.network 5.1.0</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67298" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67298-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.content.html" id="spldoc_namespace-d41691e67298-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.content</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67328" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67328-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.datetimeformat.html" id="spldoc_namespace-d41691e67328-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.datetimeformat</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_namespace-d41691e67348" class="topicref" data-id="spldoc_namespace" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_namespace-d41691e67348-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.dns.html" id="spldoc_namespace-d41691e67348-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.dns</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_operator-d41691e67358" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketDPDKSource.html" id="spldoc_operator-d41691e67358-link">Operator <span class="ph tt" style="font-family: monospace">DNSPacketDPDKSource</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_operator-d41691e67368" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketFileSource.html" id="spldoc_operator-d41691e67368-link">Operator <span class="ph tt" style="font-family: monospace">DNSPacketFileSource</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_operator-d41691e67378" class="topicref" data-id="spldoc_operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/op$com.teracloud.streams.network.dns$DNSPacketLiveSource.html" id="spldoc_operator-d41691e67378-link">Operator <span class="ph tt" style="font-family: monospace">DNSPacketLiveSource</span></a></div></div></li><li role="treeitem" class="active"><div data-tocid="spldoc_functions-d41691e67388" class="topicref" data-id="spldoc_functions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/fc$com.teracloud.streams.network.dns.html" id="spldoc_functions-d41691e67388-link">C++ Native Functions: <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.dns</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67398" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67398-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.domains.html" id="spldoc_namespace-d41691e67398-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.domains</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67428" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67428-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.enrichment.html" id="spldoc_namespace-d41691e67428-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.enrichment</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67469" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67469-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.filter.html" id="spldoc_namespace-d41691e67469-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.filter</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67499" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67499-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.geohash.html" id="spldoc_namespace-d41691e67499-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.geohash</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67519" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67519-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.ipv4.html" id="spldoc_namespace-d41691e67519-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.ipv4</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67539" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67539-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.ipv6.html" id="spldoc_namespace-d41691e67539-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.ipv6</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67559" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67559-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.location.html" id="spldoc_namespace-d41691e67559-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.location</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67589" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67589-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.mac.html" id="spldoc_namespace-d41691e67589-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.mac</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67609" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67609-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.misc.html" id="spldoc_namespace-d41691e67609-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.misc</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67629" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67629-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.parse.html" id="spldoc_namespace-d41691e67629-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.parse</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67689" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67689-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.rtp.html" id="spldoc_namespace-d41691e67689-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.rtp</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67709" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67709-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.sink.html" id="spldoc_namespace-d41691e67709-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.sink</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e67729" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e67729-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/ns$com.teracloud.streams.network.source.html" id="spldoc_namespace-d41691e67729-link">Namespace <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network.source</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">C++ Native Functions: <span class="+ topic/ph hi-d/tt ph tt">com.teracloud.streams.network.dns</span></h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section">
+This page documents native functions that can be invoked from SPL, including the SPL interfaces that can be used to invoke each of the native functions.
+</section>
+<section class="- topic/section section">
+<p class="- topic/p p splhead-1"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="../references/FunctionModel.html#spldoc_reference_function_model__functionset__functions">Functions</a></strong></p><dl class="- topic/dl dl" compact="compact">
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__CAPTURE_MICROSECONDS" data-ofbid="spldoc_functions__CAPTURE_MICROSECONDS"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 CAPTURE_MICROSECONDS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of microseconds since the value of the CAPTURE_SECONDS() function until the current packet was captured, according to the system clock on the machine that captured it.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__CAPTURE_SECONDS" data-ofbid="spldoc_functions__CAPTURE_SECONDS"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 CAPTURE_SECONDS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of seconds since the beginning of the Unix epoch (midnight on January 1st, 1970 in Greenwich, England) until the current packet was captured, according to the system clock on the machine that captured it.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__CAPTURE_TSC_MICROSECONDS" data-ofbid="spldoc_functions__CAPTURE_TSC_MICROSECONDS"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 CAPTURE_TSC_MICROSECONDS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the value of the machine's timestamp counter when the packet was  captured, that is, the number of microseconds since the machine was booted. Note that  unlike the CAPTURE_SECONDS() and CAPTURE_MICROSECONDS() functions, this function's value  is not relative to the Unix 'epoch'.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ADDITIONAL_CLASSES" data-ofbid="spldoc_functions__DNS_ADDITIONAL_CLASSES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_ADDITIONAL_CLASSES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'class' fields in the 'additional' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ADDITIONAL_COUNT" data-ofbid="spldoc_functions__DNS_ADDITIONAL_COUNT"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_ADDITIONAL_COUNT()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the number of 'additional' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ADDITIONAL_DATA" data-ofbid="spldoc_functions__DNS_ADDITIONAL_DATA"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_ADDITIONAL_DATA()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'data' fields in the 'additional' resource records in the current message.           For resource records containing multiple fields, such as SOA records, only the first field is returned.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ADDITIONAL_DATA.rstring" data-ofbid="spldoc_functions__DNS_ADDITIONAL_DATA.rstring"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_ADDITIONAL_DATA(rstring)      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'data' fields in the 'additional' resource records in the current message.           For resource records containing multiple fields, such as SOA records, all fields are returned, in the order,            separated by the string specified as the function's argument.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ADDITIONAL_NAMES" data-ofbid="spldoc_functions__DNS_ADDITIONAL_NAMES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_ADDITIONAL_NAMES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'name' fields in the 'additional' resource records in the current message.           Note that if any of the names are encoded           incorrectly, this function may return an empty or truncated list, and           some or all of the names may be empty or truncated. In this case, the           <span class="+ topic/ph hi-d/tt ph tt">parseError()</span> function will return <span class="+ topic/ph hi-d/tt ph tt">true</span>.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ADDITIONAL_TTLS" data-ofbid="spldoc_functions__DNS_ADDITIONAL_TTLS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint32&gt; DNS_ADDITIONAL_TTLS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'time to live' fields in the 'additional' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ADDITIONAL_TYPES" data-ofbid="spldoc_functions__DNS_ADDITIONAL_TYPES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_ADDITIONAL_TYPES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'type' fields in the 'additional' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ALL_FIELDS.rstring.rstring.rstring" data-ofbid="spldoc_functions__DNS_ALL_FIELDS.rstring.rstring.rstring"><span class="+ topic/ph hi-d/tt ph tt">      public rstring DNS_ALL_FIELDS(rstring, rstring, rstring)      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a string containing 'flattened' representation           of the DNS packet, including selected fields from the IP and UDP headers, all            fields from the DNS header, and all fields from all DNS resource records,            represented as appropriate, separated by the specified           record and field delimiters, and for SOA resource records,            a subfield delimiter.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ALL_FIELDS.rstring.rstring.rstring.list:.:uint16:.:" data-ofbid="spldoc_functions__DNS_ALL_FIELDS.rstring.rstring.rstring.list:.:uint16:.:"><span class="+ topic/ph hi-d/tt ph tt">      public rstring DNS_ALL_FIELDS(rstring, rstring, rstring, list&lt;uint16&gt;)      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a string containing 'flattened' representation           of the DNS packet, including selected fields from the IP and UDP headers, all            fields from the DNS header, and all fields from seleccted DNS resource records,            represented as appropriate, separated by the specified           record and field delimiters, and for SOA resource records,            a subfield delimiter. DNS resource records are selected by specifying DNS types in a list of unsigned 16-bit integers as the fourth parameter of the function.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ALL_FLAGS" data-ofbid="spldoc_functions__DNS_ALL_FLAGS"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_ALL_FLAGS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a 16-bit value containing all of the DNS header flags from the current message.           The value is in host byte order, so, for example,            <span class="+ topic/ph hi-d/tt ph tt">DNS_ALL_FLAGS()&amp; 0x8000 == 0x8000</span> has the same value as DNS_RESPONSE_FLAG(),            <span class="+ topic/ph hi-d/tt ph tt">DNS_ALL_FLAGS() &gt;&gt; 11 &amp; 0x000F</span> has the same value as DNS_OPCODE(), and           <span class="+ topic/ph hi-d/tt ph tt">DNS_ALL_FLAGS() &amp; 0x000F</span> has the same value as DNS_RESPONSE_CODE().
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_ADDRESS" data-ofbid="spldoc_functions__DNS_ANSWER_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public rstring DNS_ANSWER_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'data' field of the first 'answer' resource record,           if there is one with a 'type' value            of '1' or '28' (meaning, the answer is an IP version 4 or version 6 address from a type 'A' or 'AAAA' record, respectively),           as a string value,           or an empty string if not.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_ADDRESSES" data-ofbid="spldoc_functions__DNS_ANSWER_ADDRESSES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_ANSWER_ADDRESSES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'data' fields in the 'answer' resource records            that have a 'type' value of            '1' or '28' (meaning, the answer is an IP version 4 or version 6 address from a type 'A' or 'AAAA' record, respectively),           as string values.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_CANONICAL" data-ofbid="spldoc_functions__DNS_ANSWER_CANONICAL"><span class="+ topic/ph hi-d/tt ph tt">      public rstring DNS_ANSWER_CANONICAL()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'data' field of the first 'answer' resource record,           if there is one with           a 'type' value of '5' (meaning, the answer is a canonical domain name from a type 'CNAME' record),           or an empty string if not.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_CLASSES" data-ofbid="spldoc_functions__DNS_ANSWER_CLASSES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_ANSWER_CLASSES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'class' fields in the 'answer' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_COUNT" data-ofbid="spldoc_functions__DNS_ANSWER_COUNT"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_ANSWER_COUNT()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the number of 'answer' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_DATA" data-ofbid="spldoc_functions__DNS_ANSWER_DATA"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_ANSWER_DATA()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'data' fields in the 'answer' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_IPV4_ADDRESS" data-ofbid="spldoc_functions__DNS_ANSWER_IPV4_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 DNS_ANSWER_IPV4_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'data' field of the first 'answer' resource record, if            there is one with a           'type' value of '1' (meaning, the answer is an IP version 4 address from a type 'A' record),           as a binary value,           or zero if not.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_IPV4_ADDRESSES" data-ofbid="spldoc_functions__DNS_ANSWER_IPV4_ADDRESSES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint32&gt; DNS_ANSWER_IPV4_ADDRESSES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'data' fields of the 'answer' resource records that have            'type' values of '1' (meaning, the answers are IP version 4 addresses from type 'A' records),           as a list of binary values.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_IPV6_ADDRESS" data-ofbid="spldoc_functions__DNS_ANSWER_IPV6_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint8&gt;[16] DNS_ANSWER_IPV6_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'data' field of the first 'answer' resource record, if            there is one with a            'type' value of '28' (meaning, the answer is an IP version 6 address from a type 'AAAA' record),           as a binary value,           or zero if not.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_IPV6_ADDRESSES" data-ofbid="spldoc_functions__DNS_ANSWER_IPV6_ADDRESSES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;list&lt;uint8&gt;[16]&gt; DNS_ANSWER_IPV6_ADDRESSES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'data' fields of the 'answer' resource records that have            'type' values of '28' (meaning, the answers IP version 6 addresses from type 'AAAA' records),           as a binary values.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_NAMES" data-ofbid="spldoc_functions__DNS_ANSWER_NAMES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_ANSWER_NAMES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'name' fields in the 'answer' resource records in the current message.           Note that if any of the names are encoded           incorrectly, this function may return an empty or truncated list, and           some or all of the names may be empty or truncated. In this case, the           <span class="+ topic/ph hi-d/tt ph tt">parseError()</span> function will return <span class="+ topic/ph hi-d/tt ph tt">true</span>.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_TTLS" data-ofbid="spldoc_functions__DNS_ANSWER_TTLS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint32&gt; DNS_ANSWER_TTLS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'time to live' fields in the 'answer' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_ANSWER_TYPES" data-ofbid="spldoc_functions__DNS_ANSWER_TYPES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_ANSWER_TYPES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'type' fields in the 'answer' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_AUTHORITATIVE_FLAG" data-ofbid="spldoc_functions__DNS_AUTHORITATIVE_FLAG"><span class="+ topic/ph hi-d/tt ph tt">      public boolean DNS_AUTHORITATIVE_FLAG()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns <span class="+ topic/ph hi-d/tt ph tt">true</span> if the 'authoritative' flag is set in the current message,            or <span class="+ topic/ph hi-d/tt ph tt">false</span> if not.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_EXTRA_DATA" data-ofbid="spldoc_functions__DNS_EXTRA_DATA"><span class="+ topic/ph hi-d/tt ph tt">      public blob DNS_EXTRA_DATA()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns any extra data in the DNS message that follows the last resource record.           Note that the parseError() function returns 'true' if there is any extra data following the last resource record,           even though no errors were found in any resource record,            and the parseErrorCode() function returns '122'.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_IDENTIFIER" data-ofbid="spldoc_functions__DNS_IDENTIFIER"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_IDENTIFIER()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the DNS client's request correlator in the current message, and returned by the server in its response.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_INCOMPATIBLE_FLAGS" data-ofbid="spldoc_functions__DNS_INCOMPATIBLE_FLAGS"><span class="+ topic/ph hi-d/tt ph tt">      public int32 DNS_INCOMPATIBLE_FLAGS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This DNS parser result function returns a non-zero integer to indicate that an encoding error was found while decoding the current packet,           or zero if no enoding errors were found. The error codes are:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> 1 indicates that the Authoritative flag is set in the DNS header but the Response flag is not set.</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 2 indicates that the Truncated flag is set in the DNS header but not the Response flag is not set.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 3 indicates that the Authoritative and Truncated flags in the DNS header are both set.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 4 indicates that the Authoritative, Truncated, Recursion Desired, and Recursion Available flags in the DNS header are all set.
+</p></li>
+</ul>
+</div>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_NAMESERVER_CLASSES" data-ofbid="spldoc_functions__DNS_NAMESERVER_CLASSES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_NAMESERVER_CLASSES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'class' fields in the 'name server' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_NAMESERVER_COUNT" data-ofbid="spldoc_functions__DNS_NAMESERVER_COUNT"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_NAMESERVER_COUNT()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the number of 'name server' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_NAMESERVER_DATA" data-ofbid="spldoc_functions__DNS_NAMESERVER_DATA"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_NAMESERVER_DATA()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'data' fields in the 'name server' resource records in the current message.           For resource records containing multiple fields, such as SOA records, only the first field is returned.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_NAMESERVER_DATA.rstring" data-ofbid="spldoc_functions__DNS_NAMESERVER_DATA.rstring"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_NAMESERVER_DATA(rstring)      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'data' fields in the 'name server' resource records in the current message.           For resource records containing multiple fields, such as SOA records, all fields are returned, in order,            separated by the string specified as the function's argument.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_NAMESERVER_NAMES" data-ofbid="spldoc_functions__DNS_NAMESERVER_NAMES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_NAMESERVER_NAMES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'name' fields in the 'name server' resource records in the current message.           Note that if any of the names are encoded           incorrectly, this function may return an empty or truncated list, and           some or all of the names may be empty or truncated. In this case, the           <span class="+ topic/ph hi-d/tt ph tt">parseError()</span> function will return <span class="+ topic/ph hi-d/tt ph tt">true</span>.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_NAMESERVER_TTLS" data-ofbid="spldoc_functions__DNS_NAMESERVER_TTLS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint32&gt; DNS_NAMESERVER_TTLS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'time to live' fields in the 'name server' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_NAMESERVER_TYPES" data-ofbid="spldoc_functions__DNS_NAMESERVER_TYPES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_NAMESERVER_TYPES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'type' fields in the 'name server' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_OPCODE" data-ofbid="spldoc_functions__DNS_OPCODE"><span class="+ topic/ph hi-d/tt ph tt">      public uint8 DNS_OPCODE()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the operation code requested by the DNS client in the current message, for example,
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> '1' for standard queries, </li>
+<li class="- topic/li li"> '2' for inverse queries, or</li>
+<li class="- topic/li li"> '3' for server status requests.</li>
+</ul>
+</div>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_QUESTION_CLASS" data-ofbid="spldoc_functions__DNS_QUESTION_CLASS"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_QUESTION_CLASS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'class' field of the first 'question' resource record in the current message,           for example, '1' for Internet adddresses ('IN' records),
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_QUESTION_CLASSES" data-ofbid="spldoc_functions__DNS_QUESTION_CLASSES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_QUESTION_CLASSES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'class' fields in the 'question' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_QUESTION_COUNT" data-ofbid="spldoc_functions__DNS_QUESTION_COUNT"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_QUESTION_COUNT()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the number of 'question' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_QUESTION_NAME" data-ofbid="spldoc_functions__DNS_QUESTION_NAME"><span class="+ topic/ph hi-d/tt ph tt">      public rstring DNS_QUESTION_NAME()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'name' field of the first 'question' resource record in the current message,           if there is one, or an empty string if not.           Note that if the DNS message does contain a 'question'           resource record, and the name is encoded incorrecty, this function may           return an empty or truncated string.  In this case, the <span class="+ topic/ph hi-d/tt ph tt">parseError()</span>           function will return <span class="+ topic/ph hi-d/tt ph tt">true</span>.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_QUESTION_NAMES" data-ofbid="spldoc_functions__DNS_QUESTION_NAMES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;rstring&gt; DNS_QUESTION_NAMES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'name' fields in the 'question' resource records in the current message.           Note that if any of the names are encoded           incorrectly, this function may return an empty or truncated list, and           some or all of the names may be empty or truncated. In this case, the           <span class="+ topic/ph hi-d/tt ph tt">parseError()</span> function will return <span class="+ topic/ph hi-d/tt ph tt">true</span>.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_QUESTION_TYPE" data-ofbid="spldoc_functions__DNS_QUESTION_TYPE"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 DNS_QUESTION_TYPE()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the 'type' field of the first 'question' resource record in the current message,           for example:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> '1' for IP version 4 address to domain name lookup ('A' records),</li>
+<li class="- topic/li li"> '5' for domain name to canonical domain name lookup ('CNAME' records),</li>
+<li class="- topic/li li"> '12' for domain name to IP address lookup ('TXT' records), or</li>
+<li class="- topic/li li"> '28' for IP version 6 address to domain name lookup ('AAAA' records).</li>
+</ul>
+</div>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_QUESTION_TYPES" data-ofbid="spldoc_functions__DNS_QUESTION_TYPES"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; DNS_QUESTION_TYPES()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns a list of the 'type' fields in the 'question' resource records in the current message.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_RESPONSE_CODE" data-ofbid="spldoc_functions__DNS_RESPONSE_CODE"><span class="+ topic/ph hi-d/tt ph tt">      public uint8 DNS_RESPONSE_CODE()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns the response code from the DNS server in the current message, for example,
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> '0' for OK, </li>
+<li class="- topic/li li"> '1' for Format Error, </li>
+<li class="- topic/li li"> '2' for Server Failure, </li>
+<li class="- topic/li li"> '3' for Name Error, </li>
+<li class="- topic/li li"> '4' for not implemented, or</li>
+<li class="- topic/li li"> '5' for Server Refused.</li>
+</ul>
+</div>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_RESPONSE_FLAG" data-ofbid="spldoc_functions__DNS_RESPONSE_FLAG"><span class="+ topic/ph hi-d/tt ph tt">      public boolean DNS_RESPONSE_FLAG()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns <span class="+ topic/ph hi-d/tt ph tt">true</span> if the current message is a response sent by a DNS server,           or <span class="+ topic/ph hi-d/tt ph tt">false</span> if it is a request sent by a DNS client.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__DNS_TRUNCATION_FLAG" data-ofbid="spldoc_functions__DNS_TRUNCATION_FLAG"><span class="+ topic/ph hi-d/tt ph tt">      public boolean DNS_TRUNCATION_FLAG()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This parser result function returns <span class="+ topic/ph hi-d/tt ph tt">true</span> if the 'truncation' flag is set in the current message,            or <span class="+ topic/ph hi-d/tt ph tt">false</span> if not.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__ETHER_DST_ADDRESS" data-ofbid="spldoc_functions__ETHER_DST_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint8&gt;[6] ETHER_DST_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the ethernet destination address of the current packet.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__ETHER_DST_ADDRESS_64" data-ofbid="spldoc_functions__ETHER_DST_ADDRESS_64"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 ETHER_DST_ADDRESS_64()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the ethernet destination address of the current packet in the 48 low-order bits of a uint64.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__ETHER_PROTOCOL" data-ofbid="spldoc_functions__ETHER_PROTOCOL"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 ETHER_PROTOCOL()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the ethernet protocol (that is, the EtherType) of the current packet, for example, '2048' for IP version 4, or '34,525' for IP version 6.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__ETHER_SRC_ADDRESS" data-ofbid="spldoc_functions__ETHER_SRC_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint8&gt;[6] ETHER_SRC_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the ethernet source address of the current packet.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IPV4_DST_ADDRESS" data-ofbid="spldoc_functions__IPV4_DST_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 IPV4_DST_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP version 4 destination address of the current packet, if it has one, or zero otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IPV4_SRC_ADDRESS" data-ofbid="spldoc_functions__IPV4_SRC_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 IPV4_SRC_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP version 4 source address of the current packet, if it has one, or zero otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IPV6_DST_ADDRESS" data-ofbid="spldoc_functions__IPV6_DST_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint8&gt;[16] IPV6_DST_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP version 6 destination address of the current packet, if it has one, or an empty list otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IPV6_SRC_ADDRESS" data-ofbid="spldoc_functions__IPV6_SRC_ADDRESS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint8&gt;[16] IPV6_SRC_ADDRESS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP version 6 source address of the current packet, if it has one, or an empty list otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IP_DONT_FRAGMENT" data-ofbid="spldoc_functions__IP_DONT_FRAGMENT"><span class="+ topic/ph hi-d/tt ph tt">      public boolean IP_DONT_FRAGMENT()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP "don't fragment" flag of the current packet. When a sender sets this flag in a packet, it prohibits routers from fragmenting the packet in transit. If the packet's length exceeds the maximum size of a link, it will be discarded by the router instead of being fragmented.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IP_FRAGMENT_OFFSET" data-ofbid="spldoc_functions__IP_FRAGMENT_OFFSET"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 IP_FRAGMENT_OFFSET()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP "fragment offset" field of the current packet, multiplied by eight, When a router fragments a packet, it stores the offset from the front of the packet to the front of the fragment, measured in eight-byte steps, in each fragment. That is, the size of each fragment is always a multiple of eight bytes,  and the value stored is the offset in bytes, divided by eight. This function returns that value, multiplied by eight, so that it gives the offset from the front of the packet to the front of the fragment in bytes.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IP_IDENTIFIER" data-ofbid="spldoc_functions__IP_IDENTIFIER"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 IP_IDENTIFIER()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP identifier of the current packet. When a packet is fragmented in transit, this identifer is copied into all of the fragments. The receiver combines this identifier with the packet's  source and destination addresses to gather the fragments,  and uses the fragment offset (see the IP_FRAGMENT_OFFSET() function) to reassemble  them into original packet.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IP_MORE_FRAGMENTS" data-ofbid="spldoc_functions__IP_MORE_FRAGMENTS"><span class="+ topic/ph hi-d/tt ph tt">      public boolean IP_MORE_FRAGMENTS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP "more fragments" flag of the current packet. When a router fragments a packet, it sets this flag in all fragments except the last one.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IP_PROTOCOL" data-ofbid="spldoc_functions__IP_PROTOCOL"><span class="+ topic/ph hi-d/tt ph tt">      public uint8 IP_PROTOCOL()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP protocol of the current packet, for example, '6' for TCP, or '17' for UDP, or zero if the ethernet packet does not contain an IP packet.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__IP_VERSION" data-ofbid="spldoc_functions__IP_VERSION"><span class="+ topic/ph hi-d/tt ph tt">      public uint8 IP_VERSION()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the IP version of the current packet ('4' for IP version 4, or '6' for IP version 6),  if the ethernet packet contains an IP packet, or zero otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__PACKET_DATA" data-ofbid="spldoc_functions__PACKET_DATA"><span class="+ topic/ph hi-d/tt ph tt">      public blob PACKET_DATA()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the network data in the current packet, including all network headers. Note that the data may have been truncated when the packet was captured.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__PACKET_LENGTH" data-ofbid="spldoc_functions__PACKET_LENGTH"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 PACKET_LENGTH()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of bytes of network data in the current packet, including all network headers. Note that this value may be larger than the length of the binary data returned by the <span class="+ topic/ph hi-d/tt ph tt">PACKET_DATA()</span> function if the packet was truncated when it was captured.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__PAYLOAD_DATA" data-ofbid="spldoc_functions__PAYLOAD_DATA"><span class="+ topic/ph hi-d/tt ph tt">      public blob PAYLOAD_DATA()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the payload data in the current packet, excluding all network headers. Note that the data may have been truncated when the packet was captured.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__PAYLOAD_LENGTH" data-ofbid="spldoc_functions__PAYLOAD_LENGTH"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 PAYLOAD_LENGTH()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of bytes of payload data in the current packet, excluding all network headers. Note that this value may be larger than the length of the binary data returned by the <span class="+ topic/ph hi-d/tt ph tt">PAYLOAD_DATA()</span> function if the packet was truncated when it was captured.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__RATE_LIMITED" data-ofbid="spldoc_functions__RATE_LIMITED"><span class="+ topic/ph hi-d/tt ph tt">      public boolean RATE_LIMITED()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">        This function returns false when an amount of time between packets has passed such that         the rate is limited to the value given in the rateLimit paramater.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__UDP_DST_PORT" data-ofbid="spldoc_functions__UDP_DST_PORT"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 UDP_DST_PORT()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the UDP destination port number of the current packet,  if it has one, or zero otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__UDP_PORT.uint16" data-ofbid="spldoc_functions__UDP_PORT.uint16"><span class="+ topic/ph hi-d/tt ph tt">      public boolean UDP_PORT(uint16)      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns <span class="+ topic/ph hi-d/tt ph tt">true</span> if the current packet is a UDP packet and the argument matches its source or destination port, or <span class="+ topic/ph hi-d/tt ph tt">false</span> otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__UDP_SRC_PORT" data-ofbid="spldoc_functions__UDP_SRC_PORT"><span class="+ topic/ph hi-d/tt ph tt">      public uint16 UDP_SRC_PORT()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the UDP source port number of the current packet,  if it has one, or zero otherwise.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__VLAN_TAGS" data-ofbid="spldoc_functions__VLAN_TAGS"><span class="+ topic/ph hi-d/tt ph tt">      public list&lt;uint16&gt; VLAN_TAGS()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns a list of 0 to N VLAN tags found in the current packet.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__bytesProcessed" data-ofbid="spldoc_functions__bytesProcessed"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 bytesProcessed()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of bytes of network data processed by the operator since it started, including the current packet, excluding any packets that were ignored by the input filter, if the <span class="+ topic/ph hi-d/tt ph tt">inputFilter</span> parameter was specified.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__bytesReceived" data-ofbid="spldoc_functions__bytesReceived"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 bytesReceived()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of bytes received from the network interface since the operator started, as of the most recent metrics interval, if there is one, or zero if not. This function always returns zero for the DNSPacketLiveSource and DNSPacketFileSource operators.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalBytesProcessed" data-ofbid="spldoc_functions__metricsIntervalBytesProcessed"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 metricsIntervalBytesProcessed()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of bytes of network data processed by the operator during the most recent metrics interval, excluding any packets that were ignored by the input filter, if the <span class="+ topic/ph hi-d/tt ph tt">inputFilter</span> parameter was specified.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalBytesReceived" data-ofbid="spldoc_functions__metricsIntervalBytesReceived"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 metricsIntervalBytesReceived()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of bytes received from the network interface  during the most recent metrics interval, if there is one, or zero if not. This function always returns zero for the DNSPacketLiveSource and DNSPacketFileSource operators.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalElapsed" data-ofbid="spldoc_functions__metricsIntervalElapsed"><span class="+ topic/ph hi-d/tt ph tt">      public float64 metricsIntervalElapsed()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the duration of the most recent metrics interval, in seconds with a resolution of at least microseconds, if there is one, or zero if not. 
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalMaxQueueDepthSW" data-ofbid="spldoc_functions__metricsIntervalMaxQueueDepthSW"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 metricsIntervalMaxQueueDepthSW()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the software receive queue (if implemented) high water mark from the most recent metrics interval. Otherwise, returns 0.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalPacketsDropped" data-ofbid="spldoc_functions__metricsIntervalPacketsDropped"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 metricsIntervalPacketsDropped()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of packets dropped by the network interface during the most recent metrics interval, if there is one, or zero if not. This function always returns zero for the DNSPacketFileSource operator.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalPacketsDroppedSW" data-ofbid="spldoc_functions__metricsIntervalPacketsDroppedSW"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 metricsIntervalPacketsDroppedSW()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of packets dropped by the software packet receive queue (if implemented) in the most recent metrics interval.  Otherwise, returns 0.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalPacketsProcessed" data-ofbid="spldoc_functions__metricsIntervalPacketsProcessed"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 metricsIntervalPacketsProcessed()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of network packets processed by the operator during the most recent metrics interval, excluding any packets that were ignored by the input filter, if the <span class="+ topic/ph hi-d/tt ph tt">inputFilter</span> parameter was specified.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsIntervalPacketsReceived" data-ofbid="spldoc_functions__metricsIntervalPacketsReceived"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 metricsIntervalPacketsReceived()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of packets received from the network interface  during the most recent metrics interval, if there is one, or zero if not. This function always returns zero for the DNSPacketFileSource operator.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__metricsUpdated" data-ofbid="spldoc_functions__metricsUpdated"><span class="+ topic/ph hi-d/tt ph tt">      public boolean metricsUpdated()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns <span class="+ topic/ph hi-d/tt ph tt">true</span> for the first tuple produced after a new metrics interval begins, and returns <span class="+ topic/ph hi-d/tt ph tt">false</span> for all subsequent tuples produced in the same metrics interval.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__packetsDropped" data-ofbid="spldoc_functions__packetsDropped"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 packetsDropped()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of packets dropped by the network interface since the operator started, as of the most recent metrics interval, if there is one, or zero if not. This function always returns zero for the DNSPacketFileSource operator.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__packetsDroppedSW" data-ofbid="spldoc_functions__packetsDroppedSW"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 packetsDroppedSW()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the total number of packets dropped by the software packet receive queue (if implemented). Otherwise, returns 0.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__packetsProcessed" data-ofbid="spldoc_functions__packetsProcessed"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 packetsProcessed()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of network packets processed by the operator since it started, including the current packet, but excluding any packets that were ignored by the input filter, if the <span class="+ topic/ph hi-d/tt ph tt">inputFilter</span> parameter was specified.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__packetsReceived" data-ofbid="spldoc_functions__packetsReceived"><span class="+ topic/ph hi-d/tt ph tt">      public uint64 packetsReceived()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">This function returns the number of packets received from the network interface since the operator started, as of the most recent metrics interval, if there is one, or zero if not. This function always returns zero for the DNSPacketFileSource operator.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__parseError" data-ofbid="spldoc_functions__parseError"><span class="+ topic/ph hi-d/tt ph tt">      public boolean parseError()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This DNS parser result function returns <span class="+ topic/ph hi-d/tt ph tt">true</span> if an encoding error was detected while decoding the current packet,           or <span class="+ topic/ph hi-d/tt ph tt">false</span> otherwise. Note that a value of <span class="+ topic/ph hi-d/tt ph tt">false</span> does not necessarily mean the packet has           no encoding errors, since the operator only decodes the fields needed.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__parseErrorCode" data-ofbid="spldoc_functions__parseErrorCode"><span class="+ topic/ph hi-d/tt ph tt">      public int32 parseErrorCode()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This DNS parser result function returns a non-zero integer to indicate that an encoding error was found while decoding the current packet,           or zero if no enoding errors were found. The error codes are:
+</p>
+<div class="- topic/p p">
+<ul class="- topic/ul ul">
+<li class="- topic/li li"> 102 for 'label overruns packet': The length of an uncompressed domain name label extends beyond the end of the DNS message. The packet containing the DNS message may have been truncated.</li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 103 for 'label compression length overruns packet': The length field of a compressed domain name label extends beyond the end of the DNS message. The packet containing the DNS message may have been truncated.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 104 for 'label compression offset underruns packet': The offset of a compressed domain name label points before the beginning of the DNS message. The sender misencoded the domain name.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 105 for 'label compression offset forward reference': The offset of a compressed domain name label points beyond the current label. The sender misencoded the domain name.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 106 for 'label compression offset loop': The offset of a compressed domain name label points to itself. The sender misencoded the domain name.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 107 for 'label flags invalid': The flag field of a compressed domain name label is invalid. The sender misencoded the domain name.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 108 for 'label limit exceeded': A compressed domain name contains too many labels. The sender misencoded the domain name.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 110 for 'resource record missing': The DNS message contains fewer resource records than the 'count' fields in the message header indicate. The DNS message may have been truncated.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 111 for 'question resource record truncated': The DNS 'question' resource record was truncated. The packet containing the message was probably truncated.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 112 for 'resource record truncated': A DNS resource record was truncated. The packet containing the DNS message was probably truncated.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 113 for 'resource record data truncated': The 'rdata' field of a DNS resource record was truncated. The packet containing the DNS message was probably truncated.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 114 for 'invalid address family': The 'class' field of a DNS resource record was neither 'AF_INET' nor 'AF_INET6' (meaning IP version 4 or IP version 6, respectively).
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 116 for 'message too short': The DNS message is shorter than the length of the DNS header. The packet probably does not contain a DNS message.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 117 for 'resource record counts too large': A 'count' field in the DNS message header is larger than the maximum supported. The packet probably does not contain a DNS message.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 118 for 'text string overruns resource record': The text string length in a DNS 'TXT' resource record is larger than the record's data field. The sender misencoded the resource record.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 119 for 'missing data in resource record': The data field of a resource record is too short; some fields may be truncated or missing entirely. The sender misencoded the resource record.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 120 for 'extra data in resource record': The data field of a resource record is too long; there is unexpected data following the last field. The sender misencoded the resource record.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 121 for 'label compression offset invalid': The offset of a compressed domain name label does not point to a previous label. The sender misencoded the domain name.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 122 for 'extra data following resource records': There are extra bytes of data in the DNS message following the last resource record. The sender probably miscalculated the packet length.
+</p></li>
+<li class="- topic/li li">
+<p class="- topic/p p"> 123 for 'resource record data too long': The 'data length' field of a resource record is unreasonably large. The packet probably does not contain a DNS message.
+</p></li>
+</ul>
+</div>
+<p class="- topic/p p">          <em class="+ topic/ph hi-d/i ph i">Note:</em> <a class="- topic/xref xref" href="https://www.ietf.org/rfc/rfc1035.txt" target="_blank" rel="external noopener">RFC 1035</a> explains the format of DNS messages;            in particular, section 4.1.4 explains the format of compressed domain names in DNS messages.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__parseErrorDescription" data-ofbid="spldoc_functions__parseErrorDescription"><span class="+ topic/ph hi-d/tt ph tt">      public rstring parseErrorDescription()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This DNS parser result function returns a description of an encoding error found while decoding the current packet,           or an empty string if no enoding errors were found.
+</p>
+   </dd>
+ 
+ 
+   <dt class="- topic/dt dt dlterm splpart" id="spldoc_functions__parseErrorOffset" data-ofbid="spldoc_functions__parseErrorOffset"><span class="+ topic/ph hi-d/tt ph tt">      public uint32 parseErrorOffset()      </span>   </dt>
+   <dd class="- topic/dd dd">
+<p class="- topic/p p">          This DNS parser result function returns the offset from the beginning of the message to the encoding error found,           or zero if no encoding errors were found.
+</p>
+   </dd>
+ 
+</dl>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="task"/><meta name="abstract" content="Before you can use Teracloud Streams, you must configure the product environment variables by running the streamsprofile.sh script that is included in the installation directory. This script is not automatically run by the installation program."/><meta name="description" content="Before you can use Teracloud Streams, you must configure the product environment variables by running the streamsprofile.sh script that is included in the installation directory. This script is not automatically run by the installation program."/><meta name="DC.subject" content="configuring,Streams,Teracloud,streamsprofile.sh script,required to configure,source command,running streamsprofile.sh script,bashrc file,adding streamsprofile.sh script"/><meta name="keywords" content="configuring, Streams, Teracloud, streamsprofile.sh script, required to configure, source command, running streamsprofile.sh script, bashrc file, adding streamsprofile.sh script"/><meta name="indexterms" content="configuring, streamsprofile.sh script, streamsprofile.sh script, required to configure, source command, running streamsprofile.sh script, bashrc file, adding streamsprofile.sh script"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-postinstall-roadmap.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/installstreams-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-interactive-silent-section.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="ibminfospherestreams-configuring-streams-environment"/><meta name="DC.language" content="en-us"/>        
+      <title>Configuring the Teracloud Streams environment by running streamsprofile.sh</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="ibminfospherestreams-configuring-streams-environment-d41691e1260"/><meta name="wh-source-relpath" content="com.ibm.streams.install.doc/doc/ibminfospherestreams-configuring-streams-environment.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.install.doc/doc/ibminfospherestreams-configuring-streams-environment.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="ibminfospherestreams-configuring-streams-environment" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="installstreams-container"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li><div class="topicref" data-id="installingibminfospherestreams"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install.html">Installing the <span class="keyword">Teracloud® Streams</span> product</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use these procedures to install <span class="keyword">Teracloud® 					Streams</span>     <span class="keyword">Version 					7.2</span>.</span></p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-install-interactive-silent-section"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-interactive-silent-section.html">Interactive and silent installation methods</a><div class="wh-tooltip"><p class="shortdesc">Use these procedures to install the <span class="keyword">Teracloud® 					Streams</span> main installation package on a resource. This package includes all of the product files.</p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-install-postinstall-roadmap"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-postinstall-roadmap.html">Postinstallation roadmap</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The postinstallation roadmap summarizes required and             optional postinstallation tasks and options for <span class="keyword">Teracloud® 					Streams</span>.</span></p></div></div></div></li><li class="active"><div class="topicref" data-id="ibminfospherestreams-configuring-streams-environment"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-configuring-streams-environment.html">Configuring the <span class="keyword">Teracloud® Streams</span> environment</a><div class="wh-tooltip"><p class="shortdesc">Before you can use <span class="keyword">Teracloud® 					Streams</span>, you must configure the product environment variables by running the <span class="keyword cmdname">streamsprofile.sh</span> script that is included in the installation directory. This script is not automatically run by the installation program.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-plan-d41691e448" class="topicref" data-id="ibminfospherestreams-plan" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-plan-d41691e448-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-plan.html" id="ibminfospherestreams-plan-d41691e448-link">Planning to install <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To plan for installing <span class="keyword">Teracloud® 					Streams</span>, start by reviewing the information in the planning roadmap.</span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="installingibminfospherestreams-d41691e1077" class="topicref" data-id="installingibminfospherestreams" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action installingibminfospherestreams-d41691e1077-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install.html" id="installingibminfospherestreams-d41691e1077-link">Installing the <span class="keyword">Teracloud® Streams</span> product</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use these procedures to install <span class="keyword">Teracloud® 					Streams</span>     <span class="keyword">Version 					7.2</span>.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-install-programs-packages-d41691e1102" class="topicref" data-id="ibminfospherestreams-install-programs-packages" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-programs-packages.html" id="ibminfospherestreams-install-programs-packages-d41691e1102-link">Installation packages</a><div class="wh-tooltip"><p class="shortdesc">Use the <dfn class="term">main installation package</dfn> to install all of the product files on the    resources in your <span class="keyword">Teracloud® 					Streams</span> domain. <span class="ph">To reduce the product size requirement on             resources, the <dfn class="term">domain host installation package</dfn>             contains only a subset of the             product files. For example, this installation package does not include the             toolkits.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-options-multiple-copies-d41691e1126" class="topicref" data-id="ibminfospherestreams-install-options-multiple-copies" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-options-multiple-copies.html" id="ibminfospherestreams-install-options-multiple-copies-d41691e1126-link">Multiple installations on the same resource</a><div class="wh-tooltip"><p class="shortdesc">To run multiple installations of <span class="keyword">Teracloud® 					Streams</span> on the same resource, each installation must be installed in a unique location.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-install-interactive-silent-section-d41691e1142" class="topicref" data-id="ibminfospherestreams-install-interactive-silent-section" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-install-interactive-silent-section-d41691e1142-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-interactive-silent-section.html" id="ibminfospherestreams-install-interactive-silent-section-d41691e1142-link">Interactive and silent installation methods</a><div class="wh-tooltip"><p class="shortdesc">Use these procedures to install the <span class="keyword">Teracloud® 					Streams</span> main installation package on a resource. This package includes all of the product files.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-install-preinstall-roadmap-d41691e1158" class="topicref" data-id="ibminfospherestreams-install-preinstall-roadmap" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-preinstall-roadmap.html" id="ibminfospherestreams-install-preinstall-roadmap-d41691e1158-link">Preinstallation roadmap</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">This roadmap summarizes preinstallation requirements and             tasks for the <span class="keyword">Teracloud® 					Streams</span> interactive             and silent installation methods.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-interactive-d41691e1175" class="topicref" data-id="ibminfospherestreams-install-interactive" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-interactive.html" id="ibminfospherestreams-install-interactive-d41691e1175-link">Interactive GUI installation method</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this procedure to install <span class="keyword">Teracloud® 					Streams</span> by using the             interactive GUI method. </span> </p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-console-d41691e1193" class="topicref" data-id="ibminfospherestreams-install-console" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-console.html" id="ibminfospherestreams-install-console-d41691e1193-link">Interactive console installation method</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this procedure to install <span class="keyword">Teracloud® 					Streams</span> by using the             interactive console method. </span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-silent-d41691e1210" class="topicref" data-id="ibminfospherestreams-install-silent" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-silent.html" id="ibminfospherestreams-install-silent-d41691e1210-link">Silent installation method</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this procedure to install <span class="keyword">Teracloud® 					Streams</span> by using the             silent, response file-driven method. </span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreamssilentinstallpropertiesfile-d41691e1227" class="topicref" data-id="ibminfospherestreamssilentinstallpropertiesfile" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-silentinstallpropertiesfile.html" id="ibminfospherestreamssilentinstallpropertiesfile-d41691e1227-link">Sample response file</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">Teracloud® 					Streams</span> sample response file contains values for all interactive and silent installation options.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-install-postinstall-roadmap-d41691e1243" class="topicref" data-id="ibminfospherestreams-install-postinstall-roadmap" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-install-postinstall-roadmap-d41691e1243-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-postinstall-roadmap.html" id="ibminfospherestreams-install-postinstall-roadmap-d41691e1243-link">Postinstallation roadmap</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The postinstallation roadmap summarizes required and             optional postinstallation tasks and options for <span class="keyword">Teracloud® 					Streams</span>.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="ibminfospherestreams-configuring-streams-environment-d41691e1260" class="topicref" data-id="ibminfospherestreams-configuring-streams-environment" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-configuring-streams-environment.html" id="ibminfospherestreams-configuring-streams-environment-d41691e1260-link">Configuring the <span class="keyword">Teracloud® Streams</span> environment</a><div class="wh-tooltip"><p class="shortdesc">Before you can use <span class="keyword">Teracloud® 					Streams</span>, you must configure the product environment variables by running the <span class="keyword cmdname">streamsprofile.sh</span> script that is included in the installation directory. This script is not automatically run by the installation program.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-optional-uncrustify-d41691e1284" class="topicref" data-id="ibminfospherestreams-install-optional-uncrustify" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-optional-uncrustify.html" id="ibminfospherestreams-install-optional-uncrustify-d41691e1284-link">Installing the Uncrustify source code formatter</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">When you generate C++ code using the               <span class="keyword cmdname">sc</span>             command,               <span class="keyword">Teracloud® 					Streams</span> can             use the Uncrustify source code formatter to ensure that the generated code is indented             and formatted correctly. Installing and using the Uncrustify source code formatter with               <span class="keyword">Teracloud 					Streams</span> is             optional.</span></p></div></div></div></li></ul></li></ul></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-automated-section-d41691e1309" class="topicref" data-id="ibminfospherestreams-install-automated-section" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-automated-section.html" id="ibminfospherestreams-install-automated-section-d41691e1309-link">Automated installation method</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The automated installation method enables you to             build an installation package that you can use to install the <span class="keyword">Teracloud® 					Streams</span> product on a             large number of networked resources that share the same configuration.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-product-license-accessing-d41691e1326" class="topicref" data-id="ibminfospherestreams-product-license-accessing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-product-license-accessing.html" id="ibminfospherestreams-product-license-accessing-d41691e1326-link">Reviewing the license agreement for <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">To review the <span class="keyword">Teracloud® 					Streams</span> license information, use the interactive installation graphical user interface.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-upgrade-d41691e1346" class="topicref" data-id="ibminfospherestreams-install-upgrade" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-upgrade-d41691e1346-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-upgrade.html" id="ibminfospherestreams-install-upgrade-d41691e1346-link">Upgrading <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use these procedures to install a new version of  <span class="keyword">Teracloud® 					Streams</span> when a previous version of the product is already installed, or to update a <span class="keyword">Version 					7.2</span> <span class="keyword">Non-Production 					Edition</span> license.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461" class="topicref" data-id="ibminfospherestreams-install-uninstalling-interactive-silent-methods" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-uninstalling-interactive-silent-methods.html" id="ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461-link">Uninstalling <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to remove the <span class="keyword">Teracloud® 					Streams</span> product from your system.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic task/task topic task" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Configuring the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> environment by running streamsprofile.sh</h1>
+
+
+<div class="- topic/body task/taskbody body taskbody"><div class="- topic/abstract abstract"><span class="- topic/shortdesc shortdesc">Before you can use <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>, you must configure the product environment variables by running the
+<span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamsprofile.sh</span> script that is included in the installation directory. This
+script is not automatically run by the installation program.</span> </div>
+<section class="- topic/ol task/steps ol steps"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Procedure</h2></div><div class="- topic/ol task/steps ol steps"><div class="- topic/li task/step li step p">
+<span class="- topic/ph task/cmd ph cmd">To configure your local shell environment for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>, enter the following command:</span>
+<div class="- topic/itemgroup task/stepxmp itemgroup stepxmp">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code><kbd class="+ topic/ph sw-d/userinput ph userinput">source <var class="+ topic/keyword sw-d/varname keyword varname">product-installation-root-directory</var>/<span class="- topic/keyword keyword">7.2.0.0</span>/bin/streamsprofile.sh</kbd></code></pre>
+</div>
+<div class="- topic/itemgroup task/info itemgroup info">
+<div class="- topic/note note note note_note"><span class="note__title">Notes:</span> 
+<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="- topic/ph ph" id="ibminfospherestreams-configuring-streams-environment__add-source-command-bashrc">Add the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">source</span> command to your
+                      <span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">home-directory</var>/.bashrc</span> shell
+                  initialization file. Otherwise, you must enter the command every time you start
+                    <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>. For example, if the product is installed in the <span class="+ topic/ph sw-d/filepath ph filepath">/home/streamsadmin/InfoSphere_Streams/<span class="- topic/keyword keyword">7.2.0.0</span></span> directory, add the
+                  following line to your <span class="+ topic/ph sw-d/filepath ph filepath">.bashrc</span>
+                file:</span><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code><kbd class="+ topic/ph sw-d/userinput ph userinput" id="ibminfospherestreams-configuring-streams-environment__source-command-nonroot-install-example">source /home/streamsadmin/InfoSphere_Streams/<span class="- topic/keyword keyword">7.2.0.0</span>/bin/streamsprofile.sh</kbd></code></pre></li>
+<li class="- topic/li li"><span class="- topic/ph ph" id="ibminfospherestreams-configuring-streams-environment__add-source-command-etcprofiled">For shared installations, you can add the
+                    <span class="+ topic/keyword sw-d/cmdname keyword cmdname">source</span> command to the <span class="+ topic/ph sw-d/filepath ph filepath">/etc/profile.d</span>
+                  script so that all users do not need to edit their own shell initialization files.
+                  Users can modify their own shell initialization files if they need to use a
+                  different installation of <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>.</span></li>
+<li class="- topic/li li" id="ibminfospherestreams-configuring-streams-environment__update-source-command" data-ofbid="ibminfospherestreams-configuring-streams-environment__update-source-command">If you install a new product version or a <span class="- topic/keyword keyword">Version
+					7.2</span> fix pack or interim fix, you must update the
+                  <span class="+ topic/ph sw-d/filepath ph filepath">.bashrc</span> or <span class="+ topic/ph sw-d/filepath ph filepath">/etc/profile.d</span> file. <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> appends
+                a unique version directory for a new product version, fix pack, or interim fix to
+                the installation root directory. </li>
+</ul>
+</div>
+</div>
+</div></div></section>
+<section class="- topic/section task/result section result"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Results</h2></div>The <strong class="+ topic/ph hi-d/b ph b">streamsprofile.sh</strong> script configures the following <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> environment variables:<ul class="- topic/ul ul">
+        <li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_INSTALL</span>=<span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">product-installation-root-directory</var>/<span class="- topic/keyword keyword">7.2.0.0</span></span><p class="- topic/p p"></p></li>
+        <li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_INSTANCE_ID</span>=StreamsInstance<p class="- topic/p p">For compatibility with
+            previous releases, if the <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_DEFAULT_IID</span> environment variable
+            is already configured when you run the script, <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_INSTANCE_ID</span>
+            is set to the value of <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_DEFAULT_IID</span>.</p></li>
+        <li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_DOMAIN_ID</span>=StreamsDomain </li>
+        <li class="- topic/li li"><span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_JAVA_HOME</span><p class="- topic/p p">For instructions on how to override the
+              <span class="+ topic/ph sw-d/filepath ph filepath">streamsprofile.sh</span> behavior by explicitly setting the
+            STREAMS_JAVA_HOME variable, see <a class="- topic/xref xref" href="ibminfospherestreams-install-prerequisites-java.html" title="Ensure that you use a Java development kit that is supported by Teracloud Streams. If Java memory issues occur, Teracloud Streams provides configuration properties that you can use to allocate more memory for the Java environment.">Java requirements, options, and settings for Teracloud Streams</a>.</p></li>
+      </ul><p class="- topic/p p">This script will report an error if the <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span>
+        requirements are not met. For details of the Java requirements, see <a class="- topic/xref xref" href="ibminfospherestreams-install-prerequisites-java.html" title="Ensure that you use a Java development kit that is supported by Teracloud Streams. If Java memory issues occur, Teracloud Streams provides configuration properties that you can use to allocate more memory for the Java environment.">Java requirements, options, and settings for Teracloud Streams</a>.</p><p class="- topic/p p">This
+        script also adds the <span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">product-installation-root-directory</var>/<span class="- topic/keyword keyword">7.2.0.0</span>/bin</span> directory to the <span class="+ topic/keyword pr-d/parmname keyword parmname">PATH</span> environment variable so that you can run
+          <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> commands without specifying a fully qualified
+      path.</p></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

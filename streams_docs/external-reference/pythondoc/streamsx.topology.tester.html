@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>streamsx.topology.tester &mdash; streamsx 3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="streamsx.topology.tester_runtime" href="streamsx.topology.tester_runtime.html" />
+    <link rel="prev" title="streamsx.topology.state" href="streamsx.topology.state.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            streamsx
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.html">streamsx.topology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.context.html">streamsx.topology.context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.schema.html">streamsx.topology.schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.state.html">streamsx.topology.state</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">streamsx.topology.tester</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.topology.tester_runtime.html">streamsx.topology.tester_runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.ec.html">streamsx.ec</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.spl.types.html">streamsx.spl.types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.spl.toolkit.html">streamsx.spl.toolkit</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.spl.spl.html">streamsx.spl.spl</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.rest.html">streamsx.rest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamsx.rest_primitives.html">streamsx.rest_primitives</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scripts/extract.html">spl-python-extract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/info.html">streamsx-info</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pysetup.html">Streams Python setup</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="restrictions.html">Restrictions and known bugs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">streamsx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">streamsx.topology.tester</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/streamsx.topology.tester.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-streamsx.topology.tester">
+<span id="streamsx-topology-tester"></span><h1>streamsx.topology.tester<a class="headerlink" href="#module-streamsx.topology.tester" title="Permalink to this heading"></a></h1>
+<p>Testing support for streaming applications.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>Allows testing of a streaming application by creation conditions
+on streams that are expected to become valid during the processing.
+<cite>Tester</cite> is designed to be used with Python’s <cite>unittest</cite> module.</p>
+<p>A complete application may be tested or fragments of it, for example a sub-graph can be tested
+in isolation that takes input data and scores it using a model.</p>
+<p>Supports execution of the application on
+<code class="xref py py-const docutils literal notranslate"><span class="pre">DISTRIBUTED</span></code>
+or <code class="xref py py-const docutils literal notranslate"><span class="pre">STANDALONE</span></code>.</p>
+<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Tester</span></code> instance is created and associated with the <code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code> to be tested.
+Conditions are then created against streams, such as a stream must receive 10 tuples using
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">tuple_count()</span></code>.</p>
+<p>Here is a simple example that tests a filter correctly only passes tuples with values greater than 5:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">streamsx.topology.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">streamsx.topology.tester</span> <span class="kn">import</span> <span class="n">Tester</span>
+
+<span class="k">class</span> <span class="nc">TestSimpleFilter</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Sets self.test_ctxtype and self.test_config</span>
+        <span class="n">Tester</span><span class="o">.</span><span class="n">setup_distributed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Declare the application to be tested</span>
+        <span class="n">topology</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">()</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">source</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
+
+        <span class="c1"># Create tester and assign conditions</span>
+        <span class="n">tester</span> <span class="o">=</span> <span class="n">Tester</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+        <span class="n">tester</span><span class="o">.</span><span class="n">contents</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+
+        <span class="c1"># Submit the application for test</span>
+        <span class="c1"># If it fails an AssertionError will be raised.</span>
+       <span class="n">tester</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_ctxtype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A stream may have any number of conditions and any number of streams may be tested.</p>
+<p>A <code class="xref py py-meth docutils literal notranslate"><span class="pre">local_check()</span></code> is supported where a method of the
+unittest class is executed once the job becomes healthy. This performs
+checks from the context of the Python unittest class, such as
+checking external effects of the application or using the REST api to
+monitor the application.</p>
+<dl class="simple">
+<dt>A test fails-fast if any of the following occur:</dt><dd><ul class="simple">
+<li><p>Any condition fails. E.g. a tuple failing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">tuple_check()</span></code>.</p></li>
+<li><p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">local_check()</span></code> (if set) raises an error.</p></li>
+<li><dl class="simple">
+<dt>The job for the test:</dt><dd><ul>
+<li><p>Fails to become healthy.</p></li>
+<li><p>Becomes unhealthy during the test run.</p></li>
+<li><p>Any processing element (PE) within the job restarts.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>A test timeouts if it does not fail but its conditions do not become valid.
+The timeout is not fixed as an absolute test run time, but as a time since “progress”
+was made. This can allow tests to pass when healthy runs are run in a constrained
+environment that slows execution. For example with a tuple count condition of ten,
+progress is indicated by tuples arriving on a stream, so that as long as gaps
+between tuples are within the timeout period the test remains running until ten tuples appear.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The test timeout value is not configurable.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The submitted job (application under test) has additional elements (streams &amp; operators) inserted to implement the conditions. These are visible through various APIs including the Streams console raw graph view. Such elements are put into the <cite>Tester</cite> category.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The package <a class="reference external" href="https://pypi.org/project/streamsx.testing/">streamsx.testing</a> provides <a class="reference external" href="https://pypi.org/project/nose">nose</a> plugins to provide control over tests without having to modify their source code.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>- Python 2.7 supported.</p>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tester</span></code></p></td>
+<td><p>Testing support for a Topology.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="streamsx.topology.state.html" class="btn btn-neutral float-left" title="streamsx.topology.state" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="streamsx.topology.tester_runtime.html" class="btn btn-neutral float-right" title="streamsx.topology.tester_runtime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Teracloud ApS 2025, IBM Corp. 2015, 2020.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

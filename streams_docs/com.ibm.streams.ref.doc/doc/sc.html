@@ -1,0 +1,534 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="dita"/><meta name="description" content="The sc command compiles SPL applications."/><meta name="DC.subject" content="commands,sc,sc command"/><meta name="keywords" content="commands, sc, sc command"/><meta name="indexterms" content="commands, sc, sc command"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/cmdref-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/compiler-container.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="sc"/><meta name="DC.language" content="en-us"/><meta name="DC.language" content="en-us"/>        
+      <title>sc</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="sc-d41691e63033"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/sc.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/sc.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="cmdref-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li class="active"><div class="topicref" data-id="sc"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/sc.html">sc command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">sc</span> command compiles SPL applications.</span></p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="streamtool-d41691e61385" class="topicref" data-id="streamtool" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streamtool-d41691e61385-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html" id="streamtool-d41691e61385-link">streamtool</a><div class="wh-tooltip"><p class="shortdesc">Streamtool is the Streams command-line interface.</p></div></div></div></li><li role="treeitem"><div data-tocid="metrics-d41691e62985" class="topicref" data-id="metrics" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ea.doc/streamtool/doc/metrics.html" id="metrics-d41691e62985-link">Metrics</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides metrics to help evaluate the health of <span class="keyword">Teracloud 					Streams</span> services, to aid in diagnosing performance issues, and to analyze throughput of requests. You can use the <span class="keyword cmdname">streamtool checkinstancemetrics</span>, <span class="keyword cmdname">streamtool checkdomainmetrics</span>, <span class="keyword cmdname">streamtool getdomainmetrics, </span>and <span class="keyword cmdname">streamtool checkresourcemetrics</span> commands to view the metrics data.</p></div></div></div></li><li role="treeitem"><div data-tocid="commandsyntax-doc-d41691e63017" class="topicref" data-id="commandsyntax-doc" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ea.doc/streamtool/doc/commandsyntax-doc.html" id="commandsyntax-doc-d41691e63017-link">Reading syntax diagrams in the documentation</a><div class="wh-tooltip"><p class="shortdesc">There is a syntax convention for how parameters and values are represented in the command syntax diagrams in the <span class="keyword">Teracloud® 					Streams</span> documentation.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="sc-d41691e63033" class="topicref" data-id="sc" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/sc.html" id="sc-d41691e63033-link">sc command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">sc</span> command compiles SPL applications.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-app-info-d41691e63048" class="topicref" data-id="spl-app-info" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-app-info.html" id="spl-app-info-d41691e63048-link">spl-app-info command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-app-info</span> command reports information about a <span class="keyword">application bundle file</span>.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-make-doc-d41691e63066" class="topicref" data-id="spl-make-doc" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-make-doc.html" id="spl-make-doc-d41691e63066-link">spl-make-doc command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-make-doc</span> command generates documentation for your toolkits.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-make-operator-d41691e63081" class="topicref" data-id="spl-make-operator" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-make-operator.html" id="spl-make-operator-d41691e63081-link">spl-make-operator command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-make-operator</span> command creates code generator modules from template files. The command can also create skeleton code generator templates and a default operator model if they do not exist.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-make-toolkit-d41691e63096" class="topicref" data-id="spl-make-toolkit" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-make-toolkit.html" id="spl-make-toolkit-d41691e63096-link">spl-make-toolkit command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-make-toolkit</span> command indexes a toolkit and makes the functions and operators it contains ready for use by SPL programs.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-schema-from-xml-d41691e63111" class="topicref" data-id="spl-schema-from-xml" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-schema-from-xml.html" id="spl-schema-from-xml-d41691e63111-link">spl-schema-from-xml command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-schema-from-xml</span> command creates an SPL tuple declaration from an XML document.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="spl-transport-stats-d41691e63126" class="topicref" data-id="spl-transport-stats" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-transport-stats.html" id="spl-transport-stats-d41691e63126-link">spl-transport-stats command</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The <span class="keyword cmdname">spl-transport-stats</span> command creates a transport statistics model by running a transport performance test.</span></p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="" role="article" aria-labelledby="ariaid-title1">
+<article class="nested0" aria-labelledby="ariaid-title1" id="sc">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">sc</h1>
+
+
+
+<div class="- topic/body reference/refbody body refbody"><p class="- topic/shortdesc shortdesc"><span class="- topic/ph ph" id="sc__sc-shortdesc">The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> command
+compiles SPL applications.</span></p>
+<section class="- topic/section section" id="sc__sc-usage" data-ofbid="sc__sc-usage"><h2 class="- topic/title title sectiontitle"><span class="- topic/ph ph">Usage</span></h2><figure class="- topic/fig fig fignone"><figcaption data-caption-side="top" class="- topic/title title figcap"><span class="figtitleprefix fig--title-label">Figure<span class="fig--title-label-number"> 1</span><span class="fig--title-label-punctuation">. </span></span><span class="fig--title">sc</span></figcaption><div class="- topic/figgroup figgroup syntaxdiagram-piece"><div class="- topic/figgroup figgroup span"><object data="../../svgobject/ibm.streams.ref.doc2Fdoc2Fsc.dita_d38929e52.svg" type="image/svg+xml"><span><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+1? 
+2.1 -a
+2.1 --optimized-code-generation?  --avoid-runtime-yield? 
+2.1 -C
+2.1 --clean-and-suppress?  <em class="+ topic/ph hi-d/i ph i">compile-time-arguments</em>?  --c++std =
+2.1 <em class="+ topic/ph hi-d/i ph i">c++98</em>
+2.1 <em class="+ topic/ph hi-d/i ph i">c++11</em>? 
+2.1 -d
+2.1 --default-pool-size
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">size</em>?  --data-directory = <em class="+ topic/ph hi-d/i ph i">path</em>?  --default-relocatable = <em class="+ topic/ph hi-d/i ph i">value</em>?  --default-restartable = <em class="+ topic/ph hi-d/i ph i">value</em>? 
+2.1 -F
+2.1 --use-transport
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">protocol</em>? 
+2.1 -g
+2.1 --debug? 
+2.1 -h
+2.1 --help? 
+2.1 -j
+2.1 --num-make-threads
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">thread_number</em>? 
+2.1 -J
+2.1 --suppress-all-but-the-application-model? 
+2.1 -k
+2.1 --prefer-facade-tuples? 
+2.1 -m
+2.1 --makefile-generation 
+2.1 -M
+2.1 --main-composite
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">name</em>?  --no-mixed-mode-preprocessing?  --no-optimized-code-generation?  --no-toolkit-indexing?  --output-directory = <em class="+ topic/ph hi-d/i ph i">path</em>?  --output-side-effects-behavior = <em class="+ topic/ph hi-d/i ph i">behavior</em>? 
+2.1 -r
+2.1 --num-distcc-remote-hosts
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">host_number</em>?  --rebuild-toolkits?  --state-variable-scoping-behavior? 
+2.1 -t
+2.1 --spl-path
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">path</em>?  --transport-stat-dir = <em class="+ topic/ph hi-d/i ph i">path</em>? 
+2.1 -v
+2.1 --verbose-mode?  --validate-hosts? 
+2.1 -w
+2.1 --ld-flags
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">flags</em>?  --window-clause-order? 
+2.1 -x
+2.1 --cxx-flags
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">flags</em>? 
+2.1 -z
+2.1 --code-beautification %Deprecated options</code></pre></span></object></div></div><div class="- topic/figgroup figgroup fragment">Deprecated options<div class="- topic/figgroup figgroup syntaxdiagram-piece"><div class="- topic/figgroup figgroup span"><object data="../../svgobject/ibm.streams.ref.doc2Fdoc2Fsc.dita_d38929e463.svg" type="image/svg+xml"><span><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>
+1?  --allow-convenience-fusion-options? 
+2.1 -K
+2.1 --checkpoint-directory
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">path</em>? 
+2.1 -O
+2.1 --set-relax-fusion-relocatability-restartability? 
+2.1 -p
+2.1 --part-mode
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">mode</em>? 
+2.1 -P
+2.1 --profile-all-operators
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">profile_number</em>? 
+2.1 -s
+2.1 --static-link? 
+2.1 -S
+2.1 --profiling-sampling-rate
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">rate</em>? 
+2.1 -T
+2.1 --standalone-application? 
+2.1 -Z
+2.1 --max-pe-cpu-fraction
+1 =
+1 <em class="+ topic/ph hi-d/i ph i">fraction</em></code></pre></span></object></div></div></div></figure></section>
+<section class="- topic/section section" id="sc__sc-authority" data-ofbid="sc__sc-authority"><h2 class="- topic/title title sectiontitle"><span class="- topic/ph ph">Authority</span></h2><div class="- topic/sectiondiv sectiondiv" id="sc__sc-auth"><p class="- topic/p p">You do not need any authority to run this command.</p></div></section>
+<section class="- topic/section section" id="sc__sc-description" data-ofbid="sc__sc-description"><h2 class="- topic/title title sectiontitle"><span class="- topic/ph ph">Description</span></h2><div class="- topic/sectiondiv sectiondiv" id="sc__sc-desc"><p class="- topic/p p"><span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> is the Stream Processing Language (SPL) compiler for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams</span>. It is used to compile SPL applications. A successful compilation results in the generation of a <span class="- topic/keyword keyword">application bundle file</span>, which can be submitted to the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams
+instance</span> with the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> utility. </p></div></section>
+<section class="- topic/section section" id="sc__sc-options" data-ofbid="sc__sc-options"><h2 class="- topic/title title sectiontitle"><span class="- topic/ph ph">Options and
+arguments</span></h2><dl class="+ topic/dl pr-d/parml dl parml">
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-a, --optimized-code-generation</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to generate optimized code with less runtime error checking. The resulting C++ code is compiled at the highest optimization level. Starting with <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> Version 4.2, the <span class="- topic/keyword keyword">SPL</span> compiler generates optimized code by default, but you can still use this option.<p class="- topic/p p">With code optimization, the compilation flags used for C++ are <span class="+ topic/keyword pr-d/parmname keyword parmname">-O3</span> and <span class="+ topic/keyword pr-d/parmname keyword parmname">-NDEBUG</span> for gcc, and SPL assertions and other runtime checks are disabled. </p><p class="- topic/p p">To disable code optimization, use the <span class="+ topic/keyword pr-d/parmname keyword parmname">--no-optimized-code-generation</span> option instead. The <span class="+ topic/keyword pr-d/parmname keyword parmname">--optimized-code-generation</span> (or <span class="+ topic/keyword pr-d/parmname keyword parmname">-a</span>) and <span class="+ topic/keyword pr-d/parmname keyword parmname">--no-optimized-code-generation</span> options are mutually exclusive.</p></dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--allow-convenience-fusion-options</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--avoid-runtime-yield=<var class="+ topic/keyword sw-d/varname keyword varname">value</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the behavior to use when the run time encounters a full queue in a <code class="+ topic/ph pr-d/codeph ph codeph">ThreadedPort</code> and must wait to add a tuple to the queue of the <code class="+ topic/ph pr-d/codeph ph codeph">ThreadedPort</code>. <span class="- topic/ph ph">The current behavior is to busy wait, including calls to the <code class="+ topic/ph pr-d/codeph ph codeph">pthread_yield</code> subroutine.</span> A performance problem exists when the <code class="+ topic/ph pr-d/codeph ph codeph">pthread_yield</code> subroutine is used on RHEL6. This option instructs the run time to use an alternative mechanism when it is waiting on a full queue. The following values are valid:<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">auto</span> (default): The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler prevents the call to the <code class="+ topic/ph pr-d/codeph ph codeph">pthread_yield()</code> subroutine on RHEL6, and forces the call to <code class="+ topic/ph pr-d/codeph ph codeph">pthread_yield()</code> on RHEL5.</li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">yes</span>: The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler prevents the call to the <code class="+ topic/ph pr-d/codeph ph codeph">pthread_yield()</code> subroutine.</li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">no</span>: The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler forces the call to the <code class="+ topic/ph pr-d/codeph ph codeph">pthread_yield()</code> subroutine.</li>
+</ul></dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-c, --clean</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to clean the compiler-generated artifacts before compilation.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-C, --clean-and-suppress</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to clean the compiler-generated artifacts and suppress
+the compilation.</dd>
+
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm"><var class="+ topic/keyword sw-d/varname keyword varname">compile-time-arguments</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Pass named arguments each in the format
+<kbd class="+ topic/ph sw-d/userinput ph userinput"><var class="+ topic/keyword sw-d/varname keyword varname">name</var>=<var class="+ topic/keyword sw-d/varname keyword varname">value</var></kbd> to the compiler. The name
+cannot contain the character <code class="+ topic/ph pr-d/codeph ph codeph">=</code> but otherwise is a free form string. It matches the
+<code class="+ topic/ph pr-d/codeph ph codeph">name</code> parameter that is specified in calls that are made to the compile-time
+argument access functions from within SPL code. The value can be any string, for example:
+<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>sc -M my::App hello=a,b,c foo=bar</code></pre><p class="- topic/p p">For more information
+about compile-time values, see the product documentation.</p><p class="- topic/p p">For more
+information, see <a class="- topic/xref xref" href="../../com.ibm.streams.dev.doc/doc/compileargs.html">Compile-time values</a>.</p></dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--c++std=<var class="+ topic/keyword sw-d/varname keyword varname">c++-support</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the C++ standard supported. When you compile an SPL
+application with --c++std, all C++ artifacts (all operators and native
+functions) are compiled under that standard. The SPL compiler detects
+whether the C++ standard is supported by the underlying C++ compiler.
+The following values are valid for <var class="+ topic/keyword sw-d/varname keyword varname">c++-support</var>:<dl class="- topic/dl dl">
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/option keyword option">c++98</span></dt>
+<dd class="- topic/dd dd">The default value is <span class="+ topic/keyword pr-d/option keyword option">c++98</span>. The SPL compiler
+passes <span class="+ topic/keyword pr-d/option keyword option">-std=gnu++98 </span> to the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">g++</span> compiler.</dd>
+
+<dt class="- topic/dt dt dlterm"><span class="+ topic/keyword pr-d/option keyword option">c++11</span></dt>
+<dd class="- topic/dd dd">The SPL compiler passes <span class="+ topic/keyword pr-d/option keyword option">-std=gnu++11</span>
+to the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">g++</span> compiler. </dd>
+</dl></dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-d, --default-pool-size=<var class="+ topic/keyword sw-d/varname keyword varname">size</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the number of hosts in the default host pool. The value must be nonzero (greater than 0). By default, the default pool is unsized. </dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--data-directory=<var class="+ topic/keyword sw-d/varname keyword varname">path</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the location of the data directory. The path can be relative or absolute.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--default-relocatable=<var class="+ topic/keyword sw-d/varname keyword varname">value</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies whether operators are relocatable by default. Relocatable
+operators can be relocated to different resources. If you specify <span class="+ topic/keyword pr-d/parmname keyword parmname">--default-relocatable=true</span>,
+it implies that <span class="+ topic/keyword pr-d/parmname keyword parmname">--default-restartable=true</span>. For
+more information, see <a class="- topic/xref xref" href="../../com.ibm.streams.ref.doc/doc/relocatable.html">relocatable</a>.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--default-restartable=<var class="+ topic/keyword sw-d/varname keyword varname">value</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies whether operators are restartable by default. Restartable
+operators can be restarted. If you specify <span class="+ topic/keyword pr-d/parmname keyword parmname">--default-relocatable=false</span>,
+it implies that <span class="+ topic/keyword pr-d/parmname keyword parmname">--default-relocatable=false</span>.
+For more information, see <a class="- topic/xref xref" href="../../com.ibm.streams.ref.doc/doc/restartable.html">restartable</a>.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-F, --use-transport=<var class="+ topic/keyword sw-d/varname keyword varname">protocol</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the default transport protocol. The protocol can be any one of the following values:
+<span class="+ topic/keyword pr-d/option keyword option">tcp</span>; <span class="+ topic/keyword pr-d/option keyword option">llm_rum_tcp</span>; <span class="+ topic/keyword pr-d/option keyword option">llm_rum_ib</span>. These values are
+not case-sensitive. The default value is <span class="+ topic/keyword pr-d/option keyword option">tcp</span>. <div class="- topic/note note note note_note"><span class="note__title">Restrictions:</span> If you use
+            the LLM transport, do not enable encrypted connections between processing elements. If
+            both the LLM transport and encrypted connections are enabled, the processing elements
+            can't
+            connect.</div></dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-g, --debug</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to turn on the stream debugger by adding <code class="+ topic/ph pr-d/codeph ph codeph">wrapper:
+sdb</code> as a config for the main composite. A wrapper config
+specified in the source file, if any, takes precedence.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-h, --help</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to show the command syntax.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-j, --num-make-threads=<var class="+ topic/keyword sw-d/varname keyword varname">thread_number</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the number of threads for building the binaries. This
+option is used as the <span class="+ topic/keyword pr-d/parmname keyword parmname">-j</span> parameter for the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">make</span> command
+during the building of the generated C++ code.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-J, --suppress-all-but-the-application-model</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to create an XML-based model of the application (.adl
+file), but to suppress the creation of other application artifacts as
+well as the build process.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-k, --prefer-facade-tuples</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to generate facade tuples when possible.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-K, --checkpoint-directory=<var class="+ topic/keyword sw-d/varname keyword varname">path</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-m, --makefile-generation</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to generate a default makefile for building the SPL
+application.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-M, --main-composite=<var class="+ topic/keyword sw-d/varname keyword varname">name</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the main composite to use as the root of the expansion.
+This value must be a fully qualified name.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--no-mixed-mode-preprocessing</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies that the command must not preprocess mixed-mode (<span class="+ topic/ph sw-d/filepath ph filepath">.splmm</span>)
+files.</dd>
+
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--no-optimized-code-generation</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies that the command must not generate optimized code. The generated C++ code is compiled with <span class="+ topic/keyword pr-d/parmname keyword parmname">-ggdb</span> for gcc.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--no-toolkit-indexing</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies that the command must not perform toolkit indexing in
+the compilation directory.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-O, --set-relax-fusion-relocatability-restartability</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--output-directory=<var class="+ topic/keyword sw-d/varname keyword varname">path</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the directory where the application artifacts are placed.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--output-side-effects-behavior=<var class="+ topic/keyword sw-d/varname keyword varname">behavior</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies whether to output a message if there are side effects
+in the <code class="+ topic/ph pr-d/codeph ph codeph">output</code> clause. The following options are valid:<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">ignore</span>: The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler suppresses
+a warning message.</li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">warn</span>: The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler gives
+a warning message. This is the default value.</li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">error</span>: The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler gives
+an error message.</li>
+</ul>If the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">–output-side-effects-behavior</span> option
+is not specified, the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler gives a warning
+message if there are side effects in the <code class="+ topic/ph pr-d/codeph ph codeph">output</code> clause.
+For information on side effect detection in SPL <code class="+ topic/ph pr-d/codeph ph codeph">output</code> clauses,
+see <a class="- topic/xref xref" href="sideeffects.html" title="SPL is designed to make side-effects more explicit, and to encourage a coding style where side-effects are less common.">Side-effects</a>.
+This option is available in <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> Version
+3.0 and later.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-p, --part-mode=<var class="+ topic/keyword sw-d/varname keyword varname">mode</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-P, --profile-all-operators=<var class="+ topic/keyword sw-d/varname keyword varname">profile_number</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-r, --num-distcc-remote-hosts=<var class="+ topic/keyword sw-d/varname keyword varname">host_number</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the number of remote hosts to use for distributed compile when
+you use <span class="+ topic/keyword sw-d/cmdname keyword cmdname">distcc</span>. The hosts are selected by using
+the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streams_get_available_hosts -query '$build'</span> command.
+The local host is always part of the compilation.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--rebuild-toolkits</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to run the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">spl-make-toolkit</span> command,
+which rebuilds a toolkit if the toolkit is out of date. <p class="- topic/p p">The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">spl-make-toolkit</span> command
+creates a <code class="+ topic/ph pr-d/codeph ph codeph">toolkit.xml</code> file, therefore the directory
+must be writable by your ID.</p></dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-s, --static-link</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-S, --profiling-sampling-rate=<var class="+ topic/keyword sw-d/varname keyword varname">rate</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--state-variable-scoping-behavior</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies that state variables can shadow attributes with the
+same name.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-t, --spl-path=<var class="+ topic/keyword sw-d/varname keyword varname">path</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the toolkit lookup paths. Separate multiple paths with
+':'. Each path is a toolkit directory, a directory of toolkit directories,
+or a toolkit list XML file. This option overrides <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_SPLPATH</span> environment
+variable.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-T, --standalone-application</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">This option is deprecated and has no effect.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--transport-stat-dir=<var class="+ topic/keyword sw-d/varname keyword varname">path</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies the location of the directory to be used for finding
+transport statistic files.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-v, --verbose-mode</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to provide more detailed compile-time information.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--validate-hosts</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to verify that host names in the placement configs are
+valid at compile time. The default behavior is to perform the verification
+when the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool submitjob</span> command runs.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-w, --ld-flags=<var class="+ topic/keyword sw-d/varname keyword varname">flags</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to pass the flags to <span class="+ topic/keyword sw-d/cmdname keyword cmdname">ld</span> while linking. For details about the flags, see the GNU linker (ld) documentation.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">--window-clause-order</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies whether to enforce a specific order for the elements
+in the <code class="+ topic/ph pr-d/codeph ph codeph">window</code> clause. The following options are valid:<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">any</span>: The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler does
+not enforce any particular window clause order.</li>
+<li class="- topic/li li"><span class="+ topic/keyword pr-d/option keyword option">strict</span>: The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler gives
+an error message if the window clause order does not conform to the
+following syntax.<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code><var class="+ topic/keyword sw-d/varname keyword varname">opInvokeWindow</var> ::= <var class="+ topic/keyword sw-d/varname keyword varname">ID</var> ':' ( 'tumbling' ',' <var class="+ topic/keyword sw-d/varname keyword varname">evictionSpec</var>
+                          | 'sliding' ',' <var class="+ topic/keyword sw-d/varname keyword varname">evictionSpec</var> ( ',' <var class="+ topic/keyword sw-d/varname keyword varname">triggerSpec</var> )<sup class="+ topic/ph hi-d/sup ph sup">?</sup> )
+                          ( ',' 'partitioned' (',' <var class="+ topic/keyword sw-d/varname keyword varname">partitionEvictionSpec</var>)<sup class="+ topic/ph hi-d/sup ph sup">?</sup> )<sup class="+ topic/ph hi-d/sup ph sup">?</sup> ';'</code></pre></li>
+</ul>If the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">--window-clause-order</span> option is not
+specified, the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc</span> compiler gives a warning message
+if the elements do not adhere to the window clause syntax.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-x, --cxx-flags=<var class="+ topic/keyword sw-d/varname keyword varname">flags</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to pass the flags to the C++ compiler while building. For details about the flags, see the GNU g++ compiler documentation.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-z, --code-beautification</dt>
+<dd class="+ topic/dd pr-d/pd dd pd">Specifies to generate nicely formatted C++ code. The <span class="+ topic/keyword sw-d/cmdname keyword cmdname">uncrustify</span> tool
+needs to be available in the system for this feature to work.</dd>
+
+<dt class="+ topic/dt pr-d/pt dt pt dlterm">-Z, --max-pe-cpu-fraction=<var class="+ topic/keyword sw-d/varname keyword varname">fraction</var></dt>
+<dd class="+ topic/dd pr-d/pd dd pd"> This option is deprecated and has no effect.</dd>
+</dl></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle"><span class="- topic/ph ph">Examples</span></h2><div class="- topic/p p">Assume the following
+directory layout:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>\_ sample/
+      \_ WordCount.spl</code></pre>Further assume that there is a main
+composite named <code class="+ topic/ph pr-d/codeph ph codeph">sample::WordCount</code> defined in the
+SPL program.<ol class="- topic/ol ol">
+<li class="- topic/li li">Generate a make file: <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc -m -M sample::WordCount</span>. This
+results in the following directory layout:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>\_ Makefile
+   sample/
+     \_ WordCount.spl</code></pre>The generated makefile can be used
+to compile the application by typing <span class="+ topic/keyword sw-d/cmdname keyword cmdname">make</span>.</li>
+<li class="- topic/li li">Compile the application: <span class="+ topic/keyword sw-d/cmdname keyword cmdname">sc -M sample::WordCount</span>. This results in the following directory layout:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>\_ data/
+   output/
+     \_ bin/
+          \_ standalone
+             ...
+     \_ sample.WordCount.sab
+        ...
+   sample/
+     \_ WordCount.spl
+   toolkit.xml</code></pre>The generated <span class="+ topic/ph sw-d/filepath ph filepath">.sab</span> file can be used to submit the application to the <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instance.<p class="- topic/p p">The generated stand-alone executable can be run by using the following command: <span class="+ topic/keyword sw-d/cmdname keyword cmdname">./output/bin/standalone</span>.</p></li>
+</ol></div></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Use of the <span class="+ topic/keyword pr-d/option keyword option">C++11</span> option when compiling
+your toolkit</h2><p class="- topic/p p">When you implement primitive operators
+and native functions in <span class="+ topic/keyword pr-d/option keyword option">C++11</span>, document this fact
+for the users of your toolkit. Toolkit users need to inform the SPL
+compiler that their application requires compiling under <span class="+ topic/keyword pr-d/option keyword option">C++11</span>.</p><p class="- topic/p p">In the C++ code, you can check the code is being compiled
+under <span class="+ topic/keyword pr-d/option keyword option">C++11</span> by using the <span class="+ topic/keyword pr-d/option keyword option">__cplusplus</span> macro.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>    #if __cplusplus &lt; 201103L
+    #error "This toolkit requires C++11, but is not currently being compiled 
+    as C++11."
+    #endif</code></pre><p class="- topic/p p">You can also use the opposite
+comparison to determine whether <span class="+ topic/keyword pr-d/option keyword option">C++11</span> is used. This
+code can be used to take advantage of <span class="+ topic/keyword pr-d/option keyword option">C++11</span> features
+when present, but still work if not.</p><pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>    #if __cplusplus &gt;= 201103L
+    // C++11 specific code
+    #else
+    // pre-C++11 code
+    #endif</code></pre></section>
+</div>
+</article>
+
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.dev.doc/doc/compiler-container.html" title="The Streams Processing Language (SPL) Compiler is called sc and is included with the Teracloud Streams installation package. You compile SPL to create files to run on your Teracloud Streams instance.">Compiling stream applications</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

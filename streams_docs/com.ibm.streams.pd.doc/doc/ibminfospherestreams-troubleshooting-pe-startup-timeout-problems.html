@@ -1,0 +1,247 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="tsTroubleshooting"/><meta name="abstract" content="If the processing elements fail to start after you submit an application job, you might have to increase the value of the hc.pecStartTimeout property for the domain controller service."/><meta name="description" content="If the processing elements fail to start after you submit an application job, you might have to increase the value of the hc.pecStartTimeout property for the domain controller service."/><meta name="DC.subject" content="processing element startup,troubleshooting"/><meta name="keywords" content="processing element startup, troubleshooting"/><meta name="indexterms" content="processing element startup, troubleshooting"/><meta name="DC.relation" content="../../com.ibm.streams.pd.doc/doc/containerstreamsapps.html"/><meta name="DC.relation" content="../../com.ibm.streams.pd.doc/doc/ts_parent.html"/><meta name="DC.relation" content="../../com.ibm.streams.pd.doc/doc/containerknownprobsparent.html"/><meta name="DC.relation" content="../../com.ibm.streams.pd.doc/doc/containerstreamsparent.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-jobscheduler-configure-host-load.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="ibminfospherestreams-troubleshooting-pe-startup-timeout-problems"/><meta name="DC.language" content="en-us"/>        
+      <title>Processing element startup problems</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="ibminfospherestreams-troubleshooting-pe-startup-timeout-problems-d41691e8574"/><meta name="wh-source-relpath" content="com.ibm.streams.pd.doc/doc/ibminfospherestreams-troubleshooting-pe-startup-timeout-problems.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.pd.doc/doc/ibminfospherestreams-troubleshooting-pe-startup-timeout-problems.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="ibminfospherestreams-troubleshooting-pe-startup-timeout-problems" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="troubleshootingforproduct"><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li><div class="topicref" data-id="containerparentknownprobs"><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerknownprobsparent.html">Known problems and solutions</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve known problems that you might encounter when you work with different components of the product.</p></div></div></div></li><li><div class="topicref" data-id="containerparent"><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsparent.html"><span class="keyword">Teracloud® Streams</span> problems and solutions</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems that you can encounter when you work with <span class="keyword">Teracloud® Streams</span>.</p></div></div></div></li><li><div class="topicref" data-id="containerstreamsapps"><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsapps.html"><span class="keyword">Stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Use these solutions to resolve the problems that you might encounter when you develop <span class="keyword">stream applications</span>.</p></div></div></div></li><li class="active"><div class="topicref" data-id="ibminfospherestreams-troubleshooting-pe-startup-timeout-problems"><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ibminfospherestreams-troubleshooting-pe-startup-timeout-problems.html">Processing element startup problems</a><div class="wh-tooltip"><p class="shortdesc">If the processing elements fail to start after you submit an application job, you might       have to increase the value of the <span class="keyword parmname">hc.pecStartTimeout</span> property for the         <span class="keyword">domain controller service</span>.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="before_contactingsupport.dita-d41691e8110" class="topicref" data-id="before_contactingsupport.dita" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/before_contactingsupport.html" id="before_contactingsupport.dita-d41691e8110-link">Before contacting Teracloud® Support</a><div class="wh-tooltip"><p class="shortdesc">Review this information before you contact Teracloud® Support. These resources might help you to find possible solutions for your issue, or make your support experience more efficient if you need to contact Teracloud Support.</p></div></div></div></li><li role="treeitem"><div data-tocid="ts_overview-d41691e8130" class="topicref" data-id="ts_overview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_overview.html" id="ts_overview-d41691e8130-link">Troubleshooting techniques</a><div class="wh-tooltip"><p class="shortdesc"><dfn class="term">Troubleshooting</dfn> is a systematic approach to solving a problem. The goal of troubleshooting is to determine why something does not work as you expect it to work, and then decide how to resolve the problem.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="containerparentknownprobs-d41691e8143" class="topicref" data-id="containerparentknownprobs" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action containerparentknownprobs-d41691e8143-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerknownprobsparent.html" id="containerparentknownprobs-d41691e8143-link">Known problems and solutions</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve known problems that you might encounter when you work with different components of the product.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="containerparent-d41691e8154" class="topicref" data-id="containerparent" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action containerparent-d41691e8154-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsparent.html" id="containerparent-d41691e8154-link"><span class="keyword">Teracloud® Streams</span> problems and solutions</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems that you can encounter when you work with <span class="keyword">Teracloud® Streams</span>.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="containerstreamsauth-d41691e8174" class="topicref" data-id="containerstreamsauth" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerstreamsauth-d41691e8174-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsauth.html" id="containerstreamsauth-d41691e8174-link">Authentication</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve problems with <span class="keyword">Teracloud® 					Streams</span> authentication.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerstreamsconnect-d41691e8301" class="topicref" data-id="containerstreamsconnect" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerstreamsconnect-d41691e8301-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsconnect.html" id="containerstreamsconnect-d41691e8301-link">Connectivity</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve connectivity problems with the product.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerstreamsdomain-d41691e8323" class="topicref" data-id="containerstreamsdomain" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerstreamsdomain-d41691e8323-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsdomain.html" id="containerstreamsdomain-d41691e8323-link">Domain configuration and administration</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems that can occur when you work with <span class="keyword">Teracloud® Streams</span> domains.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerstreamsinstallation-d41691e8356" class="topicref" data-id="containerstreamsinstallation" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerstreamsinstallation-d41691e8356-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsinstall.html" id="containerstreamsinstallation-d41691e8356-link">Installation</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems that you can encounter when you install <span class="keyword">Teracloud® Streams</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerstreamsinstance-d41691e8452" class="topicref" data-id="containerstreamsinstance" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerstreamsinstance-d41691e8452-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsinstance.html" id="containerstreamsinstance-d41691e8452-link">Instance configuration and administration</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems that can occur when you work with <span class="keyword">Teracloud® Streams</span> instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="consolecontainer-d41691e8484" class="topicref" data-id="consolecontainer" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action consolecontainer-d41691e8484-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/consolecontainer.html" id="consolecontainer-d41691e8484-link"><span class="keyword">Streams Console</span></a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems that you might encounter when   you work with <span class="keyword">Streams Console</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="containerstreamsapps-d41691e8546" class="topicref" data-id="containerstreamsapps" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action containerstreamsapps-d41691e8546-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsapps.html" id="containerstreamsapps-d41691e8546-link"><span class="keyword">Stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Use these solutions to resolve the problems that you might encounter when you develop <span class="keyword">stream applications</span>.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-pestartup-d41691e8563" class="topicref" data-id="ibminfospherestreams-pestartup" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ibminfoshperestreams-troubleshooting-pestartup.html" id="ibminfospherestreams-pestartup-d41691e8563-link">Processing element problems when the maximum number of file descriptors or the maximum number of user processes is exceeded</a><div class="wh-tooltip"><p class="shortdesc">When the number of processing elements (PEs) or the number of external connections for a PE exceeds the maximum number of open file descriptors or the maximum number of user processes, the PEs might fail to start or to connect correctly.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="ibminfospherestreams-troubleshooting-pe-startup-timeout-problems-d41691e8574" class="topicref" data-id="ibminfospherestreams-troubleshooting-pe-startup-timeout-problems" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ibminfospherestreams-troubleshooting-pe-startup-timeout-problems.html" id="ibminfospherestreams-troubleshooting-pe-startup-timeout-problems-d41691e8574-link">Processing element startup problems</a><div class="wh-tooltip"><p class="shortdesc">If the processing elements fail to start after you submit an application job, you might       have to increase the value of the <span class="keyword parmname">hc.pecStartTimeout</span> property for the         <span class="keyword">domain controller service</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-troubleshooting-optional-uncrustify-d41691e8591" class="topicref" data-id="ibminfospherestreams-troubleshooting-optional-uncrustify" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ibminfospherestreams-troubleshooting-optional-uncrustify.html" id="ibminfospherestreams-troubleshooting-optional-uncrustify-d41691e8591-link">Getting rid of the Uncrustify source code formatter warning message</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To ensure that your C++ code is indented and             formatted correctly when you generate code by using the <span class="keyword cmdname">sc</span>             command,             you can optionally install and use the Uncrustify source code formatter. If you do not             install this formatter, a warning message is displayed when you compile your code and             use the code beautification option.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="problemportrequests-d41691e8606" class="topicref" data-id="problemportrequests" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ibminfospherestreams-troubleshooting-port-requests.html" id="problemportrequests-d41691e8606-link">Conflicts requesting ports from the local port range</a><div class="wh-tooltip"><p class="shortdesc">An error is generated when the <span class="keyword apiname">TCPSink</span>, <span class="keyword apiname">TCPSource</span>, <span class="keyword apiname">UDPSource</span>, or <span class="keyword apiname">UDPSink</span> operator of an application specifies the port that <span class="keyword">Teracloud® 					Streams</span> is already using, and the application is launched.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerstreamsruntime-d41691e8634" class="topicref" data-id="containerstreamsruntime" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerstreamsruntime-d41691e8634-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamsruntime.html" id="containerstreamsruntime-d41691e8634-link"><span class="keyword">Teracloud® Streams</span> runtime</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems encountered during the <span class="keyword">Teracloud® Streams</span> runtime processes.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerparent-d41691e8702" class="topicref" data-id="containerparent" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerparent-d41691e8702-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containertoolkitparent.html" id="containerparent-d41691e8702-link">Toolkit problems and solutions</a><div class="wh-tooltip"><p class="shortdesc">Use the solutions that are provided to resolve the problems that you can encounter when you work with toolkits in <span class="keyword">Teracloud® Streams</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containerstreamszookeeper-d41691e8752" class="topicref" data-id="containerstreamszookeeper" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containerstreamszookeeper-d41691e8752-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/containerstreamszookeeper.html" id="containerstreamszookeeper-d41691e8752-link"><span class="keyword">ZooKeeper</span> problems and solutions</a><div class="wh-tooltip"><p class="shortdesc">Use these solutions to resolve the problems that you might encounter with <span class="keyword">Apache 					ZooKeeper</span>.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ts_tools-d41691e8880" class="topicref" data-id="ts_tools" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ts_tools-d41691e8880-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_tools.html" id="ts_tools-d41691e8880-link">Troubleshooting services and diagnostic tools</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides log and trace services and troubleshooting tools that can help you resolve the issues that you encounter when you work with the product.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="streamsmessages-d41691e9147" class="topicref" data-id="streamsmessages" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streamsmessages-d41691e9147-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.msg.doc/parentcontainer.html" id="streamsmessages-d41691e9147-link"><span class="keyword">Teracloud® Streams</span> messages</a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">Teracloud® 					Streams</span> messages describe the errors and solutions, warnings of potentially problematic conditions, and helpful information that you can use to troubleshoot the problems that can occur when you work with the product. These messages are displayed in the user interfaces and log files. </p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic tsTroubleshooting/tsTroubleshooting topic tsTroubleshooting" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Processing element startup problems</h1>
+
+
+<div class="- topic/body tsTroubleshooting/tsBody body tsBody"><div class="- topic/abstract abstract"><span class="- topic/shortdesc shortdesc">If the processing elements fail to start after you submit an application job, you might
+      have to increase the value of the <span class="+ topic/keyword pr-d/parmname keyword parmname">hc.pecStartTimeout</span> property for the
+        <span class="- topic/keyword keyword">domain controller service</span>.</span></div>
+<section class="- topic/section tsTroubleshooting/tsSymptoms section tsSymptoms">You can encounter the following symptoms:<ul class="- topic/ul ul">
+<li class="- topic/li li"><span class="- topic/ph ph">When the problem is the <span class="+ topic/keyword pr-d/parmname keyword parmname">hc.pecStartTimeout</span> property for the
+<span class="- topic/keyword keyword">domain controller service</span>, the processing element log file contains <code class="+ topic/ph pr-d/codeph ph codeph">SIGTERM</code> messages, as
+shown in the following example. The log file name is
+<span class="+ topic/ph sw-d/filepath ph filepath">pec.pe<var class="+ topic/keyword sw-d/varname keyword varname">pe-id</var>.stdouterr</span>, where
+<span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">pe-id</var></span> is the processing element ID.</span><div class="- topic/p p">
+<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-60"><code>============================  SIGNAL SIGTERM     ============================
+/opt/ibm/InfoSphereStreamsZZZ/bin/../lib/libstreams-apputils.so.0(Distillery::BacktraceDumper::dump(int, bool, int)+0x46) [0x2b26d297098e]
+/opt/ibm/InfoSphereStreamsZZZ/bin/../lib/libstreams-runtime.so.0(Streams::PECDaemon::sigTermHandler(int)+0x76) [0x2b26d17f86e0]
+/opt/ibm/InfoSphereStreamsZZZ/bin/../lib/libstreams-runtime.so.0(Distillery::MemberFunction_1&lt;Streams::PECDaemon, int&gt;::call(int)+0x74) [0x2b26d17fae76]
+/opt/ibm/InfoSphereStreamsZZZ/bin/../lib/libstreams-runtime.so.0(Distillery::Callback_1&lt;int&gt;::call(int)+0x3b) [0x2b26d17fadff]
+/opt/ibm/InfoSphereStreamsZZZ/bin/../lib/libstreams-runtime.so.0(Distillery::Callback_1&lt;int&gt;::operator()(int)+0x26) [0x2b26d20f529c]
+/opt/ibm/InfoSphereStreamsZZZ/bin/../lib/libstreams-runtime.so.0(Distillery::DistilleryApplication::errorSignalHandler(int)+0x177) [0x2b26d20e70d5]
+... ...
+... ...</code></pre>
+
+
+</div></li>
+<li class="- topic/li li">When the problem involves the value of the <span class="+ topic/keyword pr-d/parmname keyword parmname">DISPLAY</span> environment variable and
+          a config wrapper in the application, the processing element stays in the
+            <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Starting</samp> state for awhile and then the processing element
+          fails and the state of the processing element changes to
+            <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">Stopped</samp>. You can use the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+            lspes</span> command to view the status of the processing element.<div class="- topic/p p">To view the
+              <span class="+ topic/keyword pr-d/parmname keyword parmname">DISPLAY</span> environment variable in the console log file, enter the
+            following
+            command:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>streamtool viewlog --which console --pe <var class="+ topic/keyword sw-d/varname keyword varname">pe-id</var> --print</code></pre>The
+              <span class="- topic/keyword keyword">Streams
+Console</span> log for the processing element displays a message that is similar to the following
+            example, which is taken from the WordCount sample application. To replicate the behavior
+            of the WordCount sample application that you see in this example, ensure that the
+            application uses the <span class="+ topic/keyword pr-d/parmname keyword parmname">DISPLAY</span> environment variable by adding a
+            config wrapper to the
+            sample.<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>$ (DISPLAY=myBadDisplayValue; 
+streamtool submitjob -P file=/etc/hosts output/sample.WordCount.adl)
+$
+&lt;wait for PE failure&gt;
+$ streamtool viewlog --which console --pe <var class="+ topic/keyword sw-d/varname keyword varname">pe-id</var> --print
+  xterm Xt error: Can't open display: myBadDisplayValue</code></pre></div></li>
+</ul></section>
+<section class="- topic/section tsTroubleshooting/tsCauses section tsCauses">The following conditions can cause these problems:<ul class="- topic/ul ul">
+<li class="- topic/li li">When the problem is the <span class="+ topic/keyword pr-d/parmname keyword parmname">hc.pecStartTimeout</span> property for the
+<span class="- topic/keyword keyword">domain controller service</span>, the problem is typically the result of a slow network or an overloaded host. When the controller
+starts a processing element container, the value of the <span class="+ topic/keyword pr-d/parmname keyword parmname">hc.pecStartTimeout</span>
+property is equal to the maximum time that the controller waits for the processing element container
+to start. If the processing element container does not start within the allotted timeout period, the
+processing element fails to start.</li>
+<li class="- topic/li li">When the problem involves the value of the <span class="+ topic/keyword pr-d/parmname keyword parmname">DISPLAY</span> environment variable and
+          a config wrapper in the application, this problem occurs because the value of the
+            <span class="+ topic/keyword pr-d/parmname keyword parmname">DISPLAY</span> environment variable is not valid.</li>
+</ul></section>
+<section class="- topic/section tsTroubleshooting/tsResolve section tsResolve">To resolve these problems:<ul class="- topic/ul ul">
+<li class="- topic/li li">When the problem is the <span class="+ topic/keyword pr-d/parmname keyword parmname">hc.pecStartTimeout</span> property for the <span class="- topic/keyword keyword">domain controller service</span>, increase the value of the property. The default value is 30 seconds. If you increase the value
+of this property and the problem is not resolved, you can enable the host load protection or update
+the value of the host load threshold. </li>
+<li class="- topic/li li">When the problem involves the value of the <span class="+ topic/keyword pr-d/parmname keyword parmname">DISPLAY</span> environment variable and
+          a config wrapper in the application, see <a class="- topic/xref xref" href="../../com.ibm.streams.ref.doc/doc/wrapper.html">the description of
+            the wrapper config</a>.</li>
+</ul></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-instance-jobscheduler-configure-host-load.html" title="The host load protection option prevents the Streams job scheduler from allocating processing elements (PEs) to a host that already has a load average above the specified host load threshold value. If there are no hosts available with load averages below the specified threshold, the job submission fails.">Enabling host load protection for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> instances</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="description" content="Explore additional SPL semantics by writing programs on your own."/><meta name="DC.subject" content="SPL exercises"/><meta name="keywords" content="SPL exercises"/><meta name="indexterms" content="SPL exercises"/><meta name="DC.relation" content="../../com.ibm.streams.tutorials.doc/doc/tutorial-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/dev-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.dev.doc/doc/writingapplications.html"/><meta name="DC.relation" content="../../com.ibm.streams.tutorials.doc/doc/tut-container.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="nextsteps"/><meta name="DC.language" content="en-us"/>        
+      <title>Additional exercises</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="nextsteps-d41691e4328"/><meta name="wh-source-relpath" content="com.ibm.streams.tutorials.doc/doc/nextsteps.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.tutorials.doc/doc/nextsteps.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="nextsteps" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="dev-container"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li><div class="topicref" data-id="writingapplications"><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/writingapplications.html">Developing <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Try out tutorials and explore details about stream application development, SPL features,     and best practices.</p></div></div></div></li><li><div class="topicref" data-id="tut-container"><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/tut-container.html">Tutorials</a><div class="wh-tooltip"><p class="shortdesc">Learn how to create simple <span class="keyword">stream applications</span> by completing the tutorials.</p></div></div></div></li><li><div class="topicref" data-id="tutorial-container"><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/tutorial-container.html">SPL Tutorials</a><div class="wh-tooltip"><p class="shortdesc">Try out the following SPL tutorials to learn about the distributed data flow language     including its program structures, types, functions, and other components tailored for processing     streaming data.</p></div></div></div></li><li class="active"><div class="topicref" data-id="nextsteps"><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/nextsteps.html">Additional exercises</a><div class="wh-tooltip"><p class="shortdesc">Explore additional SPL semantics by writing programs on your own.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="streaming_application_basics-d41691e3994" class="topicref" data-id="streaming_application_basics" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action streaming_application_basics-d41691e3994-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/streaming_application_basics.html" id="streaming_application_basics-d41691e3994-link">Development concepts</a><div class="wh-tooltip"><p class="shortdesc">Development of stream applications consists of several components such as operators,         streams, tuples, Streams Processing Language, toolkits, and         more.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="writingapplications-d41691e4218" class="topicref" data-id="writingapplications" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action writingapplications-d41691e4218-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/writingapplications.html" id="writingapplications-d41691e4218-link">Developing <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Try out tutorials and explore details about stream application development, SPL features,     and best practices.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="tut-container-d41691e4232" class="topicref" data-id="tut-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action tut-container-d41691e4232-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/tut-container.html" id="tut-container-d41691e4232-link">Tutorials</a><div class="wh-tooltip"><p class="shortdesc">Learn how to create simple <span class="keyword">stream applications</span> by completing the tutorials.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="tutorial-container-d41691e4251" class="topicref" data-id="tutorial-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action tutorial-container-d41691e4251-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/tutorial-container.html" id="tutorial-container-d41691e4251-link">SPL Tutorials</a><div class="wh-tooltip"><p class="shortdesc">Try out the following SPL tutorials to learn about the distributed data flow language     including its program structures, types, functions, and other components tailored for processing     streaming data.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="gettingstarted-d41691e4262" class="topicref" data-id="gettingstarted" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/gettingstarted.html" id="gettingstarted-d41691e4262-link">Getting started</a><div class="wh-tooltip"><p class="shortdesc">Write, compile, and run a "Hello, World" SPL application.</p></div></div></div></li><li role="treeitem"><div data-tocid="streamprocessing-d41691e4273" class="topicref" data-id="streamprocessing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/streamprocessing.html" id="streamprocessing-d41691e4273-link">Stream processing</a><div class="wh-tooltip"><p class="shortdesc">Write, compile, and run an application that processes streams of an unknown or       infinite length.</p></div></div></div></li><li role="treeitem"><div data-tocid="running_distributed-d41691e4284" class="topicref" data-id="running_distributed" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/running_distributed.html" id="running_distributed-d41691e4284-link">Running distributed</a><div class="wh-tooltip"><p class="shortdesc">Run the "NumberedCat" application in a distributed environment.</p></div></div></div></li><li role="treeitem"><div data-tocid="typesandfunctions-d41691e4295" class="topicref" data-id="typesandfunctions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/typesandfunctions.html" id="typesandfunctions-d41691e4295-link">Types and functions</a><div class="wh-tooltip"><p class="shortdesc">Try out user-defined SPL types and functions to improve code reuse and       readability.</p></div></div></div></li><li role="treeitem"><div data-tocid="compositeoperators-d41691e4306" class="topicref" data-id="compositeoperators" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/compositeoperators.html" id="compositeoperators-d41691e4306-link">Composite operators</a><div class="wh-tooltip"><p class="shortdesc">Try out non-main composite operators to encapsulate a stream subgraph                               and improve code reuse and readability.</p></div></div></div></li><li role="treeitem"><div data-tocid="primitiveoperators-d41691e4317" class="topicref" data-id="primitiveoperators" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/primitiveoperators.html" id="primitiveoperators-d41691e4317-link">Primitive operators</a><div class="wh-tooltip"><p class="shortdesc">Try out creating a primitive operator written in C++ to implement logic in a             traditional language.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="nextsteps-d41691e4328" class="topicref" data-id="nextsteps" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/nextsteps.html" id="nextsteps-d41691e4328-link">Additional exercises</a><div class="wh-tooltip"><p class="shortdesc">Explore additional SPL semantics by writing programs on your own.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="developingasimplestreamapplication-d41691e4339" class="topicref" data-id="developingasimplestreamapplication" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action developingasimplestreamapplication-d41691e4339-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/MyfilterApp_developingasimplestreamapplication.html" id="developingasimplestreamapplication-d41691e4339-link">Filtering application</a><div class="wh-tooltip"><p class="shortdesc">Stream applications can be used to extract information from large data sets so analysis on relevant information       is performed.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="developanothersimplestreamapplication-d41691e4429" class="topicref" data-id="developanothersimplestreamapplication" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action developanothersimplestreamapplication-d41691e4429-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.tutorials.doc/doc/myfunctapp_developing-another-simplestreamapplication.html" id="developanothersimplestreamapplication-d41691e4429-link">Reducing tuple size application</a><div class="wh-tooltip"><p class="shortdesc">In addition to filtering large data sets, you can reduce the volume of data by reducing the size of the tuples from the input stream.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="compiler-container-d41691e4508" class="topicref" data-id="compiler-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action compiler-container-d41691e4508-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/compiler-container.html" id="compiler-container-d41691e4508-link">Compiling <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">The <span class="keyword">Streams Processing Language (SPL)</span> Compiler is called <span class="ph"><span class="keyword cmdname">sc</span></span> and is included with the <span class="keyword">Teracloud® Streams</span> installation package. You compile SPL to create files to run on your <span class="keyword">Teracloud Streams instance</span>.</p></div></div></div></li><li role="treeitem"><div data-tocid="applicationbundle-d41691e4676" class="topicref" data-id="applicationbundle" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/applicationbundle.html" id="applicationbundle-d41691e4676-link">Application bundle files</a><div class="wh-tooltip"><p class="shortdesc">An <span class="keyword">application bundle file</span> is a single, relocatable file that contains all the artifacts that are needed to run your application. You submit a <span class="keyword">application bundle file</span> to run on an instance.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl_features-d41691e4693" class="topicref" data-id="spl_features" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl_features-d41691e4693-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/spl_features.html" id="spl_features-d41691e4693-link">SPL features</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides features and functions to help you write your applications to fulfill your         business needs.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="bestpractices-d41691e5297" class="topicref" data-id="bestpractices" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action bestpractices-d41691e5297-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/str_bestpractices.html" id="bestpractices-d41691e5297-link">Best practices</a><div class="wh-tooltip"><p class="shortdesc">Use these tips to write operators that perform effectively in their application, and in other applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="perfrecforsplapplicationprogrammers-d41691e5577" class="topicref" data-id="perfrecforsplapplicationprogrammers" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action perfrecforsplapplicationprogrammers-d41691e5577-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/perf_rec_spl_app_programmers.html" id="perfrecforsplapplicationprogrammers-d41691e5577-link">Performance recommendations</a><div class="wh-tooltip"><p class="shortdesc">You can use these performance options and recommendations to improve your <span class="keyword">stream application</span>.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="creatingnativefunctions-d41691e5698" class="topicref" data-id="creatingnativefunctions" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creatingnativefunctions-d41691e5698-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creatingnativefunctions.html" id="creatingnativefunctions-d41691e5698-link"><span class="ph">Developing native functions</span></a><div class="wh-tooltip"><p class="shortdesc">Extend SPL's computational capabilities by creating native functions     written in C++ or Java.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="developing_operators-d41691e5772" class="topicref" data-id="developing_operators" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action developing_operators-d41691e5772-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/developing_operators.html" id="developing_operators-d41691e5772-link">Developing custom operators</a><div class="wh-tooltip"><p class="shortdesc">Create custom operators if shipped toolkits do not provide the necessary logic or   behavior needed for your <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="creating_toolkits-d41691e7044" class="topicref" data-id="creating_toolkits" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action creating_toolkits-d41691e7044-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/creating_toolkits.html" id="creating_toolkits-d41691e7044-link">Developing custom toolkits</a><div class="wh-tooltip"><p class="shortdesc">Bundle and reuse custom functions and operators across several <span class="keyword">stream applications</span> by creating custom toolkits.</p></div></div></div></li><li role="treeitem"><div data-tocid="enabling-streams-application-service-d41691e7457" class="topicref" data-id="enabling-streams-application-service" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/enabling-streams-data-exchange.html" id="enabling-streams-application-service-d41691e7457-link">Enabling Streams data exchange</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides a data exchange REST API for inserting and retrieving tuples within a job to             easily integrate with other data services and external applications. Stream applications             can enable the data exchange feature by using one or more Endpoint             operators.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldebugger-container-d41691e7472" class="topicref" data-id="spldebugger-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldebugger-container-d41691e7472-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/spldebugger-container.html" id="spldebugger-container-d41691e7472-link">Debugging <span class="keyword">stream applications</span></a><div class="wh-tooltip"><p class="shortdesc">Debug stream applications using the interactive, command line-based <span class="keyword">Streams Debugger</span> (<code class="ph codeph">sdb</code>).</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Additional exercises</h1>
+
+
+
+
+
+
+<div class="- topic/body reference/refbody body refbody"><p class="- topic/shortdesc shortdesc">Explore additional SPL semantics by writing programs on your own.</p>
+<section class="- topic/section section">
+   <p class="- topic/p p">The table below lists several topics to study further and exercises to try to expand and
+    reinforce your SPL skills.</p>
+   <div class="table-container"><table class="- topic/table table scale-80" id="nextsteps__table_e54_zbs_nfc" data-ofbid="nextsteps__table_e54_zbs_nfc" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Topics and exercises for further study</span></caption><colgroup><col style="width:33.33333333333333%"/><col style="width:33.33333333333333%"/><col style="width:33.33333333333333%"/></colgroup><thead class="- topic/thead thead">
+      <tr class="- topic/row valign-bottom">
+       <th class="- topic/entry entry colsep-0 rowsep-0" id="nextsteps__table_e54_zbs_nfc__entry__1">Topic</th>
+       <th class="- topic/entry entry colsep-0 rowsep-0" id="nextsteps__table_e54_zbs_nfc__entry__2">Exercise</th>
+       <th class="- topic/entry entry colsep-0 rowsep-0" id="nextsteps__table_e54_zbs_nfc__entry__3">Related documentation</th>
+      </tr>
+     </thead><tbody class="- topic/tbody tbody">
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">Expression language</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Write a program to reverse the lines of a small file.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.ref.doc/doc/expressionlanguage.html">Expression
+         language</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">Type system</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Create a histogram of the length of lines in a file.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">Other operators and functions in the <span class="- topic/keyword keyword">SPL standard toolkit</span></td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Merge two sorted streams such that the output is also sorted.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html">SPL standard toolkit</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1"><span class="- topic/tm tm">Windows<span class="- topic/tmmark tmmark ">™</span></span></td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Sort a file five lines at a time.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.dev.doc/doc/data_streams.html" title="A stream is a sequence of data that flows between operators in a stream application.">Streams and tuples</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">Configs</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Change the <code class="+ topic/ph pr-d/codeph ph codeph">logLevel</code> config and look at the log files
+        to see what happens.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.studio.doc/doc/loglevels.html">You can change the log level for all runtime services and applications in an
+         instance.</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">C++ primitive operators</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Write a C++ primitive operator that extracts groups that are matched by
+        subexpressions of a regexp.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html">Developing C++ primitive operators</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1"><span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span> primitive operators</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Write a <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span> primitive operator
+        that extracts groups that are matched by subexpressions of a regexp.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.dev.doc/doc/javaprimitiveoperators.html">Developing <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span> primitive operators</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">Writing native functions</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Turn a map into a list of (key,value) tuples.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.dev.doc/doc/creatingnativefunctions.html">Creating
+         native functions</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">Dynamic application composition</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Run the <code class="+ topic/ph pr-d/codeph ph codeph">SchemaSharing</code> sample that is included with
+         <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.ref.doc/doc/dynamicappcomposition.html">Dynamic
+         application composition</a></td>
+      </tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__1">Streams debugger</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__2">Run the <code class="+ topic/ph pr-d/codeph ph codeph">NumberedCat</code> program and interactively drop a
+        tuple.</td>
+       <td class="- topic/entry entry colsep-0 rowsep-0" headers="nextsteps__table_e54_zbs_nfc__entry__3"><a class="- topic/xref xref" href="../../com.ibm.streams.dev.doc/doc/debuggingstreamsdebugger.html">Debugging with the Streams Debugger</a></td>
+      </tr>
+     </tbody></table></div></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

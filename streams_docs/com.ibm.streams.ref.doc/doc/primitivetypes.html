@@ -1,0 +1,540 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="description" content="A primitive type, such as int32 or rstring, is one that is not composed of other types."/><meta name="DC.subject" content="bounded type,decimal,enum,float,literal,rstring,timestamp,type hierarchy,type suffix,unicode,ustring,int,primitive type,uint"/><meta name="keywords" content="bounded type, decimal, enum, float, literal, rstring, timestamp, type hierarchy, type suffix, unicode, ustring, int, primitive type, uint"/><meta name="indexterms" content="bounded type, decimal, enum, float, literal, rstring, timestamp, type hierarchy, type suffix, unicode, ustring, int, primitive type, uint"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/types.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/reference-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.ref.doc/doc/spl-container.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="primitivetypes"/><meta name="DC.language" content="en-us"/>        
+      <title>Primitive types</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="primitivetypes-d41691e63644"/><meta name="wh-source-relpath" content="com.ibm.streams.ref.doc/doc/primitivetypes.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.ref.doc/doc/primitivetypes.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="primitivetypes" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="spl-container"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li><div class="topicref" data-id="types"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/types.html">Types</a><div class="wh-tooltip"><p class="shortdesc">SPL has several primitive types that are tailored for streaming, and a few composite types that are inspired by scripting languages but statically checked. The following topics describe the types, how to define them, and how to convert values between different types.</p></div></div></div></li><li class="active"><div class="topicref" data-id="primitivetypes"><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/primitivetypes.html">Primitive types</a><div class="wh-tooltip"><p class="shortdesc">A primitive type, such as <code class="ph codeph">int32</code> or <code class="ph codeph">rstring</code>, is one that is not composed of other types.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="langoverview-d41691e63305" class="topicref" data-id="langoverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/langoverview.html" id="langoverview-d41691e63305-link">Language overview</a><div class="wh-tooltip"><p class="shortdesc">SPL contains types, expressions, statements, functions, clauses, and other elements of a programming language.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammarnotation-d41691e63316" class="topicref" data-id="grammarnotation" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammarnotation.html" id="grammarnotation-d41691e63316-link">Grammar notation</a><div class="wh-tooltip"><p class="shortdesc">This language specification adopts a flavor of Backus-Naur Form (BNF) to describe the syntax of language features.</p></div></div></div></li><li role="treeitem"><div data-tocid="lexicalsyntax-d41691e63327" class="topicref" data-id="lexicalsyntax" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/lexicalsyntax.html" id="lexicalsyntax-d41691e63327-link">Lexical syntax</a><div class="wh-tooltip"><p class="shortdesc">SPL defines a set of rules to determine the syntax of a program.</p></div></div></div></li><li role="treeitem"><div data-tocid="grammaroverview-d41691e63338" class="topicref" data-id="grammaroverview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/grammaroverview.html" id="grammaroverview-d41691e63338-link">Grammar overview</a><div class="wh-tooltip"><p class="shortdesc">Here is the SPL grammar syntax, with references to the sections that contain the semantics.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="expressionlanguage-d41691e63349" class="topicref" data-id="expressionlanguage" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action expressionlanguage-d41691e63349-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/expressionlanguage.html" id="expressionlanguage-d41691e63349-link">Expression language</a><div class="wh-tooltip"><p class="shortdesc">Though SPL is a streaming language, there are many places where it uses expressions that are found in traditional imperative or functional languages.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="annotations-d41691e63482" class="topicref" data-id="annotations" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action annotations-d41691e63482-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/annotations.html" id="annotations-d41691e63482-link">Annotations</a><div class="wh-tooltip"><p class="shortdesc">Operators can be annotated. Annotations influence the run time behavior of <span class="keyword">stream applications</span>.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="types-d41691e63633" class="topicref" data-id="types" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action types-d41691e63633-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/types.html" id="types-d41691e63633-link">Types</a><div class="wh-tooltip"><p class="shortdesc">SPL has several primitive types that are tailored for streaming, and a few composite types that are inspired by scripting languages but statically checked. The following topics describe the types, how to define them, and how to convert values between different types.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="primitivetypes-d41691e63644" class="topicref" data-id="primitivetypes" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/primitivetypes.html" id="primitivetypes-d41691e63644-link">Primitive types</a><div class="wh-tooltip"><p class="shortdesc">A primitive type, such as <code class="ph codeph">int32</code> or <code class="ph codeph">rstring</code>, is one that is not composed of other types.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="compositetypes-d41691e63661" class="topicref" data-id="compositetypes" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action compositetypes-d41691e63661-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/compositetypes.html" id="compositetypes-d41691e63661-link">Composite types</a><div class="wh-tooltip"><p class="shortdesc">A composite type is the result of applying a type constructor to one or more type arguments.</p></div></div></div></li><li role="treeitem"><div data-tocid="typedefinitions-d41691e63709" class="topicref" data-id="typedefinitions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/typedefinitions.html" id="typedefinitions-d41691e63709-link">Type definitions</a><div class="wh-tooltip"><p class="shortdesc">A type definition gives a name to a type,</p></div></div></div></li><li role="treeitem"><div data-tocid="valuesemantics-d41691e63720" class="topicref" data-id="valuesemantics" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/valuesemantics.html" id="valuesemantics-d41691e63720-link">Value semantics</a><div class="wh-tooltip"><p class="shortdesc">All primitive and composite SPL types have value semantics, not reference semantics.</p></div></div></div></li><li role="treeitem"><div data-tocid="typeconversions-d41691e63731" class="topicref" data-id="typeconversions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/typeconversions.html" id="typeconversions-d41691e63731-link">Type conversions</a><div class="wh-tooltip"><p class="shortdesc">SPL is statically typed and strongly typed and has structural equivalence.</p></div></div></div></li><li role="treeitem"><div data-tocid="defaultvaluesofspltypes-d41691e63742" class="topicref" data-id="defaultvaluesofspltypes" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/defaultvaluesofspltypes.html" id="defaultvaluesofspltypes-d41691e63742-link">Default values of SPL types</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides default values for SPL types.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="operators_1-d41691e63757" class="topicref" data-id="operators_1" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action operators_1-d41691e63757-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/operators_1.html" id="operators_1-d41691e63757-link">Operators</a><div class="wh-tooltip"><p class="shortdesc"> Operators process tuples in an incoming stream and produce an output stream as a result. SPL supports two kinds of operators: primitive operators and composite operators. A primitive operator is written in C++ or Java™. A composite operator is written in SPL and contains a reusable stream subgraph.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="programstructure-d41691e64106" class="topicref" data-id="programstructure" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action programstructure-d41691e64106-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/programstructure.html" id="programstructure-d41691e64106-link">Program structure</a><div class="wh-tooltip"><p class="shortdesc"></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="config-container-d41691e64163" class="topicref" data-id="config-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action config-container-d41691e64163-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/config-container.html" id="config-container-d41691e64163-link">Operator config clause</a><div class="wh-tooltip"><p class="shortdesc">The <code class="ph codeph">config</code> clause specifies hints and directives that influence how the compiler builds an operator invocation, or how the runtime system runs it. </p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="splbinaryandcharacterencoding-d41691e64361" class="topicref" data-id="splbinaryandcharacterencoding" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action splbinaryandcharacterencoding-d41691e64361-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/splbinaryandcharacterencoding.html" id="splbinaryandcharacterencoding-d41691e64361-link">SPL binary and character encoding</a><div class="wh-tooltip"><p class="shortdesc">SPL uses a platform independent binary and character encoding for serializing and deserializing data. This encoding is used for the <code class="ph codeph">FileSource</code>, <code class="ph codeph">TCPSource</code>, and <code class="ph codeph">UDPSource</code> operators, as well as the <code class="ph codeph">FileSink</code>, <code class="ph codeph">TCPSink</code>, and <code class="ph codeph">UDPSink</code> operators.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Primitive types</h1>
+
+
+
+
+
+<div class="- topic/body reference/refbody body refbody"><p class="- topic/shortdesc shortdesc">A primitive type, such as <code class="+ topic/ph pr-d/codeph ph codeph">int32</code> or <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code>,
+is one that is not composed of other types.</p>
+<section class="- topic/section section"><p class="- topic/p p">By supporting many primitive types, SPL gives you fine
+control over data representation, which is crucial for performance
+in high-volume streams. Tight representation is important both to
+keep the data on the wire small, and to reduce serialization and deserialization
+time. SPL supports the following primitive types:</p></section>
+<div class="table-container"><table class="- topic/table table scale-80" data-cols="3"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Primitive types in SPL</span><span class="- topic/desc desc tabledesc"><p class="- topic/p p summary">The type and representation of primitive types
+in SPL. The types <code class="+ topic/ph pr-d/codeph ph codeph">int</code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint</code>, <code class="+ topic/ph pr-d/codeph ph codeph">float</code>, <code class="+ topic/ph pr-d/codeph ph codeph">decimal</code>, <code class="+ topic/ph pr-d/codeph ph codeph">complex</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">xml</code> have three or more table rows.</p></span></caption><colgroup><col style="width:19.49685534591195%"/><col style="width:18.867924528301888%"/><col style="width:61.63522012578616%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="primitivetypes__entry__1">Type</th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="primitivetypes__entry__2" colspan="2">Representation</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">boolean</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2"><code class="+ topic/ph pr-d/codeph ph codeph">true</code> or <code class="+ topic/ph pr-d/codeph ph codeph">false</code></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">enum</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">User-defined enumeration of
+identifiers</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">int</code><var class="+ topic/keyword sw-d/varname keyword varname">b</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">Signed <var class="+ topic/keyword sw-d/varname keyword varname">b</var>-bit
+integer. The signed integer types can be:</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1" rowspan="4"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">int</code>8  </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> -128 to 127 </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">int</code>16 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> -32,768 to 32,767 </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">int</code>32 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> -2,147,483,648 to 2,147,483,647 </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">int</code>64 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">uint</code><var class="+ topic/keyword sw-d/varname keyword varname">b</var> </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">Unsigned <var class="+ topic/keyword sw-d/varname keyword varname">b</var>-bit
+integer. The unsigned integer types can be: </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">uint</code>8 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> 0 to 255    </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">uint</code>16 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> 0 to 65,535 </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">uint</code>32 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> 0 to 4,294,967,295 </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">uint</code>64 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> 0 to 18,446,744,073,709,551,615 </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">float</code><var class="+ topic/keyword sw-d/varname keyword varname">b</var> </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">IEEE 754 binary <var class="+ topic/keyword sw-d/varname keyword varname">b</var>-bit
+floating point number. The binary floating types can be:</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">float</code>32    </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> Single-precision (equivalent to <code class="+ topic/ph pr-d/codeph ph codeph">float</code> in <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span>): <p class="- topic/p p">±, significand 24 binary digits, exponent 2<sup class="+ topic/ph hi-d/sup ph sup">-126 </sup> to 2<sup class="+ topic/ph hi-d/sup ph sup">127</sup></p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">float</code>64 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> Double-precision (equivalent to <code class="+ topic/ph pr-d/codeph ph codeph">double</code> in <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span> ): <p class="- topic/p p">±, significand 53 binary digits, exponent 2<sup class="+ topic/ph hi-d/sup ph sup">-1022 </sup> to 2<sup class="+ topic/ph hi-d/sup ph sup">1023</sup></p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">decimal</code><var class="+ topic/keyword sw-d/varname keyword varname">b</var> </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">IEEE 754 decimal <var class="+ topic/keyword sw-d/varname keyword varname">b</var>-bit
+floating point number. The decimal floating types can be:</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">decimal</code>32 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2">±, significand 7 decimal digits (0 to 9.999999), exponent 10<sup class="+ topic/ph hi-d/sup ph sup">-95</sup> to 10<sup class="+ topic/ph hi-d/sup ph sup">96</sup>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">decimal</code>64</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2">±, significand 16 decimal digits, exponent 10<sup class="+ topic/ph hi-d/sup ph sup">-383</sup> to 10<sup class="+ topic/ph hi-d/sup ph sup">384</sup>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">decimal</code>128</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2">±, significand 34 decimal digits, exponent 10<sup class="+ topic/ph hi-d/sup ph sup">-6,143</sup> to 10<sup class="+ topic/ph hi-d/sup ph sup">6,144</sup>
+</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">complex</code><var class="+ topic/keyword sw-d/varname keyword varname">b</var></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2"><var class="+ topic/keyword sw-d/varname keyword varname">2b</var>-bit
+complex number. The complex types can be:</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">complex</code>32 </td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> Both real and imaginary parts are <code class="+ topic/ph pr-d/codeph ph codeph">float32</code>  </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">complex</code>64</td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"> Both real and imaginary parts are <code class="+ topic/ph pr-d/codeph ph codeph">float64</code>  </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">timestamp</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">Point in time, with nanosecond
+precision       </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">rstring</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">Sequence of raw bytes that
+supports string processing when the character encoding is known.<div class="- topic/note note note note_note"><span class="note__title">Note:</span> SPL
+functions that manipulate an <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> need to process
+the character encoding of the string. In general, an SPL function
+can handle single-byte character encoding. However, the string might
+be encoded as multi-byte, such as UTF-8, so you need to process accordingly
+in your application.</div></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">ustring</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">String of UTF-16 Unicode characters,
+which are based on ICU library</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">blob</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">Sequence of raw bytes</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1"><code class="+ topic/ph pr-d/codeph ph codeph">rstring[<var class="+ topic/keyword sw-d/varname keyword varname">n</var>]</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2" colspan="2">Bounded-length
+sequence of, at most, <var class="+ topic/keyword sw-d/varname keyword varname">n</var> raw bytes that support
+string processing when the character encoding is known</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__1" rowspan="2"><code class="+ topic/ph pr-d/codeph ph codeph">xml</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">xml</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2">Holds XML values</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2"><code class="+ topic/ph pr-d/codeph ph codeph">xml&lt;"</code><var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var><code class="+ topic/ph pr-d/codeph ph codeph">"&gt;</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__2">Holds XML values that match the <var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var></td>
+</tr>
+</tbody></table></div>
+<section class="- topic/section section"><figure class="- topic/fig fig fignone"><figcaption data-caption-side="top" class="- topic/title title figcapcenter"><span class="figtitleprefix fig--title-label">Figure<span class="fig--title-label-number"> 1</span><span class="fig--title-label-punctuation">. </span></span><span class="fig--title">Hierarchy of SPL types</span></figcaption>
+<br/><div class="imagecenter"><img class="- topic/image image imagecenter" src="../images/alltypes.jpg" alt="This figure displays the hierarchy of SPL types."/></div><br/>
+</figure><p class="- topic/p p">The names of numeric types include their bit-width to make
+the naming consistent and to avoid unwieldy names such as “<code class="+ topic/ph pr-d/codeph ph codeph">long
+long unsigned int</code>”. Users can also define their own
+type names. See <a class="- topic/xref xref" href="typedefinitions.html" title="A type definition gives a name to a type,">Type definitions</a>.</p></section>
+<div class="- topic/example example"><div class="- topic/p p">An example for an enumeration is:<pre class="+ topic/pre pr-d/codeblock pre codeblock scale-80"><code>type tracing = enum { off, error, warn, info, debug, trace };                  //1   </code></pre></div><p class="- topic/p p">Any of the identifiers <code class="+ topic/ph pr-d/codeph ph codeph">off</code>, ....., <code class="+ topic/ph pr-d/codeph ph codeph">trace</code> can
+be used where a value of enumeration <code class="+ topic/ph pr-d/codeph ph codeph">tracing</code> is expected.
+The scope of the identifiers <code class="+ topic/ph pr-d/codeph ph codeph">off</code>, ....., <code class="+ topic/ph pr-d/codeph ph codeph">trace</code> is
+the same as the scope that contains the type definition. Enumerations
+are ordered (they permit comparison with <code class="+ topic/ph pr-d/codeph ph codeph">&lt;</code>, <code class="+ topic/ph pr-d/codeph ph codeph">&gt;</code>, <code class="+ topic/ph pr-d/codeph ph codeph">&lt;=</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">&gt;=</code>) but not numeric (they do not permit arithmetic
+with <code class="+ topic/ph pr-d/codeph ph codeph">+</code>, <code class="+ topic/ph pr-d/codeph ph codeph">-</code>, <code class="+ topic/ph pr-d/codeph ph codeph">*</code>,
+and so on).</p><p class="- topic/p p">Like in C/Java, literals for <code class="+ topic/ph pr-d/codeph ph codeph">int</code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint</code>, <code class="+ topic/ph pr-d/codeph ph codeph">float</code>,
+and <code class="+ topic/ph pr-d/codeph ph codeph">decimal</code> can have optional type suffixes. For
+example, <code class="+ topic/ph pr-d/codeph ph codeph">123</code> is signed (<code class="+ topic/ph pr-d/codeph ph codeph">int32</code>) whereas <code class="+ topic/ph pr-d/codeph ph codeph">123u</code> is
+unsigned (<code class="+ topic/ph pr-d/codeph ph codeph">uint32</code>). One suffix indicates the kind
+of number.</p><div class="- topic/p p"><div class="simpletable-container"><table class="- topic/simpletable simpletable scale-80"><colgroup><col style="width:50%"/><col style="width:50%"/></colgroup><thead><tr class="- topic/sthead sthead">
+<th class="- topic/stentry stentry" scope="col" id="primitivetypes__stentry__1">Suffix</th>
+<th class="- topic/stentry stentry" scope="col" id="primitivetypes__stentry__2">Meaning</th>
+</tr></thead><tbody><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__1"><code class="+ topic/ph pr-d/codeph ph codeph">s</code></td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__2">Signed integer (default for integer literals)</td>
+</tr><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__1"><code class="+ topic/ph pr-d/codeph ph codeph">u</code></td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__2">Unsigned integer</td>
+</tr><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__1"><code class="+ topic/ph pr-d/codeph ph codeph">f</code></td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__2">Binary floating-point (default for floating point literals)</td>
+</tr><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__1"><code class="+ topic/ph pr-d/codeph ph codeph">d</code></td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__2">Decimal floating-point</td>
+</tr></tbody></table></div></div><p class="- topic/p p">Another suffix indicates the number of bits.</p><div class="- topic/p p"><div class="simpletable-container"><table class="- topic/simpletable simpletable scale-80"><colgroup><col style="width:50%"/><col style="width:50%"/></colgroup><thead><tr class="- topic/sthead sthead">
+<th class="- topic/stentry stentry" scope="col" id="primitivetypes__stentry__11">Suffix</th>
+<th class="- topic/stentry stentry" scope="col" id="primitivetypes__stentry__12">Meaning</th>
+</tr></thead><tbody><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__11"><code class="+ topic/ph pr-d/codeph ph codeph">b</code> (byte) </td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__12">8-bit</td>
+</tr><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__11"><code class="+ topic/ph pr-d/codeph ph codeph">h</code> (halfword)</td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__12">16-bit</td>
+</tr><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__11"><code class="+ topic/ph pr-d/codeph ph codeph">w</code> (word) </td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__12">32-bit (default for integer literals)</td>
+</tr><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__11"><code class="+ topic/ph pr-d/codeph ph codeph">l</code> (long)</td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__12">64-bit (default for floating point literals)</td>
+</tr><tr class="- topic/strow strow">
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__11"><code class="+ topic/ph pr-d/codeph ph codeph">q</code> (quad-word)</td>
+<td class="- topic/stentry stentry" headers="primitivetypes__stentry__12">128-bit</td>
+</tr></tbody></table></div></div><p class="- topic/p p">Some more examples for literals with type suffix: <code class="+ topic/ph pr-d/codeph ph codeph">0.0005</code> (<code class="+ topic/ph pr-d/codeph ph codeph">float64</code>), <code class="+ topic/ph pr-d/codeph ph codeph">0.5e-3</code> (<code class="+ topic/ph pr-d/codeph ph codeph">float64</code>), <code class="+ topic/ph pr-d/codeph ph codeph">3.5d</code> (<code class="+ topic/ph pr-d/codeph ph codeph">decimal64</code>), <code class="+ topic/ph pr-d/codeph ph codeph">3.5w</code> (<code class="+ topic/ph pr-d/codeph ph codeph">float32</code>), <code class="+ topic/ph pr-d/codeph ph codeph">123d</code> (<code class="+ topic/ph pr-d/codeph ph codeph">decimal64</code>), <code class="+ topic/ph pr-d/codeph ph codeph">123dq</code> (<code class="+ topic/ph pr-d/codeph ph codeph">decimal128</code>).</p><p class="- topic/p p">SPL
+supports hexadecimal literals. One can specify a hexadecimal literal
+with a <code class="+ topic/ph pr-d/codeph ph codeph">0x</code> prefix. Valid suffixes for hexadecimal
+literals are <code class="+ topic/ph pr-d/codeph ph codeph">s</code> (signed integer) and <code class="+ topic/ph pr-d/codeph ph codeph">u</code> (unsigned
+integer). By default a hexadecimal literal is a signed integer. Its
+data length is determined by the number of hexadecimal digits specified.
+The data length includes any leading zeros. A maximum of 16 hexadecimal
+digits are supported (<code class="+ topic/ph pr-d/codeph ph codeph">int64</code>, <code class="+ topic/ph pr-d/codeph ph codeph">uint64</code>).
+Specifying more than 16 hexadecimal digits results in an error.</p><p class="- topic/p p">Some
+examples of hexadecimal literals: <code class="+ topic/ph pr-d/codeph ph codeph">0xf</code> (<code class="+ topic/ph pr-d/codeph ph codeph">int8</code>), <code class="+ topic/ph pr-d/codeph ph codeph">0x00fu</code> (<code class="+ topic/ph pr-d/codeph ph codeph">uint16</code>), <code class="+ topic/ph pr-d/codeph ph codeph">0x12345</code> (<code class="+ topic/ph pr-d/codeph ph codeph">int32</code>), <code class="+ topic/ph pr-d/codeph ph codeph">-0x12345s</code> (<code class="+ topic/ph pr-d/codeph ph codeph">int32</code>), <code class="+ topic/ph pr-d/codeph ph codeph">0x0123456789ABCDEF</code> (<code class="+ topic/ph pr-d/codeph ph codeph">int64</code>)</p><p class="- topic/p p">String
+literals are written in <span class="- topic/ph ph">single quotation marks or</span> double
+quotation marks. SPL supports two string types, "Unicode" and "raw". <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code> contains
+Unicode characters that are encoded as UTF-16, and <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> contains raw bytes. This behavior
+allows the developer to pick Unicode when international character
+sets are important, and to pick raw strings when constant-time random
+access and a tight representation are important. A type suffix in
+the literals indicates the string kind: <code class="+ topic/ph pr-d/codeph ph codeph">r</code> indicates <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> (the
+default without suffix) and <code class="+ topic/ph pr-d/codeph ph codeph">u</code> indicates <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code>.</p><div class="- topic/p p">String
+literals can use escape sequences of the form <code class="+ topic/ph pr-d/codeph ph codeph">\u</code><em class="+ topic/ph hi-d/i ph i"><code class="+ topic/ph pr-d/codeph ph codeph">hhhh</code></em>,
+where the four hexadecimal digits <code class="+ topic/ph pr-d/codeph ph codeph">hhhh</code> specify a
+character. For example, <code class="+ topic/ph pr-d/codeph ph codeph">"pi\u00f1ata"u</code> uses the escape <code class="+ topic/ph pr-d/codeph ph codeph">\u00f1</code> to
+specify a <strong class="+ topic/ph hi-d/b ph b">ñ</strong> with a tilde on top in a <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code> or <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code>.
+Other string escape sequences are similar to those sequences in C
+or <span class="- topic/tm tm">Java<span class="- topic/tmmark tmmark ">™</span></span>. <div class="table-container"><table class="- topic/table table" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 2</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">String
+escape character</span></caption><colgroup><col style="width:57.73195876288659%"/><col style="width:42.2680412371134%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row valign-bottom">
+<th class="- topic/entry entry colsep-0 rowsep-0" id="primitivetypes__entry__74">String escape character </th>
+<th class="- topic/entry entry colsep-0 rowsep-0" id="primitivetypes__entry__75">Meaning</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\a</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Alert</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\b</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Backspace</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\f</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Form feed</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\n</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Newline</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\r</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Carriage return</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\t</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Horizontal tab</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\v</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Vertical tab</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\'</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Single quotation mark</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\"</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Double quotation mark</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\?</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Question mark</td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\0</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Null character </td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__74"><code class="+ topic/ph pr-d/codeph ph codeph">\\</code></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="primitivetypes__entry__75">Literal backslash</td>
+</tr>
+</tbody></table></div><div class="- topic/note note note note_note"><span class="note__title">Note:</span> String literals that are written in single
+quotation marks can contain double quotation marks without needing
+the double quotation mark string escape character (for example, <code class="+ topic/ph pr-d/codeph ph codeph">'"'</code>).</div></div><p class="- topic/p p">Recall
+from topic <a class="- topic/xref xref" href="lexicalsyntax.html" title="SPL defines a set of rules to determine the syntax of a program.">Lexical syntax</a> that
+SPL files are written in UTF-8, so letters such as <strong class="+ topic/ph hi-d/b ph b">ñ</strong> can also
+appear directly in a string literal, without the escape sequence.
+Both <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code> and <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> can contain
+internal null characters, which, unlike in C, are not considered terminating.
+In other words, characters whose encoding is zero carry no special
+meaning, and the length of a string is independent from whether or
+not it contains such characters.</p><div class="- topic/p p">String literals
+can also contain newlines. The newline character is part of the string.
+For example:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>rstring myString=
+"A long
+ string with a newline in it.";</code></pre>This example is equivalent
+to:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>rstring myString="A long\n string with a newline in it.";</code></pre></div><p class="- topic/p p">A literal for a complex number is written as a list literal with a cast, as in <code class="+ topic/ph pr-d/codeph ph codeph">(complex32)[1.0, 2.0]</code>. The real and imaginary components of a complex number can be extracted by using the SPL built-in functions <code class="+ topic/ph pr-d/codeph ph codeph">real()</code> and <code class="+ topic/ph pr-d/codeph ph codeph">imag()</code>.</p><p class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">timestamp</code> type
+is designed to allow a high degree of precision as well as avoid overflow
+conditions (it can represent values that range over billions of years)
+by following widely accepted standards. It uses a 128-bit representation,
+where 64 bits store the seconds since the epoch as a signed integer,
+32 bits store the nanoseconds, and 32 bits store an optional identifier
+of the computer where the measurement was taken, which can be useful
+for after-the-fact drift compensation. The epoch, time zone, and so
+on, depend on the library functions used to manipulate time stamps;
+for more information about these functions, see the API documentation.
+A <code class="+ topic/ph pr-d/codeph ph codeph">timestamp</code> can be initialized by using one of the
+SPL functions or from a <code class="+ topic/ph pr-d/codeph ph codeph">float64</code>. There is no literal
+for a <code class="+ topic/ph pr-d/codeph ph codeph">timestamp</code>.</p><p class="- topic/p p">Many operators and functions
+are overloaded to work with different types. For example, the operator <code class="+ topic/ph pr-d/codeph ph codeph">+</code> can
+add various types of numbers, but it can also concatenate strings.
+Likewise, the function <span class="+ topic/keyword pr-d/apiname keyword apiname">length(x)</span> is overloaded
+to accept <code class="+ topic/ph pr-d/codeph ph codeph">x</code> of type <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> or <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code>.</p><p class="- topic/p p">To permit efficient marshalling and unmarshalling of network packets, SPL offers a bounded-size variant of <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code>, <code class="+ topic/ph pr-d/codeph ph codeph">list</code>, <code class="+ topic/ph pr-d/codeph ph codeph">set</code>, and <code class="+ topic/ph pr-d/codeph ph codeph">map</code> types. For example, <code class="+ topic/ph pr-d/codeph ph codeph">rstring[5]</code> can store any <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> of at most 5 characters, and each character in an <code class="+ topic/ph pr-d/codeph ph codeph">rstring</code> takes 1 byte. If all parts of a data value have a fixed size, then parts can be found at a fixed offset without decoding the whole. The compiler prohibits implicit conversions from unbounded to bounded types, but the user can override that by explicit casts. Type bounds, whether in variable declarations or in casts, must be compile-time constants. A cast from any string to a bounded string truncates the value if it is too long. SPL does not offer bounded <code class="+ topic/ph pr-d/codeph ph codeph">ustring</code> values because bounding the number of Unicode characters would not achieve the goal of fixing the size of the network byte representation after conversion. SPL limits all strings, bounded or unbounded, raw or Unicode, to at most 2<sup class="+ topic/ph hi-d/sup ph sup">31</sup>-1 characters.</p><p class="- topic/p p">Blobs are sequences of at most 2<sup class="+ topic/ph hi-d/sup ph sup">63</sup>-1
+raw bytes. A <code class="+ topic/ph pr-d/codeph ph codeph">blob</code> can be initialized from a <code class="+ topic/ph pr-d/codeph ph codeph">list&lt;uint8&gt;</code>.
+There is no literal for a <code class="+ topic/ph pr-d/codeph ph codeph">blob</code>.</p><div class="- topic/p p">The <code class="+ topic/ph pr-d/codeph ph codeph">xml</code> type holds XML values. It is not comparable. There is no bounded version of the <code class="+ topic/ph pr-d/codeph ph codeph">xml</code> type, so an <code class="+ topic/ph pr-d/codeph ph codeph">xml</code> attribute cannot be part of a façade tuple. The <code class="+ topic/ph pr-d/codeph ph codeph">xml</code> type can be only assigned by using <code class="+ topic/ph pr-d/codeph ph codeph">=</code> and passed as a parameter or returned from a function. SPL supports two variations of the <code class="+ topic/ph pr-d/codeph ph codeph">xml</code> type:<ul class="- topic/ul ul">
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">xml</code>: Holds well-formed XML documents. A runtime check is done on assignment or conversion to ensure that the values are well-formed XML. A C++ exception is thrown and the operator is terminated if the value that is being assigned is not well-formed. The <span class="+ topic/keyword pr-d/apiname keyword apiname">convertToXML</span> standard library function can be used to check whether a conversion causes an exception.</li>
+<li class="- topic/li li"><code class="+ topic/ph pr-d/codeph ph codeph">xml&lt;"<var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var>"&gt;</code>: Holds XML values that match the <var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var>. It is checked at run time, unless the value is known to be valid already. A C++ exception is thrown and the operator is terminated if the value that is being assigned is not valid for the schema. The <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span> Streams
+instance</span> can optimize the checking if the right side is known to be well-formed (that is, it is from an <code class="+ topic/ph pr-d/codeph ph codeph">xml</code> type with the same schema). The <var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var> is fetched on demand. Using a networked <var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var> might cause SPL program failures if the schema on the network is changed without changing the SPL program, a networked connection is not available, or the site that is referenced by the URI is not available. Maintain the schema locally as part of the application. Application directory relocation needs to be addressed as well. The schema should be relative to the data directory, or available at the same absolute path from all computers.</li>
+</ul></div>
+<div class="- topic/p p">XML literals have the form <code class="+ topic/ph pr-d/codeph ph codeph">"<var class="+ topic/keyword sw-d/varname keyword varname">wellFormedXML</var>"x</code> or <code class="+ topic/ph pr-d/codeph ph codeph">'<var class="+ topic/keyword sw-d/varname keyword varname">wellFormedXML</var>'x</code>. Examples of valid XML literals include:<pre class="+ topic/pre pr-d/codeblock pre codeblock"><code>"&lt;?xml version=\"1.0\"?&gt;&lt;x a=\"b\"&gt;55&lt;/x&gt;"x
+'&lt;x a="b"&gt;55&lt;/x&gt;'x</code></pre>XML literals are checked by the SPL compiler to see whether they are well-formed. The compiler checks for validity if the left side of an assignment or formal parameter has an <code class="+ topic/ph pr-d/codeph ph codeph">xml&lt;<var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var>&gt;</code> form. A warning is generated if the XML literal is not well-formed, or if it is not valid for assignment or passing to an <code class="+ topic/ph pr-d/codeph ph codeph">xml&lt;<var class="+ topic/keyword sw-d/varname keyword varname">schemaURI</var>&gt;</code> type.</div><div class="- topic/note note note note_note"><span class="note__title">Note:</span> The
+language specification purposely does not specify a byte order because
+users are oblivious to these details within an SPL application. Compilers
+are expected to provide flags to choose, for example, network byte
+order or native byte order. The internal representation of both bounded
+and unbounded strings and blobs stores a separate length field. As
+with all types, the exact layout is implementation-dependent and not
+exposed at the language level. Typically, bounded types are padded
+in case the length is lower than the bound, thus allowing subsequent
+attributes to be stored at a fixed offset in a network packet. The
+implementation might also reduce the number of bits in the length
+field according to the bound to save space. The maximum tuple size
+when a tuple's contents is serialized for network transmission is
+2<sup class="+ topic/ph hi-d/sup ph sup">32</sup>-2 bytes. At the C++ level, a <samp class="+ topic/ph sw-d/msgph ph msgph">SPLSerializationException</samp> is
+thrown if the maximum tuple size limit is exceeded. A developer might
+elect to catch and handle this exception when primitive operators
+are implemented, avoiding sudden termination of the operator at run
+time.</div><div class="- topic/note note tip note_tip"><span class="note__title">Tip:</span> Use the <code class="+ topic/ph pr-d/codeph ph codeph">decimal</code> floating
+point types in financial, commercial, and user-centric programs to
+avoid losing decimal digits to binary rounding. For unstructured data
+of bounded size, use a <code class="+ topic/ph pr-d/codeph ph codeph">list&lt;uint8&gt;[n]</code> instead
+of a blob. For more information, see <a class="- topic/xref xref" href="compositetypes.html" title="A composite type is the result of applying a type constructor to one or more type arguments.">Composite types</a>.</div></div>
+</div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

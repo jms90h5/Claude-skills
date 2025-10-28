@@ -1,0 +1,336 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="concept"/><meta name="description" content="When you start a Teracloud Streams domain, instance, or stream application, services start on the appropriate resources."/><meta name="DC.relation" content="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components.html"/><meta name="DC.relation" content="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html"/><meta name="DC.relation" content="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction.html"/><meta name="DC.relation" content="../../com.ibm.streams.admin.doc/doc/services.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="services"/><meta name="DC.language" content="en-us"/>        
+      <title>Domain and instance services</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="services-d41691e347"/><meta name="wh-source-relpath" content="com.ibm.streams.welcome.doc/doc/services.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.welcome.doc/doc/services.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="services" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="kc_welcome"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreamsintroduction"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction.html">Introduction to <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts. This   section provides an overview of the platform's stream processing capabilities, development   approaches, and runtime environment to help you understand how Teracloud Streams can address your   real-time data processing needs.</p></div></div></div></li><li><div class="topicref" data-id="streamscomponents"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components.html"><span class="keyword">Teracloud® Streams</span> components</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> consists of many components such as <span class="keyword">stream applications</span>, domains, instances, and resources.</p></div></div></div></li><li class="active"><div class="topicref" data-id="services"><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/services.html">Domain and instance services</a><div class="wh-tooltip"><p class="shortdesc">When you start a <span class="keyword">Teracloud® 					Streams</span> domain, instance, or <span class="keyword">stream application</span>, services start on the appropriate resources.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="true"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="roadmap-d41691e200" class="topicref" data-id="roadmap" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/roadmap.html" id="roadmap-d41691e200-link">Information roadmap</a><div class="wh-tooltip"><p class="shortdesc">Find links to the information resources that are available for <span class="keyword">Teracloud® 					Streams</span>. Whether you're just getting started with analyzing streaming data or you're looking to expand your knowledge, we have the information that you need. </p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreamsintroduction-d41691e216" class="topicref" data-id="ibminfospherestreamsintroduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreamsintroduction-d41691e216-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction.html" id="ibminfospherestreamsintroduction-d41691e216-link">Introduction to <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts. This   section provides an overview of the platform's stream processing capabilities, development   approaches, and runtime environment to help you understand how Teracloud Streams can address your   real-time data processing needs.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-introduction-overview-d41691e236" class="topicref" data-id="ibminfospherestreams-introduction-overview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-overview.html" id="ibminfospherestreams-introduction-overview-d41691e236-link"><span class="keyword">Teracloud® Streams</span> features and architecture</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> consists of a programming language, an API, and a runtime system that can run the     applications on a single or distributed set of     resources.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="streamscomponents-d41691e255" class="topicref" data-id="streamscomponents" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action streamscomponents-d41691e255-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components.html" id="streamscomponents-d41691e255-link"><span class="keyword">Teracloud® Streams</span> components</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> consists of many components such as <span class="keyword">stream applications</span>, domains, instances, and resources.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="streamscomponents-applications-d41691e278" class="topicref" data-id="streamscomponents-applications" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-components-applications.html" id="streamscomponents-applications-d41691e278-link"><span class="keyword">Stream applications</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Stream applications</span> typically involve ingesting live data streams from a variety of sources, transforming the     data to prepare it for analysis, and applying analytics to derive intelligence and make     decisions. The main components of <span class="keyword">stream applications</span> are tuples, data streams, operators, processing elements (PEs), and jobs.</p></div></div></div></li><li role="treeitem"><div data-tocid="domains-d41691e298" class="topicref" data-id="domains" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/domains.html" id="domains-d41691e298-link">Domains</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <span class="keyword">Teracloud® 					Streams</span> domain is a             logical grouping of resources in a network for common management and administration. To             use <span class="keyword">Teracloud 					Streams</span>,             you must create at least one domain.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-introduction-instances-d41691e320" class="topicref" data-id="ibminfospherestreams-introduction-instances" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-introduction-instances.html" id="ibminfospherestreams-introduction-instances-d41691e320-link">Instances</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <span class="keyword">Teracloud® 					Streams</span> instance is             a runtime environment for <span class="keyword">stream applications</span>. It is             composed of a set of interacting services running across one or more resources. Before             you can use <span class="keyword">Teracloud 					Streams</span>, you must             create at least one instance.</span> </p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="services-d41691e347" class="topicref" data-id="services" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/services.html" id="services-d41691e347-link">Domain and instance services</a><div class="wh-tooltip"><p class="shortdesc">When you start a <span class="keyword">Teracloud® 					Streams</span> domain, instance, or <span class="keyword">stream application</span>, services start on the appropriate resources.</p></div></div></div></li><li role="treeitem"><div data-tocid="interfaces-d41691e366" class="topicref" data-id="interfaces" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/interfaces.html" id="interfaces-d41691e366-link">Interfaces</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> provides a graphical interface for monitoring and managing Streams services and jobs. A command   line interface as well as REST and JMX programming interfaces are also available.   </p></div></div></div></li><li role="treeitem"><div data-tocid="resources-d41691e381" class="topicref" data-id="resources" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/resources.html" id="resources-d41691e381-link">Resources</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Resources are physical and logical entities that <span class="keyword">Teracloud® 					Streams</span> uses to run services. </span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-adminconsole-applications-visualizing-terminology-d41691e398" class="topicref" data-id="ibminfospherestreams-adminconsole-applications-visualizing-terminology" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/ibminfospherestreams-adminconsole-applications-visualizing-terminology.html" id="ibminfospherestreams-adminconsole-applications-visualizing-terminology-d41691e398-link">Views, charts, and tables</a><div class="wh-tooltip"><p class="shortdesc">A view defines the set of attributes that can be displayed in a chart or table for a specific viewable data stream. </p></div></div></div></li></ul></li></ul></li><li role="treeitem"><div data-tocid="streams_rel_notes_overview-d41691e409" class="topicref" data-id="streams_rel_notes_overview" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/streams_rel_notes_overview.html" id="streams_rel_notes_overview-d41691e409-link">Release notes</a><div class="wh-tooltip"><p class="shortdesc">Learn about the new, deprecated, and removed features in <span class="keyword">Teracloud® 					Streams Version 7.2.0</span>.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic concept/concept topic concept" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Domain and instance services</h1>
+
+
+<div class="- topic/body concept/conbody body conbody"><p class="- topic/shortdesc shortdesc">When you start a <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domain, instance, or <span class="- topic/keyword keyword">stream application</span>, services start on the appropriate resources.</p>
+<section class="- topic/section section"><p class="- topic/p p">You can manage which services run on specific resources by using tags. For example, you can apply
+    the application tag to a resource so that it runs the application services. Likewise, you can
+    apply the management tag to a resource so that it runs the domain and instance management
+    services. If you prefer to run specific management services on specific resources, use the
+    appropriate tag for that service (for example, <span class="+ topic/keyword pr-d/option keyword option">authentication</span>,
+     <span class="+ topic/keyword pr-d/option keyword option">audit</span>, <span class="+ topic/keyword pr-d/option keyword option">jmx</span>, <span class="+ topic/keyword pr-d/option keyword option">rest</span>, <span class="+ topic/keyword pr-d/option keyword option">sws</span>, or
+     <span class="+ topic/keyword pr-d/option keyword option">view</span>).</p></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Domain services</h2>The following services are domain services:<div class="table-container"><table class="- topic/table table frame-all table--pgwide-1" id="services__domain-id" data-ofbid="services__domain-id" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Domain services</span><span class="- topic/desc desc tabledesc">
+<p class="- topic/p p summary">This table lists and describes domain services in <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>, and includes a list of tags for these services to run on specific resources. The table
+      also indicates short names used for each service in <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> messages and commands. </p>
+</span></caption><colgroup><col style="width:30.555555555555557%"/><col style="width:69.44444444444444%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-1 rowsep-1" id="services__domain-id__entry__1">Domain service</th>
+<th class="- topic/entry entry colsep-0 rowsep-1" id="services__domain-id__entry__2">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__domain-id__entry__1"><span class="- topic/keyword keyword">authentication and authorization service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__domain-id__entry__2">The <span class="- topic/keyword keyword">authentication and authorization service</span> is a management service that authenticates and authorizes operations for the domain and
+        all of the instances in the domain.<p class="- topic/p p">If you want this service to run on specific resources,
+         use the following tags: <span class="+ topic/keyword pr-d/option keyword option">authentication</span>.</p><p class="- topic/p p">The following short name is
+         used for this service in messages and commands:
+        <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">aas</samp>.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__domain-id__entry__1"><span class="- topic/keyword keyword">domain controller service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__domain-id__entry__2"><span class="- topic/ph ph">A <span class="- topic/keyword keyword">domain controller service</span> runs on
+                every resource in a <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> domain
+                and manages all of the other services on that resource.</span><p class="- topic/p p"><span class="- topic/ph ph">This service starts when you configure the resource in the domain, or when you
+                  run the <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool registerdomainhost</span> or <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool
+                    startdomainhost</span> command.</span></p><p class="- topic/p p"><span class="- topic/ph ph">This service
+                  is not associated with any tags.</span></p><p class="- topic/p p"><span class="- topic/ph ph">For more information, see <a class="- topic/xref xref" href="../../com.ibm.streams.common.doc/doc/../../com.ibm.streams.install.doc/doc/planning-domaincontroller-options.html#planning-domaincontroller-options">Options for setting up the <span class="- topic/keyword keyword">domain controller service</span> on resources</a>.</span></p><p class="- topic/p p"><span class="- topic/ph ph">The following short name is used for this service in messages and
+                  commands: <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">controller</samp>.</span></p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__domain-id__entry__1"><span class="- topic/keyword keyword">logging service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__domain-id__entry__2">The <span class="- topic/keyword keyword">logging service</span> is a management service that has two functions. It writes user messages in the
+         <span class="+ topic/ph sw-d/filepath ph filepath">streams.0.log</span> file.
+        It
+        is also involved in audit logging. For more information, see <a class="- topic/xref xref" href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-user-security-auditlogfile.html" title="Teracloud Streams supports comprehensive, multiple-level auditing of product and user operations. By default, audit logging is not enabled.">Audit logging support for <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span></a>.<p class="- topic/p p">If you want this service to run on specific resources, use the following tags:
+          <span class="+ topic/keyword pr-d/option keyword option">audit</span>.</p><p class="- topic/p p">The following short name is used for this service in
+         messages and commands: <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">auditlog</samp>.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__domain-id__entry__1"><span class="- topic/keyword keyword">JMX management API service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__domain-id__entry__2">The <span class="- topic/keyword keyword">JMX management API service</span> is a management service that provides an application programming interface (API). The
+         <span class="- topic/keyword keyword">Streams
+Console</span>
+        uses this API to obtain information about the domain. There can be only one <span class="- topic/keyword keyword">JMX management API service</span> per resource.<p class="- topic/p p">If you want this service to run on specific resources, use the following
+         tags: <span class="+ topic/keyword pr-d/option keyword option">jmx</span>.</p><p class="- topic/p p">The following short name is used for this service in
+         messages and commands: <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">jmx</samp>.</p></td>
+</tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-1 rowsep-1" headers="services__domain-id__entry__1"><span class="- topic/keyword keyword">REST management API service</span></td>
+       <td class="- topic/entry entry colsep-0 rowsep-1" headers="services__domain-id__entry__2">
+        <p class="- topic/p p">The <span class="- topic/keyword keyword">REST management API service</span> is a management service that provides an application programming interface (API). It is
+         based on the Representational State Transfer (REST) architectural principles and is
+         implemented by using the HTTP protocol. You can use this API to monitor and manage Streams
+         services and jobs. There can be only one REST management API service per resource.</p>
+        <p class="- topic/p p"> If you want this service to run on specific resources, use the following tags:
+          <span class="+ topic/keyword pr-d/option keyword option">rest</span>.</p>
+        <p class="- topic/p p">The following short name is used for this service in messages and commands:
+          <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">rest</samp>.</p>
+       </td>
+      </tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-0" headers="services__domain-id__entry__1"><span class="- topic/keyword keyword">web management service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="services__domain-id__entry__2">The <span class="- topic/keyword keyword">web management service</span> is a management service that provides web-based access to monitor and manage domain
+        services, instance services, and jobs. There is only one <span class="- topic/keyword keyword">web management service</span> in a domain.<p class="- topic/p p">If you want this service to run on specific resources, use the following
+         tag: <span class="+ topic/keyword pr-d/option keyword option">sws</span>.</p><p class="- topic/p p">The following short name is used for this service in
+         messages and commands: <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">sws</samp>.</p></td>
+</tr>
+</tbody></table></div></section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle">Instance services</h2>The following services are instance services:<div class="table-container"><table class="- topic/table table frame-all table--pgwide-1" id="services__instance-services" data-ofbid="services__instance-services" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 2</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Instance services</span><span class="- topic/desc desc tabledesc">
+<p class="- topic/p p summary">This table lists and describes instance services in <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>, and includes a list of tags for these services to run on specific resources. The table
+      also indicates short names used for each service in <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span> messages and commands. </p>
+</span></caption><colgroup><col style="width:30.555555555555557%"/><col style="width:69.44444444444444%"/></colgroup><thead class="- topic/thead thead">
+<tr class="- topic/row">
+<th class="- topic/entry entry colsep-1 rowsep-1" id="services__instance-services__entry__1">Instance service</th>
+<th class="- topic/entry entry colsep-0 rowsep-1" id="services__instance-services__entry__2">Description</th>
+</tr>
+</thead><tbody class="- topic/tbody tbody">
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__instance-services__entry__1"><span class="- topic/keyword keyword">application
+deployment service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__instance-services__entry__2">The <span class="- topic/keyword keyword">application
+deployment service</span> is an application service that prepares application resources for deploying and running
+        processing elements. It manages the deployment of application bundles to the appropriate
+        resources. <p class="- topic/p p">If you want this service to run on specific resources, use the
+          <span class="+ topic/keyword pr-d/option keyword option">application</span> tag. This service runs on every application resource in the
+         instance.</p><p class="- topic/p p">The following short name is used for this service in messages and commands:
+          <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">app</samp>.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__instance-services__entry__1"><span class="- topic/keyword keyword">application manager service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__instance-services__entry__2">The <span class="- topic/keyword keyword">application manager service</span> is a management service that administers the applications in the instance. This service
+        handles job management tasks, including user requests such as job submission and
+        cancellation. It includes a scheduler to compute the placement of processing elements that
+        are associated with an application. It also interacts with the <span class="- topic/keyword keyword">domain controller service</span> to deploy and cancel the execution of these processing elements.<p class="- topic/p p">If you
+         want this service to run on specific resources, use the <span class="+ topic/keyword pr-d/option keyword option">management</span>
+         tag.</p><p class="- topic/p p">The following short name is used for this service in messages and commands:
+          <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">sam</samp>.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__instance-services__entry__1"><span class="- topic/keyword keyword">application metrics service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__instance-services__entry__2">The <span class="- topic/keyword keyword">application metrics service</span> is a management service that collects runtime metrics for Streams jobs, resources and
+        components. This service also collects performance metrics that are necessary for scheduling
+        and system administration by interacting with the <span class="- topic/keyword keyword">domain controller service</span>.<p class="- topic/p p">If you want this service to run on specific resources, use the
+          <span class="+ topic/keyword pr-d/option keyword option">management</span> tag.</p><p class="- topic/p p">The following short name is used for this service
+         in messages and commands: <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">srm</samp>.</p></td>
+</tr>
+      <tr class="- topic/row">
+       <td class="- topic/entry entry colsep-1 rowsep-1" headers="services__instance-services__entry__1"><span class="- topic/keyword keyword">data service</span></td>
+       <td class="- topic/entry entry colsep-0 rowsep-1" headers="services__instance-services__entry__2">
+        <p class="- topic/p p">The data service is a management service that provides an application programming
+         interface (API) to determine the endpoints available for transferring data to and from
+         Streams jobs. You can also use the data service to invoke the endpoints to inject data into
+         jobs and to inspect data flowing through jobs. There can be only one data service per
+         resource.</p>
+        <p class="- topic/p p">If you want this service to run on specific resources, use the <span class="+ topic/keyword pr-d/option keyword option">data</span>
+         tag.</p>
+        <p class="- topic/p p">The following short name is used for this service in messages and commands:
+          <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">data</samp>.</p>
+       </td>
+      </tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-1" headers="services__instance-services__entry__1">Processing elements (PEs) and <span class="- topic/keyword keyword">processing element container services</span> (<span class="- topic/keyword keyword">PEC</span>)</td>
+<td class="- topic/entry entry colsep-0 rowsep-1" headers="services__instance-services__entry__2"><span class="- topic/keyword keyword">Streams Processing Language (SPL)</span> programs consist of operators, which are grouped at compile time into partitions. The
+        execution container for a partition is a processing element (PE). Each partition runs in one
+        PE. PEs are loaded by the <span class="- topic/keyword keyword">processing element container service</span> (<span class="- topic/keyword keyword">PEC</span>), which is started and monitored by the <span class="- topic/keyword keyword">domain controller service</span> for the resource that the PE is running on.<p class="- topic/p p">If you
+         want this service to run on specific resources, use the <span class="+ topic/keyword pr-d/option keyword option">application</span>
+         tag.</p></td>
+</tr>
+<tr class="- topic/row">
+<td class="- topic/entry entry colsep-1 rowsep-0" headers="services__instance-services__entry__1"><span class="- topic/keyword keyword">view service</span></td>
+<td class="- topic/entry entry colsep-0 rowsep-0" headers="services__instance-services__entry__2">The <span class="- topic/keyword keyword">view service</span> is a management service that administers the data that is used in views. A view defines
+        the set of attributes that can be displayed in a chart or a table. For more information, see
+         <a class="- topic/xref xref" href="ibminfospherestreams-adminconsole-applications-visualizing-terminology.html" title="A view defines the set of attributes that can be displayed in a chart or table for a specific viewable data stream.">Views, charts, and tables</a>. If there are many data visualization users in your instance, consider
+        running this service on a separate resource from other management services.<p class="- topic/p p">If you want
+         this service to run on specific resources, use the <span class="+ topic/keyword pr-d/option keyword option">view</span> tag.</p><p class="- topic/p p">The
+         following short name is used for this service in messages and commands:
+          <samp class="+ topic/ph sw-d/systemoutput ph systemoutput sysout">view</samp>.</p></td>
+</tr>
+</tbody></table></div></section>
+</div>
+
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist reltasks" xml:lang="en-us" lang="en-us"><strong>Related tasks</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.admin.doc/doc/services.html" title="Administering services">Administering services</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

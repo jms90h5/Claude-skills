@@ -1,0 +1,269 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="task"/><meta name="description" content="Using this procedure, you can setup a class data sharing archive to improve streamtool CLI performance. This only applies when using OpenJDK."/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-java.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/installstreams-container.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-plan.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites.html"/><meta name="DC.relation" content="../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html"/><meta name="DC.relation" content="https://docs.oracle.com/en/java/javase/17/vm/class-data-sharing.html#GUID-7EAA3411-8CF0-4D19-BD05-DF5E1780AA91"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="application_class_data_sharing"/>        
+      <title>Improving streamtool command performance</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="application_class_data_sharing-d41691e787"/><meta name="wh-source-relpath" content="com.ibm.streams.install.doc/doc/improving_streamtool_command_performance.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.install.doc/doc/improving_streamtool_command_performance.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="application_class_data_sharing" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="installstreams-container"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-plan"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-plan.html">Planning to install <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To plan for installing <span class="keyword">Teracloud® 					Streams</span>, start by reviewing the information in the planning roadmap.</span></p></div></div></div></li><li><div class="topicref" data-id="infospherestreamsinstallationprerequisites"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites.html">Software requirements</a><div class="wh-tooltip"><p class="shortdesc">Before you install <span class="keyword">Teracloud® 					Streams</span>, run the dependency checker script to verify that the target system satisfies the product software requirements.</p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-install-prerequisites-java.dita"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-java.html">Java requirements, options, and settings</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Ensure that you use a Java™     development kit that is supported by <span class="keyword">Teracloud® 					Streams</span>. </span> If Java memory issues occur, <span class="keyword">Teracloud 					Streams</span> provides configuration properties that you can use to allocate more memory for the Java environment.</p></div></div></div></li><li class="active"><div class="topicref" data-id="application_class_data_sharing"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/improving_streamtool_command_performance.html">Improving streamtool command performance</a><div class="wh-tooltip"><p class="shortdesc">Using this procedure, you can setup a class data sharing archive to improve             <span class="keyword cmdname">streamtool</span> CLI performance. This only applies when using         OpenJDK.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-plan-d41691e448" class="topicref" data-id="ibminfospherestreams-plan" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-plan-d41691e448-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-plan.html" id="ibminfospherestreams-plan-d41691e448-link">Planning to install <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To plan for installing <span class="keyword">Teracloud® 					Streams</span>, start by reviewing the information in the planning roadmap.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-preinstall-roadmap-d41691e469" class="topicref" data-id="ibminfospherestreams-preinstall-roadmap" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-preinstall-roadmap.html" id="ibminfospherestreams-preinstall-roadmap-d41691e469-link">Preparing to install <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use the information in this topic to plan and prepare for your <span class="keyword">Teracloud® 					Streams</span> installation. The plan that you create for your environment determines your tasks and choices throughout the installation process.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-options-configuration-d41691e489" class="topicref" data-id="ibminfospherestreams-install-options-configuration" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-options-configuration-d41691e489-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-options-configuration.html" id="ibminfospherestreams-install-options-configuration-d41691e489-link">Considerations for environments with multiple resources</a><div class="wh-tooltip"><p class="shortdesc">Review these options and requirements for <span class="keyword">Teracloud® 					Streams</span> environments before you install the product.</p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-hardware-requirements-d41691e533" class="topicref" data-id="ibminfospherestreams-hardware-requirements" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-hardware-requirements.html" id="ibminfospherestreams-hardware-requirements-d41691e533-link">Hardware requirements</a><div class="wh-tooltip"><p class="shortdesc">Before you install <span class="keyword">Teracloud® 					Streams</span>, ensure that the target system satisfies the minimum hardware requirements.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="infospherestreamsinstallationprerequisites-d41691e549" class="topicref" data-id="infospherestreamsinstallationprerequisites" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action infospherestreamsinstallationprerequisites-d41691e549-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites.html" id="infospherestreamsinstallationprerequisites-d41691e549-link">Software requirements</a><div class="wh-tooltip"><p class="shortdesc">Before you install <span class="keyword">Teracloud® 					Streams</span>, run the dependency checker script to verify that the target system satisfies the product software requirements.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-prerequisites-operating-system-d41691e565" class="topicref" data-id="ibminfospherestreams-install-prerequisites-operating-system" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-prerequisites-operating-system-d41691e565-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-operating-system.html" id="ibminfospherestreams-install-prerequisites-operating-system-d41691e565-link">Operating system requirements for <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® 					Streams</span> supports Red Hat Enterprise Linux™   (RHEL).</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-prerequisites-rpms-d41691e623" class="topicref" data-id="ibminfospherestreams-install-prerequisites-rpms" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-prerequisites-rpms-d41691e623-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-rpms.html" id="ibminfospherestreams-install-prerequisites-rpms-d41691e623-link">Required RPMs for <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">To operate correctly, <span class="keyword">Teracloud® 					Streams</span> requires a set of prerequisite RPMs.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-install-prerequisites-java.dita-d41691e701" class="topicref" data-id="ibminfospherestreams-install-prerequisites-java.dita" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-install-prerequisites-java.dita-d41691e701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-java.html" id="ibminfospherestreams-install-prerequisites-java.dita-d41691e701-link">Java requirements, options, and settings</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Ensure that you use a Java™     development kit that is supported by <span class="keyword">Teracloud® 					Streams</span>. </span> If Java memory issues occur, <span class="keyword">Teracloud 					Streams</span> provides configuration properties that you can use to allocate more memory for the Java environment.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="ibminfospherestreams-install-prerequisites-java-supported-sdks.dita-d41691e733" class="topicref" data-id="ibminfospherestreams-install-prerequisites-java-supported-sdks.dita" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-java-supported-sdks.html" id="ibminfospherestreams-install-prerequisites-java-supported-sdks.dita-d41691e733-link"><span class="ph">Supported Java™ development kits for application development</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">For application development, <span class="keyword">Teracloud® 					Streams</span> requires Java™ SDK Version 17 or later to be           installed.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-prerequisites-java-config-properties.dita-d41691e757" class="topicref" data-id="ibminfospherestreams-install-prerequisites-java-config-properties.dita" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-java-config-properties.html" id="ibminfospherestreams-install-prerequisites-java-config-properties.dita-d41691e757-link">Configuration settings for Java™ memory issues</a><div class="wh-tooltip"><p class="shortdesc">If Java™ out-of-memory errors occur when you use <span class="keyword">Teracloud® 					Streams</span>, you can allocate more memory for the Java environment by increasing the maximum JVM size for <span class="keyword">Teracloud 					Streams</span> services and user interfaces.</p></div></div></div></li><li role="treeitem" class="active"><div data-tocid="application_class_data_sharing-d41691e787" class="topicref" data-id="application_class_data_sharing" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/improving_streamtool_command_performance.html" id="application_class_data_sharing-d41691e787-link">Improving streamtool command performance</a><div class="wh-tooltip"><p class="shortdesc">Using this procedure, you can setup a class data sharing archive to improve             <span class="keyword cmdname">streamtool</span> CLI performance. This only applies when using         OpenJDK.</p></div></div></div></li><li role="treeitem"><div data-tocid="upgrading-java-d41691e801" class="topicref" data-id="upgrading-java" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/upgrading-java.html" id="upgrading-java-d41691e801-link">Upgrading Java</a><div class="wh-tooltip"><p class="shortdesc">You can upgrade Java by using OpenJDK or by setting the STREAMS_JAVA_HOME variable         explicitly.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-prerequisites-dependency-checker-d41691e812" class="topicref" data-id="ibminfospherestreams-install-prerequisites-dependency-checker" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-prerequisites-dependency-checker-d41691e812-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-dependency-checker.html" id="ibminfospherestreams-install-prerequisites-dependency-checker-d41691e812-link">Dependency checker script</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The dependency checker script verifies that your             system satisfies the operating system, RPM, and other software requirements for <span class="keyword">Teracloud® 					Streams</span>.</span></p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="planning-domaincontroller-options-d41691e866" class="topicref" data-id="planning-domaincontroller-options" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/planning-domaincontroller-options.html" id="planning-domaincontroller-options-d41691e866-link">  <span class="keyword">Domain controller service</span> options</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">A <span class="keyword">domain controller service</span> runs on                 every resource in a <span class="keyword">Teracloud® 					Streams</span> domain                 and manages all of the other services on that resource.</span> <span class="ph">You can set up the <span class="keyword">domain controller service</span> as a registered Linux™ system             service or an unregistered service.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-planning-firewall-d41691e898" class="topicref" data-id="ibminfospherestreams-planning-firewall" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-planning-firewall.html" id="ibminfospherestreams-planning-firewall-d41691e898-link">Firewall configuration guidelines</a><div class="wh-tooltip"><p class="shortdesc">If firewall usage is required, the preferred configuration is to set up a firewall at the    perimeter of the <span class="keyword">Teracloud® 					Streams</span> cluster to restrict network access to resources in the cluster but not communication between    the resources. When any communication passes through a firewall, latency is introduced. These    guidelines apply to clients that are in the <span class="keyword">Teracloud 					Streams</span> cluster as well as clients that are external to the cluster.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-operating-system-settings-d41691e919" class="topicref" data-id="ibminfospherestreams-install-operating-system-settings" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-operating-system-settings-d41691e919-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-operating-system-settings.html" id="ibminfospherestreams-install-operating-system-settings-d41691e919-link">Linux ulimit configuration guidelines</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">The default Linux™ user limit               (<span class="keyword parmname">ulimit</span>) values might be too small for some <span class="keyword">Teracloud® 					Streams</span> environments. Use these guidelines to ensure that your <span class="keyword parmname">ulimit</span>             settings are sufficient for <span class="keyword">Teracloud 					Streams</span>.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="network-d41691e1040" class="topicref" data-id="network" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action network-d41691e1040-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-prerequisites-host-requirements.html" id="network-d41691e1040-link">Name resolution requirements for resources</a><div class="wh-tooltip"><p class="shortdesc">All resources must satisfy the product network configuration requirements or <span class="keyword">Teracloud® 					Streams</span> fails to start on the resource.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="installingibminfospherestreams-d41691e1077" class="topicref" data-id="installingibminfospherestreams" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installingibminfospherestreams-d41691e1077-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install.html" id="installingibminfospherestreams-d41691e1077-link">Installing the <span class="keyword">Teracloud® Streams</span> product</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use these procedures to install <span class="keyword">Teracloud® 					Streams</span>     <span class="keyword">Version 					7.2</span>.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-upgrade-d41691e1346" class="topicref" data-id="ibminfospherestreams-install-upgrade" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-upgrade-d41691e1346-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-upgrade.html" id="ibminfospherestreams-install-upgrade-d41691e1346-link">Upgrading <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use these procedures to install a new version of  <span class="keyword">Teracloud® 					Streams</span> when a previous version of the product is already installed, or to update a <span class="keyword">Version 					7.2</span> <span class="keyword">Non-Production 					Edition</span> license.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461" class="topicref" data-id="ibminfospherestreams-install-uninstalling-interactive-silent-methods" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-uninstalling-interactive-silent-methods.html" id="ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461-link">Uninstalling <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to remove the <span class="keyword">Teracloud® 					Streams</span> product from your system.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic task/task topic task" role="article" aria-labelledby="ariaid-title1">
+    <h1 class="- topic/title title topictitle1" id="ariaid-title1">Improving streamtool command performance</h1>
+    
+    <div class="- topic/body task/taskbody body taskbody"><p class="- topic/shortdesc shortdesc">Using this procedure, you can setup a class data sharing archive to improve
+            <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> CLI performance. This only applies when using
+        OpenJDK.</p>
+        <section class="- topic/section task/prereq section prereq" id="application_class_data_sharing__prereq_t1j_cnv_vfc" data-ofbid="application_class_data_sharing__prereq_t1j_cnv_vfc"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Before you begin</h2></div>To generate the application class data sharing archive, you
+            must tell Java to generate the archive by running a <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span>
+            command. When the command exits, Java will generate the class data sharing archive in
+            the specified path.<div class="- topic/p p">Before performing the steps to generate the class data sharing
+                archive, you need the following:<ol class="- topic/ol ol" id="application_class_data_sharing__ol_c53_fnv_vfc" data-ofbid="application_class_data_sharing__ol_c53_fnv_vfc">
+                    <li class="- topic/li li">A configured local shell environment for Teracloud® Streams. To configure
+                        it, enter the following
+                        command:<pre class="+ topic/pre pr-d/codeblock pre codeblock" id="application_class_data_sharing__codeblock_kvf_3nv_vfc" data-ofbid="application_class_data_sharing__codeblock_kvf_3nv_vfc"><code>  source <var class="+ topic/keyword sw-d/varname keyword varname">product-installation-root-directory</var>/7.2.0.1/bin/streamsprofile.sh </code></pre></li>
+                    <li class="- topic/li li"><u class="+ topic/ph hi-d/u ph u">If using an enterprise domain</u>: the
+                            <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMS_ZKCONNECT</span> environment variable must be set
+                        to point to the Zookeeper connection string.</li>
+                    <li class="- topic/li li">A running Teracloud® Streams domain and instance.</li>
+                </ol></div></section>
+        <section class="- topic/ol task/steps ol steps"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Procedure</h2></div><ol class="- topic/ol task/steps ol steps" id="application_class_data_sharing__steps_zwv_5qk_5fc" data-ofbid="application_class_data_sharing__steps_zwv_5qk_5fc"><li class="- topic/li task/step li step">
+                <span class="- topic/ph task/cmd ph cmd">Set the <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMTOOL_JVM_OPTIONS</span> environment variable to
+                    specify to generate the class data sharing archive and where it should be
+                    stored. The path or name of the <span class="+ topic/ph sw-d/filepath ph filepath">jsa</span> file should be based on
+                    the version of OpenJDK and the version of Streams. The following command shows
+                    an example of storing the <span class="+ topic/ph sw-d/filepath ph filepath">jsa</span> file in a directory with the
+                    Streams version and file name containing the OpenJDK version:</span>
+                <div class="- topic/itemgroup task/info itemgroup info">
+                    <pre class="+ topic/pre pr-d/codeblock pre codeblock" id="application_class_data_sharing__codeblock_ng4_24v_vfc" data-ofbid="application_class_data_sharing__codeblock_ng4_24v_vfc"><code>  export STREAMTOOL_JVM_OPTIONS=-XX:ArchiveClassesAtExit=$HOME/.streams/7.2.0.1/var/st_17_0_14.jsa</code></pre>
+                </div>
+            </li><li class="- topic/li task/step li step">
+                <span class="- topic/ph task/cmd ph cmd">Run the following <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> command, replacing
+                        <var class="+ topic/keyword sw-d/varname keyword varname">mydomain</var> and <var class="+ topic/keyword sw-d/varname keyword varname">myinstance</var> with the
+                    values for your environment. For more information about command syntax and
+                    options, enter <kbd class="+ topic/ph sw-d/userinput ph userinput">streamtool
+                        man <var class="+ topic/keyword sw-d/varname keyword varname">command-name</var></kbd>.</span>
+                <div class="- topic/itemgroup task/info itemgroup info">
+                    <pre class="+ topic/pre pr-d/codeblock pre codeblock" id="application_class_data_sharing__codeblock_kgn_hxg_vfc" data-ofbid="application_class_data_sharing__codeblock_kgn_hxg_vfc"><code>  streamtool lsjob -d <var class="+ topic/keyword sw-d/varname keyword varname">mydomain</var> -i <var class="+ topic/keyword sw-d/varname keyword varname">myinstance</var> </code></pre>
+                </div>
+            </li><li class="- topic/li task/step li step">
+                <span class="- topic/ph task/cmd ph cmd">When <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> exits, Java will create the CDS archive file
+                    in the directory specified on the <span class="+ topic/keyword pr-d/option keyword option">ArchiveClassesAtExit</span> JVM
+                    option.</span>
+                <div class="- topic/itemgroup task/info itemgroup info">
+                    <div class="- topic/note note note note_note" id="application_class_data_sharing__note_wqz_m4v_vfc" data-ofbid="application_class_data_sharing__note_wqz_m4v_vfc"><span class="note__title">Note:</span> When the archive is generated after
+                        exiting streamtool, you might see this
+                        warning:<pre class="+ topic/pre pr-d/codeblock pre codeblock" id="application_class_data_sharing__codeblock_yw1_44v_vfc" data-ofbid="application_class_data_sharing__codeblock_yw1_44v_vfc"><code>  [59.841s][warning][cds] Preload Warning: Verification failed for org.apache.logging.log4j.core.async.AsyncLoggerContext </code></pre>This
+                        can be ignored. The named class will be loaded and verified at runtime and
+                        will not be pulled from the cache. The cache is still usable, the side
+                        affect will be minimal.</div>
+                </div>
+            </li><li class="- topic/li task/step li step">
+                <span class="- topic/ph task/cmd ph cmd">To use the CDS archive file, you must reset the environment variable to use the
+                    new archive: </span>
+                <div class="- topic/itemgroup task/info itemgroup info">
+                    <pre class="+ topic/pre pr-d/codeblock pre codeblock" id="application_class_data_sharing__codeblock_tvv_5jg_vfc" data-ofbid="application_class_data_sharing__codeblock_tvv_5jg_vfc"><code>  export STREAMTOOL_JVM_OPTIONS=-XX:SharedArchiveFile=$HOME/.streams/7.2.0.1/var/st_17_0_14.jsa</code></pre>
+                </div>
+            </li><li class="- topic/li task/step li step">
+                <span class="- topic/ph task/cmd ph cmd"><strong class="+ topic/ph hi-d/b ph b">Optional</strong>: To verify that <span class="+ topic/keyword sw-d/cmdname keyword cmdname">streamtool</span> is using the
+                    cache, add the following logging option to the
+                        <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMTOOL_JVM_OPTIONS</span> environment variable:
+                        <code class="+ topic/ph pr-d/codeph ph codeph">-Xlog:class+load</code>.</span>
+                <div class="- topic/itemgroup task/info itemgroup info">After verifying, remove the logging option from the following variable
+                    declaration:<pre class="+ topic/pre pr-d/codeblock pre codeblock" id="application_class_data_sharing__codeblock_j2x_gjg_vfc" data-ofbid="application_class_data_sharing__codeblock_j2x_gjg_vfc"><code>  export STREAMTOOL_JVM_OPTIONS=-XX:SharedArchiveFile=$HOME/.streams/7.2.0.1/var/st_17_0_14.jsa -Xlog:class+load</code></pre></div>
+            </li><li class="- topic/li task/step li step">
+                <span class="- topic/ph task/cmd ph cmd">You should see, that the classes are loaded from the “shared objects file”.
+                    Here is a snippet of the log output when using the CDS:</span>
+                <div class="- topic/itemgroup task/info itemgroup info">
+                    <pre class="+ topic/pre pr-d/codeblock pre codeblock" id="application_class_data_sharing__codeblock_v15_jxd_5fc" data-ofbid="application_class_data_sharing__codeblock_v15_jxd_5fc"><code>  [0.052s][info][class,load] java.lang.Object source: shared objects file
+  [0.052s][info][class,load] java.io.Serializable source: shared objects file
+  [0.052s][info][class,load] java.lang.Comparable source: shared objects file
+  [0.052s][info][class,load] java.lang.CharSequence source: shared objects file
+  [0.052s][info][class,load] java.lang.constant.Constable source: shared objects file
+  [0.052s][info][class,load] java.lang.constant.ConstantDesc source: shared objects file
+  [0.052s][info][class,load] java.lang.String source: shared objects file
+  [0.052s][info][class,load] java.lang.reflect.AnnotatedElement source: shared objects file</code></pre>
+                </div>
+            </li></ol></section>
+        <section class="- topic/section task/result section result" id="application_class_data_sharing__postreq_eby_xsk_5fc" data-ofbid="application_class_data_sharing__postreq_eby_xsk_5fc"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Results</h2></div>
+            <p class="- topic/p p">The CDS archive will be used as long as the
+                    <span class="+ topic/keyword pr-d/parmname keyword parmname">STREAMTOOL_JVM_OPTIONS</span> contains the
+                    <span class="+ topic/keyword pr-d/option keyword option">SharedArchiveFile</span> option; and the class path used at archive
+                creation time is the same as (or a prefix of) the class path used at run time.</p>
+            <div class="- topic/p p">The class data sharing archive needs to be regenerated for the following cases:<ol class="- topic/ol ol" id="application_class_data_sharing__ol_qkw_1yd_5fc" data-ofbid="application_class_data_sharing__ol_qkw_1yd_5fc">
+                    <li class="- topic/li li">The version of OpenJDK is updated.</li>
+                    <li class="- topic/li li">A patch is applied to the Streams installation <span class="+ topic/ph sw-d/filepath ph filepath">jar</span>
+                        files (should never have to do this unless directed by the Teracloud
+                        support).</li>
+                    <li class="- topic/li li">The version of Streams is updated. This includes fix packs.</li>
+                </ol></div>
+        </section>
+    </div>
+</article></main></div>
+                        
+                        
+                        <div class=" wh_related_links d-print-none "><nav aria-label="Related Links" role="navigation" class="- topic/related-links related-links"><div class="- topic/linklist linklist relref"><strong>Related reference</strong><ul class="linklist related_link"><li class="linklist"><a class="- topic/link link navheader_parent_path" href="../../com.ibm.streams.ea.doc/streamtool/doc/streamtoolMan.html" title="streamtool">streamtool</a></li><li class="linklist"><a class="- topic/link link navheader_parent_path" href="https://docs.oracle.com/en/java/javase/17/vm/class-data-sharing.html#GUID-7EAA3411-8CF0-4D19-BD05-DF5E1780AA91" target="_blank" rel="external noopener" title="Java Virtual Machine Guide: Class Data Sharing">Java Virtual Machine Guide: Class Data Sharing</a></li></ul></div></nav></div>
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

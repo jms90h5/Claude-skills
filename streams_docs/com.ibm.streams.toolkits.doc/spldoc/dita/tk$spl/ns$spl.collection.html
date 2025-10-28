@@ -1,0 +1,489 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../../../favicon-light.png"/><link rel="icon" href="../../../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="This namespace contains components for handling collections. By default this namespace is in scope for SPL programs, so no explicit use statement is required to use them. Functions appendM(blob, ..."/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="reference"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="spldoc_namespace"/><title>Namespace spl.collection</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../../../"/><meta name="wh-toc-id" content="spldoc_namespace-d41691e71382"/><meta name="wh-source-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.collection.xml"/><meta name="wh-out-relpath" content="com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../../../cobalt.css"/></head>
+
+    <body id="spldoc_namespace" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="reference-container"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li><div class="topicref" data-id="introduction"><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div></li><li><div class="topicref" data-id="spldoc_toolkits"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html">Toolkits</a></div></div></li><li><div class="topicref" data-id="spldoc_toolkit"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div></li><li class="active"><div class="topicref" data-id="spldoc_namespace"><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.collection.html">Namespace <span class="ph tt" style="font-family: monospace">spl.collection</span></a></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="api-container-d41691e60894" class="topicref" data-id="api-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action api-container-d41691e60894-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/api-container.html" id="api-container-d41691e60894-link">APIs</a><div class="wh-tooltip"><p class="shortdesc">Application programming interfaces (APIs) provide functions that simplify applications                 development.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="submitjob-parameters-d41691e61331" class="topicref" data-id="submitjob-parameters" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action submitjob-parameters-d41691e61331-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/submitjobparameters.html" id="submitjob-parameters-d41691e61331-link">Job configuration overlays</a><div class="wh-tooltip"><p class="shortdesc">You can specify or change configuration parameters when you use the <code class="ph codeph">submitjob</code> or <code class="ph codeph">updateoperators</code> operations. The settings control submission constraints, host constraints and locations, and operator status. Parameters are captured and updated in the configuration JSON file. When you change the values in the <span class="keyword">job configuration overlay</span> file, the changes override any previously set values.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="cmdref-container-d41691e61370" class="topicref" data-id="cmdref-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action cmdref-container-d41691e61370-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/cmdref-container.html" id="cmdref-container-d41691e61370-link">Commands</a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Teracloud® Streams</span> provides a number of commands you use to perform tasks.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="model-container-d41691e63141" class="topicref" data-id="model-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action model-container-d41691e63141-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/model-container.html" id="model-container-d41691e63141-link">Operator model</a><div class="wh-tooltip"><p class="shortdesc">An operator model is an XML document that describes the basic properties of a primitive operator.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spl-container-d41691e63286" class="topicref" data-id="spl-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spl-container-d41691e63286-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spl-container.html" id="spl-container-d41691e63286-link"><span class="keyword">Streams Processing Language (SPL)</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="keyword">Streams Processing Language (SPL)</span> is a distributed data flow composition language that is used in <span class="keyword">Teracloud® Streams</span>. SPL has primitive types, program structures, and definitions that are tailored for streaming   data.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="introduction-d41691e64413" class="topicref" data-id="introduction" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action introduction-d41691e64413-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spltoolkits_intro.html" id="introduction-d41691e64413-link">Toolkits</a><div class="wh-tooltip"><p class="shortdesc">A toolkit is a set of SPL artifacts, which are organized into a package. Toolkits make SPL or native functions and primitive or composite operators reusable across different applications.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-toolkit-reqmts-d41691e64424" class="topicref" data-id="ibminfospherestreams-install-toolkit-reqmts" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/ibminfospherestreams-install-toolkit-reqmts.html" id="ibminfospherestreams-install-toolkit-reqmts-d41691e64424-link">Specialized toolkit requirements and restrictions</a><div class="wh-tooltip"><p class="shortdesc">Several of the specialized toolkits require RPMs that are not required by the <span class="keyword">Teracloud® 					Streams</span> product. There are also toolkit restrictions on some platforms.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkits-d41691e64456" class="topicref" data-id="spldoc_toolkits" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkits-d41691e64456-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/toolkits.html" id="spldoc_toolkits-d41691e64456-link">Toolkits</a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e64462" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Namespace.html" id="spldoc_index-d41691e64462-link">Namespaces: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64470" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Operator.html" id="spldoc_index-d41691e64470-link">Operators: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64478" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Function.html" id="spldoc_index-d41691e64478-link">Functions: Toolkits</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e64486" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/toolkits/ix$Type.html" id="spldoc_index-d41691e64486-link">Types: Toolkits</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64494" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64494-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.avro/tk$com.teracloud.streams.avro.html" id="spldoc_toolkit-d41691e64494-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.avro 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64568" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64568-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cep/tk$com.teracloud.streams.cep.html" id="spldoc_toolkit-d41691e64568-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cep 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64638" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64638-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.crossdcfailover/tk$com.teracloud.streams.crossdcfailover.html" id="spldoc_toolkit-d41691e64638-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.crossdcfailover 2.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64787" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64787-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.cybersecurity/tk$com.teracloud.streams.cybersecurity.html" id="spldoc_toolkit-d41691e64787-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.cybersecurity 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e64988" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e64988-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.datetime/tk$com.teracloud.streams.datetime.html" id="spldoc_toolkit-d41691e64988-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.datetime 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65120" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65120-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.dps/tk$com.teracloud.streams.dps.html" id="spldoc_toolkit-d41691e65120-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.dps 6.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65249" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65249-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.elasticsearch/tk$com.teracloud.streams.elasticsearch.html" id="spldoc_toolkit-d41691e65249-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.elasticsearch 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65343" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65343-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.evalpredicate/tk$com.teracloud.streams.evalpredicate.html" id="spldoc_toolkit-d41691e65343-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.evalpredicate 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65397" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65397-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.geospatial/tk$com.teracloud.streams.geospatial.html" id="spldoc_toolkit-d41691e65397-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.geospatial 5.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65727" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65727-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hbase/tk$com.teracloud.streams.hbase.html" id="spldoc_toolkit-d41691e65727-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hbase 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65829" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65829-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.hdfs/tk$com.teracloud.streams.hdfs.html" id="spldoc_toolkit-d41691e65829-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.hdfs 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e65961" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e65961-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inet/tk$com.teracloud.streams.inet.html" id="spldoc_toolkit-d41691e65961-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inet 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66227" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66227-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.inetserver/tk$com.teracloud.streams.inetserver.html" id="spldoc_toolkit-d41691e66227-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.inetserver 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66444" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66444-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jdbc/tk$com.teracloud.streams.jdbc.html" id="spldoc_toolkit-d41691e66444-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jdbc 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66526" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66526-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.jms/tk$com.teracloud.streams.jms.html" id="spldoc_toolkit-d41691e66526-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.jms 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66670" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66670-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.json/tk$com.teracloud.streams.json.html" id="spldoc_toolkit-d41691e66670-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.json 3.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66770" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66770-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.kafka/tk$com.teracloud.streams.kafka.html" id="spldoc_toolkit-d41691e66770-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.kafka 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e66936" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e66936-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mail/tk$com.teracloud.streams.mail.html" id="spldoc_toolkit-d41691e66936-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mail 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67018" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67018-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.messagehub/tk$com.teracloud.streams.messagehub.html" id="spldoc_toolkit-d41691e67018-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.messagehub 5.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67126" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67126-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.mqtt/tk$com.teracloud.streams.mqtt.html" id="spldoc_toolkit-d41691e67126-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.mqtt 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67248" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67248-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.network/tk$com.teracloud.streams.network.html" id="spldoc_toolkit-d41691e67248-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.network 5.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e67779" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e67779-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.objectstorage/tk$com.teracloud.streams.objectstorage.html" id="spldoc_toolkit-d41691e67779-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.objectstorage 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68071" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68071-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.pmml/tk$com.teracloud.streams.pmml.html" id="spldoc_toolkit-d41691e68071-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.pmml 6.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68167" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68167-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rabbitmq/tk$com.teracloud.streams.rabbitmq.html" id="spldoc_toolkit-d41691e68167-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rabbitmq 3.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68239" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68239-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.rproject/tk$com.teracloud.streams.rproject.html" id="spldoc_toolkit-d41691e68239-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.rproject 4.0.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e68317" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e68317-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.teda/tk$com.teracloud.streams.teda.html" id="spldoc_toolkit-d41691e68317-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.teda 4.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70090" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70090-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.timeseries/tk$com.teracloud.streams.timeseries.html" id="spldoc_toolkit-d41691e70090-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.timeseries 7.0.1</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e70741" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e70741-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.topology/tk$com.teracloud.streams.topology.html" id="spldoc_toolkit-d41691e70741-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.topology 4.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_toolkit-d41691e71039" class="topicref" data-id="spldoc_toolkit" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_toolkit-d41691e71039-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$com.teracloud.streams.websocket/tk$com.teracloud.streams.websocket.html" id="spldoc_toolkit-d41691e71039-link">Toolkit <span class="ph tt" style="font-family: monospace">com.teracloud.streams.websocket 3.1.0</span></a></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="spldoc_toolkit-d41691e71123" class="topicref" data-id="spldoc_toolkit" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_toolkit-d41691e71123-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/tk$spl.html" id="spldoc_toolkit-d41691e71123-link">Toolkit <span class="ph tt" style="font-family: monospace">spl 2.0.0</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_index-d41691e71133" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ix$Namespace.html" id="spldoc_index-d41691e71133-link">Namespaces: spl 2.0.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e71141" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ix$Operator.html" id="spldoc_index-d41691e71141-link">Operators: spl 2.0.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e71149" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ix$Function.html" id="spldoc_index-d41691e71149-link">Functions: spl 2.0.0</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_index-d41691e71157" class="topicref" data-id="spldoc_index" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ix$Type.html" id="spldoc_index-d41691e71157-link">Types: spl 2.0.0</a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71165" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71165-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.html" id="spldoc_namespace-d41691e71165-link">Namespace <span class="ph tt" style="font-family: monospace">spl</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71185" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71185-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.XML.html" id="spldoc_namespace-d41691e71185-link">Namespace <span class="ph tt" style="font-family: monospace">spl.XML</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71263" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71263-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.adapter.html" id="spldoc_namespace-d41691e71263-link">Namespace <span class="ph tt" style="font-family: monospace">spl.adapter</span></a></div></div></li><li role="treeitem" aria-expanded="true" class="active"><div data-tocid="spldoc_namespace-d41691e71382" class="topicref" data-id="spldoc_namespace" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action spldoc_namespace-d41691e71382-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.collection.html" id="spldoc_namespace-d41691e71382-link">Namespace <span class="ph tt" style="font-family: monospace">spl.collection</span></a></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem"><div data-tocid="spldoc_functions-d41691e71392" class="topicref" data-id="spldoc_functions" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/fc$spl.collection.html" id="spldoc_functions-d41691e71392-link">C++ Native Functions: <span class="ph tt" style="font-family: monospace">spl.collection</span></a></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71402" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71402-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.control.html" id="spldoc_namespace-d41691e71402-link">Namespace <span class="ph tt" style="font-family: monospace">spl.control</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71432" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71432-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.endpoint.html" id="spldoc_namespace-d41691e71432-link">Namespace <span class="ph tt" style="font-family: monospace">spl.endpoint</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71463" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71463-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.eventtime.html" id="spldoc_namespace-d41691e71463-link">Namespace <span class="ph tt" style="font-family: monospace">spl.eventtime</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71483" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71483-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.file.html" id="spldoc_namespace-d41691e71483-link">Namespace <span class="ph tt" style="font-family: monospace">spl.file</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71503" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71503-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.math.html" id="spldoc_namespace-d41691e71503-link">Namespace <span class="ph tt" style="font-family: monospace">spl.math</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71523" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71523-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.relational.html" id="spldoc_namespace-d41691e71523-link">Namespace <span class="ph tt" style="font-family: monospace">spl.relational</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71593" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71593-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.string.html" id="spldoc_namespace-d41691e71593-link">Namespace <span class="ph tt" style="font-family: monospace">spl.string</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71613" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71613-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.time.html" id="spldoc_namespace-d41691e71613-link">Namespace <span class="ph tt" style="font-family: monospace">spl.time</span></a></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc_namespace-d41691e71633" class="topicref" data-id="spldoc_namespace" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc_namespace-d41691e71633-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/tk$spl/ns$spl.utility.html" id="spldoc_namespace-d41691e71633-link">Namespace <span class="ph tt" style="font-family: monospace">spl.utility</span></a></div></div></li></ul></li><li role="treeitem"><div data-tocid="spldoc_reference_operator_model-d41691e71881" class="topicref" data-id="spldoc_reference_operator_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/OperatorModel.html" id="spldoc_reference_operator_model-d41691e71881-link">SPL Operator Model</a></div></div></li><li role="treeitem"><div data-tocid="spldoc_reference_function_model-d41691e71889" class="topicref" data-id="spldoc_reference_function_model" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.toolkits.doc/spldoc/dita/references/FunctionModel.html" id="spldoc_reference_function_model-d41691e71889-link">SPL Function Model</a></div></div></li></ul></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="spldoc-markup-d41691e71897" class="topicref" data-id="spldoc-markup" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action spldoc-markup-d41691e71897-link" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.ref.doc/doc/spldoc-rmarkup.html" id="spldoc-markup-d41691e71897-link">SPLDOC markup</a><div class="wh-tooltip"><p class="shortdesc">You can use SPLDOC markup in the descriptions associated with the SPL artifacts in a toolkit. The <span class="keyword cmdname">spl-make-doc</span> command generates HTML documentation from the marked up artifacts.</p></div></div></div></li></ul></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic       reference/reference topic reference" role="article" aria-labelledby="ariaid-title1">
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Namespace <span class="+ topic/ph hi-d/tt ph tt">spl.collection</span></h1>
+<div class="- topic/body reference/refbody body refbody">
+<section class="- topic/section section">
+
+<p class="- topic/p p">This namespace contains components for handling collections.
+</p>
+<p class="- topic/p p">By default this namespace is in scope for SPL programs, so no explicit use statement is required to use them. 
+</p>
+</section>
+<section class="- topic/section section"><h2 class="- topic/title title sectiontitle splhead-1">Functions</h2>
+  
+<ul class="- topic/sl sl simple">
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__appendM.blob.list:.:uint8:.:">appendM(blob, list&lt;uint8&gt;)</a></strong>: Append a list of bytes to a blob.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__appendM.blob.uint8">appendM(blob, uint8)</a></strong>: Append a byte to a blob.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__appendM.list:.:T:.:.T">appendM(list&lt;T&gt;, T)</a></strong>: Append to a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__appendM.list:.:T:.::..:N:..:.T">appendM(list&lt;T&gt;[N], T)</a></strong>: Append to a bounded list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__at.list:.:T:.:.list:.:uint32:.:">at(list&lt;T&gt;, list&lt;uint32&gt;)</a></strong>: Access multiple elements of a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__at.list:.:T:.::..:N:..:.list:.:uint32:.:">at(list&lt;T&gt;[N], list&lt;uint32&gt;)</a></strong>: Access multiple elements of a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__blobSize.blob">blobSize(blob)</a></strong>: Get the size of a blob.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__clearM.T">clearM(T)</a></strong>: Clear (empty) a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__clearM.blob">clearM(blob)</a></strong>: Clear (empty) a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concat.list:.:T:.:.list:.:T:.:">concat(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Concatenate two lists.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concat.list:.:T:.:.list:.:T:.::..:N:..:">concat(list&lt;T&gt;, list&lt;T&gt;[N])</a></strong>: Concatenate two lists.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concat.list:.:T:.::..:N:..:.list:.:T:.:">concat(list&lt;T&gt;[N], list&lt;T&gt;)</a></strong>: Concatenate two lists.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concat.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">concat(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Concatenate two lists.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.list:.:T:.:.list:.:T:.:">concatM(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Concatenate two lists (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.list:.:T:.:.list:.:T:.::..:N:..:">concatM(list&lt;T&gt;, list&lt;T&gt;[N])</a></strong>: Concatenate two lists (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.list:.:T:.::..:N:..:.list:.:T:.:">concatM(list&lt;T&gt;[N], list&lt;T&gt;)</a></strong>: Concatenate two lists (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">concatM(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Concatenate two lists (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.set:.:T:.:.set:.:T:.:">concatM(set&lt;T&gt;, set&lt;T&gt;)</a></strong>: Concatenate two sets (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.set:.:T:.:.set:.:T:.::..:N:..:">concatM(set&lt;T&gt;, set&lt;T&gt;[N])</a></strong>: Concatenate two sets (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.set:.:T:.::..:N:..:.set:.:T:.:">concatM(set&lt;T&gt;[N], set&lt;T&gt;)</a></strong>: Concatenate two sets (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__concatM.set:.:T:.::..:N:..:.set:.:T:.::..:M:..:">concatM(set&lt;T&gt;[N], set&lt;T&gt;[M])</a></strong>: Concatenate two sets (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__countDistinct.list:.:T:.:">countDistinct(list&lt;T&gt;)</a></strong>: Compute the distinct count of a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__countDistinct.list:.:T:.::..:N:..:">countDistinct(list&lt;T&gt;[N])</a></strong>: Compute the distinct count of a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__find.list:.:T:.:.T">find(list&lt;T&gt;, T)</a></strong>: Find the matching values in a list, given a value to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__find.list:.:T:.::..:N:..:.T">find(list&lt;T&gt;[N], T)</a></strong>: Find the matching values in a list, given a value to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.:.T">findFirst(list&lt;T&gt;, T)</a></strong>: Find the first occurrence of a matching value in a list, given a value to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.:.T.int32">findFirst(list&lt;T&gt;, T, int32)</a></strong>: Find the first occurrence of a matching value in a list, given a value to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.:.list:.:T:.:">findFirst(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Find the first occurrence of a matching sequence of values in a list, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.:.list:.:T:.:.int32">findFirst(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Find the first occurrence of a matching sequence of values in a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.::..:N:..:.T">findFirst(list&lt;T&gt;[N], T)</a></strong>: Find the first occurrence of a matching value in a list, given a value to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.::..:N:..:.T.int32">findFirst(list&lt;T&gt;[N], T, int32)</a></strong>: Find the first occurrence of a matching value in a list, given a value to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">findFirst(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Find the first occurrence of a matching sequence of values in a list, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirst.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">findFirst(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Find the first occurrence of a matching sequence of values in a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.:.list:.:T:.:">findFirstNotOf(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.:.list:.:T:.:.int32">findFirstNotOf(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.:.list:.:T:.::..:N:..:">findFirstNotOf(list&lt;T&gt;, list&lt;T&gt;[N])</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.:.list:.:T:.::..:N:..:.int32">findFirstNotOf(list&lt;T&gt;, list&lt;T&gt;[N], int32)</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.::..:N:..:.list:.:T:.:">findFirstNotOf(list&lt;T&gt;[N], list&lt;T&gt;)</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.::..:N:..:.list:.:T:.:.int32">findFirstNotOf(list&lt;T&gt;[N], list&lt;T&gt;, int32)</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">findFirstNotOf(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstNotOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">findFirstNotOf(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Find the first occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.:.list:.:T:.:">findFirstOf(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.:.list:.:T:.:.int32">findFirstOf(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.:.list:.:T:.::..:N:..:">findFirstOf(list&lt;T&gt;, list&lt;T&gt;[N])</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.:.list:.:T:.::..:N:..:.int32">findFirstOf(list&lt;T&gt;, list&lt;T&gt;[N], int32)</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.::..:N:..:.list:.:T:.:">findFirstOf(list&lt;T&gt;[N], list&lt;T&gt;)</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.::..:N:..:.list:.:T:.:.int32">findFirstOf(list&lt;T&gt;[N], list&lt;T&gt;, int32)</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">findFirstOf(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for, starting at index 0.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findFirstOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">findFirstOf(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Find the first occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLast.list:.:T:.:.T.int32">findLast(list&lt;T&gt;, T, int32)</a></strong>: Find the last occurrence of a matching value in a list, given a value to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLast.list:.:T:.:.list:.:T:.:.int32">findLast(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Find the last occurrence of a matching sequence of values in a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLast.list:.:T:.::..:N:..:.T.int32">findLast(list&lt;T&gt;[N], T, int32)</a></strong>: Find the last occurrence of a matching value in a list, given a value to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLast.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">findLast(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Find the last occurrence of a matching sequence of values in a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastNotOf.list:.:T:.:.list:.:T:.:.int32">findLastNotOf(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Find the last occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastNotOf.list:.:T:.:.list:.:T:.::..:N:..:.int32">findLastNotOf(list&lt;T&gt;, list&lt;T&gt;[N], int32)</a></strong>: Find the last occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastNotOf.list:.:T:.::..:N:..:.list:.:T:.:.int32">findLastNotOf(list&lt;T&gt;[N], list&lt;T&gt;, int32)</a></strong>: Find the last occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastNotOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">findLastNotOf(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Find the last occurrence of a non-matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastOf.list:.:T:.:.list:.:T:.:.int32">findLastOf(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Find the last occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastOf.list:.:T:.:.list:.:T:.::..:N:..:.int32">findLastOf(list&lt;T&gt;, list&lt;T&gt;[N], int32)</a></strong>: Find the last occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastOf.list:.:T:.::..:N:..:.list:.:T:.:.int32">findLastOf(list&lt;T&gt;[N], list&lt;T&gt;, int32)</a></strong>: Find the last occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findLastOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">findLastOf(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Find the last occurrence of a matching value in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findNotOf.list:.:T:.:.list:.:T:.:">findNotOf(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Find the non-matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findNotOf.list:.:T:.:.list:.:T:.::..:N:..:">findNotOf(list&lt;T&gt;, list&lt;T&gt;[N])</a></strong>: Find the non-matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findNotOf.list:.:T:.::..:N:..:.list:.:T:.:">findNotOf(list&lt;T&gt;[N], list&lt;T&gt;)</a></strong>: Find the non-matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findNotOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">findNotOf(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Find the non-matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findOf.list:.:T:.:.list:.:T:.:">findOf(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Find the matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findOf.list:.:T:.:.list:.:T:.::..:N:..:">findOf(list&lt;T&gt;, list&lt;T&gt;[N])</a></strong>: Find the matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findOf.list:.:T:.::..:N:..:.list:.:T:.:">findOf(list&lt;T&gt;[N], list&lt;T&gt;)</a></strong>: Find the matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__findOf.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">findOf(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Find the matching values in a list, given a list of values to search for.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__has.list:.:T:.:.T">has(list&lt;T&gt;, T)</a></strong>: Find whether a given value exists in a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__has.list:.:T:.::..:N:..:.T">has(list&lt;T&gt;[N], T)</a></strong>: Find whether a given value exists in a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__has.map:.:K.V:.:.K">has(map&lt;K, V&gt;, K)</a></strong>: Find whether a given key exists in a map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__has.map:.:K.V:.::..:N:..:.K">has(map&lt;K, V&gt;[N], K)</a></strong>: Find whether a given key exists in a map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__has.set:.:T:.:.T">has(set&lt;T&gt;, T)</a></strong>: Find whether a given value exists in a set.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__has.set:.:T:.::..:N:..:.T">has(set&lt;T&gt;[N], T)</a></strong>: Find whether a given value exists in a set.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.list:.:T:.:.T.int32">insert(list&lt;T&gt;, T, int32)</a></strong>: Insert a value into a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.list:.:T:.:.list:.:T:.:.int32">insert(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Insert a list of values into a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.list:.:T:.:.list:.:T:.::..:N:..:.int32">insert(list&lt;T&gt;, list&lt;T&gt;[N], int32)</a></strong>: Insert a list of values into a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.list:.:T:.::..:N:..:.T.int32">insert(list&lt;T&gt;[N], T, int32)</a></strong>: Insert a value into a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.list:.:T:.::..:N:..:.list:.:T:.:.int32">insert(list&lt;T&gt;[N], list&lt;T&gt;, int32)</a></strong>: Insert a list of values into a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">insert(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Insert a list of values into a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.map:.:K.V:.:.K.V">insert(map&lt;K, V&gt;, K, V)</a></strong>: Insert an element into a map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.map:.:K.V:.::..:N:..:.K.V">insert(map&lt;K, V&gt;[N], K, V)</a></strong>: Insert an element into a map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.set:.:V:.:.V">insert(set&lt;V&gt;, V)</a></strong>: Insert a value into a set.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insert.set:.:V:.::..:N:..:.V">insert(set&lt;V&gt;[N], V)</a></strong>: Insert a value into a set.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.list:.:T:.:.T.int32">insertM(list&lt;T&gt;, T, int32)</a></strong>: Insert a value into a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.list:.:T:.:.list:.:T:.:.int32">insertM(list&lt;T&gt;, list&lt;T&gt;, int32)</a></strong>: Insert values into a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.list:.:T:.:.list:.:T:.::..:N:..:.int32">insertM(list&lt;T&gt;, list&lt;T&gt;[N], int32)</a></strong>: Insert values into a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.list:.:T:.::..:N:..:.T.int32">insertM(list&lt;T&gt;[N], T, int32)</a></strong>: Insert a value into a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.list:.:T:.::..:N:..:.list:.:T:.:.int32">insertM(list&lt;T&gt;[N], list&lt;T&gt;, int32)</a></strong>: Insert values into a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:.int32">insertM(list&lt;T&gt;[N], list&lt;T&gt;[M], int32)</a></strong>: Insert values into a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.map:.:K.V:.:.K.V">insertM(map&lt;K, V&gt;, K, V)</a></strong>: Insert an element into a map (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.map:.:K.V:.::..:N:..:.K.V">insertM(map&lt;K, V&gt;[N], K, V)</a></strong>: Insert an element into a map (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.set:.:V:.:.V">insertM(set&lt;V&gt;, V)</a></strong>: Insert a value into a set (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__insertM.set:.:V:.::..:N:..:.V">insertM(set&lt;V&gt;[N], V)</a></strong>: Insert a value into a set (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__keys.map:.:K.V:.:">keys(map&lt;K, V&gt;)</a></strong>: Return a list of the keys in the given map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__keys.map:.:K.V:.::..:N:..:">keys(map&lt;K, V&gt;[N])</a></strong>: Return a list of the keys in the given map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__lexicographicalCompare.list:.:T:.:.list:.:T:.:">lexicographicalCompare(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Compare two lists in lexicographical order.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__lexicographicalCompare.list:.:T:.::..:N:..:.list:.:T:.::..:M:..:">lexicographicalCompare(list&lt;T&gt;[N], list&lt;T&gt;[M])</a></strong>: Compare two lists in lexicographical order.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__makeSequence.T.int32">makeSequence(T, int32)</a></strong>: Make a sequence.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__makeSequence.T.int32">makeSequence(T, int32)</a></strong>: Make a sequence.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__makeSequence.T.int32.T">makeSequence(T, int32, T)</a></strong>: Make a sequence.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseCompare.T.list:.:T:.:">pairwiseCompare(T, list&lt;T&gt;)</a></strong>: Compare a list, element-wise, with a scalar value.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseCompare.T.list:.:T:.::..:N:..:">pairwiseCompare(T, list&lt;T&gt;[N])</a></strong>: Compare a list, element-wise, with a scalar value.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseCompare.list:.:T:.:.T">pairwiseCompare(list&lt;T&gt;, T)</a></strong>: Compare a list, element-wise, with a scalar value.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseCompare.list:.:T:.:.list:.:T:.:">pairwiseCompare(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Compare two lists, element-wise, up to the end of the shorter list, or of both lists if they are of equal length.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseCompare.list:.:T:.::..:N:..:.T">pairwiseCompare(list&lt;T&gt;[N], T)</a></strong>: Compare a list, element-wise, with a scalar value.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseCompare.list:.:T:.::..:N:..:.list:.:T:.::..:N:..:">pairwiseCompare(list&lt;T&gt;[N], list&lt;T&gt;[N])</a></strong>: Compare two lists, element-wise, up to the end of the shorter list, or of both lists if they are of equal length.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseMax.list:.:T:.:.list:.:T:.:">pairwiseMax(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Compare two lists, element-wise, and fetch the larger or equal value, up to the end of the shorter list, or of both lists if they are of equal length.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseMax.list:.:T:.::..:N:..:.list:.:T:.::..:N:..:">pairwiseMax(list&lt;T&gt;[N], list&lt;T&gt;[N])</a></strong>: Compare two lists, element-wise, and fetch the larger or equal value, up to the end of the shorter list, or of both lists if they are of equal length.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseMin.list:.:T:.:.list:.:T:.:">pairwiseMin(list&lt;T&gt;, list&lt;T&gt;)</a></strong>: Compare two lists, element-wise, and fetch the smaller or equal value, up to the end of the shorter list, or of both lists if they are of equal length.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__pairwiseMin.list:.:T:.::..:N:..:.list:.:T:.::..:N:..:">pairwiseMin(list&lt;T&gt;[N], list&lt;T&gt;[N])</a></strong>: Compare two lists, element-wise, and fetch the smaller or equal value, up to the end of the shorter list, or of both lists if they are of equal length.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__range.T">range(T)</a></strong>: Return a list of values in the range from 0 to size(l)-1 
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__range.int32">range(int32)</a></strong>: Return a list of values in the range from 0 to limit-1 
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__range.int32.int32">range(int32, int32)</a></strong>: Return a list of values in the range from start to limit-1 
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__range.int32.int32.int32">range(int32, int32, int32)</a></strong>: Return a list of values in the range from start to limit-1, with an increment of step 
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__remove.T.int32">remove(T, int32)</a></strong>: Remove a value from a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__remove.T.int32.int32">remove(T, int32, int32)</a></strong>: Remove values from a list using a range.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__remove.T.list:.:int32:.:">remove(T, list&lt;int32&gt;)</a></strong>: Remove values from a list using an index list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__remove.map:.:K.V:.:.K">remove(map&lt;K, V&gt;, K)</a></strong>: Remove an element from a map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__remove.map:.:K.V:.::..:N:..:.K">remove(map&lt;K, V&gt;[N], K)</a></strong>: Remove an element from a map.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__remove.set:.:K:.:.K">remove(set&lt;K&gt;, K)</a></strong>: Return a set with a value removed.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__remove.set:.:K:.::..:N:..:.K">remove(set&lt;K&gt;[N], K)</a></strong>: Return a set with a value removed.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__removeM.T.int32">removeM(T, int32)</a></strong>: Remove a value from a list (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__removeM.T.int32.int32">removeM(T, int32, int32)</a></strong>: Remove values from a list using a range (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__removeM.map:.:K.V:.:.K">removeM(map&lt;K, V&gt;, K)</a></strong>: Remove an element from a map (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__removeM.map:.:K.V:.::..:N:..:.K">removeM(map&lt;K, V&gt;[N], K)</a></strong>: Remove an element from a map (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__removeM.set:.:K:.:.K">removeM(set&lt;K&gt;, K)</a></strong>: Remove a value from a set (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__removeM.set:.:K:.::..:N:..:.K">removeM(set&lt;K&gt;[N], K)</a></strong>: Remove a value from a set (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__reverse.T">reverse(T)</a></strong>: Reverse a list of values.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__reverseM.T">reverseM(T)</a></strong>: Reverse a list of values (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__selectFromList.list:.:boolean:.:.T.T">selectFromList(list&lt;boolean&gt;, T, T)</a></strong>: Select element-wise from two lists.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__setDifference.T.T">setDifference(T, T)</a></strong>: Compute the difference of two sets.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__setIntersection.T.T">setIntersection(T, T)</a></strong>: Compute the intersection of two sets.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__setUnion.T.T">setUnion(T, T)</a></strong>: Compute the union of two sets.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__size.T">size(T)</a></strong>: Get the size of a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__size.blob">size(blob)</a></strong>: Get the size of a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__slice.T.int32.int32">slice(T, int32, int32)</a></strong>: Slice a list: extract items from a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__slice.T.int32.int32.int32">slice(T, int32, int32, int32)</a></strong>: Slice a list: extract items from a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__slice.T.int32.int32.int32.int32">slice(T, int32, int32, int32, int32)</a></strong>: Slice a list: extract items from a list.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__sort.list:.:T:.:">sort(list&lt;T&gt;)</a></strong>: Sort a list of values.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__sort.list:.:T:.::..:N:..:">sort(list&lt;T&gt;[N])</a></strong>: Sort a list of values.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__sortIndices.list:.:T:.:">sortIndices(list&lt;T&gt;)</a></strong>: Sort a list of values and return a list of indexes that specify the values in sorted order.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__sortIndices.list:.:T:.::..:N:..:">sortIndices(list&lt;T&gt;[N])</a></strong>: Sort a list of values and return a list of indexes that specify the values in sorted order.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__sortM.list:.:T:.:">sortM(list&lt;T&gt;)</a></strong>: Sort a list of values (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__sortM.list:.:T:.::..:N:..:">sortM(list&lt;T&gt;[N])</a></strong>: Sort a list of values (mutating version).
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__toSet.list:.:T:.:">toSet(list&lt;T&gt;)</a></strong>: Convert a list to a set.
+</li>
+<li class="- topic/sli sli"><strong class="+ topic/ph hi-d/b ph b"><a class="- topic/xref xref" href="fc$spl.collection.html#spldoc_functions__toSet.list:.:T:.::..:N:..:">toSet(list&lt;T&gt;[N])</a></strong>: Convert a list to a set.
+</li>
+</ul>
+</section>
+</div>
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>

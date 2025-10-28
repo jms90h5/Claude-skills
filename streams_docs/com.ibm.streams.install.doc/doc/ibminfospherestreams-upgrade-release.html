@@ -1,0 +1,246 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" data-whc_version="22.0">
+    <head><link rel="shortcut icon" href="../../favicon-light.png"/><link rel="icon" href="../../favicon-light.png"/><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="DC.rights.owner" content="(C) Copyright 2025"/><meta name="copyright" content="(C) Copyright 2025"/><meta name="generator" content="DITA-OT"/><meta name="DC.type" content="task"/><meta name="abstract" content="Due to major changes, better security, and a more modern technology stack, you must perform a new product installation."/><meta name="description" content="Due to major changes, better security, and a more modern technology stack, you must perform a new product installation."/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-upgrade.html"/><meta name="DC.relation" content="../../com.ibm.streams.install.doc/doc/installstreams-container.html"/><meta name="DC.format" content="HTML5"/><meta name="DC.identifier" content="ibminfospherestreams-upgrade-release"/><meta name="DC.language" content="en-us"/>        
+      <title>Upgrading to Teracloud Streams Version 7.2 from prior releases</title><!--  Generated with Oxygen version 26.0, build number 2024012323.  --><meta name="wh-path2root" content="../../"/><meta name="wh-toc-id" content="ibminfospherestreams-upgrade-release-d41691e1372"/><meta name="wh-source-relpath" content="com.ibm.streams.install.doc/doc/ibminfospherestreams-upgrade-release.dita"/><meta name="wh-out-relpath" content="com.ibm.streams.install.doc/doc/ibminfospherestreams-upgrade-release.html"/>
+
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/commons.css?buildId=2024012323"/>
+    <link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/app/topic.css?buildId=2024012323"/>
+
+    <script src="../../oxygen-webhelp/app/options/properties.js?buildId=20250729150623"></script>
+    <script src="../../oxygen-webhelp/app/localization/strings.js?buildId=2024012323"></script>
+    <script src="../../oxygen-webhelp/app/search/index/keywords.js?buildId=20250729150623"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/commons.js?buildId=2024012323"></script>
+    <script defer="defer" src="../../oxygen-webhelp/app/topic.js?buildId=2024012323"></script>
+<link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/template/params/args.css/cobalt.css?buildId=2024012323"/><link rel="stylesheet" type="text/css" href="../../cobalt.css"/></head>
+
+    <body id="ibminfospherestreams-upgrade-release" class="wh_topic_page frmBody">
+        <a href="#wh_topic_body" class="sr-only sr-only-focusable">
+            Jump to main content
+        </a>
+        
+        
+        
+        
+       <!-- <whc:include_html href="${webhelp.fragment.header}"/>-->
+        <header class="navbar navbar-default wh_header_tpc" data-whc_version="23.1">
+    <div class="container-fluid">
+        <div class="wh_header_flex_container_tpc navbar-nav navbar-expand-md navbar-dark"> 
+            <!--<div class="wh_logo_and_publication_title_container">
+                <div class="wh_logo_and_publication_title">
+                    <whc:include_html href="${webhelp.fragment.before.logo_and_title}"/>-->
+                    <!--
+                            This component will be generated when the next parameters are specified in the transformation scenario:
+                            'webhelp.logo.image' and 'webhelp.logo.image.target.url'.
+                            See: http://oxygenxml.com/doc/versions/17.1/ug-editor/#topics/dita_webhelp_output.html.
+                    -->
+                    <!--<whc:webhelp_logo class="d-none d-sm-block"/>
+                    <whc:webhelp_publication_title/>
+                    <whc:include_html href="${webhelp.fragment.after.logo_and_title}"/>
+                </div>-->
+                
+                <!-- The menu button for mobile devices is copied in the output only when the 'webhelp.show.top.menu' parameter is set to 'yes' -->
+                
+            <!--</div>-->
+
+            <div class="wh_logo_tpc">
+                <a href="/index.html"><img width="200px" height="24px" src="/media/home_button.svg" style="margin-top: 1em;"/></a>
+        </div>
+        <!-- Search form -->
+        <div class=" wh_search_input navbar-form wh_main_page_search search " role="form">
+            
+            
+            
+            
+            
+            <!--<div class="wh_welcome">
+                <whc:include_html href="${webhelp.fragment.welcome}"/>
+            </div>    -->      
+            <form id="searchForm" method="get" role="search" action="../../search.html"><div><input type="search" placeholder="Search " class="wh_search_textfield" id="textToSearch" name="searchQuery" aria-label="Search query" required="required"/><button type="submit" class="wh_search_button" aria-label="Search"><span class="search_input_text">Search</span></button></div></form>
+            
+            
+            
+            
+        </div>
+    </div>
+</div></header>
+
+        
+         
+        
+
+        
+        <div class="container-fluid" id="wh_topic_container">
+            <div class="row">
+
+                <nav class="wh_tools d-print-none navbar-expand-md" aria-label="Tools">
+                    
+                    <div data-tooltip-position="bottom" class=" wh_breadcrumb "><ol class="d-print-none"><li><span class="home"><a href="../../index.html"><span>Home</span></a></span></li><li><div class="topicref" data-id="installstreams-container"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div></li><li><div class="topicref" data-id="ibminfospherestreams-install-upgrade"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-upgrade.html">Upgrading <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use these procedures to install a new version of  <span class="keyword">Teracloud® 					Streams</span> when a previous version of the product is already installed, or to update a <span class="keyword">Version 					7.2</span> <span class="keyword">Non-Production 					Edition</span> license.</p></div></div></div></li><li class="active"><div class="topicref" data-id="ibminfospherestreams-upgrade-release"><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-upgrade-release.html">Upgrading to <span class="keyword">Teracloud® Streams</span>  <span class="keyword">Version 7.2</span> from prior releases</a><div class="wh-tooltip"><p class="shortdesc">Due to major changes, better security, and a more modern technology stack, you must    perform a new product installation.</p></div></div></div></li></ol></div>
+                    
+                    
+                    
+                    <div class="wh_right_tools">
+                        <button class="wh_hide_highlight" aria-label="Toggle search highlights" title="Toggle search highlights"></button>
+                        <button class="webhelp_expand_collapse_sections" data-next-state="collapsed" aria-label="Collapse sections" title="Collapse sections"></button>
+                        
+                        
+                        <!-- External resource link -->
+                        
+                        
+                        <div class=" wh_print_link print d-none d-md-inline-block "><button onClick="window.print()" title="Print this page" aria-label="Print this page"></button></div>
+                        
+                        <!-- Expand/Collapse publishing TOC 
+                             The menu button for mobile devices is copied in the output only when the publication TOC is available
+                        -->
+                        <button type="button" data-target="#wh_publication_toc" id="wh_toc_button" data-toggle="collapse" class="custom-toggler navbar-toggler collapsed wh_toggle_button navbar-light" aria-expanded="false" aria-label="Toggle publishing table of content" aria-controls="wh_publication_toc">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    
+                </nav>
+            </div>
+            
+            
+            
+            
+            <div class="wh_content_area">
+                <div class="row">
+                    
+                        
+                        <nav id="wh_publication_toc" class="collapse col-lg-3 col-md-3 col-sm-12 d-md-block d-print-none" aria-label="Table of Contents Container">
+                            <div class=" wh_publication_toc " data-tooltip-position="right"><span class="expand-button-action-labels"><span id="button-expand-action" role="button" aria-label="Expand"></span><span id="button-collapse-action" role="button" aria-label="Collapse"></span><span id="button-pending-action" role="button" aria-label="Pending"></span></span><ul role="tree" aria-label="Table of Contents"><li role="treeitem" aria-expanded="false"><div data-tocid="kc_welcome-d41691e179" class="topicref" data-id="kc_welcome" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action kc_welcome-d41691e179-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.welcome.doc/doc/kc-homepage.html" id="kc_welcome-d41691e179-link">Welcome</a><div class="wh-tooltip"><p class="shortdesc">Learn about the core capabilities of <span class="keyword">Teracloud® Streams</span>, its architecture, and key concepts.</p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="installstreams-container-d41691e427" class="topicref" data-id="installstreams-container" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action installstreams-container-d41691e427-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/installstreams-container.html" id="installstreams-container-d41691e427-link">Installing</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use this information to install, upgrade, and uninstall the <span class="keyword">Teracloud® 					Streams</span> product.</span></p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-plan-d41691e448" class="topicref" data-id="ibminfospherestreams-plan" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-plan-d41691e448-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-plan.html" id="ibminfospherestreams-plan-d41691e448-link">Planning to install <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">To plan for installing <span class="keyword">Teracloud® 					Streams</span>, start by reviewing the information in the planning roadmap.</span></p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="installingibminfospherestreams-d41691e1077" class="topicref" data-id="installingibminfospherestreams" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action installingibminfospherestreams-d41691e1077-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install.html" id="installingibminfospherestreams-d41691e1077-link">Installing the <span class="keyword">Teracloud® Streams</span> product</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use these procedures to install <span class="keyword">Teracloud® 					Streams</span>     <span class="keyword">Version 					7.2</span>.</span></p></div></div></div></li><li role="treeitem" aria-expanded="true"><div data-tocid="ibminfospherestreams-install-upgrade-d41691e1346" class="topicref" data-id="ibminfospherestreams-install-upgrade" data-state="expanded"><span role="button" tabindex="0" aria-labelledby="button-collapse-action ibminfospherestreams-install-upgrade-d41691e1346-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-upgrade.html" id="ibminfospherestreams-install-upgrade-d41691e1346-link">Upgrading <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use these procedures to install a new version of  <span class="keyword">Teracloud® 					Streams</span> when a previous version of the product is already installed, or to update a <span class="keyword">Version 					7.2</span> <span class="keyword">Non-Production 					Edition</span> license.</p></div></div></div><ul role="group" class="navbar-nav nav-list"><li role="treeitem" class="active"><div data-tocid="ibminfospherestreams-upgrade-release-d41691e1372" class="topicref" data-id="ibminfospherestreams-upgrade-release" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-upgrade-release.html" id="ibminfospherestreams-upgrade-release-d41691e1372-link">Upgrading to <span class="keyword">Teracloud® Streams</span>  <span class="keyword">Version 7.2</span> from prior releases</a><div class="wh-tooltip"><p class="shortdesc">Due to major changes, better security, and a more modern technology stack, you must    perform a new product installation.</p></div></div></div></li><li role="treeitem"><div data-tocid="planning-streams-version-mgmt-d41691e1391" class="topicref" data-id="planning-streams-version-mgmt" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/planning-streams-version-mgmt.html" id="planning-streams-version-mgmt-d41691e1391-link">Version management and rolling upgrade options</a><div class="wh-tooltip"><p class="shortdesc"><span class="ph"><span class="keyword">Teracloud® 					Streams</span> supports managed versions and rolling upgrade.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-install-fixes-defaultresourcemgr-d41691e1407" class="topicref" data-id="ibminfospherestreams-install-fixes-defaultresourcemgr" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-fixes-defaultresourcemgr.html" id="ibminfospherestreams-install-fixes-defaultresourcemgr-d41691e1407-link">Upgrading <span class="keyword">Teracloud® Streams Version 7.2.0</span></a><div class="wh-tooltip"><p class="shortdesc"><span class="ph">Use these procedures to install a <span class="keyword">Teracloud® 					Streams</span>           <span class="keyword">Version 					7.2</span>           fix pack or interim fix when <span class="keyword">Version 					7.2</span> is           already installed.</span></p></div></div></div></li><li role="treeitem"><div data-tocid="ibminfospherestreams-upgrade-license-product-procedure-d41691e1434" class="topicref" data-id="ibminfospherestreams-upgrade-license-product-procedure" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-upgrade-license-product-procedure.html" id="ibminfospherestreams-upgrade-license-product-procedure-d41691e1434-link">Updating a <span class="keyword">Version 7.2</span>  <span class="keyword">Non-Production Edition</span> license</a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to update a <span class="keyword">Teracloud® Streams Version 7.2.0 Non-Production 					Edition</span> license to the <span class="keyword">Teracloud 					Streams Version 7.2.0</span> product license.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461" class="topicref" data-id="ibminfospherestreams-install-uninstalling-interactive-silent-methods" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.install.doc/doc/ibminfospherestreams-install-uninstalling-interactive-silent-methods.html" id="ibminfospherestreams-install-uninstalling-interactive-silent-methods-d41691e1461-link">Uninstalling <span class="keyword">Teracloud® Streams</span></a><div class="wh-tooltip"><p class="shortdesc">Use this procedure to remove the <span class="keyword">Teracloud® 					Streams</span> product from your system.</p></div></div></div></li></ul></li><li role="treeitem" aria-expanded="false"><div data-tocid="ibminfospherestreams-containercfg-d41691e1501" class="topicref" data-id="ibminfospherestreams-containercfg" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action ibminfospherestreams-containercfg-d41691e1501-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.cfg.doc/doc/ibminfospherestreams-containercfg.html" id="ibminfospherestreams-containercfg-d41691e1501-link">Configuring</a><div class="wh-tooltip"><p class="shortdesc">Create a basic or an enterprise domain which is a single point for configuring and       managing common resources, security, and instances.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="containeradmin-d41691e2701" class="topicref" data-id="containeradmin" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action containeradmin-d41691e2701-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.admin.doc/doc/ibminfospherestreams-containeradmin.html" id="containeradmin-d41691e2701-link">Administering</a><div class="wh-tooltip"><p class="shortdesc">Administer the product by using the <span class="keyword">Teracloud® 					Streams</span> graphical user interface, APIs, or the <code class="ph codeph">streamtool</code> command-line   interface.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="dev-container-d41691e3979" class="topicref" data-id="dev-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action dev-container-d41691e3979-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.dev.doc/doc/dev-container.html" id="dev-container-d41691e3979-link">Developing</a><div class="wh-tooltip"><p class="shortdesc">Learn about different Teracloud Streams tools and features to write, compile, run, and    test streams applications.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="troubleshootingforproduct-d41691e8087" class="topicref" data-id="troubleshootingforproduct" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action troubleshootingforproduct-d41691e8087-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.pd.doc/doc/ts_parent.html" id="troubleshootingforproduct-d41691e8087-link">Troubleshooting</a><div class="wh-tooltip"><p class="shortdesc">Resolve problems with <span class="keyword">Teracloud® Streams</span> using the troubleshooting tools provided with the product as well as the resources             offered by Teracloud Support.</p></div></div></div></li><li role="treeitem" aria-expanded="false"><div data-tocid="reference-container-d41691e60879" class="topicref" data-id="reference-container" data-state="not-ready"><span role="button" tabindex="0" aria-labelledby="button-expand-action reference-container-d41691e60879-link" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.ref.doc/doc/reference-container.html" id="reference-container-d41691e60879-link">Reference</a><div class="wh-tooltip"><p class="shortdesc">Find details on the SPL language, toolkits, APIs, commands, and more.</p></div></div></div></li><li role="treeitem"><div data-tocid="glossary-d41691e72254" class="topicref" data-id="glossary" data-state="leaf"><span role="button" class="wh-expand-btn"></span><div class="title"><a href="../../com.ibm.streams.glossary.doc/doc/glossary_streams.html" id="glossary-d41691e72254-link">Glossary</a><div class="wh-tooltip"><p class="shortdesc">Use this glossary to find terms and definitions for <span class="keyword">Teracloud® 					Streams</span>.</p></div></div></div></li></ul></div>
+                        </nav>
+                        
+                    
+                    
+                    <div class="col-lg-9 col-md-9 col-sm-12" id="wh_topic_body">
+                        
+                        <div class=" wh_topic_content body "><main role="main"><article class="- topic/topic task/task topic task" role="article" aria-labelledby="ariaid-title1">
+
+<h1 class="- topic/title title topictitle1" id="ariaid-title1">Upgrading to <span class="- topic/keyword keyword"><span class="- topic/tm tm">Teracloud<span class="- topic/tmmark tmmark ">®</span></span>
+					Streams</span>
+  <span class="- topic/keyword keyword">Version
+					7.2</span> from prior releases</h1>
+
+ <div class="- topic/body task/taskbody body taskbody"><div class="- topic/abstract abstract">
+ <span class="- topic/shortdesc shortdesc">Due to major changes, better security, and a more modern technology stack, you must
+   perform a new product installation.</span>
+</div>
+  <section class="- topic/section task/context section context" id="ibminfospherestreams-upgrade-release__context_asj_h3p_y2c" data-ofbid="ibminfospherestreams-upgrade-release__context_asj_h3p_y2c"><div class="tasklabel"><h2 class="sectiontitle tasklabel">About this task</h2></div>New Streams domains and instances <strong class="+ topic/ph hi-d/b ph b">must be</strong> created and
+   existing applications must be recompiled.<p class="- topic/p p">Additionally, some aspects of the product have
+    changed:</p><ul class="- topic/ul ul" id="ibminfospherestreams-upgrade-release__ul_k1s_2jp_y2c" data-ofbid="ibminfospherestreams-upgrade-release__ul_k1s_2jp_y2c">
+    <li class="- topic/li li">Installation file names changes<div class="table-container"><table class="- topic/table table frame-all table--pgwide-1" id="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv" data-ofbid="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv" data-cols="2"><caption class="- topic/title title tablecap" data-caption-side="top" data-is-repeated="true"><span class="table--title-label">Table<span class="table--title-label-number"> 1</span><span class="table--title-label-punctuation">. </span></span><span class="table--title">Installation file name changes in <span class="- topic/keyword keyword">Version
+					7.2</span></span><span class="- topic/desc desc tabledesc">
+       <p class="- topic/p p summary">In this table, the first column lists the file name before Version
+        7.2. The second column lists the file name beginning in Version 7.2.</p>
+      </span></caption><colgroup><col style="width:50%"/><col style="width:50%"/></colgroup><thead class="- topic/thead thead">
+        <tr class="- topic/row">
+         <th class="- topic/entry entry colsep-1 rowsep-1" id="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__1">File name before Version 7.2</th>
+         <th class="- topic/entry entry colsep-0 rowsep-1" id="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__2">File name in Version 7.2</th>
+        </tr>
+       </thead><tbody class="- topic/tbody tbody">
+        <tr class="- topic/row">
+         <td class="- topic/entry entry colsep-1 rowsep-1" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__1"><span class="+ topic/ph sw-d/filepath ph filepath">IBMStreamsSetup.bin</span></td>
+         <td class="- topic/entry entry colsep-0 rowsep-1" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__2"><span class="+ topic/ph sw-d/filepath ph filepath"><span class="- topic/keyword keyword">StreamsSetup.bin</span></span></td>
+        </tr>
+        <tr class="- topic/row">
+         <td class="- topic/entry entry colsep-1 rowsep-1" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__1"><span class="+ topic/ph sw-d/filepath ph filepath">IBMStreamsDomainHostSetup.bin</span></td>
+         <td class="- topic/entry entry colsep-0 rowsep-1" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__2"><span class="+ topic/ph sw-d/filepath ph filepath"><span class="- topic/keyword keyword">StreamsDomainHostSetup.bin</span></span></td>
+        </tr>
+        <tr class="- topic/row">
+         <td class="- topic/entry entry colsep-1 rowsep-1" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__1"><span class="+ topic/ph sw-d/filepath ph filepath">IBMStreams_SampleResponseFile.properties</span></td>
+         <td class="- topic/entry entry colsep-0 rowsep-1" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__2"><span class="+ topic/ph sw-d/filepath ph filepath"><span class="- topic/keyword keyword">Streams_SampleResponseFile.properties</span></span></td>
+        </tr>
+        <tr class="- topic/row">
+         <td class="- topic/entry entry colsep-1 rowsep-0" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__1"><span class="+ topic/ph sw-d/filepath ph filepath">IBMStreamsSetup.properties</span></td>
+         <td class="- topic/entry entry colsep-0 rowsep-0" headers="ibminfospherestreams-upgrade-release__table_gmz_rr1_kv__entry__2"><span class="+ topic/ph sw-d/filepath ph filepath"><span class="- topic/keyword keyword">StreamsSetup.properties</span></span></td>
+        </tr>
+       </tbody></table></div></li>
+    <li class="- topic/li li">The default installation directory has changed to
+      <span class="+ topic/ph sw-d/filepath ph filepath">/opt/teracloud/streams</span> (for root user installation) and
+      <span class="+ topic/ph sw-d/filepath ph filepath">$HOME/teracloud/streams</span> (for non-root user installation).</li>
+    <li class="- topic/li li">The name of the Linux system service has changed from
+       <code class="+ topic/ph pr-d/codeph ph codeph">ibm-streams-<var class="+ topic/keyword sw-d/varname keyword varname">domain-id</var></code> to
+       <code class="+ topic/ph pr-d/codeph ph codeph">teracloud-streams-<var class="+ topic/keyword sw-d/varname keyword varname">domain-id</var></code>. If the domain ID contains
+     globalization characters, the system service name will be encoded.</li>
+    <li class="- topic/li li">Toolkit namespaces have changed from <code class="+ topic/ph pr-d/codeph ph codeph">com.ibm.streams[x]</code>. to
+      <code class="+ topic/ph pr-d/codeph ph codeph">com.teracloud.streams</code>. To help migrate existing applications to the new
+     namespace, see the
+      <span class="+ topic/ph sw-d/filepath ph filepath"><var class="+ topic/keyword sw-d/varname keyword varname">product-installation-root-directory</var>/7.2.0.0/bin/teracloud-toolkit-migration-tool.sh</span>
+     script.</li>
+    <li class="- topic/li li">All toolkit major version number have been incremented. If applications depend on specific
+     versions of toolkits, they will need to be updated.</li>
+   </ul></section>
+  <section class="- topic/ol task/steps ol steps"><div class="tasklabel"><h2 class="sectiontitle tasklabel">Procedure</h2></div><ol class="- topic/ol task/steps ol steps" id="ibminfospherestreams-upgrade-release__steps-unordered_n2p_k3p_y2c" data-ofbid="ibminfospherestreams-upgrade-release__steps-unordered_n2p_k3p_y2c"><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">You must perform a new product installation by using the procedure in <a class="- topic/xref xref" href="ibminfospherestreams-install.html" title="Use these procedures to install Teracloud Streams Version 7.2.">Installing the Teracloud Streams product</a>.</span>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">Create a Streams domain and instance. See how to <a class="- topic/xref xref" href="ibminfospherestreams-install-postinstall-roadmap.html#ibminfospherestreams-install-postinstall-roadmap__set-up-domain-task">set up a Teracloud Streams domain</a> in the <a class="- topic/xref xref" href="ibminfospherestreams-install-postinstall-roadmap.html" title="The postinstallation roadmap summarizes required and optional postinstallation tasks and options for Teracloud Streams.">Postinstallation
+     roadmap</a>.</span>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">Configure your domain and instance properties and application configs.</span>
+   </li><li class="- topic/li task/step li step">
+    <span class="- topic/ph task/cmd ph cmd">Update your applications.</span>
+   </li></ol></section>
+ </div>
+
+</article></main></div>
+                        
+                        
+                        
+                        
+                        <whc:webhelp_feedback xmlns="" xmlns:whc="http://www.oxygenxml.com/webhelp/components" class="d-print-none"></whc:webhelp_feedback>
+                        
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
+            
+        </div> 
+        <footer class="navbar navbar-default wh_footer" data-whc_version="23.1"> 
+
+  <!--<whc:include_html href="${webhelp.fragment.footer}"/>-->
+  
+  <div class="footer-container">
+    
+    <div class="grid-container">
+        
+        
+        <div class="hf"><h4 class="head">Teracloud Streams</h4>
+          
+          <p class="text-gray">Revolutionizing real-time data analytics with advanced tools, AI integration, and unparalleled expertise.</p></div>
+        
+        <div class="hs"><h4 class="head">Quick Links</h4>
+          <a href="https://streams.teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">Official Website</a><br/>
+            <a href="https://teracloud.com" target="_blank" rel="noopener noreferrer" class="links blue">About Teracloud</a><br/>
+            <a href="https://teracloud.com/privacy" target="_blank" rel="noopener noreferrer" class="links blue">Privacy Policy</a>
+          </div>
+        
+        <div class="ht"><h4 class="head">Contact Us</h4>
+          
+          <a href="mailto:info.streams@teracloud.com" class="text-gray2 links">info.streams@teracloud.com</a></div>
+        
+        
+      
+      <div class="bottom-row">© 2025 Teracloud. All rights reserved.</div></div>
+  </div>
+
+</footer>
+        
+        <div id="go2top" class="d-print-none">
+            <span class="oxy-icon oxy-icon-up"></span>
+        </div>
+        
+        <!-- The modal container for images -->
+        <div id="modal_img_large" class="modal">
+            <span class="close oxy-icon oxy-icon-remove"></span>
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="modal-img" alt=""/>
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+        </div>
+        
+        
+        
+    </body>
+</html>
