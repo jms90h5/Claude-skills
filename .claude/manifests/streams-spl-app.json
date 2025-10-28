@@ -1,0 +1,19 @@
+{
+  "name": "streams-spl-app",
+  "version": "1.0.0",
+  "description": "Generate IBM Streams SPL applications with proper structure and best practices",
+  "type": "prompt-based",
+  "prompt_file": "skills/streams-spl-app.md",
+  "triggers": [
+    "create streams application",
+    "spl application",
+    "streams app",
+    "generate spl"
+  ],
+  "capabilities": [
+    "SPL application generation",
+    "Makefile creation",
+    "Configuration files",
+    "Operator graph design"
+  ]
+}
