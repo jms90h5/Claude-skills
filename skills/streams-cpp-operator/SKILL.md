@@ -178,6 +178,10 @@ See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
 - `com.ibm.streams.dev.doc/doc/multi_threading_considerations.html` - Threading
 - `Streams2.0Redbook.pdf` - Advanced C++ operator techniques
 
+### Operator Code Generation API (Local)
+- `/opt/teracloud/streams/7.2.0.1/doc/spl/operator/api` - C++ Operator API reference
+- `/opt/teracloud/streams/7.2.0.1/doc/spl/operator/code-generation-api` - Code generation Perl API
+
 ### Supplementary (Online)
 - **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
 - Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples

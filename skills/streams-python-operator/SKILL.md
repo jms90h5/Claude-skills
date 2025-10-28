@@ -230,6 +230,9 @@ See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
 - `com.ibm.streams.dev.doc/doc/implementing_an_operator_using_the_python_operator_api.html` - Implementation guide
 - `Streams2.0Redbook.pdf` - Python operator integration patterns
 
+### Operator Code Generation API (Local)
+- `/opt/teracloud/streams/7.2.0.1/doc/spl/operator/api` - Python Operator API reference
+
 ### Supplementary (Online)
 - **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
 - Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples

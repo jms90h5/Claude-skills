@@ -234,6 +234,10 @@ See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
 - `com.ibm.streams.dev.doc/doc/implementingoperusingjavaapi.html` - Implementation guide
 - `Streams2.0Redbook.pdf` - Advanced Java operator techniques
 
+### Operator Code Generation API (Local)
+- `/opt/teracloud/streams/7.2.0.1/doc/spl/operator/api` - Java Operator API reference
+- `/opt/teracloud/streams/7.2.0.1/doc/spl/operator/code-generation-api` - Code generation API
+
 ### Supplementary (Online)
 - **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
 - Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples
