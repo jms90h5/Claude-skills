@@ -8,6 +8,16 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 This skill helps you create IBM Streams toolkits - reusable collections of operators, functions, and types.
 
+## 🚨 CRITICAL: Read CLAUDE.md First
+
+**BEFORE generating any code, consult `/home/streamsadmin/workspace/teracloud/CLAUDE.md` for:**
+- ❌ ABSOLUTE PROHIBITION on fake/placeholder/mock code
+- ✅ Compilation requirements (ALL code must compile cleanly)
+- ✅ Testing and verification standards
+- ✅ Teracloud Streams specific conventions
+
+**For SPL syntax questions, ALWAYS consult: https://doc.streams.teracloud.com/index.html**
+
 ## What this skill does
 
 - Creates complete toolkit directory structure
@@ -291,20 +301,28 @@ com.company.analytics/
 
 ## Documentation References
 
-See `streams_docs/com.ibm.streams.dev.doc/doc/`:
-- `toolkits.html` - Toolkit overview
-- `creating_toolkits.html` - Creating toolkits guide
-- `toolkitstructure.html` - Toolkit structure
-- `versioningguidelines.html` - Versioning guidelines
-- `packagingatoolkit.html` - Packaging guide
+### Primary (Local - Can be READ by Claude)
+See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
+- `com.ibm.streams.dev.doc/doc/toolkits.html` - Toolkit overview
+- `com.ibm.streams.dev.doc/doc/creating_toolkits.html` - Creating toolkits guide
+- `com.ibm.streams.dev.doc/doc/toolkitstructure.html` - Toolkit structure
+- `com.ibm.streams.dev.doc/doc/versioningguidelines.html` - Versioning guidelines
+- `com.ibm.streams.dev.doc/doc/packagingatoolkit.html` - Packaging guide
+- `Streams2.0Redbook.pdf` - Advanced toolkit development techniques
 
-See `streams_docs/Streams2.0Redbook.pdf` for:
-- Advanced toolkit development techniques
-- Distribution and deployment strategies
-- Real-world toolkit examples
+### Supplementary (Online)
+- **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
+- Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples
 
 ## Best Practices
 
+### From CLAUDE.md (MANDATORY)
+1. **NO FAKE CODE EVER**: Never use placeholders, mocks, or dummy implementations
+2. **Clean Compilation**: ALL code must compile without warnings
+3. **Verify Functionality**: Test with real data, document actual output
+4. **No Shortcuts**: Never comment out functionality to avoid implementation
+
+### Toolkit Specific
 1. **Naming**: Use reverse domain notation (com.company.functionality)
 2. **Versioning**: Follow semantic versioning strictly
 3. **Organization**: Group related operators in same namespace
@@ -312,3 +330,4 @@ See `streams_docs/Streams2.0Redbook.pdf` for:
 5. **Testing**: Create sample applications
 6. **Dependencies**: Minimize and document clearly
 7. **Maintenance**: Use version control
+8. **Build Files**: Include working Makefiles for all impl directories

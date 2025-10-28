@@ -7,6 +7,19 @@ description: Generate IBM Streams SPL (Streams Processing Language) applications
 
 This skill helps you create IBM Streams SPL (Streams Processing Language) applications with proper structure and best practices.
 
+## 🚨 CRITICAL: Read CLAUDE.md First
+
+**BEFORE generating any code, consult `/home/streamsadmin/workspace/teracloud/CLAUDE.md` for:**
+- ❌ ABSOLUTE PROHIBITION on fake/placeholder/mock code
+- ✅ SPL syntax verification requirements
+- ✅ Teracloud Streams specific conventions
+- ✅ Compilation standards
+
+**For SPL syntax questions, ALWAYS check:**
+1. First: https://doc.streams.teracloud.com/index.html
+2. Second: Local samples in `/opt/teracloud/streams/7.2.0.1/samples`
+3. Third: Documentation in `/home/streamsadmin/workspace/Claude-skills/streams_docs/`
+
 ## What this skill does
 
 - Creates a complete SPL application with proper namespace and structure
@@ -201,23 +214,34 @@ Reference examples from these sample directories:
 
 ## Documentation References
 
-### HTML Documentation
-See `streams_docs/com.ibm.streams.dev.doc/doc/` for detailed documentation:
-- `application_development.html` - Application development guide
-- `stream_applications.html` - Streams application basics
-- `operators.html` - Operator reference
-- `compilingsplapps.html` - Compiling SPL applications
+### Primary (Local - Can be READ by Claude)
+See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
+- `com.ibm.streams.dev.doc/doc/application_development.html` - Application development guide
+- `com.ibm.streams.dev.doc/doc/stream_applications.html` - Streams application basics
+- `com.ibm.streams.dev.doc/doc/operators.html` - Operator reference
+- `com.ibm.streams.dev.doc/doc/compilingsplapps.html` - Compiling SPL applications
+- `Stream1.0Redbook_sg248108.pdf` - Comprehensive guide to Streams fundamentals
+- `Streams2.0Redbook.pdf` - Updated features and advanced patterns
 
-### IBM Redbooks
-- `streams_docs/Stream1.0Redbook_sg248108.pdf` - Comprehensive guide to Streams fundamentals
-- `streams_docs/Streams2.0Redbook.pdf` - Updated features and advanced patterns
+### Supplementary (Online)
+- **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
+- Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples
+- Sample code: `/home/streamsadmin/workspace/Claude-skills/samples/`
 
 ## Best Practices
 
+### From CLAUDE.md (MANDATORY)
+1. **NO FAKE CODE EVER**: Never use placeholders, mocks, or dummy implementations
+2. **Verify SPL Syntax**: Check Teracloud docs before using unfamiliar SPL constructs
+3. **Clean Compilation**: Code must compile without errors
+4. **Test Functionality**: Verify applications work with real data
+5. **No Shortcuts**: Never comment out functionality to avoid implementation
+
+### SPL Application Specific
 1. **Use meaningful names** for operators, streams, and variables
 2. **Add comments** to explain complex logic
 3. **Define types** for structured data
 4. **Handle errors** properly with error ports
 5. **Use configuration files** for properties (in etc/ directory)
 6. **Organize code** into logical composites
-7. **Follow naming conventions**: CamelCase for composites, lowercase with underscores for streams
+7. **Follow naming conventions**: CamelCase for composites, camelCase for streams

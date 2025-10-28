@@ -8,6 +8,16 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 This skill helps you create IBM Streams primitive operators implemented in C++ using the Streams C++ Operator API.
 
+## 🚨 CRITICAL: Read CLAUDE.md First
+
+**BEFORE generating any code, consult `/home/streamsadmin/workspace/teracloud/CLAUDE.md` for:**
+- ❌ ABSOLUTE PROHIBITION on fake/placeholder/mock code
+- ✅ Compilation requirements (ALL code must compile cleanly with no warnings)
+- ✅ Testing and verification standards
+- ✅ Teracloud Streams specific conventions
+
+**For SPL syntax questions, ALWAYS consult: https://doc.streams.teracloud.com/index.html**
+
 ## What this skill does
 
 - Creates C++ primitive operators with proper structure
@@ -15,6 +25,7 @@ This skill helps you create IBM Streams primitive operators implemented in C++ u
 - Creates code generation templates (.cgt files)
 - Generates header and implementation files
 - Follows IBM Streams C++ Operator development best practices
+- **Generates ONLY real, functional code - never fake/placeholder implementations**
 
 ## Instructions
 
@@ -159,21 +170,32 @@ clean:
 
 ## Documentation References
 
-See `streams_docs/com.ibm.streams.dev.doc/doc/`:
-- `creatingprimitiveoperators.html` - Creating primitive operators
-- `operatorimplementation.html` - Operator implementation guide
-- `codegen.html` - Code generation
-- `multi_threading_considerations.html` - Threading
+### Primary (Local - Can be READ by Claude)
+See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
+- `com.ibm.streams.dev.doc/doc/creatingprimitiveoperators.html` - Creating primitive operators
+- `com.ibm.streams.dev.doc/doc/operatorimplementation.html` - Operator implementation guide
+- `com.ibm.streams.dev.doc/doc/codegen.html` - Code generation
+- `com.ibm.streams.dev.doc/doc/multi_threading_considerations.html` - Threading
+- `Streams2.0Redbook.pdf` - Advanced C++ operator techniques
 
-See `streams_docs/Streams2.0Redbook.pdf` for:
-- Advanced C++ operator techniques
-- High-performance operator patterns
-- Threading and synchronization
+### Supplementary (Online)
+- **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
+- Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples
 
 ## Best Practices
 
+### From CLAUDE.md (MANDATORY)
+1. **NO FAKE CODE EVER**: Never use placeholders, mocks, or dummy implementations
+2. **Clean Compilation**: ALL code must compile without warnings (-Wall -Wextra)
+3. **Proper Type Casting**: Use static_cast<> for size_t vs int comparisons
+4. **Verify Functionality**: Test with real data, document actual output
+5. **No Shortcuts**: Never comment out functionality to avoid implementation
+
+### C++ Operator Specific
 1. **Thread Safety**: Use AutoPortMutex or Mutex to protect shared state
 2. **Resource Management**: Use RAII pattern - cleanup in destructor
 3. **Error Handling**: Throw SPLRuntimeException for errors
 4. **Performance**: Minimize locking in process() methods
 5. **Memory**: Be careful with dynamic allocation in process()
+6. **Const Correctness**: Use const where appropriate
+7. **Loop Indices**: Use size_t for container.size() comparisons

@@ -226,21 +226,32 @@ public class MyTransformOperator extends AbstractOperator {
 
 ## Documentation References
 
-See `streams_docs/com.ibm.streams.dev.doc/doc/`:
-- `javaoperatorapioverview.html` - Java Operator API overview
-- `javaprimitiveoperators.html` - Java primitive operators guide
-- `javapperatorlifecycle.html` - Operator lifecycle
-- `implementingoperusingjavaapi.html` - Implementation guide
+### Primary (Local - Can be READ by Claude)
+See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
+- `com.ibm.streams.dev.doc/doc/javaoperatorapioverview.html` - Java Operator API overview
+- `com.ibm.streams.dev.doc/doc/javaprimitiveoperators.html` - Java primitive operators guide
+- `com.ibm.streams.dev.doc/doc/javapperatorlifecycle.html` - Operator lifecycle
+- `com.ibm.streams.dev.doc/doc/implementingoperusingjavaapi.html` - Implementation guide
+- `Streams2.0Redbook.pdf` - Advanced Java operator techniques
 
-See `streams_docs/Streams2.0Redbook.pdf` for:
-- Advanced Java operator techniques
-- Performance optimization for Java operators
-- Real-world Java operator examples
+### Supplementary (Online)
+- **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
+- Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples
 
 ## Best Practices
 
+### From CLAUDE.md (MANDATORY)
+1. **NO FAKE CODE EVER**: Never use placeholders, mocks, or dummy implementations
+2. **Clean Compilation**: ALL code must compile without errors
+3. **Verify Functionality**: Test with real data, document actual output
+4. **No Shortcuts**: Never comment out functionality to avoid implementation
+5. **Real Implementations**: All REST APIs, database connections, etc. must be functional
+
+### Java Operator Specific
 1. **Thread Safety**: Use `synchronized` for methods that access shared state
 2. **Resource Management**: Clean up in `shutdown()` method
 3. **Error Handling**: Catch and handle exceptions appropriately
 4. **Performance**: Minimize object creation in `process()` method
 5. **Logging**: Use `getOperatorContext().getLogger()` for logging
+6. **Dependencies**: Document all external JARs needed
+7. **Null Safety**: Check for null values from tuple methods

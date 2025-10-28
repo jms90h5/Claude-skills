@@ -8,12 +8,23 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 This skill helps you create IBM Streams primitive operators implemented in Python using the streamsx.spl decorator-based API.
 
+## 🚨 CRITICAL: Read CLAUDE.md First
+
+**BEFORE generating any code, consult `/home/streamsadmin/workspace/teracloud/CLAUDE.md` for:**
+- ❌ ABSOLUTE PROHIBITION on fake/placeholder/mock code (including torch.randn(), random(), etc.)
+- ✅ Testing and verification standards
+- ✅ Teracloud Streams specific conventions
+- ❌ NEVER use fake data generation (no torch.randn, no random fake results)
+
+**For SPL syntax questions, ALWAYS consult: https://doc.streams.teracloud.com/index.html**
+
 ## What this skill does
 
 - Creates Python primitive operators using decorators
 - Generates operators for sources, transformations, and sinks
 - Integrates Python logic into SPL applications
 - Provides access to Python ecosystem (NumPy, pandas, scikit-learn, etc.)
+- **Generates ONLY real, functional code - never fake/placeholder implementations**
 
 ## Instructions
 
@@ -212,20 +223,31 @@ SPL to Python Types:
 
 ## Documentation References
 
-See `streams_docs/com.ibm.streams.dev.doc/doc/`:
-- `python_operator_api_overview.html` - Python Operator API overview
-- `dev-python-prim-oper.html` - Developing Python primitive operators
-- `implementing_an_operator_using_the_python_operator_api.html` - Implementation guide
+### Primary (Local - Can be READ by Claude)
+See `/home/streamsadmin/workspace/Claude-skills/streams_docs/`:
+- `com.ibm.streams.dev.doc/doc/python_operator_api_overview.html` - Python Operator API overview
+- `com.ibm.streams.dev.doc/doc/dev-python-prim-oper.html` - Developing Python primitive operators
+- `com.ibm.streams.dev.doc/doc/implementing_an_operator_using_the_python_operator_api.html` - Implementation guide
+- `Streams2.0Redbook.pdf` - Python operator integration patterns
 
-See `streams_docs/Streams2.0Redbook.pdf` for:
-- Python operator integration patterns
-- Machine learning and analytics with Streams
+### Supplementary (Online)
+- **Teracloud Streams Docs**: https://doc.streams.teracloud.com/index.html
+- Check `/opt/teracloud/streams/7.2.0.1/samples` for official examples
 
 ## Best Practices
 
+### From CLAUDE.md (MANDATORY - ESPECIALLY FOR PYTHON/ML)
+1. **NO FAKE CODE EVER**: Never use torch.randn(), random(), or fake data generation
+2. **NO MOCK DATA**: Never return hardcoded "sample transcription" or dummy results
+3. **FAIL LOUDLY**: Throw errors if functionality cannot work, don't hide problems
+4. **Verify Functionality**: Test with real data, document actual output
+5. **Real ML Models**: Use actual trained models, not random number generators
+
+### Python Operator Specific
 1. **Namespace**: Always define `spl_namespace()` function
 2. **Documentation**: Add docstrings - they become operator descriptions
 3. **Initialization**: Use `__enter__` for setup, `__exit__` for cleanup
 4. **State**: Store state as instance variables
 5. **Performance**: Minimize work in `process()` method
 6. **Libraries**: Install required libraries in Streams Python environment
+7. **Error Handling**: Use proper exception handling, let errors propagate
