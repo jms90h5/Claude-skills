@@ -2,6 +2,68 @@
 
 This directory contains Claude skills for IBM Streams development. These skills help developers create Streams applications, operators, and toolkits using best practices and real examples.
 
+## Why Use Skills Instead of Direct Prompting?
+
+### Skills Provide Consistent, Expert Context Every Time
+
+**Without Skills (Direct Prompting):**
+- ❌ You must manually remind Claude about CLAUDE.md directives
+- ❌ Claude doesn't know where local documentation is located
+- ❌ No automatic reference to samples and examples
+- ❌ Need to explain Streams conventions every time
+- ❌ Inconsistent code quality between sessions
+- ❌ Claude can't READ local docs (only knows they exist online)
+
+**With Skills:**
+- ✅ **CLAUDE.md directives built-in**: NO FAKE CODE policy automatically enforced
+- ✅ **Local docs accessible**: Skills reference docs Claude can actually READ with Read tool
+- ✅ **Sample code integrated**: Automatic access to 30+ working examples
+- ✅ **Best practices embedded**: Teracloud conventions, compilation standards, testing requirements
+- ✅ **Quality guarantees**: Clean compilation, proper type casting, no warnings
+- ✅ **Efficient**: No need to re-explain context every session
+
+### Real Example Comparison
+
+**Direct Prompting:**
+```
+User: "Create a C++ operator"
+Claude: "Sure! Here's a basic operator..."
+[Generates code that might have warnings, might not follow conventions]
+
+User: "Wait, remember CLAUDE.md says no fake code"
+Claude: "Oh right, let me fix that..."
+
+User: "And check the local docs for the right API"
+Claude: "I can't read local docs, but I know generally..."
+
+User: "Use the samples as reference"
+Claude: "Which samples? Where are they?"
+```
+
+**With Skills:**
+```
+User: "Create a C++ operator"
+[Skill automatically loads]
+Claude:
+- ✅ References /home/streamsadmin/workspace/teracloud/CLAUDE.md (NO FAKE CODE)
+- ✅ Reads local docs from streams_docs/ and /opt/teracloud/streams/7.2.0.1/doc
+- ✅ Uses samples from samples/ as templates
+- ✅ Enforces clean compilation (-Wall -Wextra)
+- ✅ Includes proper type casting and const correctness
+- ✅ Follows Teracloud conventions
+[Generates production-quality code in one go]
+```
+
+### Key Advantages
+
+1. **Pre-loaded Expertise**: Skills encode domain knowledge so you don't have to explain it
+2. **Local Resource Access**: Claude can READ local docs via skills, not just reference them
+3. **Quality Control**: CLAUDE.md standards enforced automatically
+4. **Consistency**: Same high quality every time, not dependent on your prompts
+5. **Efficiency**: Get it right the first time instead of iterating
+6. **Safety**: Skills prevent common mistakes (fake code, missing includes, wrong APIs)
+7. **Integration**: Seamless access to samples, docs, and best practices
+
 ## Available Skills
 
 ### 1. Streams SPL Application Generator (`streams-spl-app.md`)

@@ -6,6 +6,35 @@ This repository contains Claude skills for IBM Streams development, along with c
 
 This project provides AI-assisted development tools for IBM Streams through Claude skills. These skills help developers create Streams applications, operators, and toolkits using best practices and real-world examples.
 
+## Why Use Skills?
+
+**Skills are NOT just prompt templates** - they provide Claude with structured access to:
+
+1. **Local Documentation** (Claude can READ with Read tool):
+   - 3,000+ HTML files in `streams_docs/`
+   - Operator API references in `/opt/teracloud/streams/7.2.0.1/doc`
+   - IBM Redbooks (PDFs)
+
+2. **CLAUDE.md Standards** (automatically enforced):
+   - ❌ NO FAKE/PLACEHOLDER CODE prohibition
+   - ✅ Clean compilation requirements (no warnings)
+   - ✅ Proper testing and verification standards
+   - ✅ Teracloud Streams conventions
+
+3. **Working Examples** (30+ toolkit samples):
+   - Real, tested code
+   - Best practices implementations
+   - Production patterns
+
+4. **Quality Guarantees**:
+   - Consistent code quality every session
+   - Proper type casting, const correctness
+   - No need to re-explain context
+   - First-time-right code generation
+
+**Without skills:** You manually explain standards, point to docs, remind about best practices each time.
+**With skills:** Claude has expert context pre-loaded, ready to generate quality code immediately.
+
 ## Repository Contents
 
 ### 📚 Skills (`skills/`)
