@@ -1,0 +1,7 @@
+# Claude Code Configuration
+
+# Ignore any local settings
+settings.json
+
+# But keep the skills symlink
+!skills
