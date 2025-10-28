@@ -29,13 +29,16 @@ See [skills/README.md](skills/README.md) for detailed information about each ski
 - And many more...
 
 ### 📖 Documentation (`streams_docs/`)
-Complete IBM Streams documentation (3,000+ HTML files):
+Complete IBM Streams documentation:
+- **3,000+ HTML files**: API references, guides, and examples
+- **IBM Redbooks (PDF)**: Comprehensive reference guides
+  - Stream1.0Redbook_sg248108.pdf (8.6MB) - IBM Streams Version 1.0
+  - Streams2.0Redbook.pdf (9.0MB) - IBM Streams Version 2.0
+  - In-depth architecture, development patterns, and deployment strategies
 - Application development guides
 - Operator implementation references
 - Toolkit creation documentation
-- API references and examples
-- Performance tuning guides
-- Best practices
+- Performance tuning and best practices
 
 ## Quick Start
 

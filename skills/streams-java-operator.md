@@ -361,12 +361,30 @@ public class MySinkOperator extends AbstractOperator {
 
 ## Documentation References
 
+### HTML Documentation
 See streams_docs/com.ibm.streams.dev.doc/doc/ for detailed documentation:
 - `javaoperatorapioverview.html` - Java Operator API overview
 - `javaprimitiveoperators.html` - Java primitive operators guide
 - `javapperatorlifecycle.html` - Operator lifecycle
 - `implementingoperusingjavaapi.html` - Implementation guide
 - `threadinginjavaoperator.html` - Threading considerations
+
+### IBM Redbooks
+The streams_docs directory includes comprehensive IBM Redbooks:
+
+- **Stream1.0Redbook_sg248108.pdf** - IBM Streams Version 1.0 Redbook
+  - Java operator development fundamentals
+  - Operator API deep dive
+  - Implementation patterns and examples
+  - Integration with Java libraries
+
+- **Streams2.0Redbook.pdf** - IBM Streams Version 2.0 Redbook
+  - Advanced Java operator techniques
+  - Performance optimization for Java operators
+  - Threading and concurrency patterns
+  - Real-world Java operator examples
+
+These Redbooks provide comprehensive guidance on developing Java operators for IBM Streams.
 
 ## Best Practices
 

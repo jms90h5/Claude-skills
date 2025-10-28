@@ -375,6 +375,7 @@ my $hasWindow = $iport->getWindow() != undef;
 
 ## Documentation References
 
+### HTML Documentation
 See streams_docs/com.ibm.streams.dev.doc/doc/ for detailed documentation:
 - `creatingprimitiveoperators.html` - Creating primitive operators
 - `operatorimplementation.html` - Operator implementation guide
@@ -382,6 +383,23 @@ See streams_docs/com.ibm.streams.dev.doc/doc/ for detailed documentation:
 - `implementinggenericoperators.html` - Generic operators
 - `multi_threading_considerations.html` - Threading
 - `windowshandling.html` - Window handling
+
+### IBM Redbooks
+The streams_docs directory includes comprehensive IBM Redbooks:
+
+- **Stream1.0Redbook_sg248108.pdf** - IBM Streams Version 1.0 Redbook
+  - C++ operator development fundamentals
+  - Code generation template (.cgt) patterns
+  - Memory management and performance
+  - Native operator implementation
+
+- **Streams2.0Redbook.pdf** - IBM Streams Version 2.0 Redbook
+  - Advanced C++ operator techniques
+  - High-performance operator patterns
+  - Threading and synchronization
+  - Low-latency processing examples
+
+These Redbooks provide in-depth coverage of C++ operator development for maximum performance.
 
 ## Best Practices
 

@@ -519,6 +519,7 @@ com.company.analytics/
 
 ## Documentation References
 
+### HTML Documentation
 See streams_docs/com.ibm.streams.dev.doc/doc/ for detailed documentation:
 - `toolkits.html` - Toolkit overview
 - `creating_toolkits.html` - Creating toolkits guide
@@ -526,6 +527,24 @@ See streams_docs/com.ibm.streams.dev.doc/doc/ for detailed documentation:
 - `toolkitinformationmodelfile.html` - toolkit.xml reference
 - `versioningguidelines.html` - Versioning guidelines
 - `packagingatoolkit.html` - Packaging guide
+
+### IBM Redbooks
+The streams_docs directory includes comprehensive IBM Redbooks:
+
+- **Stream1.0Redbook_sg248108.pdf** - IBM Streams Version 1.0 Redbook
+  - Toolkit architecture and design patterns
+  - Creating reusable operator libraries
+  - Toolkit organization and structure
+  - Dependency management
+
+- **Streams2.0Redbook.pdf** - IBM Streams Version 2.0 Redbook
+  - Advanced toolkit development techniques
+  - Multi-language toolkit patterns
+  - Toolkit versioning and maintenance
+  - Distribution and deployment strategies
+  - Real-world toolkit examples and case studies
+
+These Redbooks provide comprehensive guidance on creating professional, production-ready Streams toolkits.
 
 ## Instructions
 

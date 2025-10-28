@@ -84,13 +84,19 @@ The `samples/` directory contains 30+ Streams toolkit samples including:
 - And many more...
 
 ### Documentation
-The `streams_docs/` directory contains 3,000+ HTML documentation files covering:
-- Application development
-- Operator implementation
-- Toolkit creation
-- API references
-- Best practices
-- Performance tuning
+The `streams_docs/` directory contains comprehensive documentation:
+- **3,000+ HTML files** covering all aspects of Streams development
+  - Application development guides
+  - Operator implementation references
+  - Toolkit creation documentation
+  - API references and examples
+  - Best practices and performance tuning
+
+- **IBM Redbooks (PDF)** - Comprehensive reference guides
+  - **Stream1.0Redbook_sg248108.pdf** (8.6MB) - IBM Streams Version 1.0
+  - **Streams2.0Redbook.pdf** (9.0MB) - IBM Streams Version 2.0
+  - In-depth coverage of architecture, development, and deployment
+  - Real-world use cases and implementation patterns
 
 ## How to Use These Skills
 

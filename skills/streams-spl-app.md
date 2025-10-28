@@ -160,12 +160,30 @@ data:
 
 ## Documentation References
 
+### HTML Documentation
 See streams_docs/com.ibm.streams.dev.doc/doc/ for detailed documentation:
 - `application_development.html` - Application development guide
 - `stream_applications.html` - Streams application basics
 - `operators.html` - Operator reference
 - `data_streams.html` - Data streams concepts
 - `compilingsplapps.html` - Compiling SPL applications
+
+### IBM Redbooks
+The streams_docs directory includes comprehensive IBM Redbooks:
+
+- **Stream1.0Redbook_sg248108.pdf** - IBM Streams Version 1.0 Redbook
+  - Comprehensive guide to Streams fundamentals
+  - Application development patterns
+  - Operator implementation examples
+  - Deployment and administration
+
+- **Streams2.0Redbook.pdf** - IBM Streams Version 2.0 Redbook
+  - Updated features and capabilities
+  - Advanced application patterns
+  - Performance tuning
+  - Real-world use cases and best practices
+
+These Redbooks provide in-depth coverage of Streams concepts, architecture, and development practices.
 
 ## Available Samples
 

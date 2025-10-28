@@ -441,12 +441,29 @@ stream<int32 id, rstring msg> Data = MySource() {
 
 ## Documentation References
 
+### HTML Documentation
 See streams_docs/com.ibm.streams.dev.doc/doc/ for detailed documentation:
 - `python_operator_api_overview.html` - Python Operator API overview
 - `dev-python-prim-oper.html` - Developing Python primitive operators
 - `implementing_an_operator_using_the_python_operator_api.html` - Implementation guide
 - `python_operator_lifecycle.html` - Operator lifecycle
 - `operators_implemented_in_python.html` - Python operators overview
+
+### IBM Redbooks
+The streams_docs directory includes comprehensive IBM Redbooks:
+
+- **Stream1.0Redbook_sg248108.pdf** - IBM Streams Version 1.0 Redbook
+  - Introduction to Streams operator development
+  - Foundation concepts applicable to Python operators
+  - Data flow and tuple processing patterns
+
+- **Streams2.0Redbook.pdf** - IBM Streams Version 2.0 Redbook
+  - Python operator integration patterns
+  - Machine learning and analytics with Streams
+  - Python library integration examples
+  - Performance considerations for Python operators
+
+These Redbooks provide context and patterns useful for Python operator development.
 
 ## Best Practices
 
