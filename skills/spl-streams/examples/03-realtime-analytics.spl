@@ -1,0 +1,141 @@
+/**
+ * Real-Time Analytics Example
+ *
+ * This application demonstrates real-time stream analytics including:
+ * - Windowed aggregations (moving average, counts)
+ * - Partitioned processing (per-symbol analytics)
+ * - Alert generation based on thresholds
+ */
+
+namespace examples.analytics;
+
+use spl.math::*;
+
+// Define the stock trade tuple structure
+type StockTrade =
+    rstring symbol,
+    float64 price,
+    int64 volume,
+    timestamp tradeTime;
+
+type TradeStats =
+    rstring symbol,
+    float64 avgPrice,
+    float64 minPrice,
+    float64 maxPrice,
+    int64 totalVolume,
+    int32 tradeCount,
+    timestamp windowEnd;
+
+composite RealtimeAnalytics {
+    param
+        expression<float64> $priceChangeThreshold : 0.05;  // 5% change threshold
+
+    graph
+        // Generate synthetic stock trades for demonstration
+        stream<StockTrade> Trades = Beacon() {
+            param
+                period: 0.1;  // Generate trades every 0.1 seconds
+            output
+                Trades:
+                    symbol = ["AAPL", "GOOGL", "MSFT", "AMZN"][(int32)rint(random() * 4.0)],
+                    price = 100.0 + (random() * 50.0),
+                    volume = (int64)(1000.0 + random() * 10000.0),
+                    tradeTime = getTimestamp();
+        }
+
+        // Calculate statistics over 60-second tumbling windows, partitioned by symbol
+        stream<TradeStats> WindowStats = Aggregate(Trades) {
+            window
+                Trades: tumbling, time(60.0), partitioned;
+            param
+                partitionBy: symbol;
+            output
+                WindowStats:
+                    avgPrice = Average(price),
+                    minPrice = Min(price),
+                    maxPrice = Max(price),
+                    totalVolume = Sum(volume),
+                    tradeCount = Count(),
+                    windowEnd = getTimestamp();
+        }
+
+        // Calculate rolling statistics over sliding 5-minute window
+        stream<TradeStats> RollingStats = Aggregate(Trades) {
+            window
+                Trades: sliding, time(300.0), delta(60.0), partitioned;
+            param
+                partitionBy: symbol;
+            output
+                RollingStats:
+                    avgPrice = Average(price),
+                    minPrice = Min(price),
+                    maxPrice = Max(price),
+                    totalVolume = Sum(volume),
+                    tradeCount = Count(),
+                    windowEnd = getTimestamp();
+        }
+
+        // Detect significant price movements
+        stream<rstring symbol, float64 oldPrice, float64 newPrice, float64 changePercent>
+            PriceAlerts = Custom(WindowStats) {
+            logic
+                state: {
+                    mutable map<rstring, float64> lastAvgPrices;
+                }
+
+                onTuple WindowStats: {
+                    if (has(lastAvgPrices, symbol)) {
+                        float64 oldAvg = lastAvgPrices[symbol];
+                        float64 changePercent = (avgPrice - oldAvg) / oldAvg;
+
+                        // Generate alert if price change exceeds threshold
+                        if (abs(changePercent) > $priceChangeThreshold) {
+                            submit({
+                                symbol = symbol,
+                                oldPrice = oldAvg,
+                                newPrice = avgPrice,
+                                changePercent = changePercent
+                            }, PriceAlerts);
+                        }
+                    }
+
+                    // Update stored average
+                    lastAvgPrices[symbol] = avgPrice;
+                }
+        }
+
+        // Log window statistics
+        () as StatsLogger = Custom(WindowStats) {
+            logic
+                onTuple WindowStats: {
+                    printStringLn(symbol + " - Window Stats:");
+                    printStringLn("  Avg Price: $" + (rstring)avgPrice);
+                    printStringLn("  Range: $" + (rstring)minPrice + " - $" + (rstring)maxPrice);
+                    printStringLn("  Volume: " + (rstring)totalVolume);
+                    printStringLn("  Trades: " + (rstring)tradeCount);
+                }
+        }
+
+        // Log price alerts
+        () as AlertLogger = Custom(PriceAlerts) {
+            logic
+                onTuple PriceAlerts: {
+                    rstring direction = (changePercent > 0.0) ? "UP" : "DOWN";
+                    printStringLn("*** PRICE ALERT for " + symbol + " ***");
+                    printStringLn("  Direction: " + direction);
+                    printStringLn("  Old Price: $" + (rstring)oldPrice);
+                    printStringLn("  New Price: $" + (rstring)newPrice);
+                    printStringLn("  Change: " + (rstring)(changePercent * 100.0) + "%");
+                }
+        }
+
+        // Write detailed rolling stats to file
+        () as RollingStatsWriter = FileSink(RollingStats) {
+            param
+                file: "output/rolling_stats.csv";
+                format: csv;
+                writePunctuations: false;
+                flush: 10u;
+        }
+}

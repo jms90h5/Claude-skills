@@ -1,0 +1,141 @@
+/**
+ * Stream Join Example
+ *
+ * This application demonstrates joining two streams to correlate data.
+ * Use case: Join customer orders with customer profile information.
+ */
+
+namespace examples.join;
+
+// Customer profile information
+type Customer =
+    int32 customerId,
+    rstring name,
+    rstring email,
+    rstring tier;  // "gold", "silver", "bronze"
+
+// Order information
+type Order =
+    int32 orderId,
+    int32 customerId,
+    float64 amount,
+    timestamp orderTime;
+
+// Enriched order with customer info
+type EnrichedOrder =
+    int32 orderId,
+    int32 customerId,
+    rstring customerName,
+    rstring customerEmail,
+    rstring tier,
+    float64 amount,
+    timestamp orderTime;
+
+composite StreamJoinExample {
+    graph
+        // Generate customer data stream
+        stream<Customer> Customers = Beacon() {
+            param
+                period: 5.0;  // New customers every 5 seconds
+                iterations: 100u;
+            output
+                Customers:
+                    customerId = (int32)(random() * 1000.0) + 1,
+                    name = "Customer_" + (rstring)customerId,
+                    email = "customer" + (rstring)customerId + "@example.com",
+                    tier = ["gold", "silver", "bronze"][(int32)rint(random() * 3.0)];
+        }
+
+        // Generate order data stream
+        stream<Order> Orders = Beacon() {
+            param
+                period: 1.0;  // Orders every second
+            output
+                Orders:
+                    orderId = (int32)(random() * 10000.0) + 1,
+                    customerId = (int32)(random() * 1000.0) + 1,
+                    amount = 10.0 + (random() * 990.0),
+                    orderTime = getTimestamp();
+        }
+
+        // Join orders with customer information
+        stream<EnrichedOrder> EnrichedOrders = Join(Orders; Customers) {
+            window
+                Orders: sliding, count(1000);
+                Customers: sliding, count(100);
+            param
+                // Join condition: match on customerId
+                match: Orders.customerId == Customers.customerId;
+                // Left outer join - keep orders even if customer not found
+                algorithm: leftOuter;
+            output
+                EnrichedOrders:
+                    orderId = Orders.orderId,
+                    customerId = Orders.customerId,
+                    customerName = Customers.name,
+                    customerEmail = Customers.email,
+                    tier = Customers.tier,
+                    amount = Orders.amount,
+                    orderTime = Orders.orderTime;
+        }
+
+        // Filter for high-value orders from gold tier customers
+        stream<EnrichedOrder> HighValueOrders = Filter(EnrichedOrders) {
+            param
+                filter: tier == "gold" && amount >= 500.0;
+        }
+
+        // Calculate order statistics by customer tier
+        stream<rstring tier, float64 avgAmount, int32 orderCount, float64 totalAmount>
+            TierStats = Aggregate(EnrichedOrders) {
+            window
+                EnrichedOrders: tumbling, time(60.0), partitioned;
+            param
+                partitionBy: tier;
+            output
+                TierStats:
+                    avgAmount = Average(amount),
+                    orderCount = Count(),
+                    totalAmount = Sum(amount);
+        }
+
+        // Log enriched orders
+        () as OrderLogger = Custom(EnrichedOrders) {
+            logic
+                onTuple EnrichedOrders: {
+                    printStringLn("Order #" + (rstring)orderId);
+                    printStringLn("  Customer: " + customerName + " (" + tier + ")");
+                    printStringLn("  Amount: $" + (rstring)amount);
+                }
+        }
+
+        // Alert on high-value gold customer orders
+        () as VIPAlert = Custom(HighValueOrders) {
+            logic
+                onTuple HighValueOrders: {
+                    printStringLn("*** VIP ORDER ALERT ***");
+                    printStringLn("  Order ID: " + (rstring)orderId);
+                    printStringLn("  Customer: " + customerName);
+                    printStringLn("  Email: " + customerEmail);
+                    printStringLn("  Amount: $" + (rstring)amount);
+                }
+        }
+
+        // Log tier statistics
+        () as StatsLogger = Custom(TierStats) {
+            logic
+                onTuple TierStats: {
+                    printStringLn("Tier Statistics - " + tier);
+                    printStringLn("  Orders: " + (rstring)orderCount);
+                    printStringLn("  Total: $" + (rstring)totalAmount);
+                    printStringLn("  Average: $" + (rstring)avgAmount);
+                }
+        }
+
+        // Write enriched orders to file
+        () as OrderWriter = FileSink(EnrichedOrders) {
+            param
+                file: "output/enriched_orders.csv";
+                format: csv;
+        }
+}

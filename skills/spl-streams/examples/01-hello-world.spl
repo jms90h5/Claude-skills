@@ -1,0 +1,29 @@
+/**
+ * Hello World Example
+ *
+ * This is the simplest possible SPL application. It uses a Beacon operator
+ * to generate tuples containing "Hello World" messages, and a Custom operator
+ * to print them to the console.
+ */
+
+namespace examples.hello;
+
+composite HelloWorld {
+    graph
+        // Generate a stream of greeting messages
+        stream<rstring message> Greetings = Beacon() {
+            param
+                // Generate 5 messages then stop
+                iterations: 5u;
+            output
+                Greetings: message = "Hello World!";
+        }
+
+        // Print each message to the console
+        () as Printer = Custom(Greetings) {
+            logic
+                onTuple Greetings: {
+                    printStringLn(message);
+                }
+        }
+}

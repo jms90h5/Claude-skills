@@ -1,0 +1,106 @@
+/**
+ * File Processing Example
+ *
+ * This application demonstrates reading from a CSV file, parsing the data,
+ * filtering based on conditions, and writing results to an output file.
+ */
+
+namespace examples.fileprocessing;
+
+use spl.file::*;
+use spl.adapter::*;
+
+composite FileProcessor {
+    param
+        // Submission-time parameters allow configuration at runtime
+        expression<rstring> $inputFile : getSubmissionTimeValue("inputFile", "data/employees.csv");
+        expression<rstring> $outputFile : getSubmissionTimeValue("outputFile", "output/filtered.csv");
+        expression<int32> $minSalary : (int32)getSubmissionTimeValue("minSalary", "50000");
+
+    graph
+        // Read raw lines from CSV file
+        stream<rstring line> RawData = FileSource() {
+            param
+                file: $inputFile;
+                format: line;
+        }
+
+        // Parse CSV lines into structured tuples
+        stream<rstring name, int32 age, float64 salary, rstring department> ParsedData = Custom(RawData) {
+            logic
+                state: {
+                    mutable int32 lineNumber = 0;
+                }
+
+                onTuple RawData: {
+                    lineNumber++;
+
+                    // Skip header line
+                    if (lineNumber == 1) return;
+
+                    // Parse CSV (assumes: name,age,salary,department)
+                    list<rstring> tokens = csvTokenize(line);
+
+                    if (size(tokens) == 4) {
+                        try {
+                            submit({
+                                name = tokens[0],
+                                age = (int32)tokens[1],
+                                salary = (float64)tokens[2],
+                                department = tokens[3]
+                            }, ParsedData);
+                        } catch (Exception e) {
+                            appTrc(Trace.error, "Error parsing line " + (rstring)lineNumber + ": " + line);
+                        }
+                    } else {
+                        appTrc(Trace.warn, "Invalid line format at line " + (rstring)lineNumber);
+                    }
+                }
+        }
+
+        // Filter based on salary threshold
+        stream<rstring name, int32 age, float64 salary, rstring department> FilteredData = Filter(ParsedData) {
+            param
+                filter: salary >= (float64)$minSalary && age >= 18;
+        }
+
+        // Add a timestamp column for tracking
+        stream<rstring name, int32 age, float64 salary, rstring department, rstring processedAt>
+            EnrichedData = Functor(FilteredData) {
+            output
+                EnrichedData: processedAt = ctime(getTimestamp());
+        }
+
+        // Write results to output file
+        () as ResultSink = FileSink(EnrichedData) {
+            param
+                file: $outputFile;
+                format: csv;
+                writePunctuations: true;
+                flush: 1u;  // Flush after each tuple for testing
+        }
+
+        // Also log summary statistics
+        () as Logger = Custom(EnrichedData) {
+            logic
+                state: {
+                    mutable int32 count = 0;
+                    mutable float64 totalSalary = 0.0;
+                }
+
+                onTuple EnrichedData: {
+                    count++;
+                    totalSalary += salary;
+                }
+
+                onPunct EnrichedData: {
+                    if (currentPunct() == Sys.FinalMarker) {
+                        printStringLn("Processing complete:");
+                        printStringLn("  Total records: " + (rstring)count);
+                        if (count > 0) {
+                            printStringLn("  Average salary: $" + (rstring)(totalSalary / (float64)count));
+                        }
+                    }
+                }
+        }
+}

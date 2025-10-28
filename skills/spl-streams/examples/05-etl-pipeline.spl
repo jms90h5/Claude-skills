@@ -1,0 +1,263 @@
+/**
+ * ETL (Extract, Transform, Load) Pipeline Example
+ *
+ * This application demonstrates a complete ETL pipeline:
+ * - Extract: Read from multiple data sources
+ * - Transform: Clean, enrich, and aggregate data
+ * - Load: Write to multiple destinations
+ */
+
+namespace examples.etl;
+
+use spl.file::*;
+
+type RawTransaction =
+    rstring transactionId,
+    rstring accountId,
+    rstring type,
+    float64 amount,
+    rstring timestamp;
+
+type CleanTransaction =
+    rstring transactionId,
+    rstring accountId,
+    rstring type,
+    float64 amount,
+    timestamp parsedTime;
+
+type AccountSummary =
+    rstring accountId,
+    int32 transactionCount,
+    float64 totalDebits,
+    float64 totalCredits,
+    float64 netAmount;
+
+composite ETLPipeline {
+    param
+        expression<rstring> $inputDir : getSubmissionTimeValue("inputDir", "data/transactions");
+        expression<rstring> $outputDir : getSubmissionTimeValue("outputDir", "output");
+
+    graph
+        // EXTRACT: Scan directory for new files
+        stream<rstring filename> NewFiles = DirectoryScan() {
+            param
+                directory: $inputDir;
+                pattern: "transactions_.*.csv";
+                sleepTime: 5.0;  // Check every 5 seconds
+        }
+
+        // Read file contents
+        stream<rstring line> RawLines = FileSource(NewFiles) {
+            param
+                format: line;
+        }
+
+        // Parse CSV lines
+        stream<RawTransaction> ParsedTransactions = Custom(RawLines) {
+            logic
+                state: {
+                    mutable int32 lineNum = 0;
+                }
+
+                onTuple RawLines: {
+                    lineNum++;
+
+                    // Skip header
+                    if (lineNum == 1) return;
+
+                    list<rstring> tokens = csvTokenize(line);
+                    if (size(tokens) == 5) {
+                        submit({
+                            transactionId = tokens[0],
+                            accountId = tokens[1],
+                            type = tokens[2],
+                            amount = (float64)tokens[3],
+                            timestamp = tokens[4]
+                        }, ParsedTransactions);
+                    }
+                }
+
+                onPunct RawLines: {
+                    if (currentPunct() == Sys.FinalMarker) {
+                        lineNum = 0;  // Reset for next file
+                    }
+                }
+        }
+
+        // TRANSFORM: Clean and validate data
+        stream<CleanTransaction> ValidTransactions = Custom(ParsedTransactions) {
+            logic
+                onTuple ParsedTransactions: {
+                    // Validate transaction type
+                    if (type != "debit" && type != "credit") {
+                        appTrc(Trace.warn, "Invalid transaction type: " + type);
+                        return;
+                    }
+
+                    // Validate amount
+                    if (amount <= 0.0) {
+                        appTrc(Trace.warn, "Invalid amount: " + (rstring)amount);
+                        return;
+                    }
+
+                    // Parse timestamp (simplified - assumes ISO format)
+                    try {
+                        submit({
+                            transactionId = transactionId,
+                            accountId = accountId,
+                            type = type,
+                            amount = amount,
+                            parsedTime = getTimestamp()  // In real app, parse from string
+                        }, ValidTransactions);
+                    } catch (Exception e) {
+                        appTrc(Trace.error, "Error processing transaction: " + e);
+                    }
+                }
+        }
+
+        // Split transactions by type
+        (stream<CleanTransaction> Debits; stream<CleanTransaction> Credits) = Split(ValidTransactions) {
+            param
+                index: (type == "debit") ? 0 : 1;
+        }
+
+        // TRANSFORM: Aggregate by account
+        stream<AccountSummary> AccountSummaries = Custom(ValidTransactions) {
+            logic
+                state: {
+                    mutable map<rstring, tuple<int32 count, float64 debits, float64 credits>> accountStats;
+                }
+
+                onTuple ValidTransactions: {
+                    // Initialize account if not exists
+                    if (!has(accountStats, accountId)) {
+                        accountStats[accountId] = {count = 0, debits = 0.0, credits = 0.0};
+                    }
+
+                    // Update statistics
+                    mutable tuple<int32 count, float64 debits, float64 credits> stats = accountStats[accountId];
+                    stats.count++;
+
+                    if (type == "debit") {
+                        stats.debits += amount;
+                    } else {
+                        stats.credits += amount;
+                    }
+
+                    accountStats[accountId] = stats;
+                }
+
+                onPunct ValidTransactions: {
+                    if (currentPunct() == Sys.WindowMarker || currentPunct() == Sys.FinalMarker) {
+                        // Emit summaries
+                        for (rstring accId in accountStats) {
+                            tuple<int32 count, float64 debits, float64 credits> stats = accountStats[accId];
+                            submit({
+                                accountId = accId,
+                                transactionCount = stats.count,
+                                totalDebits = stats.debits,
+                                totalCredits = stats.credits,
+                                netAmount = stats.credits - stats.debits
+                            }, AccountSummaries);
+                        }
+
+                        // Clear state for next window
+                        clearM(accountStats);
+                    }
+                }
+        }
+
+        // LOAD: Write clean transactions to file
+        () as TransactionWriter = FileSink(ValidTransactions) {
+            param
+                file: $outputDir + "/clean_transactions_%FILENUM.csv";
+                format: csv;
+                closeMode: count;
+                tuplesPerFile: 10000ul;  // New file every 10k records
+        }
+
+        // LOAD: Write debits to separate file
+        () as DebitWriter = FileSink(Debits) {
+            param
+                file: $outputDir + "/debits.csv";
+                format: csv;
+                append: true;
+        }
+
+        // LOAD: Write credits to separate file
+        () as CreditWriter = FileSink(Credits) {
+            param
+                file: $outputDir + "/credits.csv";
+                format: csv;
+                append: true;
+        }
+
+        // LOAD: Write account summaries
+        () as SummaryWriter = FileSink(AccountSummaries) {
+            param
+                file: $outputDir + "/account_summaries.csv";
+                format: csv;
+                writePunctuations: false;
+        }
+
+        // Log processing statistics
+        () as StatsLogger = Custom(AccountSummaries) {
+            logic
+                state: {
+                    mutable int32 accountCount = 0;
+                    mutable float64 totalNet = 0.0;
+                }
+
+                onTuple AccountSummaries: {
+                    accountCount++;
+                    totalNet += netAmount;
+
+                    printStringLn("Account: " + accountId);
+                    printStringLn("  Transactions: " + (rstring)transactionCount);
+                    printStringLn("  Debits: $" + (rstring)totalDebits);
+                    printStringLn("  Credits: $" + (rstring)totalCredits);
+                    printStringLn("  Net: $" + (rstring)netAmount);
+                }
+
+                onPunct AccountSummaries: {
+                    if (currentPunct() == Sys.FinalMarker) {
+                        printStringLn("=== ETL Pipeline Complete ===");
+                        printStringLn("Total accounts processed: " + (rstring)accountCount);
+                        printStringLn("Total net amount: $" + (rstring)totalNet);
+                    }
+                }
+        }
+
+        // Monitor for errors and anomalies
+        stream<rstring accountId, rstring alertType, rstring message>
+            Alerts = Custom(AccountSummaries) {
+            logic
+                onTuple AccountSummaries: {
+                    // Alert on high debit amounts
+                    if (totalDebits > 10000.0) {
+                        submit({
+                            accountId = accountId,
+                            alertType = "HIGH_DEBIT",
+                            message = "Total debits exceed $10,000: $" + (rstring)totalDebits
+                        }, Alerts);
+                    }
+
+                    // Alert on negative balance
+                    if (netAmount < -5000.0) {
+                        submit({
+                            accountId = accountId,
+                            alertType = "NEGATIVE_BALANCE",
+                            message = "Negative balance: $" + (rstring)netAmount
+                        }, Alerts);
+                    }
+                }
+        }
+
+        // LOAD: Write alerts to separate file for review
+        () as AlertWriter = FileSink(Alerts) {
+            param
+                file: $outputDir + "/alerts.csv";
+                format: csv;
+                flush: 1u;  // Immediate flush for alerts
+        }
+}
