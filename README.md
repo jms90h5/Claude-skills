@@ -38,11 +38,12 @@ This project provides AI-assisted development tools for IBM Streams through Clau
 ## Repository Contents
 
 ### 📚 Skills (`skills/`)
-Five comprehensive Claude skills for Streams development:
+Six comprehensive Claude skills for Streams development:
 - **streams-spl-app.md**: Create SPL applications
 - **streams-java-operator.md**: Create Java primitive operators
 - **streams-cpp-operator.md**: Create C++ primitive operators
 - **streams-python-operator.md**: Create Python primitive operators
+- **streams-native-function.md**: Create C++/Java native functions
 - **streams-toolkit.md**: Create complete Streams toolkits
 
 See [skills/README.md](skills/README.md) for detailed information about each skill.

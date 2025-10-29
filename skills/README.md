@@ -131,6 +131,20 @@ Creates complete IBM Streams toolkits - reusable collections of operators, funct
 - "Generate a toolkit with Java and C++ operators"
 - "Build a toolkit that wraps a REST API"
 
+### 6. Native Function Generator (`streams-native-function.md`)
+Creates IBM Streams native functions implemented in C++ or Java - SPL-callable functions for computation.
+
+**Use when you want to:**
+- Create mathematical or statistical functions
+- Integrate external libraries (C++ or Java)
+- Implement encoding/decoding functions
+- Add string manipulation utilities
+
+**Example prompts:**
+- "Create a C++ native function for matrix operations"
+- "Generate Java native functions for JSON parsing"
+- "Build a native function that calls an external API"
+
 ## Reference Materials
 
 All skills have access to:
